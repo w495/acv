@@ -1,0 +1,19 @@
+{
+    type : "table",
+    toolbar : [
+        {type : "button", name : "Создать пользователя", action : "resource/bsk/descr/users-form.json", icon : "icon/32/apps/preferences-users.png"}
+    ],
+    columns : [
+        {name : "uid", alias : "uid", type : "float", sortable : true, width:"5%"},
+        {name : "login", alias : "логин", type : "string", sortable : true}
+    ],
+
+    filter : {
+        submit_url : "/users"
+    },
+
+    sort : "uid",
+    ascending : false,
+
+    dblclick_action : "resource/bsk/descr/users-form.json"
+}

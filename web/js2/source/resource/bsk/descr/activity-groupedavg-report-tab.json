@@ -1,0 +1,44 @@
+{
+    type : "table",
+    toolbar : [
+        {type : "button", name : "Показать график", action : "resource/bsk/descr/activity-groupedavg-report-chart.json", icon : "icon/32/apps/office-chart.png"}
+    ],
+    columns : [
+        {name : "start_time", alias : "Календарный период", type : "string", sortable : true},
+        {name : "avg_wtime", alias : "Хронометраж", type : "sec", sortable : true, width : 100},
+        {name : "avg_watches", alias : "Просмотров", type : "int", sortable : true, width : 90},
+        {name : "avg_advshows", alias : "Показы рекламы", type : "int", sortable : true},
+        {name : "avg_advclicks", alias : "Clicks", type : "int", sortable : true}
+    ],
+
+    filter : {
+        fields : [
+            {name : "mode", alias : "mode", input : {type : "hidden", value: "avg"}},
+            {name : "fromdate", alias : "с даты", input : {type : "date-field"}},
+            {name : "todate", alias : "по дату", input : {type : "date-field"}},
+            {name : "group_by", alias : "суммирование результатов", input : {
+                type : "select-box",
+                select_id : "id",
+                select_display_name : "alias",
+                values : [
+                    {id : "hour", alias : "по часам суток"},
+                    {id : "day", alias : "по числам  месяца"},
+                    {id : "weekday", alias : "по дням недели"},
+                    {id : "month", alias : "по месяцам"}
+                ]
+            }},
+        ],
+        buttons : [
+           /*{alias : "отчет в csv", url : "/csv/activity"},
+           {alias : "отчет в html", url : "/html/activity"}*/
+        ],
+        render : "horisontal",
+        submit_url : "/activity"
+    },
+
+    sort : "start_time",
+    ascending : false
+
+
+//    dblclick_action : "resource/bsk/descr/videoviewreport-tab.json"
+}

@@ -1,0 +1,68 @@
+[
+    {
+        name : "Администрирование",
+        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "пользователи",
+                model : "resource/bsk/descr/users-tab.json"
+            }/*,
+            {   name : "права",
+                model : "resource/bsk/descr/permissions-tab.json"
+            }*/
+        ]
+    },
+    {
+        name : "Отчеты",
+        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "Видеоматериалы",
+                model : "resource/bsk/descr/videoreport-tab.json"
+            },
+            {   name : "Активность за период",
+                model : "resource/bsk/descr/activity-report-tab.json"
+            },
+            {   name : "Календарная статистика (сумма)",
+                model : "resource/bsk/descr/activity-grouped-report-tab.json"
+            },
+            {   name : "Календарная статистика (среднее)",
+                model : "resource/bsk/descr/activity-groupedavg-report-tab.json"
+            }
+        ]
+    },
+    {
+        name : "Рекламные компании",
+            icon : "icon/16/apps/utilities-dictionary.png",
+            opened : true,
+            subitems: [
+                name : "Банеры",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-tab.json"
+            }
+    }
+/*    {
+        name : "Тест", 
+        icon : "icon/16/apps/utilities-dictionary.png", 
+        opened : true,
+        subitems: [
+            {
+                name : "таблица",  
+                model : "resource/bsk/descr/test1-tab.json"
+            },
+            {
+                name : "форма",
+                model : "resource/bsk/descr/test1-form.json"
+            },
+
+            {
+                name : "таблица2",
+                model : "resource/bsk/descr/test2-tab.json"
+            }
+        ]
+    } */
+
+]
+

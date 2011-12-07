@@ -1,0 +1,15 @@
+{
+    type : "table",
+    columns : [
+        {name : "login", alias : "логин", type : "string", sortable : true}
+    ],
+
+    filter : {
+        submit_url : "users"
+    },
+
+    sort : "login",   // default sort column
+    ascending : false,
+
+    dblclick_action : "resource/bsk/descr/users-form.json"
+}

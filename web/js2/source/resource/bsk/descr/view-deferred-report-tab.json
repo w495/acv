@@ -1,0 +1,41 @@
+{
+    type : "table",
+    toolbar : [
+        {type : "button", name : "Подробнее", action : "resource/bsk/descr/videoviewreport-tab.json", icon : "icon/32/actions/zoom-in.png", specParam: "tab-row"}
+    ],
+    columns : [
+        {name : "name", alias : "Название", type : "string", sortable : true, width : "30%"},
+        {name : "wtime", alias : "Время просмотра", type : "sec", sortable : true, width : 100},
+        {name : "watches", alias : "Просмотров", type : "int", sortable : true, width : 90},
+        {name : "avg_wtime", alias : "Ср. время просмотра", type: "sec", sortable : true},
+        {name : "duration", alias : "Продолжительность фильма", type: "sec", sortable : true},
+        {name : "popularity", alias : "Просматриваемость, %", type: "int", sortable : true},
+        {name : "advshows", alias : "Показы рекламы", type : "int", sortable : true},
+        {name : "advclicks", alias : "Clicks", type : "int", sortable : true},
+        {name : "ctr", alias : "CTR, %", type : "int", sortable : true}
+    ],
+
+    filter : {
+        fields : [
+            /*{name : "use_old_dq", alias : "Выбрать другой отложенный запрос", input : {
+                type : "select-box",
+                select_id : "id",
+                select_display_name : "created",
+                values_url: "/deferred/?type=movie-stats"
+            }},*/
+        ],
+        buttons : [
+    	    /*{alias : "отчет в csv", url : "/csv/stats"},
+    	    {alias : "отчет в html", url : "/html/stats"}*/
+         ],
+        render : "horisontal",
+        submit_url : "/stats"
+    },
+    index_name : ["id"],
+    sort : "name",
+    ascending : false,
+    pager : {pageSize : 50},
+
+
+    dblclick_action : "resource/bsk/descr/videoviewreport-tab.json"
+}

@@ -1,0 +1,24 @@
+{
+    type : "table",
+    toolbar : [],
+    columns : [
+        {name : "GUID", alias : "Рекламный креатив", type : "string", sortable : true, width : "20%"},
+        {name : "advshows", alias : "Старты рекламы", type : "int", sortable : true},
+        {name : "advfullshows", alias : "Полные показы рекламы", type : "int", sortable : true},
+        {name : "advclicks", alias : "Клики", type : "int", sortable : true},
+    ],
+
+    filter : {
+        fields : [
+            {name : "fromdate", alias : "с даты", input : {type : "date-field"}},
+            {name : "todate", alias : "по дату", input : {type : "date-field"}}
+        ],
+        buttons : [ ],
+        render : "horisontal",
+        submit_url : "/stats-advlog"
+    },
+
+    sort : "GUID",
+    ascending : false
+    //,dblclick_action : "resource/bsk/descr/geoviewreport-tab.json"
+}

@@ -1,0 +1,11 @@
+{
+    type : "chart",
+
+    X : "start_time",
+    Y : [
+        {name : "wtime", alias : "Хронометраж просмотра", type : "sec", color : "#f00", chart_type:'bar', x_label: 'Временные интервалы', y_label: 'Хронометраж'},
+        {name : "watches", alias : "Количество просмотров", type : "int", color : "#090", chart_type:'bar', x_label: 'Временные интервалы', y_label: 'Просмотры (ед.)'},
+        {name : "advshows", alias : "Показы рекламы", type : "int", color : "#00f", chart_type:'bar', x_label: 'Временные интервалы', y_label: 'Показы (ед.)'},
+        {name : "advclicks", alias : "Клики по рекламе", type : "int", color : "#066", chart_type:'bar', x_label: 'Временные интервалы', y_label: 'Клики (ед.)'}
+    ]
+}

@@ -1,0 +1,47 @@
+{
+    type : "table",
+    toolbar : [
+        {type : "button", name : "Подробнее", action : "resource/bsk/descr/videoviewreport-tab.json", icon : "icon/32/actions/zoom-in.png", specParam: "tab-row"}
+    ],
+    columns : [
+        {name : "name", alias : "Название", type : "string", sortable : true, width : "30%"},
+        {name : "wtime", alias : "Время просмотра", type : "sec", sortable : true, width : 100},
+        {name : "watches", alias : "Просмотров", type : "int", sortable : true, width : 90},
+        {name : "avg_wtime", alias : "Ср. время просмотра", type: "sec", sortable : true},
+        {name : "duration", alias : "Продолжительность фильма", type: "sec", sortable : true},
+        {name : "popularity", alias : "Просматриваемость, %", type: "int", sortable : true},
+        {name : "advshows", alias : "Показы рекламы", type : "int", sortable : true},
+        {name : "advclicks", alias : "Clicks", type : "int", sortable : true},
+        {name : "ctr", alias : "CTR, %", type : "int", sortable : true}
+    ],
+
+    filter : {
+        fields : [
+            {name : "fromdate", alias : "с даты", input : {type : "date-field"}},
+            {name : "todate", alias : "по дату", input : {type : "date-field"}},
+            {name : "category", alias : "Категория", input : {
+                type : "select-box",
+                select_id : "id",
+                select_display_name : "alias",
+                values_url: "/stats-categories/"
+            }},
+            {name : "owner", alias : "Правообладатель", input : {
+                type : "select-box",
+                select_id : "id",
+                select_display_name : "name",
+                values_url: "/stats-owners/"
+            }}
+        ],
+        buttons : [
+    	    {alias : "Создать отложенный отчет", url : "/stats-defer"},
+    	    /*{alias : "отчет в csv", url : "/csv/stats"},
+    	    {alias : "отчет в html", url : "/html/stats"}*/
+         ],
+        render : "horisontal",
+        submit_url : "/stats"
+    },
+
+    sort : "name",
+    ascending : false,
+    dblclick_action : "resource/bsk/descr/videoviewreport-tab.json"
+}
