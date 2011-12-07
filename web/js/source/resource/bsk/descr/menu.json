@@ -1,0 +1,36 @@
+[
+    {
+        name : "Администрирование",
+//        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "пользователи",
+                icon : "icon/16/places/network-workgroup.png",
+                model : "resource/bsk/descr/customers-tab.json"
+            },
+            {
+                name : "группы пользователей",
+                icon : "icon/16/apps/preferences-theme.png",
+                model : "resource/bsk/descr/customer-groups-tab.json"
+            },
+            {   name : "права",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/permissions-tab.json"
+            }
+        ]
+    },
+    {
+        name : "Рекламные компании",
+//        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "Банеры",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-tab.json"
+            }
+        ]
+    }
+]
+
