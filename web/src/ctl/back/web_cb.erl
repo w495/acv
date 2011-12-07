@@ -9,7 +9,7 @@
 -define(GAME_XML_PATH, "static/data/game/sets.xml").
 
 -export([
-        call_before/1,
+%        call_before/1,
         call_after/1,
     % PERMISSIONS
         get_permissions/1,
@@ -32,10 +32,10 @@
 
 %-include_lib("xmerl/include/xmerl.hrl").
 
-call_before(Req) ->
+%call_before(Req) ->
 %    authorization:auth_required(Req, "admin").
 %    io:format("call_before(Req)"),
-    authorization:auth_required(Req).
+%    authorization:auth_required(Req).
 
 call_after({Req, Result}) ->
     {Req, Result}.
