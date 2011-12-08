@@ -81,3 +81,61 @@ getBanners() ->
         {ok, Vals} -> {ok, getRandomAdv(Vals)};
         E -> E
     end.
+
+
+
+
+
+
+
+getAdvComsVid(_) ->
+    Q = "select ac.id, ac.name, ac.datestart, ac.datestop from adv_com_vid ac;",
+    dao:simple(Q).
+
+getAdvComVid(Id) ->
+    Q = "select id, name, datestart, datestop, url, ref from adv_com_vid where id=$1;",
+    dao:simple(Q, [Id]).
+
+deleteAdvComVid(Id) ->
+    Q = "delete from adv_com_vid where id=$1;",
+    dao:simple(Q, [Id]).
+
+updateAdvComVid({null, Name, Ref, Datestart, Datestop, Pic_url}) ->
+    Q1 = "insert into adv_com_vid (name, datestart, datestop, ref) values ($1, $2, $3, $4) returning id;",
+    Q2 = "update adv_com_vid set url=$1 where id=$2;",
+    Ret = dao:withTransactionFK(fun(Con) ->
+        {ok, 1, _, [{AdvComId}]} = pgsql:equery(Con, Q1, [Name, Datestart, Datestop, Ref]),
+        OriginalFilename = filename:basename(Pic_url),
+        Destination = string:join(["static/data/adv_vid", utils:to_list(AdvComId), OriginalFilename], "/"),
+        case utils:moveFile(Pic_url, Destination) of
+            ok -> 
+                pgsql:equery(Con, Q2, [Destination, AdvComId]);
+            {error, Reason} -> 
+                io:format("updateAdvComVid can't move file (~p): ~p to ~p~n", [Reason, Pic_url, Destination]),
+                file:delete(Pic_url)
+        end,
+        ok 
+    end),
+    dao:processPGRet2(Ret);
+
+updateAdvComVid({Id, Name, Ref, Datestart, Datestop, Pic_url}) ->
+    Q = "update adv_com set name=$1, ref=$2, datestart=$3, datestop=$4, url=$5 where id=$6;",
+    Ret = dao:withTransactionFK(fun(Con) ->
+        OriginalFilename = filename:basename(Pic_url),
+        Destination = string:join(["static/data/adv_vid", utils:to_list(Id), OriginalFilename], "/"),
+        io:format("----------- ~p~n", [Id]),
+        {ok,1} = pgsql:equery(Con, Q, [Name, Ref, Datestart, Datestop, Destination, Id]),
+        io:format("z~n"),
+        case utils:moveFile(Pic_url, Destination) of
+            ok -> 
+
+                ok;
+            {error, Reason} -> 
+                io:format("updateAdvComVid can't move file (~p): ~p to ~p~n", [Reason, Pic_url, Destination]),
+                file:delete(Pic_url)
+        end,
+        ok 
+    end),
+    dao:processPGRet2(Ret).
+
+

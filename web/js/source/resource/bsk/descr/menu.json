@@ -29,7 +29,13 @@
                 name : "Банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
+            },
+            {
+                name : "Видео",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-vid-tab.json"
             }
+
         ]
     }
 ]

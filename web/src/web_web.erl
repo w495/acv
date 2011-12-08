@@ -224,6 +224,13 @@ serve_request(Path, Req) ->
 
 simple_map_controllers(Path) ->
     case Path of
+    % advertising company video
+        "/get-adv-coms-vid" -> {web_cb, get_adv_coms_vid};
+        "/get-adv-com-vid" -> {web_cb, get_adv_com_vid};
+        "/update-adv-com/upload-video" -> {web_file, upload_adv_com_video};
+        "/update-adv-com-vid" -> {web_cb, update_adv_com_vid};
+ 
+
     % advertising company
         "/get-banner-places" -> {web_cb, get_banner_places};
         "/get-adv-coms" -> {web_cb, get_adv_coms};

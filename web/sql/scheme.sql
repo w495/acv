@@ -17,6 +17,17 @@ create table adv_com (
     ref varchar(1000)
 );
 
+create sequence seq_adv_com_vid;
+create table adv_com_vid (
+    id int primary key default nextval('seq_adv_com'),
+    name varchar(100),
+    datestart timestamp without time zone,
+    datestop timestamp without time zone,
+    url varchar(200),
+    ref varchar(1000)
+);
+
+
 
 create sequence seq_customer_id;
 create table customer(

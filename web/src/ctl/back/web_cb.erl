@@ -637,3 +637,31 @@ get_encoding(_Req) ->
     Res = dao:daoCall(dao_bSrc, getEncoding, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+
+
+
+get_adv_coms_vid(_Req) ->
+    Res = dao:daoCall(dao_bAdvCom, getAdvComsVid, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+get_adv_com_vid(Req) ->
+    Data = Req:parse_qs(),
+    Id = utils:to_integer(proplists:get_value("id", Data)),
+    Res = dao:daoCall(dao_bAdvCom, getAdvComVid, Id),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+update_adv_com_vid(Req) ->
+    Data = Req:parse_post(),
+    Info = norm:extr(Data, [
+        {"id", [nullable, integer]},
+        {"name", [string]},
+        {"ref", [string]},
+        {"datestart", [datetimeUnixtime]},
+        {"datestop", [datetimeUnixtime]},
+%        {"banner_place_id", [integer]},
+        {"pic_url", [string]}
+    ]),
+    Res = dao:daoCall(dao_bAdvCom, updateAdvComVid, Info),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+

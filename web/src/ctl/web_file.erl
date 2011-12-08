@@ -227,6 +227,40 @@ upload_adv_com_image(Req) ->
     end.
 
 
+upload_adv_com_video(Req) ->
+    FileHandler = fun(Filename, ContentType) -> handle_file(Filename, ContentType) end,
+    Files = mochiweb_multipart:parse_form(Req, FileHandler),
+    
+    Id = proplists:get_value("id", Files),
+    Prev = proplists:get_value("prev", Files),
+    {OriginalFilename, _, TempFilename} = proplists:get_value("uploadfile", Files),
+   
+    case Id of
+        undefined ->
+            DirId = string:join(["common", integer_to_list(erlang:phash2(make_ref()))], "/");
+        _ ->
+            DirId = Id
+    end,
+    
+    Destination = string:join(["static/data/adv_vid", utils:to_list(DirId), OriginalFilename], "/"),
+%    filelib:ensure_dir(Destination),
+%    file:delete(Destination),
+    case moveFile(TempFilename, Destination) of
+        ok -> 
+            case Prev of
+                Destination -> ok;
+                _ ->
+                    file:delete(Prev)
+            end,
+            {"text/html", [], [Destination]};
+        {error, Reason} ->
+            file:delete(TempFilename),
+            {"text/html", [], ["error"]}
+    end.
+
+
+
+
 moveFile(Src, Dst) ->
     case Src =:= Dst of
         true -> ok;

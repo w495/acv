@@ -9,9 +9,15 @@ qx.Class.define("bsk.view.StaticForms",
 
     statics : {
         // форма создания и редактирования рекламной компании
+        advComVidForm : function(biz, Row, formDescr) {
+            return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
+        },
+
+        // форма создания и редактирования рекламной компании
         advComForm : function(biz, Row, formDescr) {
             return new bsk.view.Form.AdvComForm(biz, Row, formDescr);
         },
+
 
         /// Форма создания и редактирования групп пользователей
         customerGroupForm : function(biz, Row, formDescr) {
