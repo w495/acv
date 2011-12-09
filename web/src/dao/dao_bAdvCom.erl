@@ -119,13 +119,11 @@ updateAdvComVid({null, Name, Ref, Datestart, Datestop, Pic_url}) ->
     dao:processPGRet2(Ret);
 
 updateAdvComVid({Id, Name, Ref, Datestart, Datestop, Pic_url}) ->
-    Q = "update adv_com set name=$1, ref=$2, datestart=$3, datestop=$4, url=$5 where id=$6;",
+    Q = "update adv_com_vid set name=$1, ref=$2, datestart=$3, datestop=$4, url=$5 where id=$6;",
     Ret = dao:withTransactionFK(fun(Con) ->
         OriginalFilename = filename:basename(Pic_url),
         Destination = string:join(["static/data/adv_vid", utils:to_list(Id), OriginalFilename], "/"),
-        io:format("----------- ~p~n", [Id]),
         {ok,1} = pgsql:equery(Con, Q, [Name, Ref, Datestart, Datestop, Destination, Id]),
-        io:format("z~n"),
         case utils:moveFile(Pic_url, Destination) of
             ok -> 
 
