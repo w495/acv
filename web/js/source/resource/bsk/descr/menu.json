@@ -21,7 +21,7 @@
         ]
     },
     {
-        name : "Рекламные компании",
+        name : "Рекламные кампании",
 //        icon : "icon/16/apps/utilities-dictionary.png",
         opened : true,
         subitems: [
@@ -35,7 +35,6 @@
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             }
-
         ]
     }
 ]

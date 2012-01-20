@@ -16,18 +16,11 @@ qx.Class.define("bsk.view.Form.AdvComVidForm",
 
         this.fStatus = "wdata";
         this.fData = null;
+
+        this.step = 0;
     },
 
     members : {
-        inp : {
-            Id              : null,
-            Name            : null,
-            Pic_url         : null,
-            datestart       : null,
-            datestop        : null,
-//            selBannerPlace  : null,
-            ref             : null
-        },
 
         urc : {  // upload request config
             url: "/update-adv-com-vid",
@@ -59,64 +52,147 @@ qx.Class.define("bsk.view.Form.AdvComVidForm",
 
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
 
-            var layout = new qx.ui.layout.Grid(2, 1);
+            var layout = new qx.ui.layout.Grid(5, 5);
             var cnt = new qx.ui.container.Composite(layout);
-            var l1 = new qx.ui.basic.Label("Общая информация");
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
             this.inp.Name.focus();
-//            this.imgBanner = new qx.ui.basic.Image("");
-/*            this.imgBanner.set({
-                width : 960,
-                height : 400
-            });*/
 
-//            this.inp.selBannerPlace = new qx.ui.form.SelectBox();
- 
+            this.inp.selGender = new qx.ui.form.SelectBox();
+
+            this.fillSelect(this.inp.selGender, [{name:"М"}, {name:"Ж"}], "name", "name");
+
+            var spinner1 = new qx.ui.form.Spinner(0, 0, 100);
+            var spinner2 = new qx.ui.form.Spinner(0, 0, 100);
+
+            var spinner3 = new qx.ui.form.Spinner(0, 0, 24);
+            var spinner4 = new qx.ui.form.Spinner(0, 24, 24);
+
+            var cbGender = new qx.ui.form.CheckBox("Пол:");
+
+            cbGender.childWidget = this.inp.selGender;
+
+            var cbList = [cbGender];//, cbOldFrom, cbOldTo];
+
             var vertical_offset = 0;
+
+            var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст");
+            var layout2 = new qx.ui.layout.Grid(1, 2)
+            boxAge.setLayout(layout2);
+            boxAge.setValue(false);
+            layout2.setColumnFlex(1, 1);
+            boxAge.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
+            boxAge.add(spinner1, {row:vertical_offset, column:1});
+            boxAge.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
+            boxAge.add(spinner2, {row:vertical_offset, column:1});
+
+
+            vertical_offset = 0;
+
+            var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа");
+            var layout3 = new qx.ui.layout.Grid(1, 2);
+            layout3.setColumnFlex(1, 1);
+            boxTime.setLayout(layout3);
+            boxTime.setValue(false);
+            boxTime.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
+            boxTime.add(spinner3, {row:vertical_offset, column:1});
+            boxTime.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
+            boxTime.add(spinner4, {row:vertical_offset, column:1});
+
+
+            var cbPreroll = new qx.ui.form.CheckBox("Preroll")
+            var cbMidroll = new qx.ui.form.CheckBox("Midroll")
+            var cbPostroll = new qx.ui.form.CheckBox("Postroll")
+            var cbPauseroll = new qx.ui.form.CheckBox("Pauseroll")
+
+            var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика");
+            boxPlace.setLayout(new qx.ui.layout.VBox(2));
+            boxPlace.add(cbPreroll);
+            boxPlace.add(cbMidroll);
+            boxPlace.add(cbPostroll);
+            boxPlace.add(cbPauseroll);
+
+            var boxCat = new qx.ui.groupbox.CheckGroupBox("Категории");
+            boxCat.setLayout(new qx.ui.layout.VBox(2));
+            boxCat.setValue(false);
+
+
+            var catList = new bsk.view.SelListTree(this,
+                "",
+                "name",
+                "id"
+            );
+
+            boxCat.add(catList);
+
+
+            vertical_offset = 0;
+
+            var l1 = new qx.ui.basic.Label("Общая информация");
+            var l2 = new qx.ui.basic.Label("Таргетирование");
 
             l1.setFont("bold");
             l1.setAlignX("left");
             cnt.add(l1, {row:0, column:0, colSpan:2});
+            l2.setFont("bold");
+            l2.setAlignX("left");
+            cnt.add(l2, {row:0, column:2, colSpan:2});
+
  
             cnt.add(new qx.ui.basic.Label().set({value: "Название:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
             cnt.add(this.inp.Name, {row:vertical_offset , column:1});
+
+            cnt.add(cbGender, {row:vertical_offset, column:2});
+            cnt.add(this.inp.selGender, {row:vertical_offset , column:3});
+
+
+            cnt.add(cbGender, {row:vertical_offset, column:2});
+            cnt.add(this.inp.selGender, {row:vertical_offset , column:3});
+
+
             cnt.add(new qx.ui.basic.Label().set({value: "Дата начала:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
             cnt.add(this.inp.datestart, {row:vertical_offset , column:1});
+
+            cnt.add(boxAge, {row:vertical_offset, column:2, colSpan:2, rowSpan:3});
+
             cnt.add(new qx.ui.basic.Label().set({value: "Дата конца:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
             cnt.add(this.inp.datestop, {row:vertical_offset , column:1});
-//            cnt.add(new qx.ui.basic.Label().set({value: "Расположение:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
-//            cnt.add(this.inp.selBannerPlace, {row:vertical_offset , column:1});
+
             cnt.add(new qx.ui.basic.Label().set({value: "URL:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
             cnt.add(this.inp.ref, {row:vertical_offset , column:1});
-            cnt.add(new qx.ui.basic.Label().set({value: "Картинка:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
+            cnt.add(new qx.ui.basic.Label().set({value: "Ролик:" + RFM,  rich : true}), {row:++vertical_offset, column:0});
             cnt.add(this._buildPicFormCnt(), {row:vertical_offset , column:1});
-//            cnt.add(this.imgBanner, {row:++vertical_offset , column:0, colSpan:2});
 
+            cnt.add(boxTime, {row:vertical_offset, column:2, colSpan:2, rowSpan:2});
+
+            cnt.add(boxPlace, {row:++vertical_offset , column:0, colSpan:2/*, rowSpan:4*/});
+
+
+
+            cnt.add(boxCat, {row:1, column:4, rowSpan:vertical_offset})
             this.addbuttonRow(cnt, ++vertical_offset);
 
             this.controller.placeForm(cnt);
-/*
-            var reqBannerPlaces = new qx.io.remote.Request("/get-banner-places", "GET", "application/json");
-            reqBannerPlaces.addListener("completed", function(response) {
-                var result = response.getContent();
-                if (bsk.util.errors.process(this, result)==false) return false;
-                this.inp.selBannerPlace.itemMap = [];
-                for(var j=0; j<result.values.length; j++) {
-                    var SI = result.values[j];
-                    var selItem = new qx.ui.form.ListItem(SI.alias, null, SI.id);
-                    this.inp.selBannerPlace.itemMap[SI.id] = selItem;
-                    this.inp.selBannerPlace.add(selItem);
-                }
-                this.fStatus = 1;
-                if(this.fData)
-                    this.fillForm(this.fData);
-            }, this);
-            reqBannerPlaces.send();
-*/
+
+            for(var i=0; i<cbList.length; i++) {
+                var cb = cbList[i];
+                cb.childWidget.setEnabled(cb.getValue());
+                cb.addListener("changeValue", function(response) {
+                    var t = response.getTarget();
+                    t.childWidget.setEnabled(t.getValue());
+                }, this);
+            }
             return {controller : cnt, offset: vertical_offset};
         },
-                
+        fillSelect : function(sel, vals, alias, value) {
+            sel.itemMap = [];
+            for(var j=0; j<vals.length; j++) {
+                var SI = vals[j];
+                var selItem = new qx.ui.form.ListItem(SI[alias], null, SI[value]);
+                sel.itemMap[SI[value]] = selItem;
+                sel.add(selItem);
+            }
+        },
         /**
         **/
         addListeners: function() {            
@@ -203,7 +279,6 @@ qx.Class.define("bsk.view.Form.AdvComVidForm",
                 datestop : this.inp.datestop.getValue().getTime(),
                 name : this.inp.Name.getValue(),
                 ref : this.inp.ref.getValue()
-//                banner_place_id : this.inp.selBannerPlace.getSelection()[0].getModel()
             };
 
             if(this.validateForm()) {

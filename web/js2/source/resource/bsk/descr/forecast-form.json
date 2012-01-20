@@ -1,4 +1,0 @@
-{
-    type : "form",
-    controller : "ForecastForm"
-}
