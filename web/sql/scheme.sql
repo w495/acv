@@ -6,9 +6,9 @@ create table banner_place (
 );
 
 
-create sequence seq_adv_com;
-create table adv_com (
-    id int primary key default nextval('seq_adv_com'),
+create sequence seq_acv_banner;
+create table acv_banner (
+    id int primary key default nextval('seq_acv_banner'),
     name varchar(100),
     datestart timestamp without time zone,
     datestop timestamp without time zone,
@@ -17,17 +17,44 @@ create table adv_com (
     ref varchar(1000)
 );
 
-create sequence seq_adv_com_vid;
-create table adv_com_vid (
-    id int primary key default nextval('seq_adv_com'),
+create sequence seq_acv_video;
+create table acv_video (
+    id int primary key default nextval('seq_acv_video'),
     name varchar(100),
     datestart timestamp without time zone,
     datestop timestamp without time zone,
     url varchar(200),
-    ref varchar(1000)
+    ref varchar(1000),
+    wish int,
+    postroll bool default true,
+    preroll bool default true,
+    midroll bool default true,
+    pauseroll bool default true,
+    user_male bool default null,
+    age_from int default null,
+    age_to int default null
 );
 
+create sequence seq_geo_region;
+create table geo_region (
+    id int primary key default nextval('seq_geo_region'),
+    alias varchar(30) UNIQUE,
+    name varchar (100)
+);
 
+create sequence seq_tgv_region;
+create table tgv_region (
+    id int primary key default nextval('seq_tg_region'),
+    ac_video_id int references acv_video(id),
+    geo_region_id int references geo_region(id)
+);
+
+create sequence seq_tgv_category;
+create table tgv_category (
+    id int primary key default nextval('seq_tgv_category'),
+    ac_video_id int references acv_video(id),
+    cat_id int
+);
 
 create sequence seq_customer_id;
 create table customer(

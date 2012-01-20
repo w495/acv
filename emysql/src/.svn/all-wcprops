@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 26
+/svn/!svn/ver/33/trunk/src
+END
+mysql_conn.erl
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/32/trunk/src/mysql_conn.erl
+END
+mysql_recv.erl
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/26/trunk/src/mysql_recv.erl
+END
+mysql.erl
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/33/trunk/src/mysql.erl
+END
+mysql_auth.erl
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/2/trunk/src/mysql_auth.erl
+END
+mysql.hrl
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/2/trunk/src/mysql.hrl
+END
