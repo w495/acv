@@ -1,5 +1,6 @@
 *~
 
+*.app
 *.beam
 *.bup
 *.log
@@ -12,7 +13,8 @@
 *.DAT
 *.DCD
 
-*.config
+app.config
+app_dev.config
 
 ebin/*
 cbin/*

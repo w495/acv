@@ -31,17 +31,15 @@ ERL_OBJECTS_WITHDIR := $(ERL_SOURCES_WITHDIR_WOPREFIX:%.erl=$(EBIN_DIR)/%.$(EMUL
 ERL_OBJECTS := $(ERL_SOURCES:%.erl=$(EBIN_DIR)/%.$(EMULATOR))
 ERL_DOCUMENTS := $(ERL_SOURCES:%.erl=$(DOC_DIR)/%.html)
 ERL_OBJECTS_LOCAL := $(ERL_SOURCES:%.erl=./%.$(EMULATOR))
-APP_FILES := $(wildcard *.app)
+APP_FILES := $(wildcard *.app.src)
 
 EBIN_DIRS := $(SRC_DIRS_WOPREFIX:%=$(EBIN_DIR)/%)
 
-#EBIN_FILES = $(ERL_OBJECTS) $(ERL_DOCUMENTS) $(APP_FILES:%.app=../ebin/%.app)
-
-EBIN_FILES = $(ERL_OBJECTS_WITHDIR) $(APP_FILES:%.app=../ebin/%.app)
-EBIN_FILES_NO_DOCS = $(ERL_OBJECTS_WITHDIR) $(APP_FILES:%.app=../ebin/%.app)
+EBIN_FILES = $(ERL_OBJECTS_WITHDIR) $(APP_FILES:%.app.src=../ebin/%.app)
+EBIN_FILES_NO_DOCS = $(ERL_OBJECTS_WITHDIR) $(APP_FILES:%.app.src=../ebin/%.app)
 MODULES = $(ERL_SOURCES:%.erl=%)
 
-../ebin/%.app: %.app
+../ebin/%.app: %.app.src
 	cp $< $@
 
 
