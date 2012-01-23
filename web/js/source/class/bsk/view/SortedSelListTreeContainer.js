@@ -22,10 +22,15 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         this.setLayout(vbox);
         this.add(this.field);
         this.add(this.tree);
+        this.field.addListener("input", this._OnChange, this);
     },
 
     members : {
         
+        _OnChange : function(e){
+            console.log("getData = ", e.getData());
+            this.tree.testItems(e.getData());
+        }
     }
 });
 

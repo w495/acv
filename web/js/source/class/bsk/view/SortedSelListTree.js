@@ -31,6 +31,7 @@ qx.Class.define("bsk.view.SortedSelListTree",
         this.setRoot(this.root);
         this.root.setOpen(true);
         this.data = {};
+        this.shadow_data = {};
         
         if(this.url)
             this._requestItems(this.url);
@@ -51,10 +52,41 @@ qx.Class.define("bsk.view.SortedSelListTree",
         },
         
         testItems : function(pattern) {
-        
-            for(var key in this.data){
-                var item = this.data[key];
-                console.log(item);
+            this.pattern = RegExp(pattern);
+            //this.data = bsk.util.utils.clone(this.shadow_data);
+            
+            console.log(this.data);
+            
+            for(var key in this.shadow_data){
+                var checkbox = this.shadow_data[key];
+                var value = checkbox.bsk_element;
+                var name = value.name;
+                var description = value.description;
+                
+                console.log("this.data[value.id] = ", this.data[value.id]);
+                if(!this.data[key]){
+                    var Item = new qx.ui.tree.TreeFile();
+                    var checkbox = new qx.ui.form.CheckBox();
+                    checkbox.setFocusable(false);
+                    checkbox.bsk_element = value;
+                    checkbox.Item = Item;
+                    Item.setIcon(null);
+                    Item.addWidget(checkbox);
+                    Item.addLabel("" + value[this.labelFieldName]);
+                    Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
+                    var text = new qx.ui.basic.Label(value[this.descrFieldName]);
+                    text.setWidth(150);
+                    Item.addWidget(text);
+                    this.root.add(Item);
+                    this.data[value.id] = checkbox;
+                }
+                // checkbox.show();
+                // checkbox.Item.show();
+                if(!this.pattern.test(name)&&!this.pattern.test(description)){
+                    this.remItem(value);
+                    // checkbox.hide();
+                    // checkbox.Item.hide();
+                }
             }
         },
         
@@ -118,9 +150,18 @@ qx.Class.define("bsk.view.SortedSelListTree",
                 Item.addWidget(text);
                 this.root.add(Item);
                 this.data[E.id] = checkbox;
+                this.shadow_data[E.id] = checkbox;
             }
         },
-
+        
+        hideItem : function(value) {
+            
+        },
+        
+        showAllItems : function() {
+            return true;
+        },
+        
         remItem : function(value) {
             var newData = {};
 

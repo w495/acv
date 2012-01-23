@@ -33,6 +33,12 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.CategoryTargeting",
             mimetype: ""    // application/json
         },
         
+        categoryListOptions: {
+            url:            "/get-customer-groups",
+            labelFieldName: "name",
+            descrFieldName: "description"
+        },
+        
         getComposite : function(){
             return this.composite;
         },
@@ -65,7 +71,12 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.CategoryTargeting",
             
             this.composite  = new qx.ui.container.Composite (layout);
 
-            this.inp.List = new bsk.view.SortedSelListTreeContainer("http://sdsd", "name", "name");
+            this.inp.List = new bsk.view.
+                SortedSelListTreeContainer(
+                    this.categoryListOptions.url,
+                    this.categoryListOptions.labelFieldName,
+                    this.categoryListOptions.descrFieldName
+                );
             
             var vertical_offset = -1;
             

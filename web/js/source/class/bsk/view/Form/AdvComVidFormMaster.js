@@ -1,5 +1,6 @@
 /* ************************************************************************
-    https://gist.github.com/1639953
+    Мастер создания видео рекламы.
+    
 ************************************************************************ */
 
 
@@ -10,7 +11,6 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster",
 
     construct : function(controller, Row) {
         
-        alert("construct : function(controller, Row) {");
         if(Row)
             this.createNew = (Row.isNew == true);
         this.base(arguments, controller, Row);

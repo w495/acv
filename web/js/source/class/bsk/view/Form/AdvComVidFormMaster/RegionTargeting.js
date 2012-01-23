@@ -37,6 +37,12 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.RegionTargeting",
             return this.composite;
         },
 
+        regionListOptions: {
+            url:            "/get-customer-groups",
+            labelFieldName: "name",
+            descrFieldName: "description"
+        },
+        
         /**
          * Поля формы.
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
@@ -59,7 +65,14 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.RegionTargeting",
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
             this.composite  = new qx.ui.container.Composite (layout);
-            this.inp.List = new bsk.view.SortedSelListTreeContainer("http://sdsd", "name", "name");
+            
+            this.inp.List = new bsk.view.
+                SortedSelListTreeContainer(
+                    this.regionListOptions.url,
+                    this.regionListOptions.labelFieldName,
+                    this.regionListOptions.descrFieldName
+                );
+                
             var vertical_offset = -1;
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0});
