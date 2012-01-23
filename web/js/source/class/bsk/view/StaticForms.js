@@ -12,7 +12,7 @@ qx.Class.define("bsk.view.StaticForms",
         advComVidForm : function(biz, Row, formDescr) {
             return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
         },
-
+        
         // форма создания и редактирования рекламной компании
         advComForm : function(biz, Row, formDescr) {
             return new bsk.view.Form.AdvComForm(biz, Row, formDescr);
@@ -20,16 +20,13 @@ qx.Class.define("bsk.view.StaticForms",
 
         // мастер создания и редактирования рекламной компании
         advComVidFormMaster : function(biz, Row, formDescr) {
+            alert("advComVidFormMaster : function(biz, Row, formDescr) {");
             return new bsk.view.Form.AdvComVidFormMaster(biz, Row, formDescr);
         },
         
         // форма создания и редактирования рекламной компании
         advComVidForm : function(biz, Row, formDescr) {
-            return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
-        },
-
-        // форма создания и редактирования рекламной компании
-        advComVidFormMaster : function(biz, Row, formDescr) {
+            alert("advComVidFormMaster : function(biz, Row, formDescr) {");
             return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
         },
         

@@ -7,6 +7,12 @@ REBAR=./rebar
 all:
 	@$(REBAR) get-deps compile
 
+release:
+	@$(REBAR) get-deps compile
+
+debug:
+	@$(REBAR) get-deps compile
+
 edoc:
 	@$(REBAR) doc
 
@@ -16,7 +22,7 @@ test:
 	@$(REBAR) skip_deps=true eunit
 
 clean:
-	@$(REBAR) clean
+	@$(REBAR) clean;
 
 build_plt:
 	@$(REBAR) build-plt
