@@ -20,6 +20,6 @@ erl \
     -config ${CONFIG} \
     -name ${NODENAME} \
     -s web \
-    -mnesia dir "db" \
+    -mnesia dir "priv/db" \
     ${ERL_ARGS} \
     "$@"

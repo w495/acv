@@ -22,6 +22,6 @@ erl \
     -sname ${NODENAME} \
     -s reloader \
     -s web \
-    -mnesia dir "db" \
+    -mnesia dir "priv/db" \
     ${ERL_ARGS} \
     "$@"
