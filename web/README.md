@@ -4,9 +4,5 @@
 # CHANGELOG
 
 ## Пнд Янв 23 13:43:27 GST 2012
-
-    Папки
-        db
-        sql
-        static
-    перемещены в priv
+    * папки db, sql, static перемещены в priv
+    * обновлена версия mochiweb
