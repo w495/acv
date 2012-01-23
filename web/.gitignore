@@ -8,6 +8,10 @@
 *.swp
 *.so
 
+*.LOG
+*.DAT
+*.DCD
+
 *.config
 
 ebin/*
