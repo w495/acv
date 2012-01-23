@@ -29,11 +29,12 @@ qx.Class.define("bsk.Application",
 
     members :
     {
+        
         main : function()
         {
             // Call super class
             this.base(arguments);
-
+            
             qx.locale.Manager.getInstance().setLocale("ru");
             qx.io.remote.RequestQueue.getInstance().setDefaultTimeout(60000*5);
 
@@ -51,7 +52,15 @@ qx.Class.define("bsk.Application",
             document.title = this.appearance.title;
             this._createLayout();
         },
-
+        
+        /**
+         * Выводит сообщение останавливающее пользователя уйти со страницы.
+         * @see qx.application.AbstractGui
+         */
+        close : function() {
+            return "Вы хотите покинуть эту страницу";
+        },
+        
         _createLayout : function() {
             var dockLayout = new qx.ui.layout.Dock();
             dockLayout.setSeparatorY("separator-vertical");

@@ -20,6 +20,25 @@
             }
         ]
     },
+    
+    {
+        name : "!!=>ТЕСТИРОВАНИЕ",
+        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "adv-master",
+                icon : "icon/16/places/network-workgroup.png",
+                model : "resource/bsk/descr/adv-com-vid-form-master.json"
+            },
+            {
+                name : "adv-form",
+                icon : "icon/16/apps/preferences-theme.png",
+                model : "resource/bsk/descr/adv-com-vid-form.json"
+            }
+        ]
+    },
+    
     {
         name : "Рекламные кампании",
 //        icon : "icon/16/apps/utilities-dictionary.png",
