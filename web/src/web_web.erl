@@ -213,8 +213,6 @@ serve_request(Path, Req) ->
                     flog:info(?FMT("~p:~p 404 ~p REQUEST (~p) ERROR! Controller NOT FOUND~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
                     Req:not_found()
                 end
-                            
-        
     end.
 
 %% ========================================================================
@@ -229,7 +227,6 @@ simple_map_controllers(Path) ->
         "/get-adv-com-vid" -> {web_cb, get_adv_com_vid};
         "/update-adv-com/upload-video" -> {web_file, upload_adv_com_video};
         "/update-adv-com-vid" -> {web_cb, update_adv_com_vid};
- 
 
     % advertising company
         "/get-banner-places" -> {web_cb, get_banner_places};
@@ -237,7 +234,7 @@ simple_map_controllers(Path) ->
         "/get-adv-com" -> {web_cb, get_adv_com};
         "/update-adv-com/upload-image" -> {web_file, upload_adv_com_image};
         "/update-adv-com" -> {web_cb, update_adv_com};
-   
+
     % customer-groups *
         "/get-customer-groups" ->       {web_cb, get_customer_groups};
         "/get-customer-group-info" ->   {web_cb, get_customer_group_info};
@@ -247,11 +244,11 @@ simple_map_controllers(Path) ->
     % customers *
         "/get-customers" ->         {web_cb, get_customers};
         "/get-experts" ->           {web_cb, get_experts};
-        
+
         "/get-customer-info" ->     {web_cb, get_customer_info};
         "/update-customer" ->       {web_cb, update_customer};
         "/update-customer/upload-image" ->       {web_file, upload_customer_image};
-        
+
         "/delete-customer" ->       {web_cb, delete_customer};
         "/get-permissions" ->       {web_cb, get_permissions};
 
@@ -260,7 +257,7 @@ simple_map_controllers(Path) ->
         "/do_logout" ->         {authorization, do_logout};
         "/do_change_pass" ->    {authorization, do_change_pass};
         "/login" ->             {authorization, login};
-            
+
         "INDEX" ->
             {index, index};
         _ ->
@@ -287,14 +284,6 @@ test(Fun, X) ->
     iterKill(X, Fun),
     Stop = utils:utime(),
     io:format("::: ~p~n", [Stop - Start]).
-
-test1() ->
-    test(fun() -> 
-        killSlash("/jopa/kita/pechen/treski/") end, 
-    10000),
-    test(fun() -> 
-        lists:sublist("/jopa/kita/pechen/treski/", 1, length("/jopa/kita/pechen/treski/") - 1) 
-    end, 10000).
 
 % ---------------------------------------------------------------------------
 
