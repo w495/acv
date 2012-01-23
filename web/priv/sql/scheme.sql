@@ -1,3 +1,7 @@
+/**
+ * \file Описание схемы базы данных
+**/
+
 create sequence seq_banner_place;
 create table banner_place (
     id int primary key default nextval('seq_banner_place'),

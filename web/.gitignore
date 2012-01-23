@@ -10,7 +10,7 @@
 
 *.config
 
-ebin/*.ebin
+ebin/*
 cbin/*
 priv/db/*
 
