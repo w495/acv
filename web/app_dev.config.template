@@ -10,10 +10,17 @@
         {log_level, info},
         {cookiename, "FK"},
         {expcookie, 180000}, % in seconds  300 min
+
         {fk_db_user, "cff"},
         {fk_db_password, "cff"},
         {fk_db_name, "fk"},
         {fk_db_host, "127.0.0.1"},
+
+        {vk_db_user, "repl"},
+        {vk_db_password, "yhbvft"},
+        {vk_db_name, "vk"},
+        {vk_db_host, " 192.168.2.110"},
+
         {web_session_gc_period, 600000}, % 10 min
         {web_session_expire_timeout, 180000}, % in sec 300 min
         {lsthost, "0.0.0.0"},
