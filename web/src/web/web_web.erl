@@ -246,9 +246,14 @@ simple_map_controllers(Path) ->
         "/get-customers" ->         {inside, get_customers};
         "/get-experts" ->           {inside, get_experts};
 
-        "/get-customer-info" ->     {inside, get_customer_info};
-        "/update-customer" ->       {inside, update_customer};
-        "/update-customer/upload-image" ->       {web_file, upload_customer_image};
+        "/get-customer-info" ->
+            {inside, get_customer_info};
+
+        "/update-customer" ->
+            {inside, update_customer};
+
+        "/update-customer/upload-image" ->
+                {web_file, upload_customer_image};
 
         "/delete-customer" ->       {inside, delete_customer};
         "/get-permissions" ->       {inside, get_permissions};
@@ -264,6 +269,7 @@ simple_map_controllers(Path) ->
         "/" ->                  {outside, index};
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
+        "/signup" ->            {outside, signup};
 
     %%
     %% Основа админки

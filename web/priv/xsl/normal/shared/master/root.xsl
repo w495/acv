@@ -102,8 +102,7 @@
 <xsl:template name="links">
     <link rel="icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="shortcut icon" href="/static/site-media/favicon.ico" />
-        
+
     <!-- <link rel="apple-touch-icon" href="" />-->
     <xsl:call-template name="link-css" />
 </xsl:template>
@@ -141,6 +140,7 @@
         <li><a href="/index">Головная</a></li>
         <li><a href="/about">О проекте</a></li>
         <li><a href="/login">Войти</a></li>
+        <li><a href="/signup">Регистрация</a></li>
     </ul>
     <xsl:comment>ФОРМА ПЕРЕВОДА</xsl:comment>
     <form method="GET" action=".">

@@ -42,7 +42,7 @@ getCustomerGroup(Id) ->
         {ok, R1Val} ->
             Q2 = "select perm_id from permission2group where group_id = $1;",
             io:format("Q2 = ~p~n", [Q2]),
-            case dao:simple(Q2, [utils:to_integer(Id)]) of
+            case dao:simple(Q2, [utils:to_integer(Id)]) ofgetPermission
                 {ok, R2Val} -> {ok, R1Val, [X || [{"perm_id", X}] <- R2Val]};
                 E2 -> E2
             end;
@@ -88,58 +88,6 @@ updateCustomerGroup({{Id, Name, Descr}, PermissionList, UID}) ->
         end
     ),
     dao:processPGRet2(Ret).
-
-% @depricated block
-% <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-% @depricated 
-getPersonTypes(_) ->
-    Q = "select id, name from person_type where name != 'Пользователь';",
-    dao:simple(Q).
-
-% @depricated 
-getPersons(Params) ->
-    Qs = "select person.id, person.firstname, person.lastname, person.patronimic, person.phone, person.type_id, person.updater, person.commentary, "
-                 "person_type.name as type_name "
-         "from person join person_type on person.type_id = person_type.id",
-    TypeId = case proplists:get_value("type_id", Params, "null") of
-        "null" -> [];
-        V2 -> [{"person.type_id", utils:to_integer(V2)}]
-    end,
-    {Qw, P} = dao:collectWhereParams([{"person.deleted", false}|TypeId]),
-    Q = lists:append([Qs, Qw, ";"]),
-    dao:simple(Q, P).
-
-% @depricated 
-getPerson(Id) ->
-    Q = "select person.id, person.firstname, person.lastname, person.patronimic, person.phone, person.type_id, person.updater, person.commentary, "
-                "person_type.name as type_name, person.birthday "
-         "from person join person_type on person.type_id = person_type.id where person.id=$1;",
-    dao:simple(Q, [utils:to_integer(Id)]).
-
-% @depricated 
-updatePerson({{null, FN, LN, Pat, Phn, TId, Comm, Birthday}, UID}) ->
-    Q = "insert into person (firstname, lastname, patronimic, phone, type_id, updater, commentary, birthday) values ($1, $2, $3, $4, $5, $6, $7, $8);",
-    dao:simple(Q, [FN, LN, Pat, Phn, TId, UID, Comm, Birthday]);
-
-% @depricated 
-updatePerson({{Id, FN, LN, Pat, Phn, TId, Comm, Birthday}, UID}) ->
-    Q = "update person set firstname = $1, lastname = $2, patronimic = $3, phone = $4, type_id=$5, updater=$6, commentary=$7, birthday=$8 where id = $9;",
-    dao:simple(Q, [FN, LN, Pat, Phn, TId, UID, Comm, Birthday, Id]).
-
-% @depricated
-deletePerson({Id, UID}) ->
-    Q = "update person set updater=$1, deleted = true where id = $2;",
-    dao:simple(Q, [UID, utils:to_integer(Id)]).
-
-% @depricated 
-getFreePersons(_) ->
-    Q = "select person.id, person.firstname, person.lastname, person.patronimic, person.phone, person.type_id, person.updater, person.commentary, person_type.name as type_name "
-    "from person join person_type on person.type_id = person_type.id "
-    "where not exists (select * from school_bus where school_bus.person_id = person.id ) and person.deleted = false;",
-    dao:simple(Q).
-
-% >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 % ============================================================================
 % % CUSTOMERS

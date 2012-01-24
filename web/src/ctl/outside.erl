@@ -8,6 +8,8 @@
 -export([
     index/1,
     about/1,
+    login/1,
+    signup/1,
     test/0,
     test/1
 ]).
@@ -51,6 +53,39 @@ about(Req) ->
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
+%%
+%% возврaщает страницу входа.
+%%  альтернативный вариант
+%%
+login(Req) ->
+    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Meta = [
+            {"current-path",        Req:get(path)}
+    ],
+    Xml  = xml:encode_data(
+        [
+            {"meta",    Meta}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+
+%%
+%% возврaщает страницу регистрации
+%%
+signup(Req) ->
+    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Meta = [
+            {"current-path",        Req:get(path)}
+    ],
+    Xml  = xml:encode_data(
+        [
+            {"meta",    Meta}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
 
 test()->
     ok.
