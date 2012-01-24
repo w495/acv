@@ -15,7 +15,7 @@ mkErrorJson({Etype, Einfo}) ->
 %call(Module, Function, Param) ->
 %    crpc:call({biz_srv, config:get(biz_srv, biz@localhost)}, Module, Function, Param).
 
-daoCall(Module, Function, undefined, JsonRetName) ->
+dao_call(Module, Function, undefined, JsonRetName) ->
     case Module:Function() of
         {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
         ok -> Res = {struct, [{<<"result">>, ok}]};
@@ -24,7 +24,7 @@ daoCall(Module, Function, undefined, JsonRetName) ->
     end,
     Res;
     
-daoCall(Module, Function, Param, JsonRetName) ->
+dao_call(Module, Function, Param, JsonRetName) ->
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
         ok -> Res = {struct, [{<<"result">>, ok}]};
@@ -34,7 +34,7 @@ daoCall(Module, Function, Param, JsonRetName) ->
     end,
     Res.
 
-daoCall(Module, Function, Param) ->
+dao_call(Module, Function, Param) ->
     
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals);
@@ -77,42 +77,6 @@ collectWhereParams(Where, Params, []) when length(Where) > 0->
 collectWhereParams(_, _, []) ->
     {";", []}.
 
-
-%processPGRet({pgcp_error, {error, {badmatch, {error, #error{code=ECodeBin, message=Msg}}}}}) ->
-%    case ECodeBin of
-%        <<"23502">> ->
-%            try
-%                {ok, RE} = re:compile("\"(.+)\""),
-%                {match, [_, C | _]} = re:run(Msg, RE, [{capture, all, list}]),
-%                {error, {not_null, C}}
-%            catch
-%                E:R ->
-%                    io:format("processPGRet ERROR: ~p - ~p~n", [E, R]),
-%                    {error, {unknown, Msg}}
-%            end;
-%        <<"23505">> ->
-%            try
-%                {ok, RE} = re:compile("\".*_([^_]?.+)_key\""),
-%                {match, [_, C | _]} = re:run(Msg, RE, [{capture, all, list}]),
-%                {error, {not_unique, C}}
-%            catch
-%                E:R ->
-%                    io:format("processPGRet ERROR: ~p - ~p~n", [E, R]),
-%                    {error, {unknown, binary_to_list(Msg)}}
-%            end;
-%        _ ->
-%            {error, {unknown, binary_to_list(Msg)}}
-%    end;
-%processPGRet({pgcp_error, {error, {badmatch, E}}}) ->
-%    {error, {unexpected, E}};
-%processPGRet(_) ->
-%    ok.
-%
-%processPGRet(Ret, RecordName) ->
-%    case processPGRet(Ret) of
-%        ok -> {ok, pg2rs(Ret, RecordName)};
-%        Val -> Val
-%    end.
 
 toType(null, _Type) ->
     null;

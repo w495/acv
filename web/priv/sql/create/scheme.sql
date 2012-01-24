@@ -1,7 +1,12 @@
-/**
+/***********************************************************************
+ *
  * \file Описание схемы базы данных
-**/
+ *
+***********************************************************************/
 
+/**
+ * Размещение баннеров
+**/
 create sequence seq_banner_place;
 create table banner_place (
     id int primary key default nextval('seq_banner_place'),
@@ -9,7 +14,9 @@ create table banner_place (
     alias varchar(100)
 );
 
-
+/**
+ * Рекламная компания для баннеров
+**/
 create sequence seq_acv_banner;
 create table acv_banner (
     id int primary key default nextval('seq_acv_banner'),
@@ -21,6 +28,9 @@ create table acv_banner (
     ref varchar(1000)
 );
 
+/**
+ * Рекламная компания для видео
+**/
 create sequence seq_acv_video;
 create table acv_video (
     id int primary key default nextval('seq_acv_video'),
@@ -39,6 +49,9 @@ create table acv_video (
     age_to int default null
 );
 
+/**
+ * Регион
+**/
 create sequence seq_geo_region;
 create table geo_region (
     id int primary key default nextval('seq_geo_region'),
@@ -46,20 +59,9 @@ create table geo_region (
     name varchar (100)
 );
 
-create sequence seq_tgv_region;
-create table tgv_region (
-    id int primary key default nextval('seq_tg_region'),
-    ac_video_id int references acv_video(id),
-    geo_region_id int references geo_region(id)
-);
-
-create sequence seq_tgv_category;
-create table tgv_category (
-    id int primary key default nextval('seq_tgv_category'),
-    ac_video_id int references acv_video(id),
-    cat_id int
-);
-
+/**
+ * Рекламодатель
+**/
 create sequence seq_customer_id;
 create table customer(
     id int primary key default nextval('seq_customer_id'),
@@ -77,6 +79,9 @@ create table customer(
     password_hash char(32) not null
 );
 
+/**
+ * Группа рекламодателей
+**/
 create sequence seq_customer_group_id;
 create table customer_group (
     id int primary key default nextval('seq_customer_group_id'),
@@ -85,12 +90,18 @@ create table customer_group (
     deleted bool default false
 );
 
+/**
+ * Типы прав
+**/
 create sequence seq_permission_type;
 create table permission_type (
     id int primary key default nextval('seq_permission_type'),
     name varchar(1024) unique
 );
 
+/**
+ * Права
+**/
 create sequence seq_permission;
 create table permission (
     id int primary key default nextval('seq_permission'),
@@ -101,14 +112,39 @@ create table permission (
     type int
 );
 
-create table permission2group (
+/**
+ * Многие ко многим для прав и групп
+**/
+create table permission_2_group (
     perm_id int references permission(id) not null,
     group_id int references customer_group(id) not null
 );
 
-create table customer2group (
+/**
+ * Многие ко многим для пользователей и групп
+**/
+create table customer_2_group (
     customer_id int references customer(id) not null,
     group_id int references customer_group(id) not null
 );
 
+/**
+ * Многие ко многим для acv_video x geo_region
+**/
+--create sequence seq_acv_video_2_geo_region;
+create table acv_video_2_geo_region (
+    -- id int primary key default nextval('seq_acv_video_2_geo_region'),
+    acv_video_id int references acv_video(id),
+    geo_region_id int references geo_region(id)
+);
 
+/**
+ * Многие ко многим для acv_video x cat
+ *  cat_id берется из основной базы данных
+**/
+--create sequence seq_acv_video_2_cat;
+create table acv_video_2_cat (
+    -- id int primary key default nextval('seq_acv_video_2_cat'),
+    acv_video_id int references acv_video(id),
+    cat_id int
+);

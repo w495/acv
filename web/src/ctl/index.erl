@@ -2,6 +2,8 @@
 %-export([call_before/1, index/1]).
 -include_lib("../include/common.hrl").
 
+-include_lib("../include/web.hrl").
+
 -compile(export_all).
 
 %call_before(Req) ->
@@ -10,5 +12,5 @@
 %    end.
 
 index(_Req) ->
-    throw({serve_static, "index.html", ?JSHOME, [{"Cache-Control", "no-cache "}]}).
+    throw({serve_static, "index.html", ?RIA_HOME, [{"Cache-Control", "no-cache "}]}).
 

@@ -1,21 +1,20 @@
 
 
--define(LINKS_TRANSOPTIONS,         ["/", "/transport/", "/home/index/"]).
+-ifdef(debug).
+    -define(QOOXDOO_BUILD, "source").
+-else.
+    -define(QOOXDOO_BUILD, "build").
+-endif.
+
+-define(RIA_HOME, "js/" ++ ?QOOXDOO_BUILD).
 
 
--define(LINKS_REGULATORYOPTIONS,    ["/regulatory/list/", "/regulatory/list/"]).
--define(LINKS_SECUREOPTIONS,        ["/secure/list/",     "/transport/"]).
--define(LINKS_NEWSOPTIONS,          ["/news/list/",       "/transport/"]).
+-define(RIA_MENU_URL,
+    "/" ++ ?QOOXDOO_BUILD ++ "/resource/bsk/descr/menu.json").
 
--define(LINKS_CONFOPTIONS,          ["/conf/list/", "/transport/"]).
+-define(RIA_MENU_ADMIN_PATH,  "resource/bsk/descr/menu.admin.json").
+-define(RIA_MENU_COMMON_PATH, "resource/bsk/descr/menu.common.json").
 
--define(LINKS_TERMSOPTIONS,         ["/terms/list/", "/terms/list/", "/term/" ]).
--define(LINKS_TESTSOPTIONS,         ["/tests/list/", "/tests/list/"]).
-
--define(TEMPLATE_NORMALOPTIONS,     ["priv/xsl/normal"]).
--define(TEMPLATE_WAPOPTIONS,        ["priv/xsl/wap"]).
--define(TEMPLATE_MOBILEOPTIONS,     ["priv/xsl/mobile"]).
--define(TEMPLATE_RSSOPTIONS,        ["priv/xsl/rss"]).
 
 -define(STATIC_DATA_URL,        "/data/").
 -define(STATIC_DATA_PATH,       "priv/static/data/").

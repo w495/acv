@@ -1,4 +1,4 @@
-%%% @file dao_bCustomer.erl
+%%% @file dao_customer.erl
 %%%
 %%%     Доступ к данным для сущности пользователя.
 %%%     Описаны опирации с пользователями, группами и правами.
@@ -10,32 +10,31 @@
 
 -export([
     % PERMISSIONS
-        getPermission/1,
+        get_permissions/1,
     % CUSTOMER_GROUPS
-        getCustomerGroups/1,
-        getCustomerGroup/1,
-        updateCustomerGroup/1,
-        deleteCustomerGroup/1,
+        get_customer_groups/1,
+        get_customer_group/1,
+        update_customer_group/1,
+        delete_customer_group/1,
     % CUSTOMERS
-        getCustomers/1,
-        getCustomer/1,
-        updateCustomer/1,
-        deleteCustomer/1]).
+        get_customers/1,
+        get_customer/1,
+        update_customer/1,
+        delete_customer/1]).
 
-getPermission(_) ->
-    Q = "select p.id, p.name, p.description, p.type, p.perm_type_id, p.entity_id
-         from permission as p;",
+get_permissions(_) ->
+    Q = "select p.id, p.name, p.description, p.type, p.perm_type_id, p.entity_id from permission as p;",
     dao:simple(Q).
 
 % ============================================================================
 % % CUSTOMER_GROUPS
 % ============================================================================
 
-getCustomerGroups(_) ->
+get_customer_groups(_) ->
     Q = "select id, name, description from customer_group WHERE customer_group.deleted = false;",
     dao:simple(Q).
 
-getCustomerGroup(Id) ->
+get_customer_group(Id) ->
     Q1 = "select id, name, description from customer_group where customer_group.id = $1;",
     io:format("Q1 = ~p~n", [Q1]),
     case dao:simple(Q1, [utils:to_integer(Id)]) of
@@ -49,18 +48,18 @@ getCustomerGroup(Id) ->
         E1 -> E1
     end.
 
-deleteCustomerGroup({Id, UID}) ->
+delete_customer_group({Id, UID}) ->
     Q = "update customer_group set deleted=true "
         "where "
             " issystem=false " % нельзя удалять системные группы.
             " and id = $1; ",
     dao:simple(Q, [Id]).
 
-updateCustomerGroup({{null, Name, Descr}, PermissionList, UID}) ->
+update_customer_group({{null, Name, Descr}, PermissionList, UID}) ->
     Q1 = "insert into customer_group (name, description) values ($1, $2) returning customer_group.id;",
     Ret = dao:withTransactionFK(fun(Con) ->
         {ok, 1, _, [{Id}]} = pgsql:equery(Con, Q1, [Name, Descr]) ,
-        io:format("New CustomerGroupID: ~p~n", [Id]) ,
+        io:format("New _customer_groupID: ~p~n", [Id]) ,
         case length(PermissionList) of
             0 -> ok;
             L ->
@@ -72,7 +71,7 @@ updateCustomerGroup({{null, Name, Descr}, PermissionList, UID}) ->
     end),
     dao:processPGRet2(Ret);
 
-updateCustomerGroup({{Id, Name, Descr}, PermissionList, UID}) ->
+update_customer_group({{Id, Name, Descr}, PermissionList, UID}) ->
     Q1 = "update customer_group set name = $1, description = $2 where id = $3;",
     Q2 = "delete from permission2group where group_id = $1;",
     Q3 = "insert into permission2group (group_id, perm_id) values " ++ 
@@ -94,7 +93,7 @@ updateCustomerGroup({{Id, Name, Descr}, PermissionList, UID}) ->
 % ============================================================================
 
 %+
-getCustomers(_) ->
+get_customers(_) ->
     Q = "select customer.id, customer.firstname, customer.lastname, customer.patronimic, customer.login, customer.pic_url, "
                 "customer.password_hash "
          "from customer WHERE customer.deleted = false;",
@@ -112,7 +111,7 @@ getExperts(_) ->
     dao:simple(Q).
 
 %-
-getCustomer(Id) ->
+get_customer(Id) ->
     Q1 = "select customer.id, "
                 "customer.firstname, customer.lastname, customer.patronimic, "
                 "customer.city, customer.organization, customer.position, "
@@ -130,7 +129,7 @@ getCustomer(Id) ->
 
 
 %+
-getCustomerByLogin(Login) ->
+get_customerByLogin(Login) ->
     Q1 = "select customer.id, customer.firstname, customer.lastname, customer.patronimic, "
             "customer.login, customer.password_hash "
          "from customer where customer.login=$1 and customer.deleted=false;",
@@ -151,7 +150,7 @@ getCustomerByLogin(Login) ->
 %%
 %% Создает нового пользователя
 %%
-updateCustomer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
+update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, UID}) ->
     Q1 = "insert into customer (firstname, lastname, patronimic, "
             "login, pic_url, email, city, organization, position, password_hash) "
@@ -179,7 +178,7 @@ updateCustomer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, C
 %%
 %% Изменяет существующего пользователя
 %%
-updateCustomer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
+update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, UID}) ->
 
     Q1 = "update customer set firstname = $1, lastname = $2, patronimic = $3, "
@@ -214,7 +213,7 @@ updateCustomer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Cit
     dao:processPGRet2(PGRet).
 
 
-deleteCustomer({Id, UID}) ->
+delete_customer({Id, UID}) ->
     Q = "update customer set deleted=true where id = $1;",
     io:format("~n<(X_x)> Id = ~p;", [Id]),
     Id_int = utils:to_integer(Id),

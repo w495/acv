@@ -166,18 +166,27 @@ processControllerException(Type, Exc, Req) ->
 %% СТАТИЧЕСКОЕ ОТОБРАЖЕНИЕ АДРЕСОВ
 %% ========================================================================
 
-serve_request("/"++?QOOXDOOBUILD++"/index.html", Req) ->
-    % % io:format("goto INDEX"),
+serve_request(?RIA_MENU_URL, Req) ->
+    case authorization:auth_if(Req, "admin") of
+        false ->
+            serve_static(?RIA_HOME, ?RIA_MENU_COMMON_PATH, Req);
+        _ ->
+            serve_static(?RIA_HOME, ?RIA_MENU_ADMIN_PATH, Req)
+    end;
+
+serve_request("/" ++ ?QOOXDOO_BUILD ++ "/index.html", Req) ->
     serve_request("INDEX", Req); % перенаправление в динамический мэппинг для проверки авторизации
-    
-serve_request("/" ++ ?QOOXDOOBUILD ++ "/" ++ T, Req) ->
-    serve_static(?JSHOME, T, Req);
-    
+
+
+
+serve_request("/" ++ ?QOOXDOO_BUILD ++ "/" ++ T, Req) ->
+    serve_static(?RIA_HOME, T, Req);
+
 serve_request("/deps/qooxdoo/" ++ T, Req) ->
     serve_static("deps/qooxdoo/", T, Req);
-    
+
 serve_request("/resource/" ++ T, Req) ->
-    serve_static(?JSHOME ++ "/resource/", T, Req);
+    serve_static(?RIA_HOME ++ "/resource/", T, Req);
 
 serve_request(?STATIC_FAVICON_URL, Req) ->
     serve_static(?STATIC_FAVICON_PATH, [], Req);

@@ -3,7 +3,12 @@
 -import(mochiweb_cookies, [cookie/2, cookie/3]).
 -include("../include/web_session.hrl").
 -include("../include/common.hrl").
+
 -include("../../common/include/customer.hrl").
+
+
+-include("../include/web.hrl").
+
 -compile(export_all).
 
 auth_required(Req) ->
@@ -64,6 +69,23 @@ auth_required(Req, Perm) ->
             end
     end.
 
+auth_if(Req, Perm) ->
+    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined -> throw(auth_required);
+        A ->
+            case auth_biz:get_session(A) of
+                [] -> throw(auth_required);
+                [H=#web_session{permissions=PList}|_T] ->
+                    case lists:member(Perm, PList) of
+                        true ->
+                            H;
+                        false ->
+                            false
+                    end
+            end
+    end.
+
 login(Req) ->
     innerLogin(Req, []).
 
@@ -92,7 +114,7 @@ do_login(Req) ->
     try 
         Val = auth_biz:login(Login, Password),
         io:format("~nval = ~p~n", [Val]),
-        throw({ok, {redirect, "/" ++ ?QOOXDOOBUILD ++ "/index.html", 
+        throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
             [cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
     catch
         throw:{ok, Ret} -> throw(Ret);
