@@ -39,11 +39,10 @@
         ]
     },
     
-
     {
         name : "Главная",
             /*вся основная информация по видам рекламы*/
-        opened : true,
+        opened : false,
         subitems: [
             {
                 name : "Реклама на видео",
@@ -65,7 +64,7 @@
 
     {
         name : "Рекламные кампании",
-        opened : true,
+        opened : false,
         subitems: [
             {
                 name : "Банеры",
@@ -76,6 +75,23 @@
                 name : "Видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
+            }
+        ]
+    },
+
+    {
+        name : "Все рекламные кампании",
+        opened : false,
+        subitems: [
+            {
+                name : "Все банеры",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/all-adv-com-tab.json"
+            },
+            {
+                name : "Все видео",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/all-adv-com-vid-tab.json"
             }
         ]
     }

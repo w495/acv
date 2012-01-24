@@ -112,15 +112,8 @@ qx.Class.define("bsk.Application",
 
                     this.right_cont.removeAll();
                     this.right_cont.add(this.cur_controller, {flex:1});
-                    // cont.refresh();
                 }
             }
-/*            else if(curMenu.ctl != undefined) {
-                var cont = new bsk.view.Map();
-                this.right_cont.removeAll();
-                this.right_cont.add(cont,{flex:1});
-                this.cur_controller = cont;
-            } */
             else {
                 alert("не задано описание модели");
             }
@@ -135,7 +128,8 @@ qx.Class.define("bsk.Application",
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
             var result = response.getContent();
-            if (bsk.util.errors.process(this, result)==false) return false;
+            if (bsk.util.errors.process(this, result)==false)
+                return false;
             var cont = null;
             if(this.cur_controller != undefined)
                 this.history.push(this.cur_controller);
@@ -143,21 +137,12 @@ qx.Class.define("bsk.Application",
                 case "table" :
                     cont = new bsk.view.Controller.TabController(this, this.ActionRow, this.FilterVal, result);
                     break;
-
                 case "dir-double-table" :
                     cont = new bsk.view.Controller.DirDoubleTabController(this, this.ActionRow, this.FilterVal, result);
                     break;
-
-                
                 case "form" :
                     cont = new bsk.view.Controller.FormController(this, this.ActionRow, result, "");
                     break;
-//                case "tab-menu":
-//                    cont = new bsk.view.AdmMap(this, this.ActionRow, result);
-//                    break;
-//                case "chart":
-//                    cont = new bsk.view.ChartController(this, this.ActionRow, result);
-//                    break;
             }
             if(cont!= null) {
                 this.right_cont.removeAll();
@@ -167,6 +152,7 @@ qx.Class.define("bsk.Application",
             else {
                 this.history.pop();
             }
+            return true;
         },
 
         onEditClick : function() { // toolbar
@@ -186,13 +172,9 @@ qx.Class.define("bsk.Application",
             this.right_cont.removeAll();
             var cont = this.history.pop();
             
-            console.log("$-$ cont = ", cont);
-            
             if(!cont)
                 cont = this.cur_controller;
-                
-            console.log("$$$ cont = ", cont);
-            
+
             this.right_cont.add(cont,{flex:1});
             cont.refresh();
             this.cur_controller = cont;
