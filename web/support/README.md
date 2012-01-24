@@ -1,5 +1,6 @@
 
  
+git clone ssh://<user>@192.168.2.253:7777/home/repos.git/AdvSystem/
 
 # CHANGELOG
 
