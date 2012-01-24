@@ -1,4 +1,4 @@
-SUBDIRS	=	mochiweb sablotron-1.0 web 
+SUBDIRS	=	mochiweb erlxslt emysql web
 DISTRIB = .distrib
 TARBALL = "`date +admin_%F`.tar.bz2"
 
