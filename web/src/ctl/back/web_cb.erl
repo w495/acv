@@ -638,8 +638,6 @@ get_encoding(_Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
-
-
 get_adv_coms_vid(_Req) ->
     Res = dao:daoCall(dao_bAdvCom, getAdvComsVid, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.

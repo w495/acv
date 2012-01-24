@@ -66,9 +66,27 @@ init([]) ->
         [pgConPool]
     },
 
+    MySqlConPool = {
+        mySqlConPoolFK,
+        {mysql_con_pool, start_link, [
+            mySqlConPool,
+            config:get(vk_db_host, "localhost"),
+            config:get(vk_db_host, "root"),
+            config:get(vk_db_password, "1111"),
+            config:get(vk_db_name, "vk"),
+            10 % количество соединений
+        ]},
+        permanent,
+        1000,
+        worker,
+        [mySqlConPool]
+    },
+
     Processes = [
-        CLog, % Web,
-        AssistSrv,
-        PgConPool
+        CLog,           % Логирование
+        AssistSrv,      % ???
+        PgConPool,      % Связь с локальной базой
+        MySqlConPool    % Связь с tvzavr vk
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
+
