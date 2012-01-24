@@ -42,7 +42,7 @@ getCustomerGroup(Id) ->
         {ok, R1Val} ->
             Q2 = "select perm_id from permission2group where group_id = $1;",
             io:format("Q2 = ~p~n", [Q2]),
-            case dao:simple(Q2, [utils:to_integer(Id)]) ofgetPermission
+            case dao:simple(Q2, [utils:to_integer(Id)]) of
                 {ok, R2Val} -> {ok, R1Val, [X || [{"perm_id", X}] <- R2Val]};
                 E2 -> E2
             end;
