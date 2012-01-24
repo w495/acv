@@ -2,8 +2,11 @@
 -author('author <author@example.com>').
 
 -export([start/1, stop/0, loop/2]).
+
 -include_lib("xmerl/include/xmerl.hrl").
+
 -include("../include/common.hrl").
+-include("../include/web.hrl").
 
 -compile(export_all).
 
@@ -29,8 +32,7 @@ serve_static_inner(P, T, Req, ExtraHeaders) ->
         {ok, _} = file:read_file_info(P ++ "/" ++ Fname),
         Req:serve_file(Fname, P, [{"content-encoding", "gzip"} | ExtraHeaders])
     catch
-        _:_ -> 
-            %% io:format("*************** ~p ~p~n", [T, P]),
+        _:_ ->
             Req:serve_file(T, P, ExtraHeaders)
     end.
 
@@ -100,21 +102,21 @@ processControllerException(throw, {js_redirect, Url, _Cookie}, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) JS Redirect to ~p~n", [?MODULE, ?LINE, Req:get(method), Req:get(path), Url])),
     V = {struct, [{<<"REDIRECT">>, list_to_binary(Url)}]},
     DataOut = mochijson2:encode(V),
-    Req:ok({"application/json", [], [DataOut]});
+    Req:ok({?OUTPUT_JSON, [], [DataOut]});
 
 %%
 %% Перенаправление без Cookie, как для аутентификации.
 %%
 processControllerException(throw, {redirect, Url, []}, Req) ->
     flog:debug(?FMT("~p:~p 302 ~p REQUEST (~p) Redirect to ~p~n", [?MODULE, ?LINE, Req:get(method), Req:get(path), Url])),
-    Req:respond({302, [{"Location", Url}, {"Content-Type", "text/html; charset=UTF-8"}], ""});
+    Req:respond({302, [{"Location", Url}, {"Content-Type", ?OUTPUT_HTML}], ""});
 
 %%
 %% Перенаправление с новыми Cookie, как для слепых.
 %%
 processControllerException(throw, {redirect, Url, Cookie}, Req) ->
     flog:debug(?FMT("~p:~p 302 ~p REQUEST (~p) Redirect to ~p~n", [?MODULE, ?LINE, Req:get(method), Req:get(path), Url])),
-    Req:respond({302, [{"Location", Url}, {"Content-Type", "text/html; charset=UTF-8"}] ++ Cookie,""});
+    Req:respond({302, [{"Location", Url}, {"Content-Type", ?OUTPUT_HTML}] ++ Cookie,""});
     
 processControllerException(throw, not_found, Req) ->
     flog:info(?FMT("~p:~p 404 ~p REQUEST (~p) Not Found~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
@@ -122,17 +124,9 @@ processControllerException(throw, not_found, Req) ->
 
 processControllerException(throw, auth_required, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
-    %V = {struct, [{<<"REDIRECT">>, <<"/login.html">>}]},
     V = {struct, [{<<"REDIRECT">>, <<"/login">>}]},
     DataOut = mochijson2:encode(V),
-    Req:ok({"application/json", [], [DataOut]});
-
-%%
-%% Перенаправление без аутентификации.
-%%
-processControllerException(throw, {auth_required_front, RetPath} , Req) ->
-    flog:debug(?FMT("~p:~p 302 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
-    processControllerException(throw, {redirect, "/Users/Login" ++ RetPath, []}, Req);
+    Req:ok({?OUTPUT_JSON, [], [DataOut]});
 
 %%
 %% application/json 
@@ -156,17 +150,12 @@ processControllerException(throw, {auth_ajax, State} , Req) ->
     DataOut = mochijson2:encode(V),
     Req:ok({"application/json", [], [DataOut]});
 
-%%
-%% application/json
-%%
-processControllerException(throw, {banners_ajax, State} , Req) ->
-    Req:ok({"application/json", [], [mochijson2:encode(State)]});
 
 processControllerException(throw, auth_required_dialog, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
     V = {struct, [{<<"ERROR">>, <<"auth_required">>}]},
     DataOut = mochijson2:encode(V),
-    Req:ok({"application/json", [], [DataOut]});
+    Req:ok({?OUTPUT_JSON, [], [DataOut]});
     
 processControllerException(Type, Exc, Req) ->
     flog:error(?FMT("~p:~p Catch unknown exception (~p) on ~p request ~p ~n",[?MODULE, ?LINE, Exc, Req:get(method), Req:get(path)])),
@@ -190,12 +179,24 @@ serve_request("/deps/qooxdoo/" ++ T, Req) ->
 serve_request("/resource/" ++ T, Req) ->
     serve_static(?JSHOME ++ "/resource/", T, Req);
 
-serve_request("/favicon.ico", Req) ->
-    serve_static("static/site-media/favicon.ico", "", Req);
-    
-serve_request("/static/" ++ T, Req) ->
-    % % io:format("TTT: ~p~n", [T]),
-    serve_static("static", T, Req);
+serve_request(?STATIC_FAVICON_URL, Req) ->
+    serve_static(?STATIC_FAVICON_PATH, [], Req);
+
+serve_request(?STATIC_DATA_URL ++ T, Req) ->
+    serve_static(?STATIC_DATA_PATH, T, Req);
+
+serve_request(?STATIC_MEDIA_URL ++ T, Req) ->
+    serve_static(?STATIC_MEDIA_PATH, T, Req);
+
+serve_request(?STATIC_CSS_URL ++ T, Req) ->
+    serve_static(?STATIC_CSS_PATH, T, Req);
+
+serve_request(?STATIC_JS_URL ++ T, Req) ->
+    serve_static(?STATIC_JS_PATH, T, Req);
+
+serve_request(?STATIC_IMAGES_URL ++ T, Req) ->
+    serve_static(?STATIC_IMAGES_PATH, T, Req);
+
 
 %% ========================================================================
 %% КОНТРОЛЛЕРЫ  
@@ -264,8 +265,12 @@ simple_map_controllers(Path) ->
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
 
-        %"INDEX" ->
-        %    {index, index};
+    %%
+    %% Основа админки
+    %%
+
+        "INDEX" ->
+            {index, index};
 
     %%
     %% Прочее

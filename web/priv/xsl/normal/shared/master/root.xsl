@@ -51,16 +51,6 @@
     </head>
     <body xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
         <xsl:call-template name="body" />
-        <script type="text/javascript">
-          var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-15347927-4']);
-          _gaq.push(['_trackPageview']);
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-        </script>
     </body>
     <xsl:call-template name="foot-scripts" />
 </html>
@@ -93,16 +83,12 @@
 
 <xsl:template name="meta-http-equiv">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="google-site-verification" content="GSCMBiIDlYUZv4HCOJCgY8FETmJngUZeg2qh2jmO5io" />
-    <!-- К сожалению, яндекс не умеет парсить xml стандартными средствами -->
-    <xsl:text disable-output-escaping="yes"><![CDATA[<meta name='yandex-verification' content='56d788f4cfcf2db5' />]]></xsl:text>
-    <!-- потому мы так извращаемся -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />    
 </xsl:template>
 
 <xsl:template name="meta-oth">
-    <meta name="author" content="TvZavr Team" />
-    <meta name="description" content="" />
+    <meta name="author" content="DiSiSta MaTraSy" />
+    <meta name="description" content="distributed simple statistical machine translation system" />
 </xsl:template>
 
 <!-- viewport -->
@@ -123,7 +109,7 @@
 </xsl:template>
 
 <xsl:template name="link-css">
-    <link rel="stylesheet" type="text/css" media="all" href="/static/*.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="/static/base.css" />
 </xsl:template>
 
 <!-- ====================================================================  -->
@@ -131,15 +117,66 @@
 <!-- ====================================================================  -->
 
 <xsl:template name="body">
-    <div id="background">
-        <div id="main">
-            <xsl:call-template name="main" />
-        </div>
-    </div>
+    <header class="s-header">
+        <xsl:call-template name="s-header" />
+    </header>
+    <section class="s-main">
+        <xsl:call-template name="s-main" />
+    </section>
+    <footer class="s-footer">
+        <xsl:call-template name="s-footer" />
+    </footer>
 </xsl:template>
 
-<xsl:template name="main">
-    <xsl:text> </xsl:text>
+<xsl:template name="s-header">
+    <hgroup class="b-header-group">
+        <h1>&#964;&#965;&#950;&#945;&#957;&#961; &#8704;&#916;V C&#937;M</h1>
+        <h2 class="b-header-caption">система рекламы &#964;&#965;&#950;&#945;&#957;&#961;</h2>
+    </hgroup>
+</xsl:template>
+
+<xsl:template name="s-main">
+    <xsl:comment>МЕНЮ</xsl:comment>
+    <ul>
+        <li><a href="/index">Головная</a></li>
+        <li><a href="/about">О проекте</a></li>
+        <li><a href="/login">Войти</a></li>
+    </ul>
+    <xsl:comment>ФОРМА ПЕРЕВОДА</xsl:comment>
+    <form method="GET" action=".">
+        <div class="b-io">
+            <input type="submit" value="перевести"/>
+            <br/>
+            <textarea class="e-input text-output" name="source" maxlength="120" placeholder="text1">
+                <xsl:text><![CDATA[]]></xsl:text> 
+                <xsl:value-of select="/data/source/text" disable-output-escaping="no" />
+            </textarea>
+        </div>
+
+        <div class="b-io">
+            <input type="submit" value="Улучшить"/>
+            <div class="e-hidden-output">
+                <input type="hidden" name="perplexity" value="{/data/target/perplexity}"/>
+                    <xsl:comment>КОЭФИЦИЕНТ НЕОПРЕДЕЛЕННОСТИ</xsl:comment>
+                <input type="hidden" name="times" value="{/data/target/times}"/>
+                    <xsl:comment>ЧИСЛО РАЗ</xsl:comment>
+            </div>
+            <textarea class="e-output text-output" placeholder="text2">
+                <xsl:attribute name="name" >
+                    <xsl:if test="/data/target/text != ''">
+                        <xsl:text>target</xsl:text>
+                    </xsl:if>
+                </xsl:attribute>
+                <xsl:text><![CDATA[]]></xsl:text>
+                <xsl:value-of select="/data/target/text" disable-output-escaping="yes"/>
+            </textarea>
+        </div>
+    </form>
+
+</xsl:template>
+
+
+<xsl:template name="s-footer">
 </xsl:template>
 
 <!-- ====================================================================  -->

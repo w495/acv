@@ -38,6 +38,7 @@ upgrade() ->
 %% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
 init([]) ->
+
     AssistSrv = {
         assistSrv,
         {assistSrv, start_link, []},
@@ -52,7 +53,7 @@ init([]) ->
         [clog]
     },
 
-    PgConPool = {
+    PgConPool = {   %%% соединение с локальной базой данных
         pgConPoolFK,
         {pgConPool, start_link, [
             config:get(fk_db_user, "cff"),
@@ -66,7 +67,7 @@ init([]) ->
         [pgConPool]
     },
 
-    MySqlConPool = {
+    MySqlConPool = { %%% соединение с внешней базой данных
         mySqlConPoolFK,
         {mysql_con_pool, start_link, [
             mySqlConPool,
@@ -82,7 +83,7 @@ init([]) ->
         [mySqlConPool]
     },
 
-    Xslt_processor = {
+    Xslt_processor = { %%% преодбразователь
         xslt_sup,
         {xslt_sup, start_link, []},
         permanent,
@@ -93,7 +94,7 @@ init([]) ->
 
     Processes = [
         CLog,           % Логирование
-        AssistSrv,      % ???
+        AssistSrv,      % Авторизация
         PgConPool,      % Связь с локальной базой
         Xslt_processor,
         MySqlConPool    % Связь с tvzavr vk

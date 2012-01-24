@@ -37,6 +37,7 @@
 -define(STATIC_FAVICON_PATH,       "priv/static/site-media/favicon.ico").
 
 
+-define(OUTPUT_JSON,        "application/json").
 -define(OUTPUT_HTML,        "text/html; charset=UTF-8").
 
 -define(OUTPUT_TEXT,        "text/plain; charset=UTF-8").
