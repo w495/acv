@@ -1,0 +1,83 @@
+[
+    {
+        name : "[!] Администрирование",
+        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "пользователи",
+                icon : "icon/16/places/network-workgroup.png",
+                model : "resource/bsk/descr/customers-tab.json"
+            },
+            {
+                name : "группы пользователей",
+                icon : "icon/16/apps/preferences-theme.png",
+                model : "resource/bsk/descr/customer-groups-tab.json"
+            },
+            {   name : "права",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/permissions-tab.json"
+            }
+        ]
+    },
+    
+    {
+        name : "[!] ТЕСТИРОВАНИЕ",
+        icon : "icon/16/apps/utilities-dictionary.png",
+        opened : true,
+        subitems: [
+            {
+                name : "adv-master",
+                icon : "icon/16/places/network-workgroup.png",
+                model : "resource/bsk/descr/adv-com-vid-form-master.json"
+            },
+            {
+                name : "adv-form",
+                icon : "icon/16/apps/preferences-theme.png",
+                model : "resource/bsk/descr/adv-com-vid-form.json"
+            }
+        ]
+    },
+    
+
+    {
+        name : "Главная",
+            /*вся основная информация по видам рекламы*/
+        opened : true,
+        subitems: [
+            {
+                name : "Реклама на видео",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-tab.json"
+            },
+            {
+                name : "Реклама на сайте",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-vid-tab.json"
+            },
+            {
+                name : "Интерактивное видео",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-vid-tab.json"
+            }
+        ]
+    },
+
+    {
+        name : "Рекламные кампании",
+        opened : true,
+        subitems: [
+            {
+                name : "Банеры",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-tab.json"
+            },
+            {
+                name : "Видео",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/adv-com-vid-tab.json"
+            }
+        ]
+    }
+]
+
