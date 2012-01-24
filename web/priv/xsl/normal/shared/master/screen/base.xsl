@@ -22,8 +22,9 @@
 
 
 <xsl:template name="link-css">
-
+    <link rel="stylesheet" type="text/css" media="screen" href="/c/normal-screen-base.css" />
 </xsl:template>
+
 
 
 <!-- ====================================================================  -->

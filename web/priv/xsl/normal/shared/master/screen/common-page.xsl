@@ -14,12 +14,10 @@
 <!-- ГОЛОВА -->
 <!-- ====================================================================  -->
 
-<xsl:template name="link-css">    
-    <link rel="stylesheet" type="text/css" media="all"  href="/static/site-media/css/screen-base.css" />
-	<link rel="stylesheet" type="text/css" media="all"  href="/static/site-media/css/screen-logo-flag.css" />
-	<link rel="stylesheet" type="text/css" media="all"  href="/static/site-media/css/screen-doc.css" />
-	<link rel="stylesheet" type="text/css" media="all"  href="/static/site-media/css/screen-game.css" />
+<xsl:template name="link-css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/c/normal-screen-base.css" />
 </xsl:template>
+
 
 <xsl:template name="title">
     <xsl:call-template name="docs-container-header" />

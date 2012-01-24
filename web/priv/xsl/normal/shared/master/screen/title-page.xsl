@@ -16,14 +16,9 @@
 <!-- ====================================================================  -->
 
 <xsl:template name="link-css">
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-base.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-news.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-game.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-banners.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-logo-slides.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-logo-slides-fade-slider-light.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/static/site-media/css/screen-orange-transport.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="/c/normal-screen-base.css" />
 </xsl:template>
+
 
 <!-- ====================================================================  -->
 <!-- ТЕЛО -->
