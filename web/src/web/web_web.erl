@@ -177,8 +177,6 @@ serve_request(?RIA_MENU_URL, Req) ->
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/index.html", Req) ->
     serve_request("INDEX", Req); % перенаправление в динамический мэппинг для проверки авторизации
 
-
-
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/" ++ T, Req) ->
     serve_static(?RIA_HOME, T, Req);
 
