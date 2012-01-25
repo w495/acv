@@ -156,7 +156,9 @@ processControllerException(throw, auth_required_dialog, Req) ->
     V = {struct, [{<<"ERROR">>, <<"auth_required">>}]},
     DataOut = mochijson2:encode(V),
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
-    
+processControllerException(throw, {cookize, ContentType, Cookie, Body}, Req) ->
+    flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) COOKIZE~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
+    Req:respond({200, [{"Content-Type", ContentType}, Cookie], Body});
 processControllerException(Type, Exc, Req) ->
     flog:error(?FMT("~p:~p Catch unknown exception (~p) on ~p request ~p ~n",[?MODULE, ?LINE, Exc, Req:get(method), Req:get(path)])),
     Type(Exc).
@@ -230,6 +232,9 @@ serve_request(Path, Req) ->
 
 simple_map_controllers(Path) ->
     case Path of
+        "/captcha" ->
+            {authorization, get_captcha};
+
     % advertising company video
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};

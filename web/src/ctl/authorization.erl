@@ -9,6 +9,9 @@
 
 -include("../include/web.hrl").
 
+-define(CATCHA_COOKIE, "captcha_codehex").
+
+
 -compile(export_all).
 
 auth_required(Req) ->
@@ -20,6 +23,10 @@ auth_required(Req) ->
                     [H|_T] -> H
                 end
     end.
+
+get_captcha(Req) ->
+    {CodeHex, BinPng} = captcha:new(),
+    throw({cookize, "image/png", cookie(?CATCHA_COOKIE, CodeHex, [{max_age, config:get(expcookie, 18000)}]), BinPng}).
 
 auth_required_front(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
