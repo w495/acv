@@ -47,6 +47,8 @@ start_link()->
 init([]) ->
     ?INFO(?FMT("ASSIST STARTING...~n~n~n", [])),
     process_flag(trap_exit, true),
+    captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
+    captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),
     {ok, #state{}, ?TIMEOUT}.
 
 %% --------------------------------------------------------------------
@@ -136,6 +138,7 @@ handle_cast(Msg, State) ->
 handle_info(timeout, State) ->
     %flog:debug(?FMT("~p:~p GC process at node ~p~n", [?MODULE, ?LINE, node()])),
     web_session_DAO:removeExpired(),
+    captcha:removeExpired(),
     {noreply, State, ?TIMEOUT};
 handle_info(Info, State) ->
     flog:error(?FMT("~p:~p info at node ~p, info=~p~n", [?MODULE, ?LINE, node(), Info])),

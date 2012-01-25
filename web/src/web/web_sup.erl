@@ -72,7 +72,7 @@ init([]) ->
         {mysql_con_pool, start_link, [
             mySqlConPool,
             config:get(vk_db_host, "localhost"),
-            config:get(vk_db_host, "root"),
+            config:get(vk_db_user, "root"),
             config:get(vk_db_password, "1111"),
             config:get(vk_db_name, "vk"),
             10 % количество соединений
