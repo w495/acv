@@ -25,7 +25,7 @@
 %% возврщает головную страницу
 %%
 index(Req) ->
-    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Xsl_path = "xsl/normal/outside/index.xsl",
     Meta = [
             {"current-path",        Req:get(path)}
     ],
@@ -41,7 +41,7 @@ index(Req) ->
 %% возврщает страницу с описанием проекта
 %%
 about(Req) ->
-    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Xsl_path = "xsl/normal/outside/index.xsl",
     Meta = [
             {"current-path",        Req:get(path)}
     ],
@@ -58,7 +58,7 @@ about(Req) ->
 %%  альтернативный вариант
 %%
 login(Req) ->
-    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Xsl_path = "xsl/normal/outside/index.xsl",
     Meta = [
             {"current-path",        Req:get(path)}
     ],
@@ -75,7 +75,7 @@ login(Req) ->
 %% возврaщает страницу регистрации
 %%
 signup(Req) ->
-    Xsl_path = "priv/xsl/normal/outside/index.xsl",
+    Xsl_path = "xsl/normal/outside/index.xsl",
     Meta = [
             {"current-path",        Req:get(path)}
     ],

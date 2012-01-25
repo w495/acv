@@ -109,8 +109,8 @@ do_login(Req) ->
     Data = Req:parse_post(),
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
-    io:format("~nlogin = ~p~n", [Login]),
-    io:format("~nPassword = ~p~n", [Password]),    
+    io:format("~n   login = ~p", [Login]),
+    io:format("~n   password = ~p", [Password]),
     try 
         Val = auth_biz:login(Login, Password),
         io:format("~nval = ~p~n", [Val]),
@@ -121,7 +121,9 @@ do_login(Req) ->
         throw:Error -> 
             %csrv:reg_rpc(customerActivityDAO, create, {Login, web, login, Error}),
             innerLogin(Req, [{login, Login}, {error, Error}]);
-        _:_ -> innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
+        T:E ->
+            io:format("~n   ~p= ~p", [T, E]),
+            innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
     end.
 
 do_logout(Req) ->

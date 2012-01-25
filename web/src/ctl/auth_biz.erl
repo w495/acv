@@ -22,7 +22,7 @@ create_session(Id, Login, Permissions, PasswordHash) ->
     UID.
 
 get_customer(Login) ->
-    case dao_bCustomer:getCustomerByLogin(Login) of
+    case dao_customer:get_customer_by_login(Login) of
         {ok, [Customer], Permissions} ->
             io:format("Customer, Permissions"),
             {Customer, Permissions}; %[binary_to_list(X) || X <-Permissions]};
@@ -41,8 +41,6 @@ login(Login, Password) ->
         null -> throw("bad_customer");
         {Customer, Permissions} -> %, auth_error_counter = EC} ->
             P = proplists:get_value("password_hash", Customer),
-            io:format("~nP  = [~p]~n", [P] ),
-            io:format("~nPasswordHash  = [~p]~n", [PasswordHash] ),
             if
                 EC >= MaxAuthError ->
                     throw({"auth_count_overflow", MaxAuthError});
@@ -50,6 +48,7 @@ login(Login, Password) ->
                     % ???? csrv:set_auth_count(Login, EC + 1),
                     if 
                         MaxAuthError - (EC + 1) > 0 ->
+                            io:format("~PasswordHash = ~p~n", [PasswordHash]),
                             throw({"bad_password", integer_to_list(MaxAuthError - (EC + 1))});
                         true ->
                             throw({"auth_count_overflow", MaxAuthError})

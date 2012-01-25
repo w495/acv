@@ -129,7 +129,7 @@ get_customer(Id) ->
 
 
 %+
-get_customerByLogin(Login) ->
+get_customer_by_login(Login) ->
     Q1 = "select customer.id, customer.firstname, customer.lastname, customer.patronimic, "
             "customer.login, customer.password_hash "
          "from customer where customer.login=$1 and customer.deleted=false;",
