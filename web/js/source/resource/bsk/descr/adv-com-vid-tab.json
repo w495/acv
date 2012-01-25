@@ -25,7 +25,7 @@
     ],
 
     filter : {
-        submit_url : "/get-adv-coms-vid"
+        submit_url : "/get-all-acv-videos"
     },
 
     // sort : "datatime",

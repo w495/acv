@@ -4,66 +4,9 @@
  *
 ***********************************************************************/
 
-/**
- * Размещение баннеров
-**/
-create sequence seq_banner_place;
-create table banner_place (
-    id int primary key default nextval('seq_banner_place'),
-    name varchar(30) unique,
-    alias varchar(100)
-);
-
-/**
- * Рекламная компания для баннеров
-**/
-create sequence seq_acv_banner;
-create table acv_banner (
-    id int primary key default nextval('seq_acv_banner'),
-    customer_id int references customer(id),
-        /* зачем пользователю знать про чужие баннеры */
-
-    name varchar(100),
-    datestart timestamp without time zone,
-    datestop timestamp without time zone,
-    banner_place_id int references banner_place(id),
-    url varchar(200),
-    ref varchar(1000)
-);
-
-/**
- * Рекламная компания для видео
-**/
-create sequence seq_acv_video;
-create table acv_video (
-    id int primary key default nextval('seq_acv_video'),
-    customer_id int references customer(id),
-        /* зачем пользователю знать про чужие баннеры */
-
-    name varchar(100),
-    datestart timestamp without time zone,
-    datestop timestamp without time zone,
-    url varchar(200),
-    ref varchar(1000),
-    wish int,
-    postroll bool default true,
-    preroll bool default true,
-    midroll bool default true,
-    pauseroll bool default true,
-    user_male bool default null,
-    age_from int default null,
-    age_to int default null
-);
-
-/**
- * Регион
-**/
-create sequence seq_geo_region;
-create table geo_region (
-    id int primary key default nextval('seq_geo_region'),
-    alias varchar(30) UNIQUE,
-    name varchar (100)
-);
+-------------------------------------------------------------------------------
+-- ЛЮДИ 
+-------------------------------------------------------------------------------
 
 /**
  * Рекламодатель
@@ -81,6 +24,7 @@ create table customer(
     lastname varchar(1024) not null,
     patronimic varchar(1024) not null,
     deleted bool default false,
+    issystem bool default false,
     birthday date,
     password_hash char(32) not null
 );
@@ -117,6 +61,75 @@ create table permission (
     description varchar(1024),
     type int
 );
+
+-------------------------------------------------------------------------------
+-- РЕКЛАМА
+-------------------------------------------------------------------------------
+
+/**
+ * Размещение баннеров
+**/
+create sequence seq_banner_place;
+create table banner_place (
+    id int primary key default nextval('seq_banner_place'),
+    name varchar(30) unique,
+    alias varchar(100)
+);
+
+/**
+ * Рекламная компания для баннеров
+**/
+create sequence seq_acv_banner;
+create table acv_banner (
+    id int primary key default nextval('seq_acv_banner'),
+    name varchar(100),
+    datestart timestamp without time zone,
+    datestop timestamp without time zone,
+    url varchar(200),
+    ref varchar(1000),
+    banner_place_id int references banner_place(id),
+    customer_id int references customer(id)
+        /* зачем пользователю знать про чужие баннеры */
+
+);
+
+/**
+ * Рекламная компания для видео
+**/
+create sequence seq_acv_video;
+create table acv_video (
+    id int primary key default nextval('seq_acv_video'),
+    name varchar(100),
+    datestart timestamp without time zone,
+    datestop timestamp without time zone,
+    url varchar(200),
+    ref varchar(1000),
+    wish int,
+    postroll bool default true,
+    preroll bool default true,
+    midroll bool default true,
+    pauseroll bool default true,
+    user_male bool default null,
+    age_from int default null,
+    age_to int default null,
+    customer_id int references customer(id)
+        /* зачем пользователю знать про чужие баннеры */
+);
+
+/**
+ * Регион
+**/
+create sequence seq_geo_region;
+create table geo_region (
+    id int primary key default nextval('seq_geo_region'),
+    alias varchar(30) UNIQUE,
+    name varchar (100)
+);
+
+
+-------------------------------------------------------------------------------
+-- СВЯЗКИ МНОГИЕ КО МНОГИМ
+-------------------------------------------------------------------------------
 
 /**
  * Многие ко многим для прав и групп

@@ -49,5 +49,6 @@ insert into geo_region (alias, name) values ('world', 'весь мир');
 
 insert into banner_place (name, alias)
     values
-        ('right', 'справа'), ('bottom', 'снизу');
+        ('right', 'справа'),
+        ('bottom', 'снизу');
 

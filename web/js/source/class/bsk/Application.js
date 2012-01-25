@@ -29,6 +29,7 @@ qx.Class.define("bsk.Application",
 
     members :
     {
+        title : "Реклама tvzavr",
         
         main : function()
         {
@@ -49,7 +50,9 @@ qx.Class.define("bsk.Application",
             var t = eval(themeName);
             this.appearance = t.meta.appearance.appearances;
             this.color = t.meta.color.colors;
-            document.title = this.appearance.title;
+            
+            document.title = this.title;
+            
             this._createLayout();
         },
         

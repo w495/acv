@@ -200,8 +200,46 @@ get_encoding(_Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
+%%
+%% Возвращает полный спис реклам для роликов
+%%
+get_all_acv_videos(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%
+%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
+%%
+get_acv_videos(Req) ->
+    Customer_id = authorization:get_customer_id(Req),
+    Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+%%
+%% Возвращает полный спис реклам для баннеров
+%%
+get_all_acv_banners(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Res = dao:dao_call(dao_acv_banner, get_all_acv_banners, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%
+%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
+%%
+get_acv_banners(Req) ->
+    Customer_id = authorization:get_customer_id(Req),
+    Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+
+
+
+
 get_adv_coms_vid(_Req) ->
-    Res = dao:dao_call(dao_adv_com, getAdvComsVid, [], values),
+    Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_adv_com_vid(Req) ->

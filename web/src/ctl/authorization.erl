@@ -1,13 +1,14 @@
 -module(authorization).
 -export([do_login/1, auth_required/1, do_logout/1, do_change_pass/1, login/1]).
 -import(mochiweb_cookies, [cookie/2, cookie/3]).
+
 -include("../include/web_session.hrl").
--include("../include/common.hrl").
 
 -include("../../common/include/customer.hrl").
 
 
--include("../include/web.hrl").
+-include("web.hrl").
+-include("common.hrl").
 
 -define(CATCHA_COOKIE, "captcha_codehex").
 
@@ -24,29 +25,26 @@ auth_required(Req) ->
                 end
     end.
 
-get_captcha(Req) ->
+get_captcha(_Req) ->
     {CodeHex, BinPng} = captcha:new(),
     throw({cookize, "image/png", cookie(?CATCHA_COOKIE, CodeHex, [{max_age, config:get(expcookie, 18000)}]), BinPng}).
 
-auth_required_front(Req) ->
-    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
-    case Cookie of
-        undefined -> throw({auth_required_front,  Req:get(path)});
-        A ->    case auth_biz:get_session(A) of
-                    [] ->   throw({auth_required_front,  Req:get(path)});
-                    [H|_T] -> H
-                end
-    end.
+%%%
+%%%
+%%%
 
-auth_getUID(Req) ->
+get_customer_id(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
-        undefined -> Uid = undefined;
+        undefined -> Customer_id = undefined;
         A ->    case auth_biz:get_session(A) of
-                    [] ->       Uid = undefined;
-                    [H|_T] ->   #web_session{customer_id=Uid} = H
+                    [] ->       Customer_id = undefined;
+                    [H|_T] ->   #web_session{customer_id=Customer_id} = H
                 end
-    end, Uid.
+    end,
+    ?DEBUG_INFO(?FMT("~p:Customer_id: ~p", [?MODULE, Customer_id])),
+    Customer_id.
+
 
 auth_getlogin(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
@@ -58,6 +56,11 @@ auth_getlogin(Req) ->
                 end
     end, Login.
 
+%%%
+%%% Возвращает сессию,
+%%%     если текущий запрос удовлетворяет правам.
+%%% Если не удовлетворяет выкидывает исключение.
+%%%
 auth_required(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
@@ -70,12 +73,16 @@ auth_required(Req, Perm) ->
                         true -> 
                             H;
                         false -> 
-                            io:format("Permission required: ~p~n",[Perm]),
+                            ?INFO(?FMT("Permission required: ~p~n",[Perm])),
                             throw({permission_required, Perm})
                     end
             end
     end.
 
+%%%
+%%% Возвращает true,
+%%%     если текущий запрос удовлетворяет правам.
+%%%
 auth_if(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
@@ -83,15 +90,11 @@ auth_if(Req, Perm) ->
         A ->
             case auth_biz:get_session(A) of
                 [] -> throw(auth_required);
-                [H=#web_session{permissions=PList}|_T] ->
-                    case lists:member(Perm, PList) of
-                        true ->
-                            H;
-                        false ->
-                            false
-                    end
+                [#web_session{permissions=PList}|_T] ->
+                    lists:member(Perm, PList)
             end
     end.
+
 
 login(Req) ->
     innerLogin(Req, []).
@@ -112,15 +115,14 @@ sanit([], Ret) ->
     Ret.
 
 do_login(Req) ->
-    io:format("do_login(Req) ->"),
+    ?DEBUG(?FMT("do_login", [])),
     Data = Req:parse_post(),
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
-    io:format("~n   login = ~p", [Login]),
-    io:format("~n   password = ~p", [Password]),
+    ?DEBUG(?FMT("do_login  login = ~p", [Login])),
+    ?DEBUG(?FMT("do_login  password = ~p", [Password])),
     try 
         Val = auth_biz:login(Login, Password),
-        io:format("~nval = ~p~n", [Val]),
         throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
             [cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
     catch
@@ -129,7 +131,7 @@ do_login(Req) ->
             %csrv:reg_rpc(customerActivityDAO, create, {Login, web, login, Error}),
             innerLogin(Req, [{login, Login}, {error, Error}]);
         T:E ->
-            io:format("~n   ~p= ~p", [T, E]),
+            ?DEBUG(?FMT("do_login unknown exception ~p:~p", [T, E])),
             innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
     end.
 

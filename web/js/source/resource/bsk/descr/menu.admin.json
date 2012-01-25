@@ -62,36 +62,34 @@
         ]
     },
 
-    {
-        name : "Рекламные кампании",
+    {   name : "Рекламные кампании",
         opened : false,
         subitems: [
             {
                 name : "Банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/bsk/descr/adv-com-tab.json"
+                model : "resource/bsk/descr/acv-banners-tab.json"
             },
             {
                 name : "Видео",
                 icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/bsk/descr/adv-com-vid-tab.json"
+                model : "resource/bsk/descr/acv-videos-tab.json"
             }
         ]
     },
 
-    {
-        name : "Все рекламные кампании",
+    {   name : "Все рекламные кампании",
         opened : false,
         subitems: [
             {
                 name : "Все банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/bsk/descr/all-adv-com-tab.json"
+                model : "resource/bsk/descr/all-acv-banners-tab.json"
             },
             {
                 name : "Все видео",
                 icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/bsk/descr/all-adv-com-vid-tab.json"
+                model : "resource/bsk/descr/all-acv-videos-tab.json"
             }
         ]
     }

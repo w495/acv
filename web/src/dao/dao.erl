@@ -1,144 +1,167 @@
 -module(dao).
 
--include("../include/common.hrl").
+-include("common.hrl").
+
 -include_lib("epgsql/include/pgsql.hrl").
 
 -compile(export_all).
 
-mkErrorJson({unexpected, E}) ->
-    io:format("Unexpected error: ~p~n", [E]),
-    {struct, [{<<"ERROR">>, {struct, [{<<"type">>, <<"unexpected">>}, {<<"info">>, <<"unexpected">>}]}}]};
-mkErrorJson({Etype, Einfo}) ->
-    io:format("Queue error: ~p~n", [Einfo]),
-    {struct, [{<<"ERROR">>, {struct, [{<<"type">>, Etype}, {<<"info">>, list_to_binary(Einfo)}]}}]}.
 
-%call(Module, Function, Param) ->
-%    crpc:call({biz_srv, config:get(biz_srv, biz@localhost)}, Module, Function, Param).
+%%%
+%%% Спецификации
+%%% 
+
+
+-spec simple(Query::string())
+    -> {State::atom(), list(tuple())}.   %%% {ok, []}
+
+-spec simple(Query::string(), Params::list())
+    -> {State::atom(), list(tuple())}.   %%% {ok, []}
+
+-spec simple_ret(Query::string(), Params::list()) -> tuple().
+
+
+make_error_json({unexpected, E}) ->
+    ?DEBUG_INFO("Unexpected error: ~p~n", [E]),
+    {struct, [{<<"ERROR">>,
+        {struct,
+            [{<<"type">>, <<"unexpected">>},
+            {<<"info">>, <<"unexpected">>}]}}]};
+make_error_json({Etype, Einfo}) ->
+    io:format("Queue error: ~p~n", [Einfo]),
+    {struct,
+        [{<<"ERROR">>,
+            {struct, [{<<"type">>, Etype},
+            {<<"info">>, list_to_binary(Einfo)}]}}]}.
 
 dao_call(Module, Function, undefined, JsonRetName) ->
     case Module:Function() of
         {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
         ok -> Res = {struct, [{<<"result">>, ok}]};
         {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-        {error, E} -> Res = mkErrorJson(E)
+        {error, E} -> Res = make_error_json(E)
     end,
     Res;
-    
+
 dao_call(Module, Function, Param, JsonRetName) ->
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
         ok -> Res = {struct, [{<<"result">>, ok}]};
         {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-%        {retVal, RVal} -> {struct, [{<<"result">>, RVal);
-        {error, E} -> Res = mkErrorJson(E)
+        {error, E} -> Res = make_error_json(E)
     end,
     Res.
 
 dao_call(Module, Function, Param) ->
-    
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals);
         ok -> Res = {struct, [{<<"result">>, ok}]};
         {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-        {error, E} -> io:format("$~p~n", [E]), Res = mkErrorJson(E)
+        {error, E} -> io:format("$~p~n", [E]), Res = make_error_json(E)
     end,
     Res.
-                                                                                                            
 
-pg2rs({ok, _, Vals}, RecordName) ->
-    [list_to_tuple([RecordName | tuple_to_list(X)]) || X <- Vals];
-pg2rs(Vals, RecordName) ->
-    [list_to_tuple([RecordName | tuple_to_list(X)]) || X <- Vals].
+pg2rs({ok, _, Vals}, Record_name) ->
+    [list_to_tuple([Record_name | tuple_to_list(X)]) || X <- Vals];
 
-stripRs(Vals) when is_list(Vals)->
-    stripRs(Vals, []);
-stripRs(Val) when is_tuple(Val) ->
+pg2rs(Vals, Record_name) ->
+    [list_to_tuple([Record_name | tuple_to_list(X)]) || X <- Vals].
+
+strip_rs(Vals) when is_list(Vals)->
+    strip_rs(Vals, []);
+
+strip_rs(Val) when is_tuple(Val) ->
     [_|T]=tuple_to_list(Val),
     T.
 
-stripRs([Vh|Vt], Ret) ->
+strip_rs([Vh|Vt], Ret) ->
     [_|T]=tuple_to_list(Vh),
-    stripRs(Vt, [list_to_tuple(T)|Ret]);
-stripRs([], Ret) ->
+    strip_rs(Vt, [list_to_tuple(T)|Ret]);
+strip_rs([], Ret) ->
     Ret.
 
-collectWhereParams(Params) ->
-    collectWhereParams([], [], Params).
+collect_where_params(Params) ->
+    collect_where_params([], [], Params).
 
-collectWhereParams(Where, Params, [{Val}|T]) when is_list(Val) ->
-    collectWhereParams([Val|Where], Params, T);
-collectWhereParams(Where, Params, [{Key, Val}|T]) ->
-    collectWhereParams(Where, Params, [{Key, "=", Val}|T]);
-%    collectWhereParams([lists:append([Key, " = $", utils:to_list(length(Params) + 1)])|Where], [Val | Params], T);
-collectWhereParams(Where, Params, [{Key, Action, Val}|T]) ->
-    collectWhereParams([lists:append([Key, " ", Action, " $", utils:to_list(length(Params) + 1)])|Where], [Val | Params], T);
-collectWhereParams(Where, Params, []) when length(Where) > 0->
+collect_where_params(Where, Params, [{Val}|T]) when is_list(Val) ->
+    collect_where_params([Val|Where], Params, T);
+collect_where_params(Where, Params, [{Key, Val}|T]) ->
+    collect_where_params(Where, Params, [{Key, "=", Val}|T]);
+%    collect_where_params([lists:append([Key, " = $", utils:to_list(length(Params) + 1)])|Where], [Val | Params], T);
+collect_where_params(Where, Params, [{Key, Action, Val}|T]) ->
+    collect_where_params([lists:append([Key, " ", Action, " $", utils:to_list(length(Params) + 1)])|Where], [Val | Params], T);
+collect_where_params(Where, Params, []) when length(Where) > 0->
     {?FMT(" WHERE ~s", [string:join(lists:reverse(Where), " and ")]), lists:reverse(Params)};
-collectWhereParams(_, _, []) ->
+collect_where_params(_, _, []) ->
     {";", []}.
 
 
-toType(null, _Type) ->
+to_type(null, _Type) ->
     null;
-toType(V, int4) ->
+to_type(V, int4) ->
     utils:to_int(V);
-toType(V, varchar) ->
+to_type(V, varchar) ->
     binary_to_list(V);
-toType(V, text) ->
+to_type(V, text) ->
     binary_to_list(V);
-toType(V, Type) ->
-%    io:format("DAO: undefined type: ~p.~n", [Type]),
+to_type(V, Type) ->
     V.
 
 
-nameColumns([{column, Name, Type, _P3, _P4, _P5}|Ct], [V|Vt], Ret) ->
-    nameColumns(Ct, Vt, [{binary_to_list(Name), toType(V, Type)}|Ret]);
-nameColumns([], [], Ret) ->
+name_columns([{column, Name, Type, _P3, _P4, _P5}|Ct], [V|Vt], Ret) ->
+    name_columns(Ct, Vt, [{binary_to_list(Name), to_type(V, Type)}|Ret]);
+name_columns([], [], Ret) ->
     Ret;
-nameColumns([], V, Ret) ->
-    io:format("unexpected values: ~p~n", [V]),
+name_columns([], V, Ret) ->
+    ?DEBUG(?FMT("unexpected values: ~p~n", [V])),
     Ret;
-nameColumns(C, [], Ret) ->
-    io:format("unexpected columns: ~p~n", [C]),
+name_columns(C, [], Ret) ->
+    ?DEBUG(?FMT("unexpected columns: ~p~n", [C])),
     Ret.
 
-
-
-mkProplist(Columns, [V|T], Ret) ->
-    mkProplist(Columns, T, [nameColumns(Columns, tuple_to_list(V), [])|Ret]);
-mkProplist(_C, [], Ret) ->
+make_proplist(Columns, [V|T], Ret) ->
+    make_proplist(Columns, T, [name_columns(Columns, tuple_to_list(V), [])|Ret]);
+make_proplist(_C, [], Ret) ->
     Ret.
 
-processPGRet2({return, Value}) ->
+pgret({return, Value}) ->
     {ok, Value};
 
-% select sq & eq
-processPGRet2({ok, Columns, Vals}) ->
-    {ok, mkProplist(Columns, Vals, [])};
-% update sq & eq
+%%%
+%%% select sq & eq
+%%%
+pgret({ok, Columns, Vals}) ->
+    {ok, make_proplist(Columns, Vals, [])};
 
-processPGRet2({ok, _Count}) ->
+%%%
+%%% update sq & eq
+%%%
+pgret({ok, _Count}) ->
     ok;
-    
-% insert sq & eq
-processPGRet2({ok, _Count, _Columns, _Rows}) ->
+%%%
+%%% insert sq & eq
+%%%
+pgret({ok, _Count, _Columns, _Rows}) ->
     ok;
 
-% ошибка сиквела - неожиданный возврат в функции дает ошибку ожидаемого возврата.
-%processPGRet2({pgcp_error, {error, {badmatch, {error, #error{code=ECodeBin, message=Msg}}}}}) ->
-processPGRet2({pgcp_error, E}) ->
-    processPGErrorRet2(E);
-processPGRet2({error, E}) ->
-    processPGErrorRet2(E);
-processPGRet2(V) ->
+%%%
+%%% ошибка сиквела - неожиданный возврат в функции дает ошибку ожидаемого возврата.
+%%%
+pgret({pgcp_error, E}) ->
+    pgreterr(E);
+
+pgret({error, E}) ->
+    pgreterr(E);
+
+pgret(V) ->
     {retVal, V}.
 
-processPGErrorRet2({error, E}) ->
-    processPGErrorRet2(E);
-processPGErrorRet2({badmatch, E}) ->
-    processPGErrorRet2(E);
-processPGErrorRet2(#error{code=ECodeBin, message=Msg}) ->
-    case ECodeBin of
+pgreterr({error, E}) ->
+    pgreterr(E);
+pgreterr({badmatch, E}) ->
+    pgreterr(E);
+pgreterr(#error{code=Error_code_bin, message=Msg}) ->
+    case Error_code_bin of
         <<"23502">> ->
             try
                 {ok, RE} = re:compile("\"(.+)\""),
@@ -146,7 +169,7 @@ processPGErrorRet2(#error{code=ECodeBin, message=Msg}) ->
                 {error, {not_null, C}}
             catch
                 E:R ->
-                    io:format("processPGRet ERROR: ~p - ~p~n", [E, R]),
+                    io:format("pgret ERROR: ~p - ~p~n", [E, R]),
                     {error, {unknown, Msg}}
             end;
         <<"23505">> ->
@@ -156,26 +179,67 @@ processPGErrorRet2(#error{code=ECodeBin, message=Msg}) ->
                 {error, {not_unique, C}}
             catch
                 E:R ->
-                    io:format("processPGRet ERROR: ~p - ~p~n", [E, R]),
+                    io:format("pgret ERROR: ~p - ~p~n", [E, R]),
                     {error, {unknown, binary_to_list(Msg)}}
             end;
         _ ->
             {error, {unknown, binary_to_list(Msg)}}
     end;
-processPGErrorRet2(E) ->
+pgreterr(E) ->
     {error, {unexpected, E}}.
 
-% cover for logictics db connection pool
-withConnectionFK(Fun) ->
-    pgConPool:withConnection(Fun, config:get(geo_db_name, "fk")).
-    %pgConPool:withConnection(Fun, config:get(logistics_db_name, "logistics")).
-withTransactionFK(Fun) ->
-    pgConPool:withTransaction(Fun, config:get(geo_db_name, "fk")).
-    %pgConPool:withTransaction(Fun, config:get(logistics_db_name, "logistics")).
 
-simple(Q) ->
-    dao:processPGRet2(dao:withConnectionFK(fun(Con) -> pgsql:equery(Con, Q) end)).
+%%
+%% 
+%%
+with_connection_fk(Function) ->
+    pgConPool:withConnection(Function, config:get(fk_db_name, "fk")).
 
-simple(Q, Params) ->
-    dao:processPGRet2(dao:withConnectionFK(fun(Con) -> pgsql:equery(Con, Q, Params) end)).
+%%
+%%
+%%
+with_transaction_fk(Function) ->
+    pgConPool:withTransaction(Function, config:get(fk_db_name, "fk")).
 
+%%% @doc
+%%% Выполняет простой запрос и возвращает его результат 
+%%%
+simple(Query) ->
+    ?DEBUG_INFO("~p:simple/1 Query:  ~s", [?MODULE, Query]),
+    Result = dao:pgret(dao:with_connection_fk(
+            fun(Con) -> pgsql:equery(Con, Query)
+        end)),
+    ?DEBUG_INFO("~p:simple(~p)~n -> ~p", [?MODULE, Query, Result]),
+    Result.
+
+%%% @doc
+%%% Выполняет простой запрос и возвращает его результат
+%%%
+simple(Query, Params) ->
+    ?DEBUG_INFO("~p:simple/2 Query:  ~s~nParams ~p",
+        [?MODULE, Query, Params]),
+    Result = dao:pgret(dao:with_connection_fk(
+            fun(Con) -> pgsql:equery(Con, Query, Params)
+        end)),
+    ?DEBUG_INFO("~p:simple(~p, ~p)~n -> ~p",
+        [?MODULE, Query, Params, Result]),
+    Result.
+
+%%% @doc
+%%% Выполняет простой запрос и возвращает результат побочного действия
+%%%
+simple_ret(Query, Params) ->
+    ?DEBUG_INFO("~p:simple_ret/2 Query:  ~s~nParams ~p",
+        [?MODULE, Query, Params]),
+    Pre_result = dao:with_connection_fk(
+            fun(Con) -> pgsql:equery(Con, Query, Params)
+        end),
+    case dao:pgret(Pre_result) of
+        ok ->
+            Result = Pre_result,
+            ?DEBUG_INFO("~p:simple_ret(~p, ~p)~n -> ~p",
+                [?MODULE, Query, Params, Result]),
+            ok;
+        Error -> Result = {error, Error}
+    end,
+    Result.

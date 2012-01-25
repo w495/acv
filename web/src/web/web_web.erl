@@ -5,8 +5,8 @@
 
 -include_lib("xmerl/include/xmerl.hrl").
 
--include("../include/common.hrl").
--include("../include/web.hrl").
+-include("common.hrl").
+-include("web.hrl").
 
 -compile(export_all).
 
@@ -220,7 +220,7 @@ serve_request(Path, Req) ->
                         save_start_controller(Module, Action, Req)
                 catch
                     _:_ ->
-                    flog:info(?FMT("~p:~p 404 ~p REQUEST (~p) ERROR! Controller NOT FOUND~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
+                    ?INFO(?FMT("~p:~p 404 ~p REQUEST (~p) ERROR! Controller NOT FOUND~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
                     Req:not_found()
                 end
     end.
@@ -237,6 +237,15 @@ simple_map_controllers(Path) ->
 
     % advertising company video
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
+
+
+        "/get-all-acv-videos"   -> {inside, get_all_acv_videos};
+        "/get-all-acv-banners"  -> {inside, get_all_acv_banners};
+
+        "/get-acv-videos"   -> {inside, get_acv_videos};
+        "/get-acv-banners"  -> {inside, get_acv_banners};
+
+
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};
         "/update-adv-com/upload-video" -> {web_file, upload_adv_com_video};
         "/update-adv-com-vid" -> {inside, update_adv_com_vid};

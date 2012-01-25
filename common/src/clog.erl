@@ -63,8 +63,8 @@ debug(Request) when is_list(Request) ->
 
 debug(Opts, Request) when is_list(Request) ->
     case is_debug(Opts) of
-  true -> gen_server:cast(?MODULE, {debug, Request});
-  false -> ok
+        true -> gen_server:cast(?MODULE, {debug, Request});
+        false -> ok
     end.
 
 debug(Opts, Fmt, Args) when is_list(Fmt), is_list(Args) ->
@@ -234,10 +234,10 @@ is_info() ->
 
 %% --------------------------------------------------------------------
 is_debug(Opts) ->
-    case config:get(log_level, info) of
-  {debug,all} -> true;
-  {debug,partial} -> check_debug_opts(Opts);
-  _ -> false  %% no log_level in config | info | error | other
+    case config:get(log_level, debug) of
+        {debug,all} -> true;
+        {debug,partial} -> check_debug_opts(Opts);
+        _ -> false  %% no log_level in config | info | error | other
     end.
 
 %% --------------------------------------------------------------------
