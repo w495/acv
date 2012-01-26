@@ -232,6 +232,12 @@ serve_request(Path, Req) ->
 
 simple_map_controllers(Path) ->
     case Path of
+    % adv request
+        "/adv" ->
+            {adv_manager, get_adv};
+
+    % captcha
+
         "/captcha" ->
             {authorization, get_captcha};
 

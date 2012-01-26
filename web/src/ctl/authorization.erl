@@ -42,7 +42,7 @@ get_customer_id(Req) ->
                     [H|_T] ->   #web_session{customer_id=Customer_id} = H
                 end
     end,
-    ?DEBUG_INFO(?FMT("~p:Customer_id: ~p", [?MODULE, Customer_id])),
+%    ?DEBUG_INFO(?FMT("~p:Customer_id: ~p", [?MODULE, Customer_id])),
     Customer_id.
 
 
