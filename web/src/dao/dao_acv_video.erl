@@ -154,7 +154,7 @@ test()->
             {"id",Acv_video_id}]]},
         ?MODULE:get_acv_video(Acv_video_id)),
 
-    ?MODULE:delete_acv_video(Acv_video_id),
+    %?MODULE:delete_acv_video(Acv_video_id),
     ok.
 
 %%%

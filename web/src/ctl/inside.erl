@@ -147,8 +147,6 @@ delete_customer(Req) ->
     Res = dao:dao_call(dao_customer, delete_customer, {Id, UID}),
         {"application/json", [], [mochijson2:encode(Res)]}.
 
-
-
 get_adv_coms(_Req) ->
     Res = dao:dao_call(dao_adv_com, getAdvComs, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
@@ -233,10 +231,59 @@ get_acv_banners(Req) ->
     Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+%%
+%% Изменяет рекламу для роликов
+%%
+update_acv_video(Req) ->
 
+    %%% Поля acv_video:
+    %%%
+    %%%         id
+    %%%         name
+    %%%         datestart
+    %%%         datestop
+    %%%         url
+    %%%         ref
+    %%%         wish
+    %%%         postroll
+    %%%         preroll
+    %%%         midroll
+    %%%         pauseroll
+    %%%         user_male
+    %%%         age_from
+    %%%         age_to
+    %%%         customer_id
 
+    Customer_id = authorization:get_customer_id(Req),
 
+    Data = Req:parse_post(),
 
+    Info_0 = norm:extr(Data, [
+        {"id", [nullable, integer]},
+        {"name", [string]},
+        {"ref", [string]},
+        {"datestart", [datetimeUnixtime]},
+        {"datestop", [datetimeUnixtime]},
+
+        {"url", [string]},
+        {"ref", [string]},
+
+        {"wish", [integer]},
+        {"postroll", [boolean]},
+        {"preroll", [boolean]},
+        {"midroll", [boolean]},
+        {"pauseroll", [boolean]},
+
+        {"user_male", [string, nullable]},
+        {"age_from", [string, nullable]},
+        {"age_to", [string, nullable]}
+    ]),
+
+    %Info_1 = erlang:append_element(Info_0, Customer_id),
+    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [Customer_id]),
+
+    Res = dao:dao_call(dao_acv_video, update_acv_video, Info_1, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_adv_coms_vid(_Req) ->
     Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),
@@ -261,5 +308,27 @@ update_adv_com_vid(Req) ->
     ]),
     Res = dao:dao_call(dao_adv_com, updateAdvComVid, Info),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+
+test()-> ok.
+
+test(speed) ->
+    Times_1 = 1000000,
+    Tuple = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+
+    %%%
+    %%% l2t(t2l(t)++l) лучше
+    %%%
+    tests:print_speed("a(t) 1",
+        fun() ->
+            erlang:append_element(Tuple , a)
+        end, Times_1 ),
+    tests:print_speed("l2t(t2l(t)++l) 1",
+        fun() ->
+            erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [a])
+        end, Times_1 ),
+
+    ok.
 
 

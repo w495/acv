@@ -2,7 +2,7 @@
     type : "table",
     toolbar : [
         {type : "button", name : "Создать",
-            action : "resource/bsk/descr/adv-com-vid-form.json",
+            action : "resource/bsk/descr/acv-create.json",
             icon : "icon/32/apps/preferences-users.png"},
 
         {type : "button", name : "Редактировать",
@@ -15,7 +15,13 @@
             action : "/delete-adv-com-vid",
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action",
-            confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"}
+            confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"},
+            
+        {type : "button",
+            name : "Обновить",
+            action : "/f5",
+            icon : "icon/32/actions/edit-delete.png",
+            specParam: "tab-row-action"}
     ],
     columns : [
         {name : "id", alias : "#", type : "float", sortable : true, width:"5%"},

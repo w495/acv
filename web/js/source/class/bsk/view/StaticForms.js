@@ -19,8 +19,8 @@ qx.Class.define("bsk.view.StaticForms",
         },
         
         // мастер создания и редактирования рекламной компании
-        advComVidFormMaster : function(biz, Row, formDescr) {
-            return new bsk.view.Form.AdvComVidFormMaster(biz, Row, formDescr);
+        acvVideoCreate : function(biz, Row, formDescr) {
+            return new bsk.view.Form.AcvVideoCreateMaster(biz, Row, formDescr);
         },
         
         // форма создания и редактирования рекламной компании

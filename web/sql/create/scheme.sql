@@ -105,6 +105,7 @@ create table acv_video (
     url varchar(200),
     ref varchar(1000),
     wish int,
+        /* желаемое колическтво показов */
     postroll bool default true,
     preroll bool default true,
     midroll bool default true,
