@@ -96,6 +96,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
             
+            
             /**
              * В идеале, если мы хотим гибкость,
              * тут нужно ввести, еще один Сomposite,

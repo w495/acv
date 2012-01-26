@@ -111,8 +111,13 @@ create table acv_video (
     midroll bool default true,
     pauseroll bool default true,
     user_male bool default null,
+
     age_from int default null,
     age_to int default null,
+
+    time_from int default null, /* часы */
+    time_to int default null,   /* часы */
+
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
 );

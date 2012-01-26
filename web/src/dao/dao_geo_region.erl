@@ -62,9 +62,17 @@ update_geo_region({Id, Alias, Name}) ->
     dao:simple(Query, [convert:to_integer(Id), Alias, Name]).
 
 delete_geo_region(Id) ->
-    Query =
+    Query_geo_region =
         "delete from geo_region where id = $1;",
-    dao:simple(Query, [convert:to_integer(Id)]).
+    Query_acv_video2geo_region =
+        "delete from acv_video2geo_region where geo_region_id = $1;",
+
+    dao:with_transaction_fk(
+        fun(Con) ->
+            pgsql:equery(Con, Query_acv_video2geo_region, [convert:to_integer(Id)]),
+            pgsql:equery(Con, Query_geo_region, [convert:to_integer(Id)])
+        end
+    ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -94,8 +102,8 @@ test()->
     ?MODULE:update_geo_region({Geo_region_id, Alias_new, Name_new}),
 
     ?assertEqual({ok,[[
-            {"alias",Alias_new},
             {"name",Name_new},
+            {"alias",Alias_new},
             {"id",Geo_region_id}]]},
         ?MODULE:get_geo_region(Geo_region_id)),
 

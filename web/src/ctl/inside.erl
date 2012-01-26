@@ -1,11 +1,10 @@
-%%% \file inside.erl
+%%% \file inside_test.erl
 %%%
 %%%     Контроллеры, активируются, когда пользователь уже зашел в систему
 %%%
 
 -module(inside).
 -compile(export_all).
-
 
 -export([
     %call_before/1,
@@ -199,11 +198,10 @@ get_encoding(_Req) ->
 
 
 %%
-%% Возвращает полный спис реклам для роликов
+%% Возвращает ...
 %%
-get_all_acv_videos(Req) ->
-    authorization:auth_required(Req, "admin"),
-    Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
+get_all_geo_regions(Req) ->
+    Res = dao:dao_call(dao_geo_region, get_all_geo_regions, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
@@ -214,6 +212,13 @@ get_acv_videos(Req) ->
     Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+%%
+%% Возвращает полный спис регионов
+%%
+get_all_acv_videos(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
 %% Возвращает полный спис реклам для баннеров
@@ -252,31 +257,42 @@ update_acv_video(Req) ->
     %%%         user_male
     %%%         age_from
     %%%         age_to
+    %%%         time_from
+    %%%         time_to
     %%%         customer_id
 
     Customer_id = authorization:get_customer_id(Req),
 
     Data = Req:parse_post(),
 
+    % 
+    % update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
+    %   Postroll, Preroll, Midroll, Pauseroll, User_male,
+    %       Age_from, Age_to, Time_from, Time_to, Customer_id}) ->
+    %
+
     Info_0 = norm:extr(Data, [
-        {"id", [nullable, integer]},
-        {"name", [string]},
-        {"ref", [string]},
-        {"datestart", [datetimeUnixtime]},
-        {"datestop", [datetimeUnixtime]},
+        {"id",          [nullable, integer]},
+        {"name",        [string]},
+        {"datestart",   [datetimeUnixtime]},
+        {"datestop",    [datetimeUnixtime]},
 
-        {"url", [string]},
-        {"ref", [string]},
+        {"url",         [string]},
+        {"ref",         [string]},
 
-        {"wish", [integer]},
-        {"postroll", [boolean]},
-        {"preroll", [boolean]},
-        {"midroll", [boolean]},
-        {"pauseroll", [boolean]},
+        {"wish",        [integer]},
 
-        {"user_male", [string, nullable]},
-        {"age_from", [string, nullable]},
-        {"age_to", [string, nullable]}
+        {"postroll",    [string]},
+        {"preroll",     [string]},
+        {"midroll",     [string]},
+        {"pauseroll",   [string]},
+        {"user_male",   [string, nullable]},
+
+        {"age_from",    [string, nullable]},
+        {"age_to",      [string, nullable]},
+        {"time_from",   [string, nullable]},
+        {"time_to",     [string, nullable]}
+
     ]),
 
     %Info_1 = erlang:append_element(Info_0, Customer_id),
@@ -311,15 +327,14 @@ update_adv_com_vid(Req) ->
         {"ref", [string]},
         {"datestart", [datetimeUnixtime]},
         {"datestop", [datetimeUnixtime]},
-%        {"banner_place_id", [integer]},
         {"pic_url", [string]}
     ]),
     Res = dao:dao_call(dao_adv_com, updateAdvComVid, Info),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-
-
-test()-> ok.
+test()->
+    
+ok.
 
 test(speed) ->
     Times_1 = 1000000,

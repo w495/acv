@@ -38,9 +38,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         },
 
         regionListOptions: {
-            url:            "/get-customer-groups",
+            url:            "/get-all-geo-regions",
             labelFieldName: "name",
-            descrFieldName: "description"
+            descrFieldName: "alias"
         },
         
         /**

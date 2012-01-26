@@ -87,7 +87,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
         makeBoxGender : function() {
             this.inp.Gender = new qx.ui.form.SelectBox();
             this.__fillSelect(this.inp.Gender, [
-                    {name:"Все", value: null},
+                    {name:"Все",     value: "null"},
                     {name:"Мужской", value: "true"},
                     {name:"Женский", value: "false"}
                 ], "name", "value");
@@ -194,7 +194,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
                 for(var fieldName in this.inp){
                     item = fieldName.toLowerCase();
                     if("gender" == item){
-                        res.gender = this.inp.Gender.getSelection()[0].getModel();
+                        res.user_male = this.inp.Gender.getSelection()[0].getModel();
                     }
                     else{
                         res[item] = this.inp[fieldName].getValue();
