@@ -285,6 +285,14 @@ update_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, update_acv_video, Info_1, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+
+
+
+
+
+
+
+
 get_adv_coms_vid(_Req) ->
     Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
