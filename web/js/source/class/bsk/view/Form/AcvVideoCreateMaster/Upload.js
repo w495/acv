@@ -4,7 +4,7 @@
 #asset(qx/icon/Tango/16/actions/document-save.png)
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
 {
     extend : Object,
     
@@ -36,10 +36,7 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
         },
         
         urc : {  // upload request config
-            url: "/update-dir",
-            imgurl: "/update-doc/upload-image",
-            method: "POST",
-            mimetype: "application/json"
+            imgurl: "/update-adv-com/upload-video"
         },
         
         getComposite : function(){
@@ -51,10 +48,12 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            Id:null,
-            Url:null,
-            File:null,
-            ShowVariant:null
+            Url:        null,
+            Ref:        null,
+            Preroll:    null,
+            Midroll:    null,
+            Postroll:   null,
+            Pauseroll:  null
         },
         
         buildForm : function(){
@@ -72,7 +71,7 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
 
             this.inp.Name = new qx.ui.form.TextField();
             this.inp.Url = new qx.ui.form.TextField();
-            this.inp.File = new qx.ui.form.TextField();
+            this.inp.Ref = new qx.ui.form.TextField();
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -85,23 +84,23 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
             
             this.composite.add(new qx.ui.basic.Label().set({value: "Урл",  rich : true}),
                     {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.File,   {row:vertical_offset, column:1});
+            this.composite.add(this.inp.Ref,   {row:vertical_offset, column:1});
             
             this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
             
-            var ShowPreroll = new qx.ui.form.CheckBox("Preroll")
-            var ShowMidroll = new qx.ui.form.CheckBox("Midroll")
-            var ShowPostroll = new qx.ui.form.CheckBox("Postroll")
-            var ShowPauseroll = new qx.ui.form.CheckBox("Pauseroll")
+            this.inp.Preroll = new qx.ui.form.CheckBox("Preroll")
+            this.inp.Midroll = new qx.ui.form.CheckBox("Midroll")
+            this.inp.Postroll = new qx.ui.form.CheckBox("Postroll")
+            this.inp.Pauseroll = new qx.ui.form.CheckBox("Pauseroll")
             
             var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика");
             boxPlace.setLayout(new qx.ui.layout.VBox(2));
-            boxPlace.add(ShowPreroll);
-            boxPlace.add(ShowMidroll);
-            boxPlace.add(ShowPostroll);
-            boxPlace.add(ShowPauseroll);
+            boxPlace.add(this.inp.Preroll);
+            boxPlace.add(this.inp.Midroll);
+            boxPlace.add(this.inp.Postroll);
+            boxPlace.add(this.inp.Pauseroll);
 
             this.composite.add(boxPlace,   {row:++vertical_offset, column:0,colSpan:2});
             
@@ -198,7 +197,14 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Upload",
         saveData : function(e) {
             var formIsValid = this.validateForm();
             if(formIsValid){
-
+                var res = {}
+                for(var fieldName in this.inp){
+                    item = fieldName.toLowerCase()
+                    res[item] = this.inp[fieldName].getValue();
+                }  
+                for(var item in res){
+                    this.uReq.setParameter(item, res[item], true);
+                }
             }
             return formIsValid;
         }

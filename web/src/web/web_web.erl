@@ -245,15 +245,24 @@ simple_map_controllers(Path) ->
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
 
 
-        "/get-all-acv-videos"   -> {inside, get_all_acv_videos};
-        "/get-all-acv-banners"  -> {inside, get_all_acv_banners};
+        "/get-all-acv-videos"   ->  {inside, get_all_acv_videos};
+        "/get-all-geo-regions"  ->  {inside, get_all_geo_regions};
+        "/get-all-acv-banners"  ->  {inside, get_all_acv_banners};
 
         "/get-acv-videos"   -> {inside, get_acv_videos};
         "/get-acv-banners"  -> {inside, get_acv_banners};
 
+        "/update-acv-video"                 -> {inside, update_acv_video};
+        "/update-acv-video/uload-video"     -> {inside, upload_acv_video};
+
+
+
 
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};
+
         "/update-adv-com/upload-video" -> {web_file, upload_adv_com_video};
+
+
         "/update-adv-com-vid" -> {inside, update_adv_com_vid};
 
     % advertising company

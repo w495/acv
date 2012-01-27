@@ -45,7 +45,21 @@ insert into customer2group (customer_id, group_id)
 		((select id from customer where login='admin'),
 			(select id from customer_group where name='admin'));
 
-insert into geo_region (alias, name) values ('world', 'весь мир');
+insert into geo_region (alias, name) values ('R1', 'Рег 1');
+insert into geo_region (alias, name) values ('R2', 'Рег 2');
+insert into geo_region (alias, name) values ('R3', 'Рег 3');
+insert into geo_region (alias, name) values ('R4', 'Рег 4');
+insert into geo_region (alias, name) values ('R5', 'Рег 6');
+insert into geo_region (alias, name) values ('R7', 'Рег 7');
+insert into geo_region (alias, name) values ('R8', 'Рег 8');
+insert into geo_region (alias, name) values ('R9', 'Рег 9');
+insert into geo_region (alias, name) values ('RA', 'Рег A');
+insert into geo_region (alias, name) values ('RB', 'Рег B');
+insert into geo_region (alias, name) values ('RC', 'Рег C');
+insert into geo_region (alias, name) values ('RD', 'Рег D');
+insert into geo_region (alias, name) values ('RE', 'Рег E');
+insert into geo_region (alias, name) values ('RF', 'Рег F');
+
 
 insert into banner_place (name, alias)
     values

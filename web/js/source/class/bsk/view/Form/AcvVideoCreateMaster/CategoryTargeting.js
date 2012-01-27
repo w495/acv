@@ -2,7 +2,7 @@
     https://gist.github.com/1639960
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AdvComVidFormMaster.CategoryTargeting",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
 {
     extend : Object,
     

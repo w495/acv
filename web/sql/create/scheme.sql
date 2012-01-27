@@ -105,13 +105,19 @@ create table acv_video (
     url varchar(200),
     ref varchar(1000),
     wish int,
+        /* желаемое колическтво показов */
     postroll bool default true,
     preroll bool default true,
     midroll bool default true,
     pauseroll bool default true,
     user_male bool default null,
+
     age_from int default null,
     age_to int default null,
+
+    time_from int default null, /* часы */
+    time_to int default null,   /* часы */
+
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
 );

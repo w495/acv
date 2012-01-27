@@ -2,7 +2,7 @@
     https://gist.github.com/1639960
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AdvComVidFormMaster.UsersTargeting",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 {
     extend : Object,
     
@@ -37,12 +37,21 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.UsersTargeting",
             return this.composite;
         },
 
+        regionListOptions: {
+            url:            "/get-all-geo-regions",
+            labelFieldName: "name",
+            descrFieldName: "alias"
+        },
+        
         /**
          * Поля формы.
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            Gender:null
+            Id:null,
+            Url:null,
+            File:null,
+            ShowVariant:null
         },
         
         buildForm : function(){
@@ -52,77 +61,24 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.UsersTargeting",
                     value: "Таргетирование",  font: "bold",
                     alignX: "left", rich : true
                 });
-                
-            var layout = new qx.ui.layout.Grid(1, 5);
+            var layout = new qx.ui.layout.Grid(2, 1);
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
-            
             this.composite  = new qx.ui.container.Composite (layout);
             
-            var boxGender = this.makeBoxGender();
-            var boxAge = this.makeBoxAge();
-            var boxTime = this.makeBoxTime();
-            
+            this.inp.List = new bsk.view.
+                SortedSelListTreeContainer(
+                    this.regionListOptions.url,
+                    this.regionListOptions.labelFieldName,
+                    this.regionListOptions.descrFieldName
+                );
+                
             var vertical_offset = -1;
-            
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0});
-            
-            this.composite.add(boxGender,
+            this.composite.add(this.inp.List,
                 {row:++vertical_offset, column:0});
-            
-            this.composite.add(boxAge,
-                {row:++vertical_offset, column:0});
-            
-            this.composite.add(boxTime,
-                {row:++vertical_offset, column:0});
-            
             return this.composite;
-        },
-        
-        makeBoxGender : function() {
-            this.inp.Gender = new qx.ui.form.SelectBox();
-            this.__fillSelect(this.inp.Gender, [{name:"М"}, {name:"Ж"}], "name", "name");
-            var vertical_offset = 0;
-            var boxGender = new qx.ui.groupbox.CheckGroupBox("Пол");
-            var layout2 = new qx.ui.layout.Grid(1, 1)
-            boxGender.setLayout(layout2);
-            boxGender.setValue(false);
-            layout2.setColumnFlex(0, 1);
-            boxGender.add(this.inp.Gender, {row:0, column:0});
-            return boxGender;
-        },
-        
-        makeBoxAge : function() {
-            var spinner1 = new qx.ui.form.Spinner(1, 1, 100);
-            var spinner2 = new qx.ui.form.Spinner(2, 2, 100);
-            var vertical_offset = 0;
-            var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст");
-            var layout2 = new qx.ui.layout.Grid(1, 2)
-            boxAge.setLayout(layout2);
-            boxAge.setValue(false);
-            layout2.setColumnFlex(1, 1);
-            boxAge.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
-            boxAge.add(spinner1, {row:vertical_offset, column:1});
-            boxAge.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
-            boxAge.add(spinner2, {row:vertical_offset, column:1});
-            return boxAge;
-        },
-
-        makeBoxTime : function() {
-            var spinner3 = new qx.ui.form.Spinner(0, 0, 24);
-            var spinner4 = new qx.ui.form.Spinner(0, 24, 24);
-            var vertical_offset = 0;
-            var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа");
-            var layout3 = new qx.ui.layout.Grid(1, 2);
-            layout3.setColumnFlex(1, 1);
-            boxTime.setLayout(layout3);
-            boxTime.setValue(false);
-            boxTime.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
-            boxTime.add(spinner3, {row:vertical_offset, column:1});
-            boxTime.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
-            boxTime.add(spinner4, {row:vertical_offset, column:1});
-            return boxTime;
         },
         
         /**
@@ -135,16 +91,6 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.UsersTargeting",
             this.dReq.setParameter(paramName, id);
             this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
             this.dReq.send();
-        },
-        
-        __fillSelect : function(sel, vals, alias, value) {
-            sel.itemMap = [];
-            for(var j=0; j<vals.length; j++) {
-                var SI = vals[j];
-                var selItem = new qx.ui.form.ListItem(SI[alias], null, SI[value]);
-                sel.itemMap[SI[value]] = selItem;
-                sel.add(selItem);
-            }
         },
         
         _onLoadFormDataCompl : function(response) {

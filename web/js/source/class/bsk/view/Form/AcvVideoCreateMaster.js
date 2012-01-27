@@ -4,7 +4,7 @@
 ************************************************************************ */
 
 
-qx.Class.define("bsk.view.Form.AdvComVidFormMaster",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
 {
 
     extend : bsk.view.Form.AbstractForm,
@@ -41,11 +41,11 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster",
         // ---------------------------------------------------------------
         this.__list = [];
         
-        this.__list.push(new bsk.view.Form.AdvComVidFormMaster.Common(this.uReq));
-        this.__list.push(new bsk.view.Form.AdvComVidFormMaster.Upload(this.uReq));
-        this.__list.push(new bsk.view.Form.AdvComVidFormMaster.UsersTargeting(this.uReq));
-        this.__list.push(new bsk.view.Form.AdvComVidFormMaster.RegionTargeting(this.uReq));
-        this.__list.push(new bsk.view.Form.AdvComVidFormMaster.CategoryTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq));
         
         this.__step = 0;
         this.__length = this.__list.length;
@@ -58,11 +58,11 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster",
     
     members : {
         
-        urc : {  // upload request config
-            url: "/update-adv-com-vid",
-            imgurl: "/update-adv-com/upload-video",
-            method: "POST",
-            mimetype: "application/json"
+        urc : {
+            url:        "/update-acv-video",
+            imgurl:     "/update-acv-video/upload-video",
+            method:     "POST",
+            mimetype:   "application/json"
         },
         
         __step:     null,     // шаг мастера

@@ -23,12 +23,8 @@
 -define( D(F, P),   io:format(F,P) ).
 
 %-define( DEBUG_INFO(F, P),  ?DEBUG(?FMT(F,P)) ).
+
 -define( DEBUG_INFO(F, P),  io:format(F,P) ).
-
-
-
-
-
 
 
 -define(LSTHOST, config:get(lsthost, "0.0.0.0")).

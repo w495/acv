@@ -2,7 +2,7 @@
     https://gist.github.com/1639960
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Common",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.__Template",
 {
     extend : Object,
     
@@ -41,59 +41,16 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Common",
          * Поля формы.
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
-        inp : {
-            Id:null,
-            Name:null,
-            StartDate:null,
-            StopDate:null,
-            Number:null
-        },
-        
+        inp :       null,
+        fake_inp:   null,
         // -------------------
         textfield1 : null,
         textfield2 : null,
         
         buildForm : function(){
-            var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
-            
-            var layout = new qx.ui.layout.Grid(2, 5);
-            layout.setColumnFlex(1, 1);
-            layout.setColumnAlign(0, "right", "top");
-            
-            this.composite  = new qx.ui.container.Composite (layout);
-
-            this.inp.Name = new qx.ui.form.TextField();
-            this.inp.StartDate = new qx.ui.form.DateField()
-                .set({value: new Date()});
-            this.inp.StopDate = new qx.ui.form.DateField()
-                .set({value: new Date()});
-            this.inp.Number = new qx.ui.form.Spinner(0, 0, 1152921504606846976);
-        
-            var pageName = new qx.ui.basic.Label()
-                .set({
-                    value: "Общая информация",  font: "bold",
-                    alignX: "left", rich : true
-                });
-
-            var vertical_offset = -1;
-            this.composite.add(pageName, {row:++vertical_offset, column:0, colSpan:2})
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Название",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Name,   {row:vertical_offset, column:1});
-            
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Дата начала",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.StartDate,   {row:vertical_offset, column:1});
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Дата конца",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.StopDate,   {row:vertical_offset, column:1});
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Количество",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Number,   {row:vertical_offset, column:1});
+            this.composite  = new qx.ui.container.Composite ();
+            var vbox = new qx.ui.layout.VBox(1);
+            this.composite.setLayout(vbox);
             
             /**
              * В идеале, если мы хотим гибкость,
@@ -102,6 +59,12 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Common",
              * 
              * Для чего-то  простого сойдет и так.
             **/
+            
+            this.textfield1 = new qx.ui.form.TextField("text field #1");
+            this.textfield2 = new qx.ui.form.TextField("text field #2");
+
+            this.composite.add(this.textfield1);
+            this.composite.add(this.textfield2);
             
             return this.composite;
         },
@@ -150,7 +113,8 @@ qx.Class.define("bsk.view.Form.AdvComVidFormMaster.Common",
         saveData : function(e) {
             var formIsValid = this.validateForm();
             if(formIsValid){
-
+                this.uReq.setParameter("textfield1-name", this.textfield1.getValue(), true);
+                this.uReq.setParameter("textfield2-name", this.textfield2.getValue(), true);
             }
             return formIsValid;
         }
