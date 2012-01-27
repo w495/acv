@@ -17,16 +17,25 @@
 
 get_adv(Req) ->
     Data = Req:parse_qs(),
-    In = norm:extr(Data, [
+    Info_0 = norm:extr(Data, [
         {"type", [string]},
-        {"resourse", [string]},
-        {"userid", [nullable, string]}
+        {"resourse", [string]}
+        % {"userid", [nullable, string]}
     ]),
+
+    In = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [null]),
 
     Peer = Req:get(peer),
     Result = biz_adv_manager:get_acv_mp4(In, Peer),
 
-    Fake_result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+
+    Fake_result_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
+    "<block duration=\"120\" loadnext=\"600\"> "
+    "<creative  type=\"video\" click=\"http://ya.ru\"  link_title=\"354b9bd8-c2aa-4a92-81ee-0fccc85a9273\" url=\"http://192.168.2.187:8000/static/data/acv-video/common/130387262/adv10.mp4\" start=\"0\" skip=\"no\"  duration=\"20\"  /> "
+    "</block> ",
+
+
+    Fake_result_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
     "<block duration=\"120\" loadnext=\"600\">"
     "  <creative type=\"video\""
     "            click=\"http://click-here/\""
@@ -55,7 +64,7 @@ get_adv(Req) ->
     "            url=\"http://get-here/paused.jpg\"/>"
     "</block>",
 
-    {?OUTPUT_HTML, [], [Result]}.
+    {?OUTPUT_HTML, [], [Fake_result_1]}.
 
 test()->
     ok.
