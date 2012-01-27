@@ -2,6 +2,10 @@
 %%%
 %%%     Контроллеры front end
 %%%
+%%% @depricated
+%%%     надо использовать что-то нормальное и отдельное.
+%%% желательно в одной транзакции с базой данных.
+%%%
 
 -module(web_file).
 
@@ -227,7 +231,7 @@ upload_adv_com_image(Req) ->
     end.
 
 
-upload_adv_com_video(Req) ->
+upload_acv_video(Req) ->
     FileHandler = fun(Filename, ContentType) -> handle_file(Filename, ContentType) end,
     Files = mochiweb_multipart:parse_form(Req, FileHandler),
     
@@ -242,7 +246,7 @@ upload_adv_com_video(Req) ->
             DirId = Id
     end,
     
-    Destination = string:join(["static/data/adv_vid", utils:to_list(DirId), OriginalFilename], "/"),
+    Destination = string:join(["static/data/acv-video", utils:to_list(DirId), OriginalFilename], "/"),
 %    filelib:ensure_dir(Destination),
 %    file:delete(Destination),
     case moveFile(TempFilename, Destination) of

@@ -197,8 +197,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
         },
         
         _onSendClick: function() {
-            if(this.uReq){
-                this.submit(this.uReq);
+            if(this.validateCurrent()){
+                if(this.uReq){
+                    this.submit(this.uReq);
+                }
             }
         },
         

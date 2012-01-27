@@ -48,9 +48,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            Url:null,
-            File:null,
-            ShowVariant:null
+            
         },
         
         buildForm : function(){
@@ -122,6 +120,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
+            var list = this.inp.List.tree.getSelectedId();
+            
+            console.log("cat_list ---<")
+            console.log(this.inp.List.tree.getSelectedId());
+            console.log(">---")
+            
+            if(this.validateForm()) {
+                this.uReq.setParameter("cat_list", list, true);
+            }
+            
             return true;
         }
     }

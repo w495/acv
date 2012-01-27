@@ -253,17 +253,12 @@ simple_map_controllers(Path) ->
         "/get-acv-banners"  -> {inside, get_acv_banners};
 
         "/update-acv-video"                 -> {inside, update_acv_video};
-        "/update-acv-video/uload-video"     -> {inside, upload_acv_video};
+        "/update-acv-video/uload-video"     -> {web_file, upload_acv_video};
+
 
         "/get-all-cats"  -> {inside, get_all_cats};
-
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};
-
-        "/update-adv-com/upload-video" -> {web_file, upload_adv_com_video};
-
-
         "/update-adv-com-vid" -> {inside, update_adv_com_vid};
-
     % advertising company
         "/get-banner-places" -> {inside, get_banner_places};
         "/get-adv-coms" -> {inside, get_adv_coms};

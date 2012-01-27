@@ -113,9 +113,17 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         **/
         saveData : function(e) {
             var formIsValid = this.validateForm();
-            if(formIsValid){
-
+            
+            var list = this.inp.List.tree.getSelectedId();
+            
+            console.log("geo_region_list ---<")
+            console.log(this.inp.List.tree.getSelectedId());
+            console.log(">---")
+            
+            if(this.validateForm()) {
+                this.uReq.setParameter("geo_region_list", list, true);
             }
+            
             return formIsValid;
         }
     }

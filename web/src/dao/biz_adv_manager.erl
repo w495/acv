@@ -44,7 +44,6 @@ get_adv({Type, Resourse, null}, Peer) when Type =:= "preroll"; Type =:= "postrol
     %R2 = mysql_dao:make_proplist(Cols, Vals, []),
     io:format("------------~n~p~n", [Vals]),
 
-
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
     Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, ref, wish, shown "
             "from acv_video left join acv_video2cat on acv_video.id=acv_video2cat.acv_video_id "
@@ -60,10 +59,9 @@ get_adv({Type, Resourse, null}, Peer) when Type =:= "preroll"; Type =:= "postrol
                 string:join([integer_to_list(X) || X <- lists:flatten(Vals)], ",") ++
                 ") or acv_video2cat.cat_id is NULL) ";
         true ->
-            Q2S2 = Q2S1 ++ " and cv_video2cat.cat_id is NULL "
+            Q2S2 = Q2S1 ++ " and acv_video2cat.cat_id is NULL "
     end,
-    
-            %" and (acv_video2geo_region.geo_region_id in (!!GEO!!!) or acv_video2geo_region.geo_region_id is NULL);"
+
     Q2 = Q2S2 ++ ";",
 
     io:format("===========~n~p~n", [Q2]),
@@ -71,6 +69,7 @@ get_adv({Type, Resourse, null}, Peer) when Type =:= "preroll"; Type =:= "postrol
     Ret = dao:simple(Q2),
 
     io:format("=-=-=-=-=-=-=-=-= ~n~p~n", [Ret]),
+
     ok.
 %get_adv({Type, Resourse, UID}) ->
     

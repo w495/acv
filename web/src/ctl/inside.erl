@@ -272,6 +272,16 @@ update_acv_video(Req) ->
 
     Data = Req:parse_post(),
 
+    ?D("~n----------------------------------------------------------------~nData  = ~p", [Data ]),
+
+    Geo_region_list =
+        [convert:to_integer(X) || X <- proplists:get_all_values("geo_region_list", Data)],
+    Cat_list =
+        [convert:to_integer(X) || X <- proplists:get_all_values("cat_list", Data)],
+
+    ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
+    ?D("~n---------------------~nCat_list = ~p", [Cat_list]),
+
     % 
     % update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
     %   Postroll, Preroll, Midroll, Pauseroll, User_male,
@@ -311,7 +321,10 @@ update_acv_video(Req) ->
 
     Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [_@_fix_tmp_shown, Customer_id]),
 
-    Res = dao:dao_call(dao_acv_video, update_acv_video, Info_1, values),
+    ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
+    ?D("~n---------------------~nCat_list = ~p", [Cat_list]),
+
+    Res = dao:dao_call(dao_acv_video, update_acv_video, {Info_1, Geo_region_list, Cat_list}, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_adv_coms_vid(_Req) ->

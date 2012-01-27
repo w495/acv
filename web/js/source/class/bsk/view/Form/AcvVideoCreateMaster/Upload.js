@@ -11,6 +11,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
     construct : function(uReq) {
         this.uReq = uReq;
         this.buildForm();
+        this.addListeners();
     },
 
     members : {
@@ -36,17 +37,13 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         },
         
         urc : {  // upload request config
-            imgurl: "/update-adv-com/upload-video"
+            imgurl: "/update-acv-video/uload-video"
         },
         
         getComposite : function(){
             return this.composite;
         },
 
-        /**
-         * Поля формы.
-         * Вообще, учитывая, богатсво форм они могут не понадобиться.
-        **/
         inp : {
             Duration:          null,
             Link_title:        null,

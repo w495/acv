@@ -11,6 +11,7 @@
     get_acv_video/1,
     update_acv_video/1,
     delete_acv_video/1,
+    test_acv_video/0,   
     test/0,
     test/1
 ]).
@@ -281,11 +282,24 @@ make_brackets_string_(Id, Id_list)->
 
 -include_lib("eunit/include/eunit.hrl").
 
+
 test()->
     test_eunit_1(),
     test_eunit_2(),
+
     ok.
 
+test_acv_video()->
+    dao_acv_video:update_acv_video({{null,
+        "console -> test", {{2012,01,27},{0,0,0.1}}, {{2012,01,28},{0,0,0.1}},
+            "http://ya.ru",
+                "static/data/acv-video/common/130387262/adv10.mp4 ", 100,
+                    true, true, true, true, true,
+                        1, 100, 0, 24,
+                            20, "354b9bd8-c2aa-4a92-81ee-0fccc85a9273",
+                                "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", 0, 1},
+        [13, 14], [674]}),
+    ok.
 %%%
 %%% Просто
 %%%

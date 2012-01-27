@@ -31,6 +31,10 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         _OnChange : function(e){
             console.log("getData = ", e.getData());
             this.tree.testItems(e.getData());
+        },
+        
+        getSelectedId : function() {
+            this.tree.getSelectedId();
         }
     }
 });
