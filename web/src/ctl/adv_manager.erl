@@ -22,7 +22,8 @@ get_adv(Req) ->
         {"resourse", [string]},
         {"uid", [nullable, integer]}
     ]),
-    XML = dao:dao_call(biz_adv_manager, get_adv, In),
+    Peer = Req:get(peer),
+    XML = biz_adv_manager:get_adv(In, Peer),
     {?OUTPUT_HTML, [], [XML]}.
 
 test()->
