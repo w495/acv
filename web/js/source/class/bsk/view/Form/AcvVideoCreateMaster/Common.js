@@ -63,7 +63,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             this.composite  = new qx.ui.container.Composite (layout);
 
             this.inp.Id = new qx.ui.form.TextField();
-            this.inp.Name = new qx.ui.form.TextField();
+            this.inp.Name = new qx.ui.form.TextField() 
+                .set({placeholder: "Название рекламной компании"});
+            
             this.inp.DateStart = new qx.ui.form.DateField()
                 .set({value: new Date()});
             this.inp.DateStop = new qx.ui.form.DateField()
@@ -165,6 +167,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                     }
                 }  
                 for(var item in res){
+                    console.log(item, res[item]);
                     this.uReq.setParameter(item, res[item], true);
                 }
             }

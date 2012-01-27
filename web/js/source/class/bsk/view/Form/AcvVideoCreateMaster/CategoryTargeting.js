@@ -48,15 +48,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            Id:null,
             Url:null,
             File:null,
             ShowVariant:null
         },
-        
-        // -------------------
-        textfield1 : null,
-        textfield2 : null,
         
         buildForm : function(){
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
@@ -112,10 +107,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-            for(var fieldName in this.inp){
-                var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.value[item])
-            }
+
         },
         
         /**
@@ -130,11 +122,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var formIsValid = this.validateForm();
-            if(formIsValid){
-
-            }
-            return formIsValid;
+            return true;
         }
     }
 });

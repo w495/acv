@@ -41,11 +41,17 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
         // ---------------------------------------------------------------
         this.__list = [];
         
+        console.log("0");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq));
+        console.log("1");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq));
+        console.log("2");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq));
+        console.log("3");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq));
+        console.log("4");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq));
+        console.log("5");
         
         this.__step = 0;
         this.__length = this.__list.length;

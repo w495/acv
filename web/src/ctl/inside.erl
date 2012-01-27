@@ -289,11 +289,11 @@ update_acv_video(Req) ->
 
         {"wish",        [integer]},
 
-        {"postroll",    [string]},
-        {"preroll",     [string]},
-        {"midroll",     [string]},
-        {"pauseroll",   [string]},
-        {"user_male",   [string, nullable]},
+        {"postroll",    [boolean]},
+        {"preroll",     [boolean]},
+        {"midroll",     [boolean]},
+        {"pauseroll",   [boolean]},
+        {"user_male",   [boolean, nullable]},
 
         {"age_from",    [string, nullable]},
         {"age_to",      [string, nullable]},
@@ -307,14 +307,6 @@ update_acv_video(Req) ->
 
     Res = dao:dao_call(dao_acv_video, update_acv_video, Info_1, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
-
-
-
-
-
-
-
-
 
 get_adv_coms_vid(_Req) ->
     Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),

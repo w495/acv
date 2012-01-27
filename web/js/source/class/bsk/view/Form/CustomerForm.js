@@ -70,16 +70,27 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             this.base(arguments);
 
             this.inp.Id           = new qx.ui.form.TextField();
-            this.inp.Login        = new qx.ui.form.TextField();
-            this.inp.Password1    = new qx.ui.form.PasswordField();
-            this.inp.Password2    = new qx.ui.form.PasswordField();
-            this.inp.Email        = new qx.ui.form.TextField();
-            this.inp.City         = new qx.ui.form.TextField();
-            this.inp.Organization = new qx.ui.form.TextField();
-            this.inp.Position     = new qx.ui.form.TextField();
-            this.inp.Firstname    = new qx.ui.form.TextField();
-            this.inp.Lastname     = new qx.ui.form.TextField();
-            this.inp.Patronimic   = new qx.ui.form.TextField();
+            this.inp.Login        = new qx.ui.form.TextField()
+                .set({placeholder: "login"});
+            this.inp.Password1    = new qx.ui.form.PasswordField()
+                .set({placeholder: "pass"});
+            this.inp.Password2    = new qx.ui.form.PasswordField()
+                .set({placeholder: "pass"});
+            this.inp.Email        = new qx.ui.form.TextField()
+                .set({placeholder: "abc@def.gh"});
+            this.inp.City         = new qx.ui.form.TextField()
+                .set({placeholder: "Город"});
+            this.inp.Organization = new qx.ui.form.TextField()
+                .set({placeholder: "Организация"});
+            this.inp.Position     = new qx.ui.form.TextField()
+                .set({placeholder: "Должность"});
+            this.inp.Firstname    = new qx.ui.form.TextField()
+                .set({placeholder: "Ваше имя"});
+            this.inp.Lastname     = new qx.ui.form.TextField()
+                .set({placeholder: "Фамилия"});
+            this.inp.Patronimic   = new qx.ui.form.TextField()
+                .set({placeholder: "Отчество"});
+                
             this.inp.Pic_url      = new qx.ui.form.TextField();
             
             this.groupList = new bsk.view.SelListTree(this,

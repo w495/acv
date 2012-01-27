@@ -15,7 +15,8 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
     construct : function(url, labelFieldName, descrFieldName, paramdict) {
         this.base(arguments);
         
-        this.field = new qx.ui.form.TextField();
+        this.field = new qx.ui.form.TextField()
+            .set({placeholder: "Фраза для поиска в списке"});
         this.tree = new bsk.view.SortedSelListTree(this, url, labelFieldName, descrFieldName, paramdict)
         
         var vbox = new qx.ui.layout.VBox()

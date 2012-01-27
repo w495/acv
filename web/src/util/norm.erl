@@ -3,6 +3,12 @@
 -include("../include/common.hrl").
 
 
+atom(Val) ->
+    utils:to_atom(Val).
+
+boolean(Val) ->
+    utils:to_atom(Val).
+
 integer(Val) ->
     utils:to_integer(Val).
 

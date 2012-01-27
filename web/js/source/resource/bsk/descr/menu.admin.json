@@ -21,28 +21,11 @@
         ]
     },
     
-    {
-        name : "[!] ТЕСТИРОВАНИЕ",
-        icon : "icon/16/apps/utilities-dictionary.png",
-        opened : true,
-        subitems: [
-            {
-                name : "adv-master",
-                icon : "icon/16/places/network-workgroup.png",
-                model : "resource/bsk/descr/adv-com-vid-form-master.json"
-            },
-            {
-                name : "adv-form",
-                icon : "icon/16/apps/preferences-theme.png",
-                model : "resource/bsk/descr/adv-com-vid-form.json"
-            }
-        ]
-    },
     
     {
         name : "Главная",
             /*вся основная информация по видам рекламы*/
-        opened : false,
+        opened : true,
         subitems: [
             {
                 name : "Реклама на видео",
@@ -63,7 +46,7 @@
     },
 
     {   name : "Рекламные кампании",
-        opened : false,
+        opened : true,
         subitems: [
             {
                 name : "Банеры",
@@ -79,7 +62,7 @@
     },
 
     {   name : "Все рекламные кампании",
-        opened : false,
+        opened : true,
         subitems: [
             {
                 name : "Все банеры",

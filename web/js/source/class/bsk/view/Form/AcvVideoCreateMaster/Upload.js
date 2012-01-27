@@ -69,9 +69,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             
             this.composite  = new qx.ui.container.Composite (layout);
 
-            this.inp.Name = new qx.ui.form.TextField();
-            this.inp.Url = new qx.ui.form.TextField();
-            this.inp.Ref = new qx.ui.form.TextField();
+            this.inp.Url = new qx.ui.form.TextField()
+                .set({placeholder: "http://my-company.com/"});
+            this.inp.Ref = new qx.ui.form.TextField()
+                .set({placeholder: "http://my-company.com/"});
             
             var pageName = new qx.ui.basic.Label()
                 .set({
