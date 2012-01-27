@@ -32,4 +32,30 @@ make_proplist(Columns, [V|T], Ret) ->
 make_proplist(_C, [], Ret) ->
     Ret.
 
-   
+dao_call(Module, Function, Param, JsonRetName) ->
+    case Module:Function(Param) of
+        {ok, Vals} -> db2json:encode(Vals, JsonRetName);
+        _ -> []
+    end.
+
+
+msret(Vals) ->
+    {ok, Vals}.
+
+
+simple(Query) ->
+    mysql:prepare(simple_2, Query),
+    {data,{mysql_result, Cols, Vals, _, _}} =
+        mysql:execute(mySqlConPool, simple_2, []),
+    msret(mysql_dao:make_proplist(Cols, Vals, [])).
+
+simple(Query, Params) ->
+    mysql:prepare(simple_2, Query),
+    {data,{mysql_result, Cols, Vals, _, _}} =
+        mysql:execute(mySqlConPool, simple_2, Params),
+    msret(mysql_dao:make_proplist(Cols, Vals, [])).
+
+
+test()-> ok.
+
+test(speed)-> ok.

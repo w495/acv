@@ -10,7 +10,6 @@
     test/1
 ]).
 
-
 -compile(export_all).
 
 -include("common.hrl").

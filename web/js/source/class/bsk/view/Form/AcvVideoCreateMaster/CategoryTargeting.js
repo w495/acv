@@ -34,9 +34,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
         },
         
         categoryListOptions: {
-            url:            "/get-customer-groups",
+            url:            "/get-all-cats",
             labelFieldName: "name",
-            descrFieldName: "description"
+            descrFieldName: "seo_alias"
         },
         
         getComposite : function(){

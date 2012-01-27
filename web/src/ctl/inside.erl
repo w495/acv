@@ -227,6 +227,13 @@ get_all_acv_banners(Req) ->
     authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_acv_banner, get_all_acv_banners, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
+%%
+%% Возвращает полный спис категорий
+%%
+get_all_cats(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Res = mysql_dao:dao_call(dao_cat, get_all_cats, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
 %% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ

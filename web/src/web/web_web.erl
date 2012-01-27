@@ -255,8 +255,7 @@ simple_map_controllers(Path) ->
         "/update-acv-video"                 -> {inside, update_acv_video};
         "/update-acv-video/uload-video"     -> {inside, upload_acv_video};
 
-
-
+        "/get-all-cats"  -> {inside, get_all_cats};
 
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};
 
