@@ -14,42 +14,38 @@
 
 -include("common.hrl").
 
-%%% Поля acv_video:
-%%%
-%%%         id
-%%%         name
-%%%         datestart
-%%%         datestop
-%%%         url
-%%%         ref
-%%%         wish
-%%%         postroll
-%%%         preroll
-%%%         midroll
-%%%         pauseroll
-%%%         user_male
-%%%         age_from
-%%%         age_to
-%%%         customer_id
+get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
+    {Resourse, _ } = lists:split(length(Resourse_mp4) - 4, Resourse_mp4),
+    get_acv({Type, Resourse, _User_id}, Peer).
 
-get_adv({Type, Resourse, null}, Peer) when Type =:= "preroll"; Type =:= "postroll"; Type =:= "midroll"; Type =:= "pauseroll"->
-    Q = <<"select mark.id from clip_mark join clip on clip_mark.clip_id = clip.id "
-                                "join mark on clip_mark.mark_id = mark.id "
-                                "join mark_type on mark.mark_type_id = mark_type.id "
-                    "where mark_type.name=\"Categories\" and clip.url=?;">>,
+get_acv({Type, Resourse, _User_id}, Peer) when Type =:= "preroll"; Type =:= "postroll"; Type =:= "midroll"; Type =:= "pauseroll"->
 
-    mysql:prepare(get_clip_categories, Q),
+    ?D("Type = ~p~n", [Type]),
+    ?D("Resourse = ~p~n", [Resourse]),
+    ?D("_User_id = ~p~n", [_User_id]),
+    ?D("_User_id = ~p~n", [Peer]),
+
+    %   biz_adv_manager:get_acv({{"preroll", "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", null}, 0})
+
+    Query = <<"select mark.id from clip_mark join clip on clip_mark.clip_id = clip.id "
+            "join mark on clip_mark.mark_id = mark.id "
+            "join mark_type on mark.mark_type_id = mark_type.id "
+            "where mark_type.name=\"Categories\" and clip.url=?;">>,
+
+    mysql:prepare(get_clip_categories, Query),
     {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:execute(mySqlConPool, get_clip_categories, [list_to_binary(Resourse)]),
 
-    %R2 = mysql_dao:make_proplist(Cols, Vals, []),
-    io:format("------------~n~p~n", [Vals]),
+    Ms_proplist = mysql_dao:simple(Query, [Resourse]),
+
+
+    ?D("------------~n~p~n", [Vals]),
 
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
-    Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, ref, wish, shown "
+    Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, ref, wish, link_title, shown, duration "
             "from acv_video left join acv_video2cat on acv_video.id=acv_video2cat.acv_video_id "
                     "left join acv_video2geo_region on acv_video.id=acv_video2geo_region.acv_video_id "
             "where "
-                "acv_video.datestart > (select NOW()) and acv_video.datestop < (select NOW()) and "
+                "acv_video.datestart < (select NOW()) and acv_video.datestop > (select NOW()) and "
                 "acv_video.wish > acv_video.shown and "
                 "acv_video." ++ Type ++ " = true and "
                 "acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL ",
@@ -64,15 +60,51 @@ get_adv({Type, Resourse, null}, Peer) when Type =:= "preroll"; Type =:= "postrol
 
     Q2 = Q2S2 ++ ";",
 
-    io:format("===========~n~p~n", [Q2]),
 
-    Ret = dao:simple(Q2),
+    {ok, Ret} = dao:simple(Q2),
 
-    io:format("=-=-=-=-=-=-=-=-= ~n~p~n", [Ret]),
 
-    ok.
-%get_adv({Type, Resourse, UID}) ->
-    
+    Result_string = make_acv_xml(Ret),
+
+    ?D("Result_string  = ~s~n", [Result_string]),
+
+    Result_string .
+
+-define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
+-define(DELIM, []).
+-define(SPACE, " ").
+
+make_acv_xml(List) ->
+
+    ?XML_TOP ++
+    "<block duration=\"120\" loadnext=\"600\">" ++
+   lists:concat([
+        make_acv_xml_item(Item)
+        || Item <- List
+    ]) ++
+    "</block>".
+
+
+make_acv_xml_item(Creative) ->
+
+    ?FMT("<creative "
+            " type=\"video\" click=\"~s\" "
+            " link_title=\"~s\""
+            " url=\"http://192.168.2.187:8000/~s\""
+            " start=\"0\""
+            " skip=\"no\" "
+            " duration=\"~p\"  "
+    "/>",
+    [
+        proplists:get_value("url", Creative),
+        proplists:get_value("link_title", Creative),
+        string:strip(proplists:get_value("ref", Creative)),
+        proplists:get_value("duration", Creative)
+    ]).
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

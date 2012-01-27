@@ -13,7 +13,7 @@
             to_list/1,
             to_float/1,
             string_to_term/1,
-            eredis_to_binary/1,
+            to_binary/1,
             test/0
         ]
 ).
@@ -40,12 +40,12 @@ to_plain(Val) ->
 
 % ---------------------------------------------------------------------------
 
+
 to_integer(Val) when erlang:is_integer(Val) -> Val;
 
 to_integer(Val) when erlang:is_float(Val) -> trunc(Val);
 
-to_integer(Val) when erlang:is_atom(Val) ->
-    erlang:to_integer(erlang:atom_to_list(Val));
+to_integer(Val) when erlang:is_atom(Val) -> Val;
 
 to_integer(Val) when erlang:is_list(Val) ->
     case catch(erlang:list_to_integer(Val)) of
@@ -110,17 +110,17 @@ to_float(Val) when is_float(Val); is_integer(Val) -> Val.
 
 -define(NL, "\r\n").
 
-eredis_to_binary(X) when is_binary(X)  ->
+to_binary(X) when is_binary(X)  ->
     X;
-eredis_to_binary(X) when is_list(X)    ->
+to_binary(X) when is_list(X)    ->
     erlang:list_to_binary(X);
-eredis_to_binary(X) when is_atom(X)    ->
+to_binary(X) when is_atom(X)    ->
     erlang:list_to_binary(erlang:atom_to_list(X));
-eredis_to_binary(X) when is_integer(X) ->
+to_binary(X) when is_integer(X) ->
     erlang:list_to_binary(erlang:integer_to_list(X));
-eredis_to_binary(X) when is_float(X)   ->
+to_binary(X) when is_float(X)   ->
     erlang:list_to_binary(erlang:float_to_list(X));
-eredis_to_binary(X)                    ->
+to_binary(X)                    ->
     erlang:term_to_binary(X).
 
 eredis_to_bulk(B) when is_binary(B) ->
@@ -129,7 +129,7 @@ eredis_to_bulk(B) when is_binary(B) ->
 eredis_to_multibulk(Args) when is_list(Args) ->
     ArgCount = [<<$*>>, integer_to_list(length(Args)), <<?NL>>],
     ArgsBin = lists:map(fun eredis_to_bulk/1,
-        lists:map(fun eredis_to_binary/1, Args)),
+        lists:map(fun to_binary/1, Args)),
     [ArgCount, ArgsBin].
 
 %% ============================================================================
@@ -204,20 +204,20 @@ test()->
 
     % EREDIS_TO_BINARY
     % ----------------------------------
-    ?assertEqual(<<"atom atom">>,       eredis_to_binary('atom atom')),
-    ?assertEqual(<<"atom">>,            eredis_to_binary(atom)),
+    ?assertEqual(<<"atom atom">>,       to_binary('atom atom')),
+    ?assertEqual(<<"atom">>,            to_binary(atom)),
     % assertEqual_failed 
-    % ?assertEqual(<<"atom">>,          eredis_to_binary([atom])),
-    ?assertEqual(<<"string">>,          eredis_to_binary("string")),
-    ?assertEqual(<<1,2,3,4>>,           eredis_to_binary([1, 2, 3, 4])),
+    % ?assertEqual(<<"atom">>,          to_binary([atom])),
+    ?assertEqual(<<"string">>,          to_binary("string")),
+    ?assertEqual(<<1,2,3,4>>,           to_binary([1, 2, 3, 4])),
     % !!! wrong idea
-    % ?assertEqual(<<1,2,3,4>>,         eredis_to_binary({1, 2, 3, 4})),
+    % ?assertEqual(<<1,2,3,4>>,         to_binary({1, 2, 3, 4})),
     ?assertEqual(<<"1111">>,
-        eredis_to_binary([["1", "1"], ["1", "1"]])),
+        to_binary([["1", "1"], ["1", "1"]])),
     ?assertEqual(<<"abbcxyyz">>,
-        eredis_to_binary([["ab", "bc"], ["xy", "yz"]])),
+        to_binary([["ab", "bc"], ["xy", "yz"]])),
     ?assertEqual(<<98,99,1,3,12>>,
-        eredis_to_binary(["bc", 1, 3, [12]])),
+        to_binary(["bc", 1, 3, [12]])),
 
     % EREDIS_TO_BULK
     % ----------------------------------

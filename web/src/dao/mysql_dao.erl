@@ -52,7 +52,8 @@ simple(Query) ->
 simple(Query, Params) ->
     mysql:prepare(simple_2, Query),
     {data,{mysql_result, Cols, Vals, _, _}} =
-        mysql:execute(mySqlConPool, simple_2, Params),
+        mysql:execute(mySqlConPool, simple_2,
+            [convert:to_binary(P) || P <- Params]),
     msret(mysql_dao:make_proplist(Cols, Vals, [])).
 
 

@@ -295,7 +295,7 @@ test_acv_video()->
             "http://ya.ru",
                 "static/data/acv-video/common/130387262/adv10.mp4 ", 100,
                     true, true, true, true, true,
-                        1, 100, 0, 24,
+                        null, null, null, null,
                             20, "354b9bd8-c2aa-4a92-81ee-0fccc85a9273",
                                 "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", 0, 1},
         [13, 14], [674]}),

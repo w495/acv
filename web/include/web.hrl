@@ -16,7 +16,7 @@
 -define(RIA_MENU_COMMON_PATH, "resource/bsk/descr/menu.common.json").
 
 
--define(STATIC_DATA_URL,        "/data/").
+-define(STATIC_DATA_URL,        "/static/data/").
 -define(STATIC_DATA_PATH,       "static/data/").
 
 -define(STATIC_MEDIA_URL,        "/sm/").
