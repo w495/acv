@@ -298,12 +298,18 @@ update_acv_video(Req) ->
         {"age_from",    [string, nullable]},
         {"age_to",      [string, nullable]},
         {"time_from",   [string, nullable]},
-        {"time_to",     [string, nullable]}
+        {"time_to",     [string, nullable]},
+
+        {"duration",    [integer, nullable]},
+        {"link_title",  [string, nullable]},
+        {"alt_title",   [string, nullable]}
+        % {"shown",       [integer, nullable]}
 
     ]),
 
-    %Info_1 = erlang:append_element(Info_0, Customer_id),
-    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [Customer_id]),
+    _@_fix_tmp_shown = 0,
+
+    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [_@_fix_tmp_shown, Customer_id]),
 
     Res = dao:dao_call(dao_acv_video, update_acv_video, Info_1, values),
     {"application/json", [], [mochijson2:encode(Res)]}.

@@ -104,8 +104,7 @@ create table acv_video (
     datestop timestamp without time zone,
     url varchar(200),
     ref varchar(1000),
-    wish int,
-        /* желаемое колическтво показов */
+    wish int,   /* желаемое колическтво показов */
     postroll bool default true,
     preroll bool default true,
     midroll bool default true,
@@ -115,8 +114,13 @@ create table acv_video (
     age_from int default null,
     age_to int default null,
 
-    time_from int default null, /* часы */
-    time_to int default null,   /* часы */
+    time_from   int default null,           /* часы */
+    time_to     int default null,           /* часы */
+
+    duration    int default 0,              /* продолжительность в секундах */
+    link_title  varchar(200) default null,  /* заголовок ссылки */
+    alt_title   varchar(200) default null,  /*  */
+    shown       int default 0,
 
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */

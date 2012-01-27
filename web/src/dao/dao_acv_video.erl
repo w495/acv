@@ -72,20 +72,26 @@ get_acv_video(Acv_video_id) ->
 %%%
 update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to, Customer_id}) ->
+        Age_from, Age_to, Time_from, Time_to,
+            Duration, Link_title, Alt_title, Shown,
+                Customer_id}) ->
     Query =
         "insert into acv_video (name, datestart, datestop, url, ref, wish,"
             " postroll, preroll, midroll, pauseroll, "
-            " user_male, age_from, age_to, time_from, time_to, customer_id) "
+                " user_male, age_from, age_to, time_from, time_to, "
+                    "duration, link_title, alt_title, shown,"
+                        "customer_id) "
         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, "
-                "$10, $11, $12, $13, $14, $15, $16)"
+                "$10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)"
             " returning acv_video.id;",
     case dao:simple_ret(Query, [Name, Datestart, Datestop, Url, Ref,
             convert:to_integer(Wish), Postroll, Preroll, Midroll,
                 Pauseroll, User_male,
                     convert:to_integer(Age_from), convert:to_integer(Age_to),
                     convert:to_integer(Time_from), convert:to_integer(Time_to),
-                        convert:to_integer(Customer_id)])  of
+                        convert:to_integer(Duration), Link_title,
+                        Alt_title, convert:to_integer(Shown),
+                            convert:to_integer(Customer_id)])  of
         {ok, 1, _, [{Id}]} -> {ok, Id};
         Error -> Error
     end;
@@ -95,19 +101,24 @@ update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
 %%%
 update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to, Customer_id}) ->
+        Age_from, Age_to, Time_from, Time_to,
+            Duration, Link_title, Alt_title, Shown,
+                Customer_id}) ->
     Query =
         "update acv_video set name = $2, datestart = $3, datestop = $4, "
             " url = $5, ref = $6, wish = $7, postroll = $8, preroll = $9, "
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
-            " customer_id = $17 where id=$1;",
+            " duration = $17, link_title = $18, alt_title = $19, shown = $20,"
+            " customer_id = $21 where id=$1;",
     dao:simple(Query, [convert:to_integer(Id), Name,
         Datestart, Datestop, Url, Ref,
         convert:to_integer(Wish), Postroll, Preroll, Midroll,
         Pauseroll, User_male,
         convert:to_integer(Age_from), convert:to_integer(Age_to),
         convert:to_integer(Time_from), convert:to_integer(Time_to),
+        convert:to_integer(Duration), Link_title,
+        Alt_title, convert:to_integer(Shown),
         convert:to_integer(Customer_id)]);
 
 %%% @doc
@@ -115,26 +126,32 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
 %%%
 update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to, Customer_id},
-            Geo_region_list, Cat_id_list}) ->
+        Age_from, Age_to, Time_from, Time_to,
+            Duration, Link_title, Alt_title, Shown,
+                Customer_id},
+                    Geo_region_list, Cat_id_list}) ->
 
     Query_insert =
         "insert into acv_video (name, datestart, datestop, url, ref, wish,"
             " postroll, preroll, midroll, pauseroll, "
-            " user_male, age_from, age_to, time_from, time_to, customer_id) "
+                " user_male, age_from, age_to, time_from, time_to, "
+                    "duration, link_title, alt_title, shown,"
+                        "customer_id) "
         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, "
-                "$10, $11, $12, $13, $14, $15, $16)"
+                "$10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)"
             " returning acv_video.id;",
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
             case pgsql:equery(Con, Query_insert,
                 [Name, Datestart, Datestop, Url, Ref,
-                 convert:to_integer(Wish), Postroll, Preroll, Midroll,
-                  Pauseroll, User_male,
-                   convert:to_integer(Age_from), convert:to_integer(Age_to),
-                    convert:to_integer(Time_from), convert:to_integer(Time_to),
-                      convert:to_integer(Customer_id)])  of
+                    convert:to_integer(Wish), Postroll, Preroll, Midroll,
+                        Pauseroll, User_male,
+                            convert:to_integer(Age_from), convert:to_integer(Age_to),
+                            convert:to_integer(Time_from), convert:to_integer(Time_to),
+                                convert:to_integer(Duration), Link_title,
+                                Alt_title, convert:to_integer(Shown),
+                                    convert:to_integer(Customer_id)])  of
                 {ok, 1, _, [{Id}]} ->
                     case length(Geo_region_list) of
                         0 ->    ok;
@@ -171,25 +188,30 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
 %%%
 update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to, Customer_id},
-            Geo_region_list, Cat_id_list}) ->
+        Age_from, Age_to, Time_from, Time_to,
+            Duration, Link_title, Alt_title, Shown,
+                Customer_id},
+                    Geo_region_list, Cat_id_list}) ->
 
     Query_update =
         "update acv_video set name = $2, datestart = $3, datestop = $4, "
             " url = $5, ref = $6, wish = $7, postroll = $8, preroll = $9, "
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
-            " customer_id = $17 where id=$1;",
+            " duration = $17, link_title = $18, alt_title = $19, shown = $20,"
+            " customer_id = $21 where id=$1;",
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
             case pgsql:equery(Con, Query_update,
                 [Id, Name, Datestart, Datestop, Url, Ref,
-                 convert:to_integer(Wish), Postroll, Preroll, Midroll,
-                  Pauseroll, User_male,
-                   convert:to_integer(Age_from), convert:to_integer(Age_to),
-                    convert:to_integer(Time_from), convert:to_integer(Time_to),
-                      convert:to_integer(Customer_id)])  of
+                convert:to_integer(Wish), Postroll, Preroll, Midroll,
+                    Pauseroll, User_male,
+                        convert:to_integer(Age_from), convert:to_integer(Age_to),
+                        convert:to_integer(Time_from), convert:to_integer(Time_to),
+                            convert:to_integer(Duration), Link_title,
+                            Alt_title, convert:to_integer(Shown),
+                                convert:to_integer(Customer_id)]) of
                 {ok, _ } ->
                     case length(Geo_region_list) of
                         0 ->    ok;
@@ -284,6 +306,12 @@ test_eunit_1()->
     Age_to =        "2",
     Time_from  =    "10",
     Time_to =       "11",
+
+    Duration  =     "1",
+    Link_title =    "Link_title",
+    Alt_title  =    "Alt_title",
+    Shown =         "11",
+
     Customer_id =   "1",
 
     ?MODULE:get_all_acv_videos([]),
@@ -292,11 +320,15 @@ test_eunit_1()->
         ?MODULE:update_acv_video({null,
             Name, Datestart, Datestop, Url, Ref, Wish,
                 Postroll, Preroll, Midroll, Pauseroll, User_male,
-                    Age_from, Age_to, Time_from, Time_to, Customer_id}),
+                    Age_from, Age_to, Time_from, Time_to,
+                        Duration, Link_title, Alt_title, Shown,
+                            Customer_id}),
     ?MODULE:update_acv_video({Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
-                Age_from, Age_to, Time_from, Time_to, Customer_id}),
+                Age_from, Age_to, Time_from, Time_to,
+                    Duration, Link_title, Alt_title, Shown,
+                        Customer_id}),
     ?assertEqual({ok,[[
             {"datestop",Datestop},
             {"datestart",Datestart},
@@ -356,19 +388,27 @@ test_eunit_2()->
     Age_to =        "2",
     Time_from  =    "10",
     Time_to =       "11",
+
+    Duration  =     "1",
+    Link_title =    "Link_title",
+    Alt_title  =    "Alt_title",
+    Shown =         "11",
+
     Customer_id =   "1",
 
     {ok, Acv_video_id} = ?MODULE:update_acv_video({{null,
         Name, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
-                Age_from, Age_to, Time_from, Time_to, Customer_id},
-                    R_list, []}),
+                Age_from, Age_to, Time_from, Time_to,
+                    Duration, Link_title, Alt_title, Shown,
+                        Customer_id}, R_list, []}),
 
     ?MODULE:update_acv_video({{Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
-                Age_from, Age_to, Time_from, Time_to, Customer_id},
-                    R_list_new, []}),
+                Age_from, Age_to, Time_from, Time_to,
+                    Duration, Link_title, Alt_title, Shown,
+                        Customer_id}, R_list_new, []}),
 
     ?MODULE:delete_acv_video(Acv_video_id),
     lists:foreach(fun(R)->

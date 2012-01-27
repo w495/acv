@@ -48,6 +48,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
+            Duration:          null,
+            Link_title:        null,
+            Alt_title:         null,
             Url:        null,
             Ref:        null,
             Preroll:    null,
@@ -68,7 +71,13 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
-
+            
+            this.inp.Duration =    new qx.ui.form.Spinner(1, 1, 134217728);
+            this.inp.Link_title =   new qx.ui.form.TextField()
+                .set({placeholder: "Текст ссылки"});
+            this.inp.Alt_title =    new qx.ui.form.TextField()
+                .set({placeholder: "Текст подсказки"});
+            
             this.inp.Url = new qx.ui.form.TextField()
                 .set({placeholder: "http://my-company.com/"});
             this.inp.Ref = new qx.ui.form.TextField()
@@ -82,6 +91,18 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                 
             var vertical_offset = -1;
             this.composite.add(pageName, {row:++vertical_offset, column:0, colSpan:2})
+
+            this.composite.add(new qx.ui.basic.Label().set({value: "Alt_title",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            this.composite.add(this.inp.Alt_title,   {row:vertical_offset, column:1});
+
+            this.composite.add(new qx.ui.basic.Label().set({value: "Link_title",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            this.composite.add(this.inp.Link_title,   {row:vertical_offset, column:1});
+            
+            this.composite.add(new qx.ui.basic.Label().set({value: "Продолжительность",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            this.composite.add(this.inp.Duration,   {row:vertical_offset, column:1});
             
             this.composite.add(new qx.ui.basic.Label().set({value: "Урл",  rich : true}),
                     {row:++vertical_offset, column:0});
