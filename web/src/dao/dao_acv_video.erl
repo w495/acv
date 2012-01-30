@@ -18,26 +18,35 @@
 
 -include("common.hrl").
 
-%%% Поля acv_video:
-%%%
-%%%         id
-%%%         name
-%%%         datestart
-%%%         datestop
-%%%         url
-%%%         ref
-%%%         wish
-%%%         postroll
-%%%         preroll
-%%%         midroll
-%%%         pauseroll
-%%%         user_male
-%%%         age_from
-%%%         age_to
-%%%         time_from
-%%%         time_to
-%%%         customer_id
+-type proplist() :: [{term(), term()}].
+-type acv_video() :: {
+    %%% Поля acv_video:
+        Id::integer()|null,             Name::string(),
+        Datestart::{tuple(), tuple()},  Datestop::{tuple(), tuple()},
+        Url::string(),                  Ref::string(),
+        Wish::integer(),
+        Postroll::boolean()|null,       Preroll::boolean()|null,
+        Midroll::boolean()|null,        Pauseroll::boolean()|null,
+        User_male::boolean()|null,
+        Age_from::integer()|null,       Age_to::integer()|null,
+        Time_from::integer()|null,      Time_to::integer()|null,
+        Duration::integer(),
+        Link_title::string(),           Alt_title::string(),
+        Shown::integer(),
+        Rerun_hours::integer()|null,    Rerun_minutes::integer()|null,
+        Customer_id::integer()
+}.
 
+-spec get_all_acv_videos(any()) -> [proplist()].
+-spec get_acv_videos(Customer_id::integer()) -> [proplist()].
+-spec get_acv_video(Acv_video_id::integer()) -> [proplist()].
+-spec update_acv_video(Acv_video::acv_video()) -> [proplist()];
+    ({acv_video(), [Geo_region_list::integer()],
+                        [Cat_id_list::integer()]}) -> [proplist()].
+
+%%% @doc
+%%% Возвращает список всех acv_video для всех пользователей
+%%% 
 get_all_acv_videos(_) ->
     Query =
         "select "
@@ -48,6 +57,9 @@ get_all_acv_videos(_) ->
         " from acv_video;",
     dao:simple(Query).
 
+%%% @doc
+%%% Возвращает список всех acv_video для данного пользователя
+%%% 
 get_acv_videos(Customer_id) ->
     Query =
         "select "
@@ -57,8 +69,11 @@ get_acv_videos(Customer_id) ->
             " acv_video.datestop "
         " from acv_video "
         " where customer_id = $1;",
-    dao:simple(Query, [convert:to_integer(Customer_id)]).
+    dao:simple(Query, [(Customer_id)]).
 
+%%% @doc
+%%% Возвращает данное acv_video
+%%% 
 get_acv_video(Acv_video_id) ->
     Query =
         "select "
@@ -66,7 +81,7 @@ get_acv_video(Acv_video_id) ->
             "acv_video.datestart, acv_video.datestop "
          " from acv_video "
         "where acv_video.id = $1;",
-    dao:simple(Query, [convert:to_integer(Acv_video_id)]).
+    dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
 %%% Создает рекламу видео
@@ -75,24 +90,27 @@ update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
             Duration, Link_title, Alt_title, Shown,
-                Customer_id}) ->
+                Rerun_hours, Rerun_minutes, Customer_id}) ->
     Query =
         "insert into acv_video (name, datestart, datestop, url, ref, wish,"
             " postroll, preroll, midroll, pauseroll, "
                 " user_male, age_from, age_to, time_from, time_to, "
                     "duration, link_title, alt_title, shown,"
-                        "customer_id) "
-        "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, "
-                "$10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)"
+                        "rerun_hours, rerun_minutes, customer_id) "
+        "values ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10, "
+                    " $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, "
+                    " $21, $22) "
             " returning acv_video.id;",
     case dao:simple_ret(Query, [Name, Datestart, Datestop, Url, Ref,
-            convert:to_integer(Wish), Postroll, Preroll, Midroll,
+            (Wish), Postroll, Preroll, Midroll,
                 Pauseroll, User_male,
-                    convert:to_integer(Age_from), convert:to_integer(Age_to),
-                    convert:to_integer(Time_from), convert:to_integer(Time_to),
-                        convert:to_integer(Duration), Link_title,
-                        Alt_title, convert:to_integer(Shown),
-                            convert:to_integer(Customer_id)])  of
+                    (Age_from), (Age_to),
+                    (Time_from),(Time_to),
+                        (Duration), Link_title,
+                        Alt_title, (Shown),
+                            (Rerun_hours),
+                            (Rerun_minutes),
+                                (Customer_id)])  of
         {ok, 1, _, [{Id}]} -> {ok, Id};
         Error -> Error
     end;
@@ -104,23 +122,25 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
             Duration, Link_title, Alt_title, Shown,
-                Customer_id}) ->
+                Rerun_hours, Rerun_minutes, Customer_id}) ->
     Query =
         "update acv_video set name = $2, datestart = $3, datestop = $4, "
             " url = $5, ref = $6, wish = $7, postroll = $8, preroll = $9, "
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
-            " duration = $17, link_title = $18, alt_title = $19, shown = $20,"
-            " customer_id = $21 where id=$1;",
-    dao:simple(Query, [convert:to_integer(Id), Name,
+            " duration = $17, link_title = $18, alt_title = $19, shown = $20, "
+            " rerun_hours =$21, rerun_minutes = $22, "
+            " customer_id = $23 ""where id=$1;",
+    dao:simple(Query, [(Id), Name,
         Datestart, Datestop, Url, Ref,
-        convert:to_integer(Wish), Postroll, Preroll, Midroll,
+        (Wish), Postroll, Preroll, Midroll,
         Pauseroll, User_male,
-        convert:to_integer(Age_from), convert:to_integer(Age_to),
-        convert:to_integer(Time_from), convert:to_integer(Time_to),
-        convert:to_integer(Duration), Link_title,
-        Alt_title, convert:to_integer(Shown),
-        convert:to_integer(Customer_id)]);
+        (Age_from), (Age_to),
+        (Time_from), (Time_to),
+        (Duration), Link_title,
+        Alt_title, (Shown),
+        (Rerun_hours), (Rerun_minutes),
+        (Customer_id)]);
 
 %%% @doc
 %%% Создает рекламу видео и обвязки к ней
@@ -129,30 +149,36 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
             Duration, Link_title, Alt_title, Shown,
-                Customer_id},
+                Rerun_hours, Rerun_minutes, Customer_id},
                     Geo_region_list, Cat_id_list}) ->
 
     Query_insert =
-        "insert into acv_video (name, datestart, datestop, url, ref, wish,"
+        "insert into acv_video (name, datestart, datestop, url, ref, wish, "
             " postroll, preroll, midroll, pauseroll, "
                 " user_male, age_from, age_to, time_from, time_to, "
-                    "duration, link_title, alt_title, shown,"
-                        "customer_id) "
-        "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, "
-                "$10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)"
+                    " duration, link_title, alt_title, shown, "
+                        " rerun_hours, rerun_minutes, "
+                        " customer_id) "
+        "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, "
+                    " $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, "
+                    " $21, $22) "
             " returning acv_video.id;",
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
             case pgsql:equery(Con, Query_insert,
                 [Name, Datestart, Datestop, Url, Ref,
-                    convert:to_integer(Wish), Postroll, Preroll, Midroll,
+                    (Wish), Postroll, Preroll, Midroll,
                         Pauseroll, User_male,
-                            convert:to_integer(Age_from), convert:to_integer(Age_to),
-                            convert:to_integer(Time_from), convert:to_integer(Time_to),
-                                convert:to_integer(Duration), Link_title,
-                                Alt_title, convert:to_integer(Shown),
-                                    convert:to_integer(Customer_id)])  of
+                            (Age_from),
+                            (Age_to),
+                            (Time_from),
+                            (Time_to),
+                                (Duration), Link_title,
+                                Alt_title, (Shown),
+                                    (Rerun_hours),
+                                    (Rerun_minutes),
+                                        (Customer_id)])  of
                 {ok, 1, _, [{Id}]} ->
                     case length(Geo_region_list) of
                         0 ->    ok;
@@ -191,7 +217,7 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
             Duration, Link_title, Alt_title, Shown,
-                Customer_id},
+                Rerun_hours, Rerun_minutes, Customer_id},
                     Geo_region_list, Cat_id_list}) ->
 
     Query_update =
@@ -200,29 +226,33 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
             " duration = $17, link_title = $18, alt_title = $19, shown = $20,"
-            " customer_id = $21 where id=$1;",
-
+            " rerun_hours = $21, rerun_minutes = $22, "
+            " customer_id = $23 where id=$1;",
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
             case pgsql:equery(Con, Query_update,
                 [Id, Name, Datestart, Datestop, Url, Ref,
-                convert:to_integer(Wish), Postroll, Preroll, Midroll,
+                (Wish), Postroll, Preroll, Midroll,
                     Pauseroll, User_male,
-                        convert:to_integer(Age_from), convert:to_integer(Age_to),
-                        convert:to_integer(Time_from), convert:to_integer(Time_to),
-                            convert:to_integer(Duration), Link_title,
-                            Alt_title, convert:to_integer(Shown),
-                                convert:to_integer(Customer_id)]) of
+                    (Age_from),
+                    (Age_to),
+                        (Time_from),
+                        (Time_to),
+                            (Duration), Link_title,
+                            Alt_title, (Shown),
+                                (Rerun_hours),
+                                (Rerun_minutes),
+                                    (Customer_id)]) of
                 {ok, _ } ->
                     case length(Geo_region_list) of
                         0 ->    ok;
                         _ ->
                             Query_video2region_d =
                                 "delete from acv_video2geo_region "
-                                    "where acv_video_id = $1", 
+                                    " where acv_video_id = $1", 
                             Query_acv_video2geo_region =
                                 "insert into acv_video2geo_region "
-                                 "(acv_video_id, geo_region_id) values " ++
+                                 " (acv_video_id, geo_region_id) values " ++
                                   make_brackets_string(Id, Geo_region_list),
                             pgsql:equery(Con, Query_video2region_d, [Id]),
                             {ok, _} = pgsql:equery(Con,
@@ -233,10 +263,10 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
                         _ ->
                             Query_video2cat_d =
                                 "delete from acv_video2cat "
-                                    "where acv_video_id = $1", 
+                                    " where acv_video_id = $1", 
                             Query_acv_video2cat =
                                 "insert into acv_video2cat "
-                                    "(acv_video_id, cat_id) values " ++
+                                    " (acv_video_id, cat_id) values " ++
                                         make_brackets_string(Id, Cat_id_list),
                             pgsql:equery(Con, Query_video2cat_d, [Id]),
                             {ok, _} = pgsql:equery(Con,
@@ -260,16 +290,25 @@ delete_acv_video(Id) ->
         "delete from acv_video2cat where acv_video_id = $1;",
     dao:with_transaction_fk(
         fun(Con) ->
-            pgsql:equery(Con, Query_video2geo_region, [convert:to_integer(Id)]),
-            pgsql:equery(Con, Query_video2cat, [convert:to_integer(Id)]),
-            pgsql:equery(Con, Query_video, [convert:to_integer(Id)])
+            pgsql:equery(Con, Query_video2geo_region, [(Id)]),
+            pgsql:equery(Con, Query_video2cat, [(Id)]),
+            pgsql:equery(Con, Query_video, [(Id)])
         end
     ).
 
+%%% @doc
+%%% Возвращает строку вида
+%%%     (Id, Id_list[1]), ..., (Id, Id_list[n])
+%%% 
 make_brackets_string(Id, Id_list)->
     string:join([string:join(["(", convert:to_list(Id), ",",
         convert:to_list(X),")"], []) || X <- Id_list], ",").
 
+%%% @doc
+%%% Возвращает строку вида
+%%%     (Id, Id_list[1]), ..., (Id, Id_list[n])
+%%% НАИВНАЯ РЕАЛИЗАЦИЯ
+%%% 
 make_brackets_string_(Id, Id_list)->
     string:join([lists:flatten(io_lib:format("(~p,~p)",
         [Id, X])) || X <- Id_list], ",").
@@ -281,7 +320,6 @@ make_brackets_string_(Id, Id_list)->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 -include_lib("eunit/include/eunit.hrl").
-
 
 test()->
     test_eunit_1(),
@@ -310,23 +348,24 @@ test_eunit_1()->
     Datestop =      {{10855,6,04},{07,16,30.0}},
     Url  =          "url",
     Ref =           "ref",
-    Wish =          "1",
-    Postroll =      "true",
-    Preroll =       "true",
-    Midroll =       "true",
-    Pauseroll =     "true",
-    User_male =     "true",
-    Age_from  =     "1",
-    Age_to =        "2",
-    Time_from  =    "10",
-    Time_to =       "11",
-
-    Duration  =     "1",
+    Wish =          1,
+    Postroll =      true,
+    Preroll =       true,
+    Midroll =       null,
+    Pauseroll =     null,
+    User_male =     null,
+    Age_from  =     1,
+    Age_to =        2,
+    Time_from  =    10,
+    Time_to =       11,
+    Duration  =     1,
     Link_title =    "Link_title",
     Alt_title  =    "Alt_title",
-    Shown =         "11",
+    Shown =         11,
+    Rerun_hours =   1,
+    Rerun_minutes = 1,
 
-    Customer_id =   "1",
+    Customer_id =   1,
 
     ?MODULE:get_all_acv_videos([]),
     ?MODULE:get_acv_videos(Customer_id),
@@ -336,13 +375,16 @@ test_eunit_1()->
                 Postroll, Preroll, Midroll, Pauseroll, User_male,
                     Age_from, Age_to, Time_from, Time_to,
                         Duration, Link_title, Alt_title, Shown,
-                            Customer_id}),
+                            Rerun_hours, Rerun_minutes,
+                                Customer_id}),
+
     ?MODULE:update_acv_video({Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
                     Duration, Link_title, Alt_title, Shown,
-                        Customer_id}),
+                        Rerun_hours, Rerun_minutes,
+                            Customer_id}),
     ?assertEqual({ok,[[
             {"datestop",Datestop},
             {"datestart",Datestart},
@@ -392,37 +434,40 @@ test_eunit_2()->
     Datestop =      {{1970,6,04},{07,16,30.0}},
     Url  =          "url",
     Ref =           "ref",
-    Wish =          "1",
-    Postroll =      "true",
-    Preroll =       "true",
-    Midroll =       "true",
-    Pauseroll =     "true",
-    User_male =     "true",
-    Age_from  =     "1",
-    Age_to =        "2",
-    Time_from  =    "10",
-    Time_to =       "11",
-
-    Duration  =     "1",
+    Wish =          1,
+    Postroll =      true,
+    Preroll =       true,
+    Midroll =       true,
+    Pauseroll =     true,
+    User_male =     true,
+    Age_from  =     1,
+    Age_to =        2,
+    Time_from  =    10,
+    Time_to =       11,
+    Duration  =     1,
     Link_title =    "Link_title",
     Alt_title  =    "Alt_title",
-    Shown =         "11",
+    Shown =         11,
+    Rerun_hours =   1,
+    Rerun_minutes = 1,
 
-    Customer_id =   "1",
+    Customer_id =   1,
 
     {ok, Acv_video_id} = ?MODULE:update_acv_video({{null,
         Name, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
                     Duration, Link_title, Alt_title, Shown,
-                        Customer_id}, R_list, []}),
+                        Rerun_hours, Rerun_minutes,
+                            Customer_id}, R_list, []}),
 
     ?MODULE:update_acv_video({{Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
                     Duration, Link_title, Alt_title, Shown,
-                        Customer_id}, R_list_new, []}),
+                        Rerun_hours, Rerun_minutes,
+                            Customer_id}, R_list_new, []}),
 
     ?MODULE:delete_acv_video(Acv_video_id),
     lists:foreach(fun(R)->

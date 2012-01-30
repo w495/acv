@@ -64,7 +64,7 @@ get_adv(Req) ->
     "            url=\"http://get-here/paused.jpg\"/>"
     "</block>",
 
-    {?OUTPUT_HTML, [], [Fake_result_1]}.
+    {?OUTPUT_HTML, [], [Result]}.
 
 test()->
     ok.

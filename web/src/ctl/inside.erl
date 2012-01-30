@@ -318,8 +318,10 @@ update_acv_video(Req) ->
     ]),
 
     _@_fix_tmp_shown = 0,
+    _@_fix_tmp_rh = 0,
+    _@_fix_tmp_rm = 0,
 
-    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [_@_fix_tmp_shown, Customer_id]),
+    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [_@_fix_tmp_shown, _@_fix_tmp_rh, _@_fix_tmp_rm, Customer_id]),
 
     ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
     ?D("~n---------------------~nCat_list = ~p", [Cat_list]),

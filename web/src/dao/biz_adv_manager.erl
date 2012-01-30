@@ -10,6 +10,12 @@
     test/1
 ]).
 
+-define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
+-define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
+-define(DELIM, []).
+-define(SPACE, " ").
+
+
 -compile(export_all).
 
 -include("common.hrl").
@@ -18,6 +24,7 @@ get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
     {Resourse, _ } = lists:split(length(Resourse_mp4) - 4, Resourse_mp4),
     get_acv({Type, Resourse, _User_id}, Peer).
 
+ %5615d6c0-79c3-4a90-bf34-9d23ae78c14a
 get_acv({Type, Resourse, _User_id}, Peer) when Type =:= "preroll"; Type =:= "postroll"; Type =:= "midroll"; Type =:= "pauseroll"->
 
     ?D("Type = ~p~n", [Type]),
@@ -37,7 +44,6 @@ get_acv({Type, Resourse, _User_id}, Peer) when Type =:= "preroll"; Type =:= "pos
 
     Ms_proplist = mysql_dao:simple(Query, [Resourse]),
 
-
     ?D("------------~n~p~n", [Vals]),
 
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
@@ -46,7 +52,7 @@ get_acv({Type, Resourse, _User_id}, Peer) when Type =:= "preroll"; Type =:= "pos
                     "left join acv_video2geo_region on acv_video.id=acv_video2geo_region.acv_video_id "
             "where "
                 "acv_video.datestart < (select NOW()) and acv_video.datestop > (select NOW()) and "
-                "acv_video.wish > acv_video.shown and "
+                %"acv_video.wish > acv_video.shown and "
                 "acv_video." ++ Type ++ " = true and "
                 "acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL ",
     if
@@ -59,52 +65,80 @@ get_acv({Type, Resourse, _User_id}, Peer) when Type =:= "preroll"; Type =:= "pos
     end,
 
     Q2 = Q2S2 ++ ";",
-
-
     {ok, Ret} = dao:simple(Q2),
-
-
-    Result_string = make_acv_xml(Ret),
+    Result_string = make_acv_xml_naive(Ret),
 
     ?D("Result_string  = ~s~n", [Result_string]),
 
     Result_string .
 
--define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
--define(DELIM, []).
--define(SPACE, " ").
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%%
+%%% @doc
+%%% Возвращает строку с XML для плеера.
+%%% В этой строки находится полное описание рекламы.
+%%%
 make_acv_xml(List) ->
+    {Acc_str, Acc_duration} = make_acv_xml_item(List, {[], 0}),
+    ?XML_TOP ++
+    ?FMT("<block duration=\"~s\" loadnext=\"600\">", [Acc_duration]) ++
+        Acc_str ++
+    "</block>".
 
+%%%
+%%% @doc
+%%% Возвращает строку с XML для плеера.
+%%% В этой строки находится полное описание рекламы.
+%%% НАИВНАЯ РЕАЛИЗАЦИЯ
+%%%
+make_acv_xml_item([], Acc) -> Acc;
+make_acv_xml_item([Creative|Tail] = List, {Acc_str, Acc_duration})->
+    Creative_string = creative_string(Creative),
+    make_acv_xml_item(Tail,
+        {Acc_str ++ Creative_string,
+            Acc_duration + proplists:get_value("duration", Creative)}).
+
+%%%
+%%% @doc
+%%% Возвращает строку с XML для плеера.
+%%% В этой строки находится полное описание рекламы.
+%%% НАИВНАЯ РЕАЛИЗАЦИЯ
+%%%
+make_acv_xml_naive(List) ->
     ?XML_TOP ++
     "<block duration=\"120\" loadnext=\"600\">" ++
    lists:concat([
-        make_acv_xml_item(Item)
+        creative_string(Item)
         || Item <- List
     ]) ++
     "</block>".
 
-
-make_acv_xml_item(Creative) ->
-
+%%%
+%%% @doc
+%%% Возвращает строку с XML одной рекламной сущности
+%%% 
+%%% Не самая эффективная реализация, т.к. используется FMT.
+%%% При возникновении проблем нужно использовать конкатенацию.
+%%% 
+creative_string(Creative) ->
     ?FMT("<creative "
             " type=\"video\" click=\"~s\" "
             " link_title=\"~s\""
-            " url=\"http://192.168.2.187:8000/~s\""
+            " url=\"~s/~s\""
             " start=\"0\""
             " skip=\"no\" "
             " duration=\"~p\"  "
-    "/>",
-    [
-        proplists:get_value("url", Creative),
-        proplists:get_value("link_title", Creative),
-        string:strip(proplists:get_value("ref", Creative)),
-        proplists:get_value("duration", Creative)
-    ]).
-
-
-
-
+        "/>",
+        [
+            proplists:get_value("url", Creative),
+            proplists:get_value("link_title", Creative),
+            config:get(vk_streamer, ?VK_STREAMER_DEFAULT),
+            string:strip(proplists:get_value("ref", Creative)),
+            proplists:get_value("duration", Creative)
+        ]
+    ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -114,21 +148,17 @@ make_acv_xml_item(Creative) ->
 %%% Юнит тестирование
 %%%
 
-test1() ->
+mysql_test_1() ->
     R = {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:fetch(mySqlConPool, <<"select * from customer where uid = 1265;">>),
-    io:format("------------~n~p~n", [R]),
-
+    ?D("------------~n~p~n", [R]),
     R2 = mysql_dao:make_proplist(Cols, Vals, []),
-
-    io:format("------------~n~p~n", [R2]),
-
+    ?D("------------~n~p~n", [R2]),
     ok.
-test2() ->
+
+mysql_test_2() ->
     R = mysql:fetch(mySqlConPool, <<"select ** from customer where uid = 1265111;">>),
-    io:format("------------~n~p~n", [R]),
-
+    ?D("------------~n~p~n", [R]),
     ok.
-
 
 test()->
     ok.

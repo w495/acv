@@ -5,7 +5,7 @@
 %        ]
 %    },
 
-    {web, [
+    {advsystem, [
         {site_owner, "tvzavr"},
         {log_level, info},
         {cookiename, "FK"},

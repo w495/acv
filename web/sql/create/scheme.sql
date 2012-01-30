@@ -111,8 +111,8 @@ create table acv_video (
     pauseroll bool default true,
     user_male bool default null,
 
-    age_from int default null,
-    age_to int default null,
+    age_from    int default null,
+    age_to      int default null,
 
     time_from   int default null,           /* часы */
     time_to     int default null,           /* часы */
@@ -121,6 +121,9 @@ create table acv_video (
     link_title  varchar(200) default null,  /* заголовок ссылки */
     alt_title   varchar(200) default null,  /*  */
     shown       int default 0,
+
+    rerun_hours int default null,           /* разрешенный повторный показ */
+    rerun_minutes int default null,         /* разрешенный повторный показ */
 
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
@@ -136,6 +139,15 @@ create table geo_region (
     name varchar (100)
 );
 
+/**
+ * Что какому пользователю показали и когда
+**/
+create sequence seq_acv_video_shown;
+create table acv_video_shown (
+    id int primary key default nextval('seq_acv_video_shown'),
+    customer_id int references customer(id),
+    acv_video_id int references acv_video(id)
+);
 
 -------------------------------------------------------------------------------
 -- СВЯЗКИ МНОГИЕ КО МНОГИМ

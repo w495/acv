@@ -19,7 +19,9 @@
 ##      не будут отловлены.
 ##
 
-default_db_name=adv_system
+# default_db_name=adv_system
+
+default_db_name=fk
 
 scheme_file_name=./scheme.sql
 proc_file_name=./proc.sql
