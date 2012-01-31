@@ -143,7 +143,7 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
             " duration = $17, link_title = $18, alt_title = $19, shown = $20, "
             " rerun_hours =$21, rerun_minutes = $22, "
-            " customer_id = $23 ""where id=$1;",
+            " customer_id = $23 where id=$1;",
     dao:simple(Query, [(Id), Name,
         Datestart, Datestop, Url, Ref,
         (Wish), Postroll, Preroll, Midroll,
@@ -160,18 +160,20 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
 %%% ОБЕРТКА К СЛЕДУЮЩЕЙ ФУНКЦИИ.
 %%% Создает рекламу видео и обвязки к ней
 %%%
-update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
-    Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to,
-            Duration, Link_title, Alt_title,
-                Rerun_hours, Rerun_minutes, Customer_id},
-                    Geo_region_list, Cat_id_list}) ->
-    update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
-        Postroll, Preroll, Midroll, Pauseroll, User_male,
-        Age_from, Age_to, Time_from, Time_to,
-        Duration, Link_title, Alt_title, 0,
-        Rerun_hours, Rerun_minutes, Customer_id},
-        Geo_region_list, Cat_id_list});
+%
+% update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
+%     Postroll, Preroll, Midroll, Pauseroll, User_male,
+%         Age_from, Age_to, Time_from, Time_to,
+%             Duration, Link_title, Alt_title,
+%                 Rerun_hours, Rerun_minutes, Customer_id},
+%                     Geo_region_list, Cat_id_list}) ->
+%     update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
+%         Postroll, Preroll, Midroll, Pauseroll, User_male,
+%         Age_from, Age_to, Time_from, Time_to,
+%         Duration, Link_title, Alt_title, 0,
+%         Rerun_hours, Rerun_minutes, Customer_id},
+%         Geo_region_list, Cat_id_list});
+%
 
 %%% @doc
 %%% Создает рекламу видео и обвязки к ней

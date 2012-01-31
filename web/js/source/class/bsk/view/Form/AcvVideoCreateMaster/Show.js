@@ -8,7 +8,12 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
 {
     extend : Object,
     
-    construct : function(uReq) {
+    construct : function(uReq, isNew) {
+        
+        this.isNew = isNew;
+        
+        console.log(this.isNew);
+        
         this.uReq = uReq;
         this.buildForm();
     },
@@ -45,6 +50,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
 
         inp : {
             Wish:       null,
+            Shown:       null,
             Preroll:    null,
             Midroll:    null,
             Postroll:   null,
@@ -80,15 +86,23 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             this.boxPlace = this.makeBoxPlace();
             this.boxRerun = this.makeBoxRerun();
             this.inp.Wish = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
+            this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
+                .set({enabled: false});
             
             var vertical_offset = -1;
             
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0, colSpan:2});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Количество",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Желаемое количество",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
+            
+            if(this.isNew){
+                this.composite.add(new qx.ui.basic.Label().set({value: "Фактическое количество",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
+            }
             
             this.composite.add(this.boxPlace,
                 {row:++vertical_offset, column:0,colSpan:2});
@@ -98,6 +112,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             
             return this.composite;
         },
+        
         
         makeBoxPlace : function() {
             this.inp.Preroll = new qx.ui.form.CheckBox("Preroll")

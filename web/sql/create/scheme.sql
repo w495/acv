@@ -135,6 +135,7 @@ create table acv_video (
 create sequence seq_geo_region;
 create table geo_region (
     id int primary key default nextval('seq_geo_region'),
+    dateshow timestamp without time zone,
     alias varchar(30) UNIQUE,
     name varchar (100)
 );

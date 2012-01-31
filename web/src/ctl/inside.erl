@@ -23,7 +23,6 @@
         delete_customer/1]).
     % DIR
 
-
 -import(mochiweb_cookies, [cookie/2]).
 -include("../include/web_session.hrl").
 -include("../include/common.hrl").
@@ -294,6 +293,9 @@ update_acv_video(Req) ->
         {"duration",    [integer, nullable]},
         {"link_title",  [string, nullable]},
         {"alt_title",   [string, nullable]},
+
+        {"shown",   [integer]},
+
         {"rerun_hours",   [integer, nullable]},
         {"rerun_minutes",     [integer, nullable]}
 
