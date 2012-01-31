@@ -19,22 +19,35 @@
 -include("common.hrl").
 
 -type proplist() :: [{term(), term()}].
+-type date() :: {integer(), integer(), integer()}.
+-type time() :: {integer(), integer(), float()}.
+-type datetime() :: {date(), time()}.
+
 -type acv_video() :: {
     %%% Поля acv_video:
-        Id::integer()|null,             Name::string(),
-        Datestart::{tuple(), tuple()},  Datestop::{tuple(), tuple()},
-        Url::string(),                  Ref::string(),
-        Wish::integer(),
-        Postroll::boolean()|null,       Preroll::boolean()|null,
-        Midroll::boolean()|null,        Pauseroll::boolean()|null,
-        User_male::boolean()|null,
-        Age_from::integer()|null,       Age_to::integer()|null,
-        Time_from::integer()|null,      Time_to::integer()|null,
-        Duration::integer(),
-        Link_title::string(),           Alt_title::string(),
-        Shown::integer(),
-        Rerun_hours::integer()|null,    Rerun_minutes::integer()|null,
-        Customer_id::integer()
+        Id              ::integer()|null,
+        Name            ::string(),
+        Datestart       ::datetime(),
+        Datestop        ::datetime(),
+        Url             ::string(),
+        Ref             ::string(),
+        Wish            ::integer(),
+        Postroll        ::boolean()|null,
+        Preroll         ::boolean()|null,
+        Midroll         ::boolean()|null,
+        Pauseroll       ::boolean()|null,
+        User_male       ::boolean()|null,
+        Age_from        ::integer()|null,
+        Age_to          ::integer()|null,
+        Time_from       ::integer()|null,
+        Time_to         ::integer()|null,
+        Duration        ::integer(),
+        Link_title      ::string(),
+        Alt_title       ::string(),
+        Shown           ::integer(),
+        Rerun_hours     ::integer()|null,
+        Rerun_minutes   ::integer()|null,
+        Customer_id     ::integer()
 }.
 
 -spec get_all_acv_videos(any()) -> [proplist()].
@@ -42,7 +55,7 @@
 -spec get_acv_video(Acv_video_id::integer()) -> [proplist()].
 -spec update_acv_video(Acv_video::acv_video()) -> [proplist()];
     ({acv_video(), [Geo_region_list::integer()],
-                        [Cat_id_list::integer()]}) -> [proplist()].
+                        [Cat_id_list::integer()]}) -> integer().
 
 %%% @doc
 %%% Возвращает список всех acv_video для всех пользователей
@@ -140,7 +153,8 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
         (Duration), Link_title,
         Alt_title, (Shown),
         (Rerun_hours), (Rerun_minutes),
-        (Customer_id)]);
+        (Customer_id)]),
+    Id;
 
 %%% @doc
 %%% Создает рекламу видео и обвязки к ней
