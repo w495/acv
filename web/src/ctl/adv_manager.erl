@@ -17,13 +17,11 @@
 
 get_adv(Req) ->
     Data = Req:parse_qs(),
-    Info_0 = norm:extr(Data, [
+    In = norm:extr(Data, [
         {"type", [string]},
-        {"resourse", [string]}
-        % {"userid", [nullable, string]}
+        {"resourse", [string]},
+        {"userid", [nullable, string]}
     ]),
-
-    In = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [null]),
 
     Peer = Req:get(peer),
     Result = biz_adv_manager:get_acv_mp4(In, Peer),
