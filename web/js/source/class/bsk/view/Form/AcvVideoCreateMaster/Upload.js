@@ -49,11 +49,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             Link_title:        null,
             Alt_title:         null,
             Url:        null,
-            Ref:        null,
-            Preroll:    null,
-            Midroll:    null,
-            Postroll:   null,
-            Pauseroll:  null
+            Ref:        null
         },
         
         buildForm : function(){
@@ -108,20 +104,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
-            
-            this.inp.Preroll = new qx.ui.form.CheckBox("Preroll")
-            this.inp.Midroll = new qx.ui.form.CheckBox("Midroll")
-            this.inp.Postroll = new qx.ui.form.CheckBox("Postroll")
-            this.inp.Pauseroll = new qx.ui.form.CheckBox("Pauseroll")
-            
-            var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика");
-            boxPlace.setLayout(new qx.ui.layout.VBox(2));
-            boxPlace.add(this.inp.Preroll);
-            boxPlace.add(this.inp.Midroll);
-            boxPlace.add(this.inp.Postroll);
-            boxPlace.add(this.inp.Pauseroll);
-
-            this.composite.add(boxPlace,   {row:++vertical_offset, column:0,colSpan:2});
             
             return this.composite;
         },

@@ -1,5 +1,5 @@
-{application, advsystem,
- [{description, "advsystem"},
+{application, web,
+ [{description, "web advsystem"},
   {vsn, "0.01"},
   {modules, [
     web,

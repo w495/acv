@@ -28,26 +28,33 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
          * 
         **/
         drc : {             
-            url: "",        // 
-            method: "",     // POST \ GET
-            mimetype: ""    // application/json
+            url:        "",        // 
+            method:     "",     // POST \ GET
+            mimetype:   ""    // application/json
         },
         
         getComposite : function(){
             return this.composite;
         },
-
+        
         /**
          * Поля формы.
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            Age_from:null,
-            Age_to:null,
-            Time_from:null,
-            Time_to:null,
-            Gender:null
+            Age_from:       null,
+            Age_to:         null,
+            Time_from:      null,
+            Time_to:        null,
+            Gender:         null,
+            Rerun_hours:    null,
+            Rerun_minutes:  null
         },
+        
+        boxGender:  null,
+        boxAge :    null,
+        boxTime :   null,
+        boxRerun:   null,
         
         buildForm : function(){
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
@@ -63,22 +70,22 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             
             this.composite  = new qx.ui.container.Composite (layout);
             
-            var boxGender = this.makeBoxGender();
-            var boxAge = this.makeBoxAge();
-            var boxTime = this.makeBoxTime();
+            this.boxGender = this.makeBoxGender();
+            this.boxAge = this.makeBoxAge();
+            this.boxTime = this.makeBoxTime();
             
             var vertical_offset = -1;
             
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0});
             
-            this.composite.add(boxGender,
+            this.composite.add(this.boxGender,
                 {row:++vertical_offset, column:0});
             
-            this.composite.add(boxAge,
+            this.composite.add(this.boxAge,
                 {row:++vertical_offset, column:0});
             
-            this.composite.add(boxTime,
+            this.composite.add(this.boxTime,
                 {row:++vertical_offset, column:0});
             
             return this.composite;
@@ -116,7 +123,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             boxAge.add(this.inp.Age_to, {row:vertical_offset, column:1});
             return boxAge;
         },
-
+        
         makeBoxTime : function() {
             this.inp.Time_from = new qx.ui.form.Spinner(0, 0, 24);
             this.inp.Time_to = new qx.ui.form.Spinner(0, 24, 24);
@@ -190,16 +197,24 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
                 var res = {}
                 
                 console.log(this.inp.Gender.getSelection()[0].getModel());
+                res.user_male = this.inp.Gender.getSelection()[0].getModel();
                 
-                for(var fieldName in this.inp){
-                    item = fieldName.toLowerCase();
-                    if("gender" == item){
-                        res.user_male = this.inp.Gender.getSelection()[0].getModel();
-                    }
-                    else{
-                        res[item] = this.inp[fieldName].getValue();
-                    }
-                }  
+                if(this.boxAge.getValue()){
+                    res.age_from    = this.inp.Age_from.getValue();
+                    res.age_to      = this.inp.Age_to.getValue();
+                }else{
+                    res.age_from    = "null";
+                    res.age_to      = "null";
+                }
+                
+                if(this.boxTime.getValue()){
+                    res.time_from   = this.inp.Time_from.getValue();
+                    res.time_to     = this.inp.Time_to.getValue();
+                }else{
+                    res.time_from   = "null";
+                    res.time_to     = "null";
+                }
+                
                 for(var item in res){
                     this.uReq.setParameter(item, res[item], true);
                 }

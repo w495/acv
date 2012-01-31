@@ -31,15 +31,13 @@ datetimeUnixtime(Val) ->
 runSpec(Val, [[]|_T]) ->
     {done, Val};
 runSpec(Val, [Spec|T]) ->
-%    io:format("run spec ~p~n", [Spec]),
-    try 
+    try
         {done, norm:Spec(Val)}
     catch _ : _ ->
         runSpec(Val, T)
     end;
 runSpec(Val, []) ->
     {error, Val}.
-
 
 extr(Data, Params) ->
     extr(Data, Params, []).

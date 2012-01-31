@@ -157,6 +157,23 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Id;
 
 %%% @doc
+%%% ОБЕРТКА К СЛЕДУЮЩЕЙ ФУНКЦИИ.
+%%% Создает рекламу видео и обвязки к ней
+%%%
+update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
+    Postroll, Preroll, Midroll, Pauseroll, User_male,
+        Age_from, Age_to, Time_from, Time_to,
+            Duration, Link_title, Alt_title,
+                Rerun_hours, Rerun_minutes, Customer_id},
+                    Geo_region_list, Cat_id_list}) ->
+    update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
+        Postroll, Preroll, Midroll, Pauseroll, User_male,
+        Age_from, Age_to, Time_from, Time_to,
+        Duration, Link_title, Alt_title, 0,
+        Rerun_hours, Rerun_minutes, Customer_id},
+        Geo_region_list, Cat_id_list});
+
+%%% @doc
 %%% Создает рекламу видео и обвязки к ней
 %%%
 update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,

@@ -45,8 +45,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             Id:null,
             Name:null,
             DateStart:null,
-            DateStop:null,
-            Wish:null
+            DateStop:null
         },
         
         // -------------------
@@ -64,14 +63,17 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
 
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Name = new qx.ui.form.TextField() 
-                .set({placeholder: "Название рекламной компании"});
+                .set({placeholder: "Название рекламной кaмпании"});
             
+            var dateStart = new Date();
+            dateStart.setDate(dateStart.getDate() - 1);
             this.inp.DateStart = new qx.ui.form.DateField()
-                .set({value: new Date()});
+                .set({value: dateStart});
+            var dateStop = new Date();
+            dateStop.setDate(dateStop.getDate() + 1);
             this.inp.DateStop = new qx.ui.form.DateField()
-                .set({value: new Date()});
-            this.inp.Wish = new qx.ui.form.Spinner(0, 0, 1152921504606846976);
-        
+                .set({value: dateStop});
+                
             var pageName = new qx.ui.basic.Label()
                 .set({
                     value: "Общая информация",  font: "bold",
@@ -85,7 +87,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Name,   {row:vertical_offset, column:1});
             
-            
             this.composite.add(new qx.ui.basic.Label().set({value: "Дата начала",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStart,   {row:vertical_offset, column:1});
@@ -93,10 +94,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             this.composite.add(new qx.ui.basic.Label().set({value: "Дата конца",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStop,   {row:vertical_offset, column:1});
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Количество",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
             
             
             /**
