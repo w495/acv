@@ -23,7 +23,6 @@
         delete_customer/1]).
     % DIR
 
-
 -import(mochiweb_cookies, [cookie/2]).
 -include("../include/web_session.hrl").
 -include("../include/common.hrl").
@@ -248,25 +247,6 @@ get_acv_banners(Req) ->
 %%
 update_acv_video(Req) ->
 
-    %%% Поля acv_video:
-    %%%
-    %%%         id
-    %%%         name
-    %%%         datestart
-    %%%         datestop
-    %%%         url
-    %%%         ref
-    %%%         wish
-    %%%         postroll
-    %%%         preroll
-    %%%         midroll
-    %%%         pauseroll
-    %%%         user_male
-    %%%         age_from
-    %%%         age_to
-    %%%         time_from
-    %%%         time_to
-    %%%         customer_id
 
     Customer_id = authorization:get_customer_id(Req),
 
@@ -305,26 +285,28 @@ update_acv_video(Req) ->
         {"pauseroll",   [boolean]},
         {"user_male",   [boolean, nullable]},
 
-        {"age_from",    [string, nullable]},
-        {"age_to",      [string, nullable]},
-        {"time_from",   [string, nullable]},
-        {"time_to",     [string, nullable]},
+        {"age_from",    [integer, nullable]},
+        {"age_to",      [integer, nullable]},
+        {"time_from",   [integer, nullable]},
+        {"time_to",     [integer, nullable]},
 
         {"duration",    [integer, nullable]},
         {"link_title",  [string, nullable]},
-        {"alt_title",   [string, nullable]}
-        % {"shown",       [integer, nullable]}
+        {"alt_title",   [string, nullable]},
+
+        {"shown",   [integer]},
+
+        {"rerun_hours",   [integer, nullable]},
+        {"rerun_minutes",     [integer, nullable]}
 
     ]),
 
-    _@_fix_tmp_shown = 0,
-    _@_fix_tmp_rh = 0,
-    _@_fix_tmp_rm = 0,
+    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [Customer_id]),
 
-    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [_@_fix_tmp_shown, _@_fix_tmp_rh, _@_fix_tmp_rm, Customer_id]),
+    ?D("~n---------------------~nInfo_1 = ~p~n", [Info_1]),
+    ?D("~n---------------------~nGeo_region_list = ~p~n", [Geo_region_list]),
+    ?D("~n---------------------~nCat_list = ~p~n", [Cat_list]),
 
-    ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
-    ?D("~n---------------------~nCat_list = ~p", [Cat_list]),
 
     Res = dao:dao_call(dao_acv_video, update_acv_video, {Info_1, Geo_region_list, Cat_list}, values),
     {"application/json", [], [mochijson2:encode(Res)]}.

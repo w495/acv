@@ -77,7 +77,8 @@ qx.Class.define("bsk.view.SortedSelListTree",
                         Item.addWidget(checkbox);
                         Item.addLabel("" + value[this.labelFieldName]);
                         Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
-                        var text = new qx.ui.basic.Label(value[this.descrFieldName]);
+                        var text =
+                            new qx.ui.basic.Label(value[this.descrFieldName]);
                         text.setWidth(150);
                         Item.addWidget(text);
                         this.root.add(Item);
@@ -142,7 +143,7 @@ qx.Class.define("bsk.view.SortedSelListTree",
                 Item.addWidget(checkbox);
                 Item.addLabel(""+E[this.labelFieldName]);
                 Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
-                var text = new qx.ui.basic.Label(E[this.descrFieldName]);//alias);
+                var text = new qx.ui.basic.Label(E[this.descrFieldName]);
                 text.setWidth(150);
                 Item.addWidget(text);
                 this.root.add(Item);

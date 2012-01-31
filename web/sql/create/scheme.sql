@@ -135,6 +135,7 @@ create table acv_video (
 create sequence seq_geo_region;
 create table geo_region (
     id int primary key default nextval('seq_geo_region'),
+    dateshow timestamp without time zone,
     alias varchar(30) UNIQUE,
     name varchar (100)
 );
@@ -145,7 +146,7 @@ create table geo_region (
 create sequence seq_acv_video_shown;
 create table acv_video_shown (
     id int primary key default nextval('seq_acv_video_shown'),
-    customer_id int references customer(id),
+    user_id varchar(37), -- 5615d6c0-79c3-4a90-bf34-9d23ae78c14a
     acv_video_id int references acv_video(id)
 );
 

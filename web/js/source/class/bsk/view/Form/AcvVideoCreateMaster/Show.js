@@ -4,14 +4,18 @@
 #asset(qx/icon/Tango/16/actions/document-save.png)
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
 {
     extend : Object,
     
-    construct : function(uReq) {
+    construct : function(uReq, isNew) {
+        
+        this.isNew = isNew;
+        
+        console.log(this.isNew);
+        
         this.uReq = uReq;
         this.buildForm();
-        this.addListeners();
     },
 
     members : {
@@ -45,67 +49,105 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         },
 
         inp : {
-            Duration:          null,
-            Link_title:        null,
-            Alt_title:         null,
-            Url:        null,
-            Ref:        null
+            Wish:       null,
+            Shown:       null,
+            Preroll:    null,
+            Midroll:    null,
+            Postroll:   null,
+            Pauseroll:  null,
+            Rerun_hours: null,
+            Rerun_minutes: null
         },
+        
+        boxPlace: null,
+        boxRe: null,
         
         buildForm : function(){
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             
-            /* Сопровождающая картинка */
-            this.picButton = new bsk.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
-            this.picForm = new bsk.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
-            
+            var pageName = new qx.ui.basic.Label()
+                .set({
+                    value: "Показ видео",  font: "bold",
+                    alignX: "left", rich : true
+                });
+                
             var layout = new qx.ui.layout.Grid(2, 5);
             layout.setColumnFlex(1, 1);
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
             
-            this.inp.Duration =    new qx.ui.form.Spinner(1, 1, 134217728);
-            this.inp.Link_title =   new qx.ui.form.TextField()
-                .set({placeholder: "Текст ссылки"});
-            this.inp.Alt_title =    new qx.ui.form.TextField()
-                .set({placeholder: "Текст подсказки"});
-            
-            this.inp.Url = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/"});
-            this.inp.Ref = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/"});
-            
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Загруска видео",  font: "bold",
+                    value: "Показ видео",  font: "bold",
                     alignX: "left", rich : true
                 });
                 
+            this.boxPlace = this.makeBoxPlace();
+            this.boxRerun = this.makeBoxRerun();
+            this.inp.Wish = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
+            this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
+                .set({enabled: false});
+            
             var vertical_offset = -1;
-            this.composite.add(pageName, {row:++vertical_offset, column:0, colSpan:2})
-
-            this.composite.add(new qx.ui.basic.Label().set({value: "Alt_title",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Alt_title,   {row:vertical_offset, column:1});
-
-            this.composite.add(new qx.ui.basic.Label().set({value: "Link_title",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Link_title,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Продолжительность",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Duration,   {row:vertical_offset, column:1});
+            this.composite.add(pageName,
+                {row:++vertical_offset, column:0, colSpan:2});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Урл",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Желаемое количество",  rich : true}),
                     {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Ref,   {row:vertical_offset, column:1});
+            this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
+            if(this.isNew){
+                this.composite.add(new qx.ui.basic.Label().set({value: "Фактическое количество",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
+            }
+            
+            this.composite.add(this.boxPlace,
+                {row:++vertical_offset, column:0,colSpan:2});
+            
+            this.composite.add(this.boxRerun,
+                {row:++vertical_offset, column:0,colSpan:2});
             
             return this.composite;
+        },
+        
+        
+        makeBoxPlace : function() {
+            this.inp.Preroll = new qx.ui.form.CheckBox("Preroll")
+                .set({value: true});
+            this.inp.Midroll = new qx.ui.form.CheckBox("Midroll")
+                .set({value: true});
+            this.inp.Postroll = new qx.ui.form.CheckBox("Postroll")
+                .set({value: true});
+            this.inp.Pauseroll = new qx.ui.form.CheckBox("Pauseroll")
+                .set({value: false});
+            
+            var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика");
+            boxPlace.setLayout(new qx.ui.layout.VBox(2));
+            boxPlace.add(this.inp.Preroll);
+            boxPlace.add(this.inp.Midroll);
+            boxPlace.add(this.inp.Postroll);
+            //boxPlace.add(this.inp.Pauseroll);
+            return boxPlace;
+        },
+        
+        makeBoxRerun : function() {
+            this.inp.Rerun_hours = new qx.ui.form.Spinner(0, 1, 24);
+            this.inp.Rerun_minutes = new qx.ui.form.Spinner(0, 1, 60);
+            var vertical_offset = 0;
+            var boxRerun  = new qx.ui.groupbox.CheckGroupBox("Повтор ролика");
+            //var boxRerun = new qx.ui.groupbox.GroupBox("Повтор ролика");
+            var layout = new qx.ui.layout.Grid(1, 2);
+            layout.setColumnFlex(1, 1);
+            boxRerun.setLayout(layout);
+            boxRerun.setValue(false);
+            boxRerun.add(new qx.ui.basic.Label().set({value: "Часы",  rich : true}), {row:++vertical_offset, column:0});
+            boxRerun.add(this.inp.Rerun_hours, {row:vertical_offset, column:1});
+            boxRerun.add(new qx.ui.basic.Label().set({value: "Минуты",  rich : true}), {row:++vertical_offset, column:0});
+            boxRerun .add(this.inp.Rerun_minutes, {row:vertical_offset, column:1});
+            return boxRerun ;
         },
         
         /**
@@ -199,10 +241,23 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             var formIsValid = this.validateForm();
             if(formIsValid){
                 var res = {}
+                
+                if(this.boxRerun.getValue()){
+                    res.rerun_hours     = this.inp.Rerun_hours.getValue();
+                    res.rerun_minutes   = this.inp.Rerun_minutes.getValue();
+                }else{
+                    res.rerun_hours     = "null";
+                    res.rerun_minutes   = "null";
+                }
+                
                 for(var fieldName in this.inp){
+                    if(("Rerun_hours" == fieldName) ||
+                        ("Rerun_minutes" == fieldName))
+                            continue;
                     item = fieldName.toLowerCase()
                     res[item] = this.inp[fieldName].getValue();
-                }  
+                }
+                
                 for(var item in res){
                     this.uReq.setParameter(item, res[item], true);
                 }

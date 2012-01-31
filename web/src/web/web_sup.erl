@@ -53,11 +53,12 @@ init([]) ->
         [clog]
     },
 
+    
     PgConPool = {   %%% соединение с локальной базой данных
         pgConPoolFK,
         {pgConPool, start_link, [
-            config:get(fk_db_user, "cff"),
-            config:get(fk_db_password, "cff"),
+            config:get(fk_db_user, "w-495"),
+            config:get(fk_db_password, "eiir"),
             config:get(fk_db_name, "fk"),
             config:get(fk_db_host, "localhost")
         ]},
@@ -66,6 +67,13 @@ init([]) ->
         worker,
         [pgConPool]
     },
+    %%% pgConPool:start_link(config:get(fk_db_user, "w-495"),config:get(fk_db_password, "eiir"),config:get(fk_db_name, "fk"),config:get(fk_db_host, "localhost"))
+
+    ?D("---------------------------------------~n", []),
+    ?D("---------------------------------------~n", []),
+    ?D("PgConPool = ~p~n", [PgConPool]),
+    ?D("---------------------------------------~n", []),
+    ?D("---------------------------------------~n", []),
 
     MySqlConPool = { %%% соединение с внешней базой данных
         mySqlConPoolFK,

@@ -3,7 +3,7 @@
 
 CMD=$1
 NODENAME="`date +web_ctl_%H_%M_%S_%N`@localhost"
-NODEMAIN="web@localhost"
+NODEMAIN="advsystem@localhost"
 
 ERL_ARGS="+K true"
 
