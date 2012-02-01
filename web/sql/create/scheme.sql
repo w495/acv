@@ -98,32 +98,40 @@ create table acv_banner (
 **/
 create sequence seq_acv_video;
 create table acv_video (
-    id int primary key default nextval('seq_acv_video'),
-    name varchar(100),
-    datestart timestamp without time zone,
-    datestop timestamp without time zone,
-    url varchar(200),
-    ref varchar(1000),
-    wish int,   /* желаемое колическтво показов */
-    postroll bool default true,
-    preroll bool default true,
-    midroll bool default true,
-    pauseroll bool default true,
-    user_male bool default null,
+    id          int primary key default nextval('seq_acv_video'),
+    name        varchar(100),
 
+    datestart   timestamp without time zone,
+    datestop    timestamp without time zone,
+    url         varchar(200),
+    ref         varchar(1000),
+    wish        int,   /* желаемое колическтво показов */
+    postroll    bool default true,
+    preroll     bool default true,
+    midroll     bool default true,
+    pauseroll   bool default true,
+    user_male   bool default null,
     age_from    int default null,
     age_to      int default null,
-
     time_from   int default null,           /* часы */
     time_to     int default null,           /* часы */
-
     duration    int default 0,              /* продолжительность в секундах */
     link_title  varchar(200) default null,  /* заголовок ссылки */
     alt_title   varchar(200) default null,  /*  */
-    shown       int default 0,
 
-    rerun_hours int default null,           /* разрешенный повторный показ */
-    rerun_minutes int default null,         /* разрешенный повторный показ */
+    rerun_hours     int default null,          /* разрешенный повторный показ */
+    rerun_minutes   int default null,         /* разрешенный повторный показ */
+
+    comment         varchar(200) default null,
+        /* пока в нем нет необходимости, но рано или поздно его попросят */
+
+
+    /* ПОЛЯ НЕ ДЛЯ ВСЕХ */
+
+    shown   int default 0,
+        /*количество показов, это поле никто менять не может */
+    active  bool default null,
+        /* условие предмодерации */
 
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
@@ -135,7 +143,6 @@ create table acv_video (
 create sequence seq_geo_region;
 create table geo_region (
     id int primary key default nextval('seq_geo_region'),
-    dateshow timestamp without time zone,
     alias varchar(30) UNIQUE,
     name varchar (100)
 );
@@ -146,6 +153,7 @@ create table geo_region (
 create sequence seq_acv_video_shown;
 create table acv_video_shown (
     id int primary key default nextval('seq_acv_video_shown'),
+    dateshow timestamp without time zone,
     user_id varchar(37), -- 5615d6c0-79c3-4a90-bf34-9d23ae78c14a
     acv_video_id int references acv_video(id)
 );

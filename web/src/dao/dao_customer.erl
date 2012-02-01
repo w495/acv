@@ -142,6 +142,33 @@ get_customer_by_login(Login) ->
 %%
 %% Создает нового пользователя
 %%
+update_customer({{null, Firstname, Lastname, Patronimic, Login, Email, City,
+                    Organization, Position}, Password_hash, GroupList, _updater_id}) ->
+    Q1 = "insert into customer (firstname, lastname, patronimic, "
+            "login, email, city, organization, position, password_hash) "
+         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning customer.id;",
+
+    PGRet = dao:with_transaction_fk(
+        fun(Con) ->
+            {ok, 1, _, [{Id}]} = pgsql:equery(Con, Q1,
+                [Firstname, Lastname, Patronimic, Login, Email,
+                    City, Organization, Position, Password_hash]),
+            case length(GroupList) of
+                0 ->
+                    ok;
+                L ->
+                    Q2 = "insert into customer2group (customer_id, group_id) values " ++
+                        string:join([lists:flatten(io_lib:format("(~p, ~p)",
+                            [Id, X])) || X <- GroupList], ", "),
+                    {ok, L} = pgsql:equery(Con, Q2, [])
+            end,
+            {return, Id}
+        end
+    ),
+    dao:pgret(PGRet);
+%%
+%% Создает нового пользователя
+%%
 update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, _updater_id}) ->
     Q1 = "insert into customer (firstname, lastname, patronimic, "
@@ -162,7 +189,7 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
                             [Id, X])) || X <- GroupList], ", "),
                     {ok, L} = pgsql:equery(Con, Q2, [])
             end,
-            ok
+            {return, Id}
         end
     ),
     dao:pgret(PGRet);
@@ -199,7 +226,7 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
                 0 -> ok;
                 L -> {ok, L} = pgsql:equery(Con, Q3, [])
             end,
-            ok
+            {return, Id}
         end
     ),
     dao:pgret(PGRet).
@@ -211,6 +238,8 @@ delete_customer({Id, _updater_id}) ->
 
 
 test()->
+
+
     ok.
 
 test(speed)->

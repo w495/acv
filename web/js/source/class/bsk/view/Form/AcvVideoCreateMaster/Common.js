@@ -6,7 +6,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
 {
     extend : Object,
     
-    construct : function(uReq) {
+    construct : function(uReq, IsModerator) {
+        
+        this.IsModerator = IsModerator;
+        
         this.uReq = uReq;
         this.buildForm();
     },
@@ -44,6 +47,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
         inp : {
             Id:null,
             Name:null,
+            Comment:null,
             DateStart:null,
             DateStop:null
         },
@@ -64,7 +68,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Name = new qx.ui.form.TextField() 
                 .set({placeholder: "Название рекламной кaмпании"});
-            
+            this.inp.Comment = new qx.ui.form.TextField() 
+                .set({placeholder: "Его кроме Вас никто не увидит"});
+                
             var dateStart = new Date();
             dateStart.setDate(dateStart.getDate() - 1);
             this.inp.DateStart = new qx.ui.form.DateField()
@@ -73,6 +79,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             dateStop.setDate(dateStop.getDate() + 1);
             this.inp.DateStop = new qx.ui.form.DateField()
                 .set({value: dateStop});
+            this.inp.Active  = new qx.ui.form.CheckBox("Активна")
+                .set({value: false});
                 
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -87,6 +95,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Name,   {row:vertical_offset, column:1});
             
+            this.composite.add(new qx.ui.basic.Label().set({value: "Комментарий",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            this.composite.add(this.inp.Comment,   {row:vertical_offset, column:1});
+            
             this.composite.add(new qx.ui.basic.Label().set({value: "Дата начала",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStart,   {row:vertical_offset, column:1});
@@ -94,15 +106,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             this.composite.add(new qx.ui.basic.Label().set({value: "Дата конца",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStop,   {row:vertical_offset, column:1});
-            
-            
-            /**
-             * В идеале, если мы хотим гибкость,
-             * тут нужно ввести, еще один Сomposite,
-             * положить его в this.composite, и уже поля раскладывать в него.
-             * 
-             * Для чего-то  простого сойдет и так.
-            **/
             
             return this.composite;
         },

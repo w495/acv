@@ -4,11 +4,6 @@
 
 -define(FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
 -define(APP, advsystem).
--define( CFG_PROCS, [{gen_server, m_pinger},
-                     {gen_event, error_logger}]
-       ).
-
-
 
 
 -define( INFO(P),  flog:info(P) ).
@@ -25,7 +20,3 @@
 %-define( DEBUG_INFO(F, P),  ?DEBUG(?FMT(F,P)) ).
 
 -define( DEBUG_INFO(F, P),  io:format(F,P) ).
-
-
--define(LSTHOST, config:get(lsthost, "0.0.0.0")).
--define(LSTPORT, config:get(lstport, 8080)).

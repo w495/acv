@@ -17,7 +17,10 @@ start(Options) ->
     Loop = fun (Req) ->
                    ?MODULE:loop(Req, DocRoot)
            end,
-    mochiweb_http:start([{name, ?MODULE}, {loop, Loop} | Options1]).
+    %%%
+    %%%  mochiweb стар
+    %%%
+    mochiweb_http:start([{loop, Loop} | Options1]).
 
 stop() ->
     io:format("~p: ~p got stop signal~n", [erlang:localtime(), ?MODULE]),
@@ -299,7 +302,12 @@ simple_map_controllers(Path) ->
         "/" ->                  {outside, index};
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
+
+        "/signin" ->            {outside, signin};
+        "/signin/post" ->       {outside, signin_post};
+
         "/signup" ->            {outside, signup};
+        "/signup/post" ->       {outside, signup_post};
 
     %%
     %% Основа админки

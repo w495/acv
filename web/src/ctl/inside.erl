@@ -284,19 +284,17 @@ update_acv_video(Req) ->
         {"midroll",     [boolean]},
         {"pauseroll",   [boolean]},
         {"user_male",   [boolean, nullable]},
-
         {"age_from",    [integer, nullable]},
         {"age_to",      [integer, nullable]},
         {"time_from",   [integer, nullable]},
         {"time_to",     [integer, nullable]},
-
         {"duration",    [integer, nullable]},
         {"link_title",  [string, nullable]},
         {"alt_title",   [string, nullable]},
 
-        {"shown",   [integer]},
+        {"comment",           [string, nullable]},
 
-        {"rerun_hours",   [integer, nullable]},
+        {"rerun_hours",       [integer, nullable]},
         {"rerun_minutes",     [integer, nullable]}
 
     ]),

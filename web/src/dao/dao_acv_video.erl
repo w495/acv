@@ -44,7 +44,11 @@
         Duration        ::integer(),
         Link_title      ::string(),
         Alt_title       ::string(),
-        Shown           ::integer(),
+        % Active           ::integer(),
+            % это поле может редактировать только модератор
+        % Shown           ::integer(),
+            % это поле пользователь менять не может
+        Comment         ::boolean(),
         Rerun_hours     ::integer()|null,
         Rerun_minutes   ::integer()|null,
         Customer_id     ::integer()
@@ -65,6 +69,7 @@ get_all_acv_videos(_) ->
         "select "
             " acv_video.id, "
             " acv_video.name, "
+            " acv_video.comment, "
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video;",
@@ -78,6 +83,7 @@ get_acv_videos(Customer_id) ->
         "select "
             " acv_video.id, "
             " acv_video.name, "
+            " acv_video.comment, "
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video "
@@ -96,19 +102,48 @@ get_acv_video(Acv_video_id) ->
         "where acv_video.id = $1;",
     dao:simple(Query, [(Acv_video_id)]).
 
+% get_acv_video_common(Acv_video_id) ->
+%     Query =
+%         "select "
+%             "acv_video.id, acv_video.name, "
+%             "acv_video.datestart, acv_video.datestop "
+%          " from acv_video "
+%         "where acv_video.id = $1;",
+%     dao:simple(Query, [(Acv_video_id)]).
+% 
+% get_acv_video_show(Acv_video_id) ->
+%     Query =
+%         "select "
+%             "acv_video.id, acv_video.name, "
+%             "acv_video.datestart, acv_video.datestop "
+%          " from acv_video "
+%         "where acv_video.id = $1;",
+%     dao:simple(Query, [(Acv_video_id)]).
+% 
+% 
+% get_acv_video_show(Acv_video_id) ->
+%     Query =
+%         "select "
+%             "acv_video.id, acv_video.name, "
+%             "acv_video.datestart, acv_video.datestop "
+%          " from acv_video "
+%         "where acv_video.id = $1;",
+%     dao:simple(Query, [(Acv_video_id)]).
+
+
 %%% @doc
 %%% Создает рекламу видео
 %%%
 update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
-            Duration, Link_title, Alt_title, Shown,
+            Duration, Link_title, Alt_title, Comment,
                 Rerun_hours, Rerun_minutes, Customer_id}) ->
     Query =
         "insert into acv_video (name, datestart, datestop, url, ref, wish,"
             " postroll, preroll, midroll, pauseroll, "
                 " user_male, age_from, age_to, time_from, time_to, "
-                    "duration, link_title, alt_title, shown,"
+                    "duration, link_title, alt_title, comment,"
                         "rerun_hours, rerun_minutes, customer_id) "
         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9,$10, "
                     " $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, "
@@ -117,13 +152,13 @@ update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
     case dao:simple_ret(Query, [Name, Datestart, Datestop, Url, Ref,
             (Wish), Postroll, Preroll, Midroll,
                 Pauseroll, User_male,
-                    (Age_from), (Age_to),
-                    (Time_from),(Time_to),
-                        (Duration), Link_title,
-                        Alt_title, (Shown),
-                            (Rerun_hours),
-                            (Rerun_minutes),
-                                (Customer_id)])  of
+                    Age_from, Age_to,
+                    Time_from, Time_to,
+                        Duration, Link_title,
+                        Alt_title, Comment,
+                            Rerun_hours,
+                            Rerun_minutes,
+                                Customer_id])  of
         {ok, 1, _, [{Id}]} -> {ok, Id};
         Error -> Error
     end;
@@ -134,14 +169,14 @@ update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
 update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
-            Duration, Link_title, Alt_title, Shown,
+            Duration, Link_title, Alt_title, Comment,
                 Rerun_hours, Rerun_minutes, Customer_id}) ->
     Query =
         "update acv_video set name = $2, datestart = $3, datestop = $4, "
             " url = $5, ref = $6, wish = $7, postroll = $8, preroll = $9, "
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
-            " duration = $17, link_title = $18, alt_title = $19, shown = $20, "
+            " duration = $17, link_title = $18, alt_title = $19, comment = $20, "
             " rerun_hours =$21, rerun_minutes = $22, "
             " customer_id = $23 where id=$1;",
     dao:simple(Query, [(Id), Name,
@@ -151,7 +186,7 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
         (Age_from), (Age_to),
         (Time_from), (Time_to),
         (Duration), Link_title,
-        Alt_title, (Shown),
+        Alt_title, (Comment),
         (Rerun_hours), (Rerun_minutes),
         (Customer_id)]),
     Id;
@@ -181,7 +216,7 @@ update_acv_video({Id, Name, Datestart, Datestop, Url, Ref, Wish,
 update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
-            Duration, Link_title, Alt_title, Shown,
+            Duration, Link_title, Alt_title, Comment,
                 Rerun_hours, Rerun_minutes, Customer_id},
                     Geo_region_list, Cat_id_list}) ->
 
@@ -189,7 +224,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
         "insert into acv_video (name, datestart, datestop, url, ref, wish, "
             " postroll, preroll, midroll, pauseroll, "
                 " user_male, age_from, age_to, time_from, time_to, "
-                    " duration, link_title, alt_title, shown, "
+                    " duration, link_title, alt_title, comment, "
                         " rerun_hours, rerun_minutes, "
                         " customer_id) "
         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, "
@@ -208,7 +243,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                             (Time_from),
                             (Time_to),
                                 (Duration), Link_title,
-                                Alt_title, (Shown),
+                                Alt_title, (Comment),
                                     (Rerun_hours),
                                     (Rerun_minutes),
                                         (Customer_id)])  of
@@ -249,7 +284,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
 update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
     Postroll, Preroll, Midroll, Pauseroll, User_male,
         Age_from, Age_to, Time_from, Time_to,
-            Duration, Link_title, Alt_title, Shown,
+            Duration, Link_title, Alt_title, Comment,
                 Rerun_hours, Rerun_minutes, Customer_id},
                     Geo_region_list, Cat_id_list}) ->
 
@@ -258,7 +293,7 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
             " url = $5, ref = $6, wish = $7, postroll = $8, preroll = $9, "
             " midroll = $10, pauseroll = $11, user_male = $12, "
             " age_from = $13, age_to = $14, time_from = $15, time_to = $16, "
-            " duration = $17, link_title = $18, alt_title = $19, shown = $20,"
+            " duration = $17, link_title = $18, alt_title = $19, comment = $20,"
             " rerun_hours = $21, rerun_minutes = $22, "
             " customer_id = $23 where id=$1;",
     Pre_result = dao:with_transaction_fk(
@@ -272,7 +307,7 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
                         (Time_from),
                         (Time_to),
                             (Duration), Link_title,
-                            Alt_title, (Shown),
+                            Alt_title, (Comment),
                                 (Rerun_hours),
                                 (Rerun_minutes),
                                     (Customer_id)]) of
@@ -394,7 +429,7 @@ test_eunit_1()->
     Duration  =     1,
     Link_title =    "Link_title",
     Alt_title  =    "Alt_title",
-    Shown =         11,
+    Comment =       "internal comment",
     Rerun_hours =   1,
     Rerun_minutes = 1,
 
@@ -407,7 +442,7 @@ test_eunit_1()->
             Name, Datestart, Datestop, Url, Ref, Wish,
                 Postroll, Preroll, Midroll, Pauseroll, User_male,
                     Age_from, Age_to, Time_from, Time_to,
-                        Duration, Link_title, Alt_title, Shown,
+                        Duration, Link_title, Alt_title, Comment,
                             Rerun_hours, Rerun_minutes,
                                 Customer_id}),
 
@@ -415,7 +450,7 @@ test_eunit_1()->
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
-                    Duration, Link_title, Alt_title, Shown,
+                    Duration, Link_title, Alt_title, Comment,
                         Rerun_hours, Rerun_minutes,
                             Customer_id}),
     ?assertEqual({ok,[[
@@ -480,7 +515,7 @@ test_eunit_2()->
     Duration  =     1,
     Link_title =    "Link_title",
     Alt_title  =    "Alt_title",
-    Shown =         11,
+    Comment =       "internal comment",
     Rerun_hours =   1,
     Rerun_minutes = 1,
 
@@ -490,7 +525,7 @@ test_eunit_2()->
         Name, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
-                    Duration, Link_title, Alt_title, Shown,
+                    Duration, Link_title, Alt_title, Comment,
                         Rerun_hours, Rerun_minutes,
                             Customer_id}, R_list, []}),
 
@@ -498,7 +533,7 @@ test_eunit_2()->
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
-                    Duration, Link_title, Alt_title, Shown,
+                    Duration, Link_title, Alt_title, Comment,
                         Rerun_hours, Rerun_minutes,
                             Customer_id}, R_list_new, []}),
 

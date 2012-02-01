@@ -153,7 +153,6 @@ make_acv_xml(List) ->
 %%% @doc
 %%% Возвращает строку с XML для плеера.
 %%% В этой строки находится полное описание рекламы.
-%%% НАИВНАЯ РЕАЛИЗАЦИЯ
 %%%
 make_acv_xml_item([], Acc) -> Acc;
 make_acv_xml_item([Creative|Tail] = List, {Acc_str, Acc_duration})->

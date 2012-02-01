@@ -88,7 +88,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             this.inp.Wish = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
             this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
                 .set({enabled: false});
-            
+                
+                
             var vertical_offset = -1;
             
             this.composite.add(pageName,
@@ -103,6 +104,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
                         {row:++vertical_offset, column:0});
                 this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
             }
+            
+            
             
             this.composite.add(this.boxPlace,
                 {row:++vertical_offset, column:0,colSpan:2});

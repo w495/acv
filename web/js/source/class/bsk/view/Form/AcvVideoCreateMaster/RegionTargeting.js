@@ -49,7 +49,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Таргетирование",  font: "bold",
+                    value: "Таргетирование по регионам",  font: "bold",
                     alignX: "left", rich : true
                 });
             var layout = new qx.ui.layout.Grid(2, 1);

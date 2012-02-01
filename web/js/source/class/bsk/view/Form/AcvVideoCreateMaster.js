@@ -42,7 +42,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
         this.__list = [];
         
         console.log("!");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq, true));
         console.log("Common");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq));
         console.log("Upload");

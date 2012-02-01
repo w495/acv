@@ -24,8 +24,9 @@
             specParam: "tab-row-action"}
     ],
     columns : [
-        {name : "id", alias : "#", type : "float", sortable : true, width:"5%"},
-        {name : "name", alias : "Название", type : "string", sortable : true},
+        {name : "id",       alias : "#", type : "float", sortable : true, width:"5%"},
+        {name : "name",     alias : "Название", type : "string", sortable : true},
+        {name : "comment",  alias : "Комментарий", type : "string", sortable : true},
         {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
         {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true}
     ],
