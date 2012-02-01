@@ -12,18 +12,18 @@
 
 %% External API
 
-start(Options) ->
-    {DocRoot, Options1} = get_option(docroot, Options),
+start(Initial_options) ->
+    {Doc_root, Options} = get_option(docroot, Initial_options),
     Loop = fun (Req) ->
-                   ?MODULE:loop(Req, DocRoot)
+                   ?MODULE:loop(Req, Doc_root)
            end,
     %%%
-    %%%  mochiweb стар
+    %%%  mochiweb стартует тут
     %%%
-    mochiweb_http:start([{loop, Loop} | Options1]).
+    mochiweb_http:start([{loop, Loop} | Options]).
 
 stop() ->
-    io:format("~p: ~p got stop signal~n", [erlang:localtime(), ?MODULE]),
+    ?D("~p: ~p got stop signal~n", [erlang:localtime(), ?MODULE]),
     supervisor:terminate_child(web_sup, ?MODULE),
     supervisor:delete_child(web_sup, ?MODULE).
 
@@ -229,8 +229,7 @@ serve_request(Path, Req) ->
     end.
 
 %% ========================================================================
-%% Простой map контроллеров (испрользуется в админке)
-%%      Оставлен по историческим причинам.
+%% Простой map контроллеров
 %% ========================================================================
 
 simple_map_controllers(Path) ->
@@ -238,11 +237,6 @@ simple_map_controllers(Path) ->
     % adv request
         "/adv" ->
             {adv_manager, get_adv};
-
-    % captcha
-
-        "/captcha" ->
-            {authorization, get_captcha};
 
     % advertising company video
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
@@ -308,7 +302,7 @@ simple_map_controllers(Path) ->
 
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
-
+        "/captcha" ->           {outside, get_captcha};
     %%
     %% Основа админки
     %%

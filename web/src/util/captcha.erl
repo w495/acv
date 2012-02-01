@@ -73,3 +73,4 @@ gs_us() ->
     {_,_,Mi} = Now = now(),
     DT = calendar:now_to_datetime(Now),
     {calendar:datetime_to_gregorian_seconds(DT), Mi}.
+

@@ -22,8 +22,14 @@
 
         {web_session_gc_period, 600000}, % 10 min
         {web_session_expire_timeout, 180000}, % in sec 300 min
-        {lsthost, "0.0.0.0"},
-        {lstport, 8000},
+
+        {http_host,  "0.0.0.0"},
+        {https_host, "0.0.0.0"},
+        {http_port,  8000},
+        {https_port, 8443},
+        {https_certfile, "priv/https-files/cert.pem"},
+        {https_keyfile,  "priv/https-files/key.pem"},
+
         {max_auth_error, 10}
     ]},
 

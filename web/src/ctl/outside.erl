@@ -25,6 +25,9 @@
 -include("common.hrl").
 -include("web.hrl").
 
+-define(CATCHA_COOKIE, "captcha_codehex").
+
+
 %% 
 %% возврщает головную страницу
 %%
@@ -169,6 +172,9 @@ signup_post(Req, State) ->
             signup(Req)
     end.
 
+captcha(Req) ->
+    {CodeHex, BinPng} = captcha:new(),
+    throw({cookize, "image/png", cookie(?CATCHA_COOKIE, CodeHex, ?F_COOKIEOPTIONS), BinPng}).
 
 -define(HTTPC, httpc).
 
