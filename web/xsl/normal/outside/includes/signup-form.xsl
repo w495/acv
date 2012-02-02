@@ -101,6 +101,14 @@
                 <xsl:with-param name="Placeholder" select="'Отчество'"  />
             </xsl:call-template>
         </table>
+        <div>
+            Введите текст, изображенный на картинке:
+            <div>
+                <img src="/captcha.png" alt="captcha" />
+            </div>
+            <input type="text" />
+        </div>
+
         <input type="submit" value="Принять"/>
         <div>
             <xsl:text>Поля, обязательные для заполнения, помечены: </xsl:text>

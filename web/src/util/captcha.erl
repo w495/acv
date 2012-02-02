@@ -11,7 +11,7 @@ new() ->
 new(Opt) ->
     new(Opt, 200).
 
-new(Opt, Size) ->
+new(Opt, Size, Pointsize) ->
     File_name = lists:flatmap(
         fun(Item) -> integer_to_list(Item) end,
         tuple_to_list(now())
@@ -23,9 +23,9 @@ new(Opt, Size) ->
 
     Cmd = io_lib:format(
         "convert -background 'none' -fill '#222222' -size ~p -gravity Center "
-        "-wave 5x~p -swirl 5 -font DejaVu-Serif-Book -pointsize 36 label:\"~s\""
+        "-wave 5x~p -swirl 5 -font DejaVu-Serif-Book -pointsize ~p label:\"~s\""
         " -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s",
-            [Size, random:uniform(50)+50, Code, File]),
+            [Size, random:uniform(50)+50, Pointsize, Code, File]),
 
     os:cmd(Cmd),
 
@@ -77,7 +77,6 @@ remove_expired() ->
 generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
     {A1,A2,A3} = now(),
     random:seed(A1,A2,A3),
-
     Initial_list =
     %%% Бармаглот на русском
         % "varkalosihlivkieshorkipyrialisponaveihriukotalizeliukikakmiumzikivmove"
@@ -88,7 +87,6 @@ generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
         % "auvaigolovabarabardaetsplechosvetozarnyimalchikmoitypobedilvboiuohrabr"
         % "oslavleninyigeroihvalytebepoiuvarkaloshlivkieshorkipyrialisponaveihriu"
         % "kotalizeliukikakmiumzikivmove"
-
     %%% Бармаглот на английском
         % "twasbriLLigandtheslithytovesdidgyreandgimbleinthewabeallmimsywerethebo"
         % "rogovesandthemomerathsoutgrabebewarethejabberwockmysonthejawsthatbitet"
@@ -101,7 +99,6 @@ generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
         % "rmsmybeamishboyofrabjousdaycaLLoohcallayhechortledinhisjoytwasbrilliga"
         % "ndtheslithytovesdidgyreandgimbleinthewabeallmimsyweretheborogovesandth"
         % "emomerathsoutgrabe"
-
     %%% Английские паннграммы
         "thequickbrownfoxjumpsoverthislazydog"
             % the quick brown fox jumps over this (the) lazy dog
@@ -109,18 +106,15 @@ generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
             % jackdaws love my big sphinx of quartz
         "thatfiveboxingwizardsorunquickly",
             % that (the) five boxing wizards run (jump) qickly
-
     List_1 = optimized_strict_ngram(Initial_list, Pass_len_1 + (A3 rem Offset_1)),
     List_2 = optimized_strict_ngram(Initial_list, Pass_len_2 + (A3 rem Offset_2)),
-
     lists:flatten(lists:nth(random:uniform(length(List_1)),List_1)
         ++ [" "] ++
         lists:nth(random:uniform(length(List_2)),List_2));
 
-generate_rand({ngram, Pass_len, Ngram_len}) ->
+generate_rand({ngram, Pass_len}) ->
     {A1,A2,A3} = now(),
     random:seed(A1,A2,A3),
-
     Initial_list =
         "bacadafagamanapaqarasatavaza"
         "bicidifigiminipiqirisitivizi"
@@ -128,9 +122,7 @@ generate_rand({ngram, Pass_len, Ngram_len}) ->
         "bycydyfygymynypyqyrysytyvyzy"
         "bocodofogomonopoqorosotovozo"
         "bucudufugumunupuqurusutuvuzu",
-
-    List = optimized_strict_ngram(Initial_list, Ngram_len),
-
+    List = optimized_strict_ngram(Initial_list, 2),
     lists:flatten([lists:nth(X,List)
         || X <- lists:map(fun(_)->random:uniform(length(List)) end,
             lists:seq(1, Pass_len))]);
@@ -139,7 +131,6 @@ generate_rand({simple, Pass_len}) ->
     {A1,A2,A3} = now(),
     random:seed(A1,A2,A3),
     List = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789",
-
     [lists:nth(X,List)
         || X <- lists:map(fun(_)->random:uniform(length(List)) end,
             lists:seq(1, Pass_len))].
@@ -151,6 +142,43 @@ gs_us() ->
     {_,_,Mi} = Now = now(),
     DT = calendar:now_to_datetime(Now),
     {calendar:datetime_to_gregorian_seconds(DT), Mi}.
+
+%%% ==========================================================================
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 0).
+%%% [[],[],[],[],[],[],[]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 1).
+%%% [[1],[2],[3],[4],[5],[6],[7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 2).
+%%% [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 3).
+%%% [[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 4).
+%%% [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 5).
+%%% [[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 6).
+%%% [[1,2,3,4,5,6],[2,3,4,5,6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 7).
+%%% [[1,2,3,4,5,6,7]]
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 8).
+%%% []
+%%%
+%%% strict_ngram([1, 2, 3, 4, 5, 6, 7], 9).
+%%% []
+%%%
+strict_ngram([ _ | Tail] = List, Lenth) when length(List) >=  Lenth  ->
+    {Ngram, _ } = lists:split(Lenth, List),
+    [Ngram | strict_ngram(Tail, Lenth)];
+strict_ngram(_,_) -> [].
 
 
 optimized_strict_ngram([_ | R], 0) ->
@@ -194,5 +222,37 @@ optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12 | R], 
 optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 | R], 13) ->
     [[H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 ]
         | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 | R], 13)];
-
 optimized_strict_ngram(_,_) -> [].
+
+%%% ==========================================================================
+%%%
+%%% tailed_ngram([1, 2, 3, 4, 5, 6, 7], 1).
+%%% [[1],[2],[3],[4],[5],[6],[7]]
+%%%
+%%% tailed_ngram([1, 2, 3, 4, 5, 6, 7], 2).
+%%% [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7]]
+%%%
+%%% tailed_ngram([1, 2, 3, 4, 5, 6, 7], 3).
+%%% [[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7],[6,7],[7]]
+%%%
+%%% tailed_ngram([1, 2, 3, 4, 5, 6, 7], 4).
+%%% [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7],[5,6,7],[6,7],[7]]
+%%%
+%%% tailed_ngram([1, 2, 3, 4, 5, 6, 7], 5).
+%%% [[1,2,3,4,5],
+%%% [2,3,4,5,6],
+%%% [3,4,5,6,7],
+%%% [4,5,6,7],
+%%% [5,6,7],
+%%% [6,7],
+%%% [7]]
+%%%
+
+tailed_ngram(List, Lenth) ->
+    tailed_ngram(List, 1, Lenth).
+
+tailed_ngram(List, S, Lenth) when length(List) > S ->
+    [lists:sublist(List, S, Lenth) | tailed_ngram(List, S+1, Lenth) ];
+
+tailed_ngram(List, S, Lenth) ->
+    [lists:sublist(List, S, Lenth)].
