@@ -138,7 +138,7 @@ handle_cast(Msg, State) ->
 handle_info(timeout, State) ->
     %flog:debug(?FMT("~p:~p GC process at node ~p~n", [?MODULE, ?LINE, node()])),
     web_session_DAO:removeExpired(),
-    captcha:removeExpired(),
+    captcha:remove_expired(),
     {noreply, State, ?TIMEOUT};
 handle_info(Info, State) ->
     flog:error(?FMT("~p:~p info at node ~p, info=~p~n", [?MODULE, ?LINE, node(), Info])),

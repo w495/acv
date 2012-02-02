@@ -14,6 +14,7 @@
     signin_post/1,
     signup/1,
     signup_post/1,
+    captcha/1,
     test/0,
     test/1
 ]).
@@ -174,7 +175,7 @@ signup_post(Req, State) ->
 
 captcha(Req) ->
     {CodeHex, BinPng} = captcha:new(),
-    throw({cookize, "image/png", cookie(?CATCHA_COOKIE, CodeHex, ?F_COOKIEOPTIONS), BinPng}).
+    throw({cookize, "image/png", mochiweb_cookies:cookie(?CATCHA_COOKIE, CodeHex, ?F_COOKIEOPTIONS), BinPng}).
 
 -define(HTTPC, httpc).
 

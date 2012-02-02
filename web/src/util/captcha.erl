@@ -1,70 +1,148 @@
 -module(captcha).
 
--export([new/0, check/2, removeExpired/0]).
+-export([new/0, new/1, new/2, check/2, remove_expired/0]).
 
 %%% --------------------------------------------------------------------------
 %%% API
 %%% --------------------------------------------------------------------------
 new() ->
-    FileName = lists:flatmap(fun(Item) -> integer_to_list(Item) end, tuple_to_list(now())),
+    new({ngram, {2, 2}, {3, 3}}).
 
-    Code = generate_rand(5),
+new(Opt) ->
+    new(Opt, 200).
 
-    File = io_lib:format("/tmp/~s.png",[FileName]),
+new(Opt, Size) ->
+    File_name = lists:flatmap(
+        fun(Item) -> integer_to_list(Item) end,
+        tuple_to_list(now())
+    ),
 
-    Cmd = io_lib:format("convert -background 'none' -fill '#222222' -size 175 -gravity Center -wave 5x100 -swirl 50 -font DejaVu-Serif-Book -pointsize 28 label:~s -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s", [Code, File]),
+    Code = generate_rand(Opt),
+
+    File = io_lib:format("/tmp/~s.png",[File_name]),
+
+    Cmd = io_lib:format(
+        "convert -background 'none' -fill '#222222' -size ~p -gravity Center "
+        "-wave 5x~p -swirl 5 -font DejaVu-Serif-Book -pointsize 36 label:\"~s\""
+        " -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s",
+            [Size, random:uniform(50)+50, Code, File]),
+
     os:cmd(Cmd),
 
-    CodeUp = string:to_upper(Code),
-    MD5 = erlang:md5(CodeUp),
+    Code_up = string:to_upper(Code),
+
+    io:format("Code_up = ~p~n", [Code_up]),
+
+    Md5 = erlang:md5(Code_up),
 
     Now = gs_us(),
-    true = ets:insert(captcha, {MD5, {CodeUp, Now}}),
-    true = ets:insert(captcha_time, {Now, MD5}),
+    true = ets:insert(captcha, {Md5, {Code_up, Now}}),
+    true = ets:insert(captcha_time, {Now, Md5}),
 
-%    io:format("Captcha: ~p~n", [Code]),
-
-    {ok, BinPng} = file:read_file(File),
+    {ok, Bin_png} = file:read_file(File),
     file:delete(File),
 
-    CodeHex = mochihex:to_hex(MD5),
-    {CodeHex, BinPng}.
+    Code_hex = mochihex:to_hex(Md5),
+    {Code_hex, Bin_png}.
 
-check(CodeHex, Code) when CodeHex =:= undefined; Code =:= undefined ->
+check(Code_hex, Code) when Code_hex =:= undefined; Code =:= undefined ->
     false;
-check(CodeHex, Code) ->
-    UCode = string:to_upper(Code),
-    MD5 = mochihex:to_bin(CodeHex),
-    case ets:lookup(captcha, MD5) of
-        [{_, {Val, Now}}] when Val == UCode ->
-            ets:delete(captcha, MD5),
+check(Code_hex, Code) ->
+    Code_up = string:to_upper(Code),
+    Md5 = mochihex:to_bin(Code_hex),
+    case ets:lookup(captcha, Md5) of
+        [{_, {Val, Now}}] when Val == Code_up ->
+            ets:delete(captcha, Md5),
             ets:delete(captcha_time, Now),
             true;
         _ -> false
     end.
 
-removeExpired() ->
+remove_expired() ->
     {Gs,_} = gs_us(),
-    DeadTime =
+    Dead_time =
       Gs - round(config:get(web_session_expire_timeout, 180000)/1000),
     Match = {{'$1','_'},'_'},
-    Guard = [{'<','$1',{const,DeadTime}}],
+    Guard = [{'<','$1',{const,Dead_time}}],
     L = ets:select(captcha_time, [{Match, Guard, ['$_']}]),
-    DelFun = fun({IdTime,IdCaptcha}) ->
-                   ets:delete(captcha, IdCaptcha),
-                   ets:delete(captcha_time, IdTime)
+    DelFun = fun({Time_Id,Captcha_id}) ->
+                   ets:delete(captcha, Captcha_id),
+                   ets:delete(captcha_time, Time_Id)
     end,
     lists:foreach(DelFun, L).
 
 %%% --------------------------------------------------------------------------
 %%% Local
 %%% --------------------------------------------------------------------------
-generate_rand(PassLen) ->
+generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
     {A1,A2,A3} = now(),
     random:seed(A1,A2,A3),
-    L = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789",
-    [lists:nth(X,L) || X <- lists:map(fun(_)->random:uniform(length(L)) end, lists:seq(1, PassLen))].
 
+    Initial_list =
+    %%% Бармаглот на русском
+        % "varkalosihlivkieshorkipyrialisponaveihriukotalizeliukikakmiumzikivmove"
+        % "oboisiabarmaglotasynontaksvirlepidikavglyshiherymitispolinzlopastnyibr"
+        % "andashmygnovzialonmechivzialonshihitvysokihpolondymvglyshihobypytegole"
+        % "zhitpodaderevotymtymonstalpododerevoizhdetivdrygigraahnylgromletityzha"
+        % "snyibarmaglotipylkaetognemrazdvarazdvagorititravavzyvzystrizhaetmechuv"
+        % "auvaigolovabarabardaetsplechosvetozarnyimalchikmoitypobedilvboiuohrabr"
+        % "oslavleninyigeroihvalytebepoiuvarkaloshlivkieshorkipyrialisponaveihriu"
+        % "kotalizeliukikakmiumzikivmove"
+
+    %%% Бармаглот на английском
+        % "twasbriLLigandtheslithytovesdidgyreandgimbleinthewabeallmimsywerethebo"
+        % "rogovesandthemomerathsoutgrabebewarethejabberwockmysonthejawsthatbitet"
+        % "hclawsthatcatchbewarethejubjubbirdandshunthefrumiousbandersnatchhetook"
+        % "hisvorpalswordinhandlongtimethemanxomefoehesoughtsorestedhebythetumtum"
+        % "treeandstoodawhileinthoughtandasinuffishthoughthestoodthejabberwockwit"
+        % "heyesofflamecamewhifflingthroughthetulgeywoodandburbledasitcameonetwoo"
+        % "netwoandthroughandthroughthevorpalbladewentsnickersnackheleftitdeadand"
+        % "withitsheadhewentgalumphingbackandhastthouslainthejabberwock?cometomya"
+        % "rmsmybeamishboyofrabjousdaycaLLoohcallayhechortledinhisjoytwasbrilliga"
+        % "ndtheslithytovesdidgyreandgimbleinthewabeallmimsyweretheborogovesandth"
+        % "emomerathsoutgrabe"
+
+    %%% Английские паннграммы
+        "thequickbrownfoxjumpsoverthislazydog"
+            % the quick brown fox jumps over this (the) lazy dog
+        "jackdawslovemybigsphinxofquartz"
+            % jackdaws love my big sphinx of quartz
+        "thatfiveboxingwizardsorunquickly",
+            % that (the) five boxing wizards run (jump) qickly
+
+    List_1 = optimized_strict_ngram(Initial_list, Pass_len_1 + (A3 rem Offset_1)),
+    List_2 = optimized_strict_ngram(Initial_list, Pass_len_2 + (A3 rem Offset_2)),
+
+    lists:flatten(lists:nth(random:uniform(length(List_1)),List_1)
+        ++ [" "] ++
+        lists:nth(random:uniform(length(List_2)),List_2));
+
+generate_rand({ngram, Pass_len, Ngram_len}) ->
+    {A1,A2,A3} = now(),
+    random:seed(A1,A2,A3),
+
+    Initial_list =
+        "bacadafagamanapaqarasatavaza"
+        "bicidifigiminipiqirisitivizi"
+        "becedefegemenepeqereseteveze"
+        "bycydyfygymynypyqyrysytyvyzy"
+        "bocodofogomonopoqorosotovozo"
+        "bucudufugumunupuqurusutuvuzu",
+
+    List = optimized_strict_ngram(Initial_list, Ngram_len),
+
+    lists:flatten([lists:nth(X,List)
+        || X <- lists:map(fun(_)->random:uniform(length(List)) end,
+            lists:seq(1, Pass_len))]);
+
+generate_rand({simple, Pass_len}) ->
+    {A1,A2,A3} = now(),
+    random:seed(A1,A2,A3),
+    List = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789",
+
+    [lists:nth(X,List)
+        || X <- lists:map(fun(_)->random:uniform(length(List)) end,
+            lists:seq(1, Pass_len))].
 
 % {gregorian_seconds, microseconds}
 % используется как уникальный ключ в captcha_time
@@ -74,3 +152,47 @@ gs_us() ->
     DT = calendar:now_to_datetime(Now),
     {calendar:datetime_to_gregorian_seconds(DT), Mi}.
 
+
+optimized_strict_ngram([_ | R], 0) ->
+    [[] | optimized_strict_ngram(R, 0)];
+optimized_strict_ngram([H1 | R], 1) ->
+    [[H1]
+        | optimized_strict_ngram(R, 1)];
+optimized_strict_ngram([H1, H2 | R], 2) ->
+    [[H1, H2]
+        | optimized_strict_ngram([H2 | R], 2)];
+optimized_strict_ngram([H1, H2, H3 | R], 3) ->
+    [[H1, H2, H3]
+        | optimized_strict_ngram([H2, H3 | R], 3)];
+optimized_strict_ngram([H1, H2, H3, H4 | R], 4) ->
+    [[H1, H2, H3, H4]
+        | optimized_strict_ngram([H2, H3, H4 | R], 4)];
+optimized_strict_ngram([H1, H2, H3, H4, H5 | R], 5) ->
+    [[H1, H2, H3, H4, H5]
+        | optimized_strict_ngram([H2, H3, H4, H5 | R], 5)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6 | R], 6) ->
+    [[H1, H2, H3, H4, H5, H6]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6 | R], 6)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7 | R], 7) ->
+    [[H1, H2, H3, H4, H5, H6, H7]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7  | R], 7)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8 | R], 8) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8 ]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8  | R], 8)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9 | R], 9) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8, H9 ]
+        | optimized_strict_ngram([ H2, H3, H4, H5, H6, H7, H8, H9  | R], 9)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10 | R], 10) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8, H9, H10 ]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8, H9, H10 |R], 10)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11 | R], 11) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11 ]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8, H9, H10, H11 |R], 12)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12 | R], 12) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12 ]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12 | R], 12)];
+optimized_strict_ngram([H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 | R], 13) ->
+    [[H1, H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 ]
+        | optimized_strict_ngram([H2, H3, H4, H5, H6, H7, H8, H9, H10, H11, H12, H13 | R], 13)];
+
+optimized_strict_ngram(_,_) -> [].

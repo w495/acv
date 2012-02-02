@@ -302,7 +302,7 @@ simple_map_controllers(Path) ->
 
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
-        "/captcha" ->           {outside, get_captcha};
+        "/captcha.png" ->           {outside, captcha};
     %%
     %% Основа админки
     %%
