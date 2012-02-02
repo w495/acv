@@ -31,9 +31,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
          * 
         **/
         drc : {             
-            url: "",        // 
-            method: "",     // POST \ GET
-            mimetype: ""    // application/json
+            url: "/get-acv-video/upload",
+            method: "GET",                  // POST \ GET
+            mimetype: "application/json"    // application/json
         },
         
         urc : {  // upload request config

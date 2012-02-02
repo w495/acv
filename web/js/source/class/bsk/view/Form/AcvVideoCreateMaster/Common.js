@@ -31,9 +31,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
          * 
         **/
         drc : {             
-            url: "",        // 
-            method: "",     // POST \ GET
-            mimetype: ""    // application/json
+            url: "/get-acv-video/common",
+            method: "GET",                  // POST \ GET
+            mimetype: "application/json"    // application/json
         },
         
         getComposite : function(){

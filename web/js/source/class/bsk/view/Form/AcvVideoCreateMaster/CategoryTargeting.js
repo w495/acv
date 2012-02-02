@@ -27,10 +27,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
          * одним запросом.
          * 
         **/
-        drc : {             
-            url: "",        // 
-            method: "",     // POST \ GET
-            mimetype: ""    // application/json
+        drc : {
+            url: "/get-acv-video/category-targeting",
+            method: "GET",                  // POST \ GET
+            mimetype: "application/json"    // application/json
         },
         
         categoryListOptions: {

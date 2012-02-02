@@ -137,7 +137,11 @@ signup_post(Req, State) ->
     Data = Req:parse_post(),
     Pass        = proplists:get_value("password",     Data, ""),
     Pass_conf   = proplists:get_value("passwordC",    Data, ""),
-    Updater_id = ?UPDATER_ID,
+    Updater_id  = ?UPDATER_ID,
+
+    Captcha     = proplists:get_value("captcha",    Data, ""),
+
+    ?D("Captcha = ~p~n", [Captcha]),
 
     case Pass of
         Pass_conf ->

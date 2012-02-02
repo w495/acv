@@ -28,9 +28,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
          * 
         **/
         drc : {             
-            url:        "",        // 
-            method:     "",     // POST \ GET
-            mimetype:   ""    // application/json
+            url: "/get-acv-video/users-targeting",
+            method: "GET",                  // POST \ GET
+            mimetype: "application/json"    // application/json
         },
         
         getComposite : function(){

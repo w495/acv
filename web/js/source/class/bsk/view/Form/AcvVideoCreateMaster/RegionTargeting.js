@@ -27,10 +27,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
          * одним запросом.
          * 
         **/
-        drc : {             
-            url: "",        // 
-            method: "",     // POST \ GET
-            mimetype: ""    // application/json
+        drc : {
+            url: "/get-acv-video/region-targeting",
+            method: "GET",                  // POST \ GET
+            mimetype: "application/json"    // application/json
         },
         
         getComposite : function(){
