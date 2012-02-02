@@ -132,6 +132,7 @@ create table acv_video (
         /*количество показов, это поле никто менять не может */
     active  bool default null,
         /* условие предмодерации */
+    deleted bool default false,
 
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */

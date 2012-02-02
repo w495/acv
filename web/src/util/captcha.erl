@@ -1,6 +1,6 @@
 -module(captcha).
 
--export([new/0, new/1, new/2, check/2, remove_expired/0]).
+-export([new/0, new/1, new/3, check/2, remove_expired/0]).
 
 %%% --------------------------------------------------------------------------
 %%% API
@@ -9,7 +9,7 @@ new() ->
     new({ngram, {2, 2}, {3, 3}}).
 
 new(Opt) ->
-    new(Opt, 200).
+    new(Opt, 200, 36).
 
 new(Opt, Size, Pointsize) ->
     File_name = lists:flatmap(

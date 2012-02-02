@@ -100,14 +100,14 @@
                 <xsl:with-param name="Name" select="'patronimic'"  />
                 <xsl:with-param name="Placeholder" select="'Отчество'"  />
             </xsl:call-template>
+            <tr>
+                <td colspan="2" align="center">
+                    Введите текст, изображенный на картинке:<br/>
+                    <img src="/captcha.png" alt="captcha" /> <br/>
+                    <input type="text" name="captcha" /> <br/>
+                </td>
+            </tr>
         </table>
-        <div>
-            Введите текст, изображенный на картинке:
-            <div>
-                <img src="/captcha.png" alt="captcha" />
-            </div>
-            <input type="text" />
-        </div>
 
         <input type="submit" value="Принять"/>
         <div>
