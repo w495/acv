@@ -75,6 +75,8 @@ init([]) ->
     ?D("---------------------------------------~n", []),
     ?D("---------------------------------------~n", []),
 
+    %%% mysql_con_pool:start_link(config:get(vk_db_user, "w-495"),config:get(vk_db_password, "111"),config:get(vk_db_name, "vk"),config:get(fk_db_host, "localhost"))
+
     MySqlConPool = { %%% соединение с внешней базой данных
         mySqlConPoolFK,
         {mysql_con_pool, start_link, [

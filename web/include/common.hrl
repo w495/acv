@@ -3,7 +3,7 @@
 % -----------------------------------------------------------------------------
 
 -define(FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
--define(APP, advsystem).
+-define(APP, web).
 
 
 -define( INFO(P),  flog:info(P) ).
