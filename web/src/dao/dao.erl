@@ -12,6 +12,7 @@
 %%% 
 
 
+
 -spec simple(Query::string())
     -> {State::atom(), list(tuple())}.   %%% {ok, []}
 
@@ -205,40 +206,40 @@ with_transaction_fk(Function) ->
 %%% Выполняет простой запрос и возвращает его результат 
 %%%
 simple(Query) ->
-    ?DEBUG_INFO("~p:simple/1~nQuery:  ~s~n", [?MODULE, Query]),
+%    ?DEBUG_INFO("~p:simple/1~nQuery:  ~s~n", [?MODULE, Query]),
     Result = dao:pgret(dao:with_connection_fk(
             fun(Con) -> pgsql:equery(Con, Query)
         end)),
-    ?DEBUG_INFO("~p:simple/1~n-> ~p~n", [?MODULE, Result]),
+%    ?DEBUG_INFO("~p:simple/1~n-> ~p~n", [?MODULE, Result]),
     Result.
 
 %%% @doc
 %%% Выполняет простой запрос и возвращает его результат
 %%%
 simple(Query, Params) ->
-    ?DEBUG_INFO("~p:simple/2~nQuery: ~s~nParams: ~p~n",
-        [?MODULE, Query, Params]),
+%    ?DEBUG_INFO("~p:simple/2~nQuery: ~s~nParams: ~p~n",
+%        [?MODULE, Query, Params]),
     Result = dao:pgret(dao:with_connection_fk(
             fun(Con) -> pgsql:equery(Con, Query, Params)
         end)),
-    ?DEBUG_INFO("~p:simple/2~n-> ~p~n",
-        [?MODULE, Result]),
+%    ?DEBUG_INFO("~p:simple/2~n-> ~p~n",
+%        [?MODULE, Result]),
     Result.
 
 %%% @doc
 %%% Выполняет простой запрос и возвращает результат побочного действия
 %%%
 simple_ret(Query, Params) ->
-    ?DEBUG_INFO("~p:simple_ret/2~nQuery: ~s~nParams: ~p~n",
-        [?MODULE, Query, Params]),
+%    ?DEBUG_INFO("~p:simple_ret/2~nQuery: ~s~nParams: ~p~n",
+%        [?MODULE, Query, Params]),
     Pre_result = dao:with_connection_fk(
             fun(Con) -> pgsql:equery(Con, Query, Params)
         end),
     case dao:pgret(Pre_result) of
         ok ->
             Result = Pre_result,
-            ?DEBUG_INFO("~p:simple_ret -> ~p~n",
-                [?MODULE, Result]),
+%            ?DEBUG_INFO("~p:simple_ret -> ~p~n",
+%                [?MODULE, Result]),
             ok;
         Error -> Result = {error, Error}
     end,

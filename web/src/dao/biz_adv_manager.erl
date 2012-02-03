@@ -109,7 +109,6 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
 
     if
         length(Ret) > 0 ->
-            random:uniform(length(Ret)),
             RandClip = lists:nth(random:uniform(length(Ret)), Ret),
             case proplists:get_value("rerun_hours", RandClip) of
                 null -> 
