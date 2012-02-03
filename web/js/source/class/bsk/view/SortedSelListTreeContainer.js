@@ -19,10 +19,22 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
             .set({placeholder: "Фраза для поиска в списке"});
         this.tree = new bsk.view.SortedSelListTree(this, url, labelFieldName, descrFieldName, paramdict)
         
-        var vbox = new qx.ui.layout.VBox()
+        this.selected_tree = new bsk.view.SortedSelListTree(this, url, labelFieldName, descrFieldName, paramdict)
+        
+        
+        var vbox = new qx.ui.layout.VBox();
         this.setLayout(vbox);
         this.add(this.field);
-        this.add(this.tree);
+        
+        var treeComposite = new qx.ui.container.Composite();
+        var hbox = new qx.ui.layout.HBox();
+        
+        treeComposite.setLayout(hbox);
+        treeComposite.add(this.tree);
+        treeComposite.add(this.selected_tree);
+        
+        this.add(treeComposite);
+        
         this.field.addListener("input", this._OnChange, this);
     },
 

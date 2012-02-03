@@ -163,8 +163,8 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h1><xsl:text>&#964;&#965;&#950;&#945;&#957;&#961; &#8704;&#916;V C&#937;M</xsl:text></h1>
-        <h2 class="b-header-caption"><xsl:text>система рекламы &#964;&#965;&#950;&#945;&#957;&#961;</xsl:text></h2>
+        <h1><xsl:text>τυζαυρ(∀ΔV(CΩM+))</xsl:text></h1>
+        <h2 class="b-header-caption"><xsl:text>система рекламы τυζαυρ</xsl:text></h2>
     </hgroup>
 </xsl:template>
 

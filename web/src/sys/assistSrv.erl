@@ -105,12 +105,12 @@ notifyFeed(_Obj, _Events, []) ->
 %%          {noreply, State, Timeout} |
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_cast({subscribe, {TrackerPhoneList, Pid, EventsTrackerPhone, D1, D2}}, State) ->
+handle_cast({subscribe, {Tracker_phone_list, Pid, Events_tracker_phone, D1, D2}}, State) ->
     %case csrv:subscribeWeb(CustomerPhone, TrackerPhone, ?BIZ2WEBNAME, Pid, DT) of
     case crpc:call({biz_srv, config:get(biz_srv, biz@localhost)}, webSubscriberDAO, subscribe, 
-            {TrackerPhoneList, {?MODULE, node()}, utils:to_hex(pid_to_list(Pid)), EventsTrackerPhone, D1, D2}) of
+            {Tracker_phone_list, {?MODULE, node()}, utils:to_hex(pid_to_list(Pid)), Events_tracker_phone, D1, D2}) of
         {error, E} ->
-            flog:info(?FMT("~p:~p log subscribe error for TrackerPhoneList(~p) ~p ~n", [?MODULE, ?LINE, [EventsTrackerPhone|TrackerPhoneList], E]));
+            flog:info(?FMT("~p:~p log subscribe error for Tracker_phone_list(~p) ~p ~n", [?MODULE, ?LINE, [Events_tracker_phone|Tracker_phone_list], E]));
         {ok, []} ->
             done;
         {ok, Events} ->
@@ -138,7 +138,11 @@ handle_cast(Msg, State) ->
 handle_info(timeout, State) ->
     %flog:debug(?FMT("~p:~p GC process at node ~p~n", [?MODULE, ?LINE, node()])),
     web_session_DAO:removeExpired(),
+
     captcha:remove_expired(),
+
+    dao_acv_video:delete_acv_video_shown_expired(),
+
     {noreply, State, ?TIMEOUT};
 handle_info(Info, State) ->
     flog:error(?FMT("~p:~p info at node ~p, info=~p~n", [?MODULE, ?LINE, node(), Info])),

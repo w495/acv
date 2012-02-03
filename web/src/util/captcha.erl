@@ -109,7 +109,7 @@ generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
     List_1 = optimized_strict_ngram(Initial_list, Pass_len_1 + (A3 rem Offset_1)),
     List_2 = optimized_strict_ngram(Initial_list, Pass_len_2 + (A3 rem Offset_2)),
     lists:flatten(lists:nth(random:uniform(length(List_1)),List_1)
-        ++ [" "] ++
+        ++
         lists:nth(random:uniform(length(List_2)),List_2));
 
 generate_rand({ngram, Pass_len}) ->

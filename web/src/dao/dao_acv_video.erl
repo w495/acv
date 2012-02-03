@@ -18,6 +18,8 @@
     update_acv_video/1,
     delete_acv_video/1,
     full_delete_acv_video/1,
+    delete_acv_video_shown_expired/0,
+    delete_acv_video_shown_expired/1,
     test_acv_video/0,
     test/0,
     test/1
@@ -406,6 +408,20 @@ delete_acv_video(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
+%%% Удаляет устаревшие записи в acv_video_shown
+%%%
+delete_acv_video_shown_expired() ->
+    Query = "delete from acv_video_shown where dateshow < NOW()",
+    dao:simple(Query).
+
+%%% @doc
+%%% Удаляет устаревшие записи в acv_video_shown
+%%%
+delete_acv_video_shown_expired(Date) ->
+    Query = "delete from acv_video_shown where dateshow < $1",
+    dao:simple(Query, [Date]).
+
+%%% @doc
 %%% Полностью удаляет обвязки рекламы и ее сущность
 %%%
 full_delete_acv_video(Id) ->
@@ -515,8 +531,8 @@ test_eunit_1()->
     ?assertEqual({ok,[[
             {"datestop",    Datestop},
             {"datestart",   Datestart},
-            {"name",        Name_new},
             {"comment",     Comment},
+            {"name",        Name_new},
             {"id",          Acv_video_id}]]},
         ?MODULE:get_acv_video(Acv_video_id)),
     ?MODULE:full_delete_acv_video(Acv_video_id),
