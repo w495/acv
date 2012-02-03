@@ -2,12 +2,19 @@
     https://gist.github.com/1639960
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
+qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
 {
-    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
+    type : "abstract",
+    
+    extend: qx.core.Object,
+        /* qx.core.Object !=  Object */
     
     construct : function(uReq, Row) {
-        this.base(arguments, uReq, Row);
+        this.uReq = uReq;
+        this.buildForm();
+        if(Row != undefined && Row["id"] != undefined)
+            this.loadFormData(Row["id"], "id");
+        this.addListeners();
     },
 
     members : {
@@ -27,15 +34,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
          * 
         **/
         drc : {
-            url: "/get-acv-video/category-targeting",
-            method: "GET",                  // POST \ GET
-            mimetype: "application/json"    // application/json
-        },
-        
-        categoryListOptions: {
-            url:            "/get-all-cats",
-            labelFieldName: "name",
-            descrFieldName: "seo_alias"
+            url:        null,
+            method:     null,
+            mimetype:   null
         },
         
         getComposite : function(){
@@ -47,37 +48,30 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
          * Вообще, учитывая, богатсво форм они могут не понадобиться.
         **/
         inp : {
-            
         },
         
         buildForm : function(){
-            var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
-            var pageName = new qx.ui.basic.Label()
-                .set({
-                    value: "Таргетирование по категориям",  font: "bold",
-                    alignX: "left", rich : true
-                });
-            var layout = new qx.ui.layout.Grid(2, 1);
-            layout.setColumnFlex(0, 1);
-            layout.setColumnAlign(0, "right", "top");
-            
-            this.composite  = new qx.ui.container.Composite (layout);
-
-            this.inp.List = new bsk.view.
-                SortedSelListTreeContainer(
-                    this.categoryListOptions.url,
-                    this.categoryListOptions.labelFieldName,
-                    this.categoryListOptions.descrFieldName
-                );
-            
-            var vertical_offset = -1;
-            
-            this.composite.add(pageName,
-                {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.List,
-                {row:++vertical_offset, column:0});
-            
-            return this.composite;
+        },
+        
+        /**
+            Обработчики событий,
+                которые не удалось вынести внутрь
+                    отдельных виджетов.
+        **/
+        addListeners: function() {            
+            var _this = this;
+        },
+        
+        /**
+            Получает данные с сервера.
+        **/
+        loadFormData : function(id, paramName) {
+            this.dReq = new qx.io.remote.Request
+                (this.drc.url, this.drc.method, this.drc.mimetype);
+            this.dReq.setTimeout(60000);
+            this.dReq.setParameter(paramName, id);
+            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
+            this.dReq.send();
         },
         
         _onLoadFormDataCompl : function(response) {
@@ -92,7 +86,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-
         },
         
         /**
@@ -107,15 +100,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.tree.getSelectedId();
-            
-            console.log("cat_list ---<")
-            console.log(this.inp.List.tree.getSelectedId());
-            console.log(">---")
-            
-            if(this.validateForm()) {
-                this.uReq.setParameter("cat_list", list, true);
-            }
             
             return true;
         }

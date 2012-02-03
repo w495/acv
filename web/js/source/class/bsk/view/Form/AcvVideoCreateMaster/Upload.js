@@ -6,12 +6,10 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq) {
-        this.uReq = uReq;
-        this.buildForm();
-        this.addListeners();
+    construct : function(uReq, Row) {
+        this.base(arguments, uReq, Row);
     },
 
     members : {
@@ -45,11 +43,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         },
 
         inp : {
-            Duration:          null,
             Link_title:        null,
             Alt_title:         null,
             Url:        null,
-            Ref:        null
+            Ref:        null,
+            Duration:          null
         },
         
         buildForm : function(){
@@ -180,7 +178,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         fillForm : function(data) {
             for(var fieldName in this.inp){
                 var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.value[item])
+                if("duration" == item)
+                    this.inp[fieldName].setValue(parseInt(data.value[item]));
+                this.inp[fieldName].setValue(data.value[item]);
             }
         },
         

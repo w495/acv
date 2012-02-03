@@ -4,11 +4,10 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq) {
-        this.uReq = uReq;
-        this.buildForm();
+    construct : function(uReq, Row) {
+        this.base(arguments, uReq, Row);
     },
 
     members : {
@@ -46,9 +45,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             Age_to:         null,
             Time_from:      null,
             Time_to:        null,
-            Gender:         null,
-            Rerun_hours:    null,
-            Rerun_minutes:  null
+            Gender:         null
         },
         
         boxGender:  null,
@@ -57,6 +54,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
         boxRerun:   null,
         
         buildForm : function(){
+            console.log("AcvVideoCreateMaster");
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -73,7 +71,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             this.boxGender = this.makeBoxGender();
             this.boxAge = this.makeBoxAge();
             this.boxTime = this.makeBoxTime();
-            
+                    console.log("AcvVideoCreateMaster");
             var vertical_offset = -1;
             
             this.composite.add(pageName,
@@ -140,18 +138,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             return boxTime;
         },
         
-        /**
-            Получает данные с сервера.
-        **/
-        loadFormData : function(id, paramName) {
-            this.dReq = new qx.io.remote.Request
-                (this.drc.url, this.drc.method, this.drc.mimetype);
-            this.dReq.setTimeout(60000);
-            this.dReq.setParameter(paramName, id);
-            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
-            this.dReq.send();
-        },
-        
         __fillSelect : function(sel, vals, alias, value) {
             sel.itemMap = [];
             for(var j=0; j<vals.length; j++) {
@@ -174,10 +160,18 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-            for(var fieldName in this.inp){
-                var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.value[item])
-            }
+
+            this.boxGender.setValue(("null" != data.value.user_male));
+            //this.inp.Gender.setValue(data.value.user_male);
+            this.inp.Gender.setSelection([this.inp.Gender.itemMap[data.value.user_male]]);
+
+            this.boxTime.setValue((("null" != data.value.time_from) && ("null" != data.value.time_to)));
+            this.inp.Time_from.setValue(parseInt(data.value.time_from));
+            this.inp.Time_to.setValue(parseInt(data.value.time_to));
+            
+            this.boxAge.setValue((("null" != data.value.age_from) && ("null" != data.value.age_to)));
+            this.inp.Age_from.setValue(parseInt(data.value.age_from));
+            this.inp.Age_to.setValue(parseInt(data.value.age_to));
         },
         
         /**
@@ -196,8 +190,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             if(formIsValid){
                 var res = {}
                 
-                console.log(this.inp.Gender.getSelection()[0].getModel());
-                res.user_male = this.inp.Gender.getSelection()[0].getModel();
+                if(this.boxGender.getValue() || (!this.boxGender.isSelectionEmpty())){
+                    res.user_male = this.inp.Gender.getSelection()[0].getModel();
+                }else{
+                    res.user_male = "null";
+                }
                 
                 if(this.boxAge.getValue()){
                     res.age_from    = this.inp.Age_from.getValue();

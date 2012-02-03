@@ -5,8 +5,8 @@
             action : "resource/bsk/descr/acv-video-create.json",
             icon : "icon/32/apps/preferences-users.png"},
 
-        {type : "button", name : "Редактировать",
-            action : "resource/bsk/descr/adv-com-vid-form.json",
+        {type : "button", name : "Копировать",
+            action : "resource/bsk/descr/acv-video-copy.json",
             icon : "icon/32/actions/zoom-in.png",
             specParam: "tab-row"},
 
@@ -19,7 +19,7 @@
             
         {type : "button",
             name : "Обновить",
-            action : "/f5",
+            action : "/get-acv-videos",
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action"}
     ],
@@ -39,5 +39,5 @@
     sort : "id",
     ascending : false,
 
-    dblclick_action : "resource/bsk/descr/adv-com-vid-form.json"
+    dblclick_action : "resource/bsk/descr/acv-video-copy.json"
 }

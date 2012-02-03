@@ -20,3 +20,8 @@
 %-define( DEBUG_INFO(F, P),  ?DEBUG(?FMT(F,P)) ).
 
 -define( DEBUG_INFO(F, P),  io:format(F,P) ).
+
+
+-define( CFG_PROCS, [{gen_server, m_pinger},
+                     {gen_event, error_logger}]
+       ).

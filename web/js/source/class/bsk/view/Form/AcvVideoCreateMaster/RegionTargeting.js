@@ -4,9 +4,9 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq) {
+    construct : function(uReq, Row) {
         this.uReq = uReq;
         this.buildForm();
     },
@@ -71,26 +71,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             this.composite.add(this.inp.List,
                 {row:++vertical_offset, column:0});
             return this.composite;
-        },
-        
-        /**
-            Получает данные с сервера.
-        **/
-        loadFormData : function(id, paramName) {
-            this.dReq = new qx.io.remote.Request
-                (this.drc.url, this.drc.method, this.drc.mimetype);
-            this.dReq.setTimeout(60000);
-            this.dReq.setParameter(paramName, id);
-            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
-            this.dReq.send();
-        },
-        
-        _onLoadFormDataCompl : function(response) {
-            var result = response.getContent();
-            if (false == bsk.util.errors.process(this, result))
-                return false;
-            this.fillForm(result);
-            return true;
         },
         
         /**

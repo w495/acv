@@ -139,41 +139,47 @@ signup_post(Req, State) ->
     Pass_conf   = proplists:get_value("passwordC",    Data, ""),
     Updater_id  = ?UPDATER_ID,
 
-    Captcha     = proplists:get_value("captcha",    Data, ""),
+    Code_hex = Req:get_cookie_value("captcha_codehex"),
+    Code     = proplists:get_value("captcha",    Data, ""),
 
-    ?D("Captcha = ~p~n", [Captcha]),
-
-    case Pass of
-        Pass_conf ->
+    case captcha:check(Code_hex, Code) of 
+        true ->
+            ?D("captcha:check > true~n", []),
             case Pass of
-                "null" ->
-                    Pashash = null;
-                _ when length(Pass) /= 0 ->
-                    Pashash = lists:flatten([io_lib:format("~2.16.0B", [X])
-                        || X <- binary_to_list(erlang:md5(Pass))]);
-                _ ->
-                    Pashash = null
-            end,
-            E = norm:extr(Data, [{"id",             [nullable, integer]},
-                                 {"firstname",      [string]},
-                                 {"lastname",       [string]},
-                                 {"patronimic",     [string]},
-                                 {"login",          [string]},
-                                 {"email",          [nullable, string]},
-                                 {"city",           [nullable, string]},
-                                 {"organization",   [nullable, string]},
-                                 {"position",       [nullable, string]}]),
+                Pass_conf ->
+                    case Pass of
+                        "null" ->
+                            Pashash = null;
+                        _ when length(Pass) /= 0 ->
+                            Pashash = lists:flatten([io_lib:format("~2.16.0B", [X])
+                                || X <- binary_to_list(erlang:md5(Pass))]);
+                        _ ->
+                            Pashash = null
+                    end,
+                    E = norm:extr(Data, [{"id",            [nullable, integer]},
+                                        {"firstname",      [string]},
+                                        {"lastname",       [string]},
+                                        {"patronimic",     [string]},
+                                        {"login",          [string]},
+                                        {"email",          [nullable, string]},
+                                        {"city",           [nullable, string]},
+                                        {"organization",   [nullable, string]},
+                                        {"position",       [nullable, string]}]),
 
-            Res = dao_customer:update_customer({E, Pashash, [], Updater_id}),
-            case Res  of
-                {ok, User_id} ->
-                    Login = proplists:get_value("login", Data, ""),
-                    signin_post(Login, Pass, {normal});
+                    Res = dao_customer:update_customer({E, Pashash, [], Updater_id}),
+                    case Res  of
+                        {ok, User_id} ->
+                            Login = proplists:get_value("login", Data, ""),
+                            signin_post(Login, Pass, {normal});
+                        _ ->
+                            signup(Req)
+                    end;
                 _ ->
+                    ?D("Pass_conf  = [~s]~n", [Pass_conf]),
                     signup(Req)
             end;
-        _ ->
-            ?D("Pass_conf  = [~s]~n", [Pass_conf]),
+        false ->
+            ?D("captcha:check > false~n", []),
             signup(Req)
     end.
 

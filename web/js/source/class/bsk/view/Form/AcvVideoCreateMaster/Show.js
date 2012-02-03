@@ -6,16 +6,12 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, isNew) {
-        
+    construct : function(uReq, Row, isNew) {
+        this.base(arguments, uReq, Row);
         this.isNew = isNew;
-        
         console.log(this.isNew);
-        
-        this.uReq = uReq;
-        this.buildForm();
     },
 
     members : {
@@ -154,30 +150,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
         },
         
         /**
-            Обработчики событий,
-                которые не удалось вынести внутрь
-                    отдельных виджетов.
-        **/
-        addListeners: function() {            
-            var _this = this;
-            /* События виджетов для сопровождающей картикни  */
-            this.picButton.addListener('changeFileName',function(e){
-                if('' != e.getData()) {
-                    bsk.view.Form.Upload.UploadFakeStatusBar.on();
-                    
-                    _this.picForm.setParameter("prev", _this.inp.Url.getValue());
-                    _this.inp.Url.setValue(_this.picButton.getFileName());
-                    _this.picForm.send();    
-                }
-            });
-            this.picForm.addListener('completed',function(e) {
-                var response = _this.picForm.getIframeTextContent();
-                bsk.view.Form.Upload.UploadFakeStatusBar.off();
-                _this.inp.Url.setValue(response);
-            });
-        },
-        
-        /**
             Создает область загрузки картинки.
         **/
         _buildPicFormCnt: function() {
@@ -198,19 +170,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             return picFormCnt;
         },
         
-        
-        /**
-            Получает данные с сервера.
-        **/
-        loadFormData : function(id, paramName) {
-            this.dReq = new qx.io.remote.Request
-                (this.drc.url, this.drc.method, this.drc.mimetype);
-            this.dReq.setTimeout(60000);
-            this.dReq.setParameter(paramName, id);
-            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
-            this.dReq.send();
-        },
-        
         _onLoadFormDataCompl : function(response) {
             var result = response.getContent();
             if (false == bsk.util.errors.process(this, result))
@@ -223,10 +182,17 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-            for(var fieldName in this.inp){
-                var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.value[item])
-            }
+            this.inp.Wish.setValue(parseInt(data.value.wish));
+            
+            this.inp.Preroll.setValue(bsk.util.utils.parseBoolean(data.value.preroll));
+            this.inp.Midroll.setValue(bsk.util.utils.parseBoolean(data.value.midroll));
+            this.inp.Postroll.setValue(bsk.util.utils.parseBoolean(data.value.postroll));
+            //this.inp.Pauseroll.setValue(bsk.util.utils.parseBoolean(data.value.pauseroll));
+            
+            this.boxRerun.setValue((("null" != data.value.rerun_hours) && ("null" != data.value.rerun_minutes)))
+            this.inp.Rerun_hours.setValue(parseInt(data.value.rerun_hours));
+            this.inp.Rerun_minutes.setValue(parseInt(data.value.rerun_minutes));
+
         },
         
         /**
