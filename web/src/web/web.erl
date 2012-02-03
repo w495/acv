@@ -4,7 +4,9 @@
 -export([start/0, stop/0, status/0, stop_and_halt/0,
          reload_cfg/0, reload_code/0, version/0]).
 
--include("../include/common.hrl").
+-include("common.hrl").
+
+
 
 ensure_started(App) ->
     case application:start(App) of

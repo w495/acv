@@ -42,17 +42,17 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
         this.__list = [];
         
         console.log("!");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq, true));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq, Row, true));
         console.log("Common");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq, Row));
         console.log("Upload");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Show(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Show(this.uReq, Row));
         console.log("Show");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq, Row));
         console.log("UsersTargeting");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, Row));
         console.log("RegionTargeting");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq));
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
         console.log("CategoryTargeting");
         
         this.__step = 0;

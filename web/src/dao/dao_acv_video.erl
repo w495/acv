@@ -9,12 +9,21 @@
     get_all_acv_videos/1,
     get_acv_videos/1,
     get_acv_video/1,
+    get_acv_video_common/1,
+    get_acv_video_show/1,
+    get_acv_video_upload/1,
+    get_acv_video_category_targeting/1,
+    get_acv_video_region_targeting/1,
+    get_acv_video_users_targeting/1,
     update_acv_video/1,
     delete_acv_video/1,
-    test_acv_video/0,   
+    full_delete_acv_video/1,
+    test_acv_video/0,
     test/0,
     test/1
 ]).
+
+
 
 -include("common.hrl").
 
@@ -87,7 +96,7 @@ get_acv_videos(Customer_id) ->
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video "
-        " where customer_id = $1;",
+            " where customer_id = $1;",
     dao:simple(Query, [(Customer_id)]).
 
 %%% @doc
@@ -96,40 +105,83 @@ get_acv_videos(Customer_id) ->
 get_acv_video(Acv_video_id) ->
     Query =
         "select "
-            "acv_video.id, acv_video.name, "
+            "acv_video.id, acv_video.name, acv_video.comment, "
             "acv_video.datestart, acv_video.datestop "
-         " from acv_video "
-        "where acv_video.id = $1;",
+        " from acv_video "
+            " where acv_video.id = $1;",
     dao:simple(Query, [(Acv_video_id)]).
 
-% get_acv_video_common(Acv_video_id) ->
-%     Query =
-%         "select "
-%             "acv_video.id, acv_video.name, "
-%             "acv_video.datestart, acv_video.datestop "
-%          " from acv_video "
-%         "where acv_video.id = $1;",
-%     dao:simple(Query, [(Acv_video_id)]).
-% 
-% get_acv_video_show(Acv_video_id) ->
-%     Query =
-%         "select "
-%             "acv_video.id, acv_video.name, "
-%             "acv_video.datestart, acv_video.datestop "
-%          " from acv_video "
-%         "where acv_video.id = $1;",
-%     dao:simple(Query, [(Acv_video_id)]).
-% 
-% 
-% get_acv_video_show(Acv_video_id) ->
-%     Query =
-%         "select "
-%             "acv_video.id, acv_video.name, "
-%             "acv_video.datestart, acv_video.datestop "
-%          " from acv_video "
-%         "where acv_video.id = $1;",
-%     dao:simple(Query, [(Acv_video_id)]).
+%%% @doc
+%%% get_acv_video_common
+%%% 
+get_acv_video_common(Acv_video_id) ->
+    Query =
+        "select "
+            "acv_video.id, acv_video.name, acv_video.comment, "
+            "acv_video.datestart, acv_video.datestop "
+        " from acv_video "
+            " where acv_video.id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
 
+%%% @doc
+%%% get_acv_video_show
+%%% 
+get_acv_video_show(Acv_video_id) ->
+    Query =
+        "select "
+            " acv_video.wish, acv_video.shown, "
+            " acv_video.preroll, acv_video.postroll, "
+            " acv_video.midroll, acv_video.pauseroll, "
+            " acv_video.rerun_hours, acv_video.rerun_minutes "
+        " from acv_video "
+            " where acv_video.id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% get_acv_video_upload
+%%%
+get_acv_video_upload(Acv_video_id) ->
+    Query =
+        "select "
+            " acv_video.duration, acv_video.Link_title, "
+            " acv_video.Alt_title, acv_video.Url, acv_video.Ref "
+        " from acv_video "
+            " where acv_video.id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% get_acv_video_category_targeting
+%%%
+get_acv_video_category_targeting(Acv_video_id) ->
+    Query =
+        "select "
+            " cat_id "
+        " from acv_video2cat "
+            " where acv_video_id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% get_acv_video_region_targeting
+%%%
+get_acv_video_region_targeting(Acv_video_id) ->
+    Query =
+        "select "
+            " geo_region_id "
+        " from acv_video2geo_region "
+            " where acv_video_id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% get_acv_video_users_targeting
+%%%
+get_acv_video_users_targeting(Acv_video_id) ->
+    Query =
+        "select "
+            " acv_video.age_from, acv_video.age_to, "
+            " acv_video.time_from, acv_video.time_to, acv_video.user_male "
+        " from acv_video "
+            " where acv_video.id = $1;",
+    dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
 %%% Создает рекламу видео
@@ -347,9 +399,16 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
     ).
 
 %%% @doc
-%%% Удаляет обвязки рекламы и ее сущность
+%%% "Удаляет" обвязки рекламы и ее сущность
 %%%
-delete_acv_video(Id) ->
+delete_acv_video(Acv_video_id) ->
+    Query = "update acv_video set deleted = true where id=$1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% Полностью удаляет обвязки рекламы и ее сущность
+%%%
+full_delete_acv_video(Id) ->
     Query_video =
         "delete from acv_video where id = $1;",
     Query_video2geo_region =
@@ -454,12 +513,13 @@ test_eunit_1()->
                         Rerun_hours, Rerun_minutes,
                             Customer_id}),
     ?assertEqual({ok,[[
-            {"datestop",Datestop},
-            {"datestart",Datestart},
-            {"name",Name_new},
-            {"id",Acv_video_id}]]},
+            {"datestop",    Datestop},
+            {"datestart",   Datestart},
+            {"name",        Name_new},
+            {"comment",     Comment},
+            {"id",          Acv_video_id}]]},
         ?MODULE:get_acv_video(Acv_video_id)),
-    ?MODULE:delete_acv_video(Acv_video_id),
+    ?MODULE:full_delete_acv_video(Acv_video_id),
     ok.
 
 %%%
@@ -537,7 +597,7 @@ test_eunit_2()->
                         Rerun_hours, Rerun_minutes,
                             Customer_id}, R_list_new, []}),
 
-    ?MODULE:delete_acv_video(Acv_video_id),
+    ?MODULE:full_delete_acv_video(Acv_video_id),
     lists:foreach(fun(R)->
         dao_geo_region:delete_geo_region(R),
     ok end,R_list),

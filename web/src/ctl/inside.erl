@@ -114,7 +114,8 @@ update_customer(Req) ->
         "null" ->
             Pashash = null;
         _ when length(Pass) /= 0 ->
-            Pashash = lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(erlang:md5(Pass))]);
+            Pashash = lists:flatten([io_lib:format("~2.16.0B", [X])
+                || X <- binary_to_list(erlang:md5(Pass))]);
         _ ->
             Pashash = null
     end,
@@ -242,6 +243,39 @@ get_acv_banners(Req) ->
     Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+
+
+
+get_acv_video_common(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_common, Acv_video_id),
+    {"application/json", [], [Res]}.
+
+get_acv_video_upload(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_upload, Acv_video_id),
+    {"application/json", [], [Res]}.
+
+get_acv_video_show(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_show, Acv_video_id),
+    {"application/json", [], [Res]}.
+
+get_acv_video_users_targeting(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_users_targeting, Acv_video_id),
+    {"application/json", [], [Res]}.
+
+get_acv_video_region_targeting(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_region_targeting, Acv_video_id),
+    {"application/json", [], [Res]}.
+
+get_acv_video_category_targeting(Req) ->
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_category_targeting, Acv_video_id),
+    {"application/json", [], [Res]}.
+
 %%
 %% Изменяет рекламу для роликов
 %%
@@ -332,9 +366,17 @@ update_adv_com_vid(Req) ->
     Res = dao:dao_call(dao_adv_com, updateAdvComVid, Info),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+-define(HTTPC, httpc).
+
 test()->
-    
-ok.
+    % erlang 13 ->
+    %   http:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
+    % erlang 15 ->
+    %   httpc:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
+
+    %?HTTPC:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []),
+
+    ok.
 
 test(speed) ->
     Times_1 = 1000000,

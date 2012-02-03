@@ -22,6 +22,12 @@ qx.Class.define("bsk.view.StaticForms",
         acvVideoCreate : function(biz, Row, formDescr) {
             return new bsk.view.Form.AcvVideoCreateMaster(biz, Row, formDescr);
         },
+
+        // мастер создания и редактирования рекламной компании
+        acvVideoCopy : function(biz, Row, formDescr) {
+            // пока показываем тоже самое, что и при создании
+            return new bsk.view.Form.AcvVideoCreateMaster(biz, Row, formDescr);
+        },
         
         // форма создания и редактирования рекламной компании
         advComVidForm : function(biz, Row, formDescr) {

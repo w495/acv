@@ -241,7 +241,6 @@ simple_map_controllers(Path) ->
     % advertising company video
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
 
-
         "/get-all-acv-videos"   ->  {inside, get_all_acv_videos};
         "/get-all-geo-regions"  ->  {inside, get_all_geo_regions};
         "/get-all-acv-banners"  ->  {inside, get_all_acv_banners};
@@ -252,10 +251,10 @@ simple_map_controllers(Path) ->
         "/get-acv-video/upload"   -> {inside, get_acv_video_upload};
         "/get-acv-video/show"     -> {inside, get_acv_video_show};
 
-        "/get-acv-video/user-targeting"
-            -> {inside, get_acv_video_category_targeting};
+        "/get-acv-video/users-targeting"
+            -> {inside, get_acv_video_users_targeting};
         "/get-acv-video/region-targeting"
-            -> {inside, get_acv_video_category_targeting};
+            -> {inside, get_acv_video_region_targeting};
         "/get-acv-video/category-targeting"
             -> {inside, get_acv_video_category_targeting};
 

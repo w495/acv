@@ -5,8 +5,8 @@
             action : "resource/bsk/descr/acv-create.json",
             icon : "icon/32/apps/preferences-users.png"},
 
-        {type : "button", name : "Редактировать",
-            action : "resource/bsk/descr/adv-com-vid-form.json",
+        {type : "button", name : "Копировать",
+            action : "resource/bsk/descr/acv-video-copy.json",
             icon : "icon/32/actions/zoom-in.png",
             specParam: "tab-row"},
 

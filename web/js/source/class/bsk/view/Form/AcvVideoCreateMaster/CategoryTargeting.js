@@ -4,11 +4,10 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq) {
-        this.uReq = uReq;
-        this.buildForm();
+    construct : function(uReq, Row) {
+        this.base(arguments, uReq, Row);
     },
 
     members : {
@@ -79,18 +78,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
                 {row:++vertical_offset, column:0});
             
             return this.composite;
-        },
-        
-        /**
-            Получает данные с сервера.
-        **/
-        loadFormData : function(id, paramName) {
-            this.dReq = new qx.io.remote.Request
-                (this.drc.url, this.drc.method, this.drc.mimetype);
-            this.dReq.setTimeout(60000);
-            this.dReq.setParameter(paramName, id);
-            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
-            this.dReq.send();
         },
         
         _onLoadFormDataCompl : function(response) {

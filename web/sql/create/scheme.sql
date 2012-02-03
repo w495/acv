@@ -133,6 +133,9 @@ create table acv_video (
     active  bool default null,
         /* условие предмодерации */
     deleted bool default false,
+        /* удаление */
+    stoped  bool default false,
+        /* остановка */
 
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */

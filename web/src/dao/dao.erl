@@ -52,6 +52,19 @@ dao_call(Module, Function, Param, JsonRetName) ->
     end,
     Res.
 
+%%%
+%%% Возвращает единственный вариант
+%%%
+dao_value(Module, Function, Param) ->
+    case Module:Function(Param) of
+        {ok, Vals} ->
+            Pre_res = db2json:encode(Vals),
+            Res = mochijson2:encode({struct, [{<<"value">>, Pre_res }]});
+        _ ->
+            Res = dao_call(Module, Function, Param, value)
+    end,
+    Res.
+
 dao_call(Module, Function, Param) ->
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals);

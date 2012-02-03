@@ -4,14 +4,11 @@
 
 qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
 {
-    extend : Object,
+    extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, IsModerator) {
-        
+    construct : function(uReq, Row, IsModerator) {
+        this.base(arguments, uReq, Row);
         this.IsModerator = IsModerator;
-        
-        this.uReq = uReq;
-        this.buildForm();
     },
 
     members : {
@@ -110,18 +107,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             return this.composite;
         },
         
-        /**
-            Получает данные с сервера.
-        **/
-        loadFormData : function(id, paramName) {
-            this.dReq = new qx.io.remote.Request
-                (this.drc.url, this.drc.method, this.drc.mimetype);
-            this.dReq.setTimeout(60000);
-            this.dReq.setParameter(paramName, id);
-            this.dReq.addListener("completed", this._onLoadFormDataCompl, this);
-            this.dReq.send();
-        },
-        
         _onLoadFormDataCompl : function(response) {
             var result = response.getContent();
             if (false == bsk.util.errors.process(this, result))
@@ -136,7 +121,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
         fillForm : function(data) {
             for(var fieldName in this.inp){
                 var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.value[item])
+                this.inp[fieldName].setValue(data.value[item]);
             }
         },
         
