@@ -190,7 +190,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             if(formIsValid){
                 var res = {}
                 
-                if(this.boxGender.getValue() || (!this.boxGender.isSelectionEmpty())){
+                if(this.boxGender.getValue()){
                     res.user_male = this.inp.Gender.getSelection()[0].getModel();
                 }else{
                     res.user_male = "null";

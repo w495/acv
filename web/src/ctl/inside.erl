@@ -303,7 +303,7 @@ update_acv_video(Req) ->
     %
 
     Info_0 = norm:extr(Data, [
-        {"id",          [nullable, integer]},
+        %{"id",          [nullable, integer]},
         {"name",        [string]},
         {"datestart",   [datetimeUnixtime]},
         {"datestop",    [datetimeUnixtime]},
@@ -333,7 +333,7 @@ update_acv_video(Req) ->
 
     ]),
 
-    Info_1 = erlang:list_to_tuple(erlang:tuple_to_list(Info_0) ++ [Customer_id]),
+    Info_1 = erlang:list_to_tuple([null] ++ erlang:tuple_to_list(Info_0) ++ [Customer_id]),
 
     ?D("~n---------------------~nInfo_1 = ~p~n", [Info_1]),
     ?D("~n---------------------~nGeo_region_list = ~p~n", [Geo_region_list]),
