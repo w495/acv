@@ -27,8 +27,12 @@ name_columns(C, [], Ret) ->
     ?DEBUG(?FMT("unexpected columns: ~p~n", [C])),
     Ret.
 
+make_proplist(Columns, List) ->
+    make_proplist(Columns, List, []).
+
 make_proplist(Columns, [V|T], Ret) ->
     make_proplist(Columns, T, [name_columns(Columns, V, [])|Ret]);
+
 make_proplist(_C, [], Ret) ->
     Ret.
 

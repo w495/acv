@@ -5,17 +5,17 @@
         opened : true,
         subitems: [
             {
-                name : "Реклама на видео",
+                name : "[-] Реклама на видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
             {
-                name : "Реклама на сайте",
+                name : "[-] Реклама на сайте",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             },
             {
-                name : "Интерактивное видео",
+                name : "[-] Интерактивное видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             }
@@ -27,14 +27,14 @@
         opened : true,
         subitems: [
             {
-                name : "Банеры",
+                name : "[-] Банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
             {
                 name : "Видео",
                 icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/bsk/descr/adv-com-vid-tab.json"
+                model : "resource/bsk/descr/acv-videos-tab.json"
             }
         ]
     },
@@ -44,12 +44,12 @@
         opened : true,
         subitems: [
             {
-                name : "Состояние счета",
+                name : "[-] Состояние счета",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
             {
-                name : "Пополнить счет",
+                name : "[-] Пополнить счет",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             }
@@ -61,25 +61,25 @@
         opened : true,
         subitems: [
             {
-                name : "Требования к рекламным материалам",
+                name : "[-] Требования к рекламным материалам",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
 
             {
-                name : "Условия размещения рекламы",
+                name : "[-] Условия размещения рекламы",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
 
             {
-                name : "Как создать рекламную компанию",
+                name : "[-] Как создать рекламную компанию",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
 
             {
-                name : "Обозначения и сокращения",
+                name : "[-] Обозначения и сокращения",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             }

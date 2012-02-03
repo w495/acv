@@ -28,17 +28,17 @@
         opened : true,
         subitems: [
             {
-                name : "Реклама на видео",
+                name : "[-] Реклама на видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-tab.json"
             },
             {
-                name : "Реклама на сайте",
+                name : "[-] Реклама на сайте",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             },
             {
-                name : "Интерактивное видео",
+                name : "[-] Интерактивное видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/adv-com-vid-tab.json"
             }
@@ -49,7 +49,7 @@
         opened : true,
         subitems: [
             {
-                name : "Банеры",
+                name : "[-] Банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/acv-banners-tab.json"
             },
@@ -65,7 +65,7 @@
         opened : true,
         subitems: [
             {
-                name : "Все банеры",
+                name : "[-] Все банеры",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/all-acv-banners-tab.json"
             },

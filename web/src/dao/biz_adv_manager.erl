@@ -55,7 +55,7 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
                 "acv_video.wish > acv_video.shown and "
                 "acv_video." ++ Type ++ " = true and "
                 "not exists (select * from acv_video_shown where acv_video_shown.acv_video_id = acv_video.id "
-                                "and acv_video_shown.customer_id=\"" ++ utils:to_list(User_id) ++ "\") ",
+                                "and acv_video_shown.user_id='" ++ utils:to_list(User_id) ++ "') ",
     if
         length(Vals) > 0 ->
             Q2S2 = Q2S1 ++ " and (acv_video2cat.cat_id in (" ++ 
@@ -65,7 +65,7 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
             Q2S2 = Q2S1 ++ " and acv_video2cat.cat_id is NULL "
     end,
 
-    QC = <<"select * from customer where id=?;">>,
+    QC = <<"select * from customer where uid=?;">>,
     %TODO реюзать prepare
     mysql:prepare(get_customer, QC),
     {data,{mysql_result, CCols, CVals, _X31, _X32}} = mysql:execute(mySqlConPool, get_customer, [User_id]),
@@ -74,7 +74,11 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
     % таргетирование по параметрам кастомера
     case CL of
         [] ->
-            Q2S3 = Q2S2 ++ "acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL and ";
+            ?D("~n------------------------~n", []),
+            ?D("Q2S2 = ~p", [Q2S2]),
+            ?D("~n------------------------~n", []),
+
+            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL";
         [Customer] ->
             Q2S3 = string:join([
                 Q2S2, 
@@ -87,6 +91,10 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
                         io:format("ERROR: invalid gender - ~p~n", [EGender]),
                         ""
                 end,
+                ?D("~n------------------------~n", []),
+                ?D("Q2S3 = ~p", [Q2S2]),
+                ?D("~n------------------------~n", []),
+
                 case proplists:get_value("birthday") of
                     {_CYear, _CMonth, _CDay}=CBirthday ->
                         CAge = abs((calendar:date_to_gregorian_days(date()) - calendar:date_to_gregorian_days(CBirthday)) / 365),
@@ -98,8 +106,8 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
                 end
             ], " ");
         Other -> 
-            io:format("ERROR: get_acv - invalid customer: ~p~n", [Other]),
-            Q2S3 = Q2S2 ++ "acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL and "
+            ?D("ERROR: get_acv - invalid customer: ~p~n", [Other]),
+            Q2S3 = Q2S2 ++ "and acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
 
     Q2 = Q2S3 ++ ";",
@@ -109,25 +117,28 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
 
     if
         length(Ret) > 0 ->
-            RandClip = lists:nth(random:uniform(length(Ret)), Ret),
-            case proplists:get_value("rerun_hours", RandClip) of
+            Rand_clip = lists:nth(random:uniform(length(Ret)), Ret),
+            case proplists:get_value("rerun_hours", Rand_clip, null) of
                 null -> 
                     done;
-                RerunHour when User_id =/= null ->
-                    RerunSec = (RerunHour*60 + proplists:get_value("rerun_minutes", RandClip, 0))*60,
-                    DTStart = calendar:gregorian_seconds_to_datetime((calendar:datetime_to_gregorian_seconds(erlang:localtime()) + RerunSec)),
-                    
-                    Q3 = "insert into acv_video_shown (customer_id, acv_video_id, dateshow) values (%1, %2, %3);",
-                    dao:simple(Q3, [User_id, proplists:get_value("id", RandClip), DTStart]);
+                Rerun_hours when User_id =/= null ->
+                    Rerun_minutes = proplists:get_value("rerun_minutes", Rand_clip, 0),
+                    Rerun_seconds = (Rerun_hours*60 + Rerun_minutes)*60,
+                    Localtime = erlang:localtime(),
+                    Gregorian_seconds = calendar:datetime_to_gregorian_seconds(Localtime),
+                    Start_time = Gregorian_seconds + Rerun_seconds,
+                    DTStart = calendar:gregorian_seconds_to_datetime(Gregorian_seconds + Rerun_seconds),
+                    Q3 = "insert into acv_video_shown (user_id, acv_video_id, dateshow) values (%1, %2, %3);",
+                    dao:simple(Q3, [User_id, proplists:get_value("id", Rand_clip), DTStart]);
                 _ -> 
                     done
             end,
-            SelectedClip = [RandClip];
+            Selected_clip = [Rand_clip];
         true ->
-            SelectedClip = []
+            Selected_clip = []
     end,
 
-    Result_string = make_acv_xml_naive(SelectedClip),
+    Result_string = make_acv_xml_naive(Selected_clip),
 
     ?D("Result_string  = ~s~n", [Result_string]),
 
@@ -221,6 +232,9 @@ mysql_test_2() ->
     ok.
 
 test()->
+
+        biz_adv_manager:get_acv_mp4({"preroll", "5615d6c0-79c3-4a90-bf34-9d23ae78c14a.mp4", "de130992-cf98-5284-a32b-bf256d15f4e6"}, 0),
+
     ok.
 
 %%%
