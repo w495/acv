@@ -138,7 +138,7 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
             Selected_clip = []
     end,
 
-    Result_string = make_acv_xml_naive(Selected_clip),
+    Result_string = make_acv_xml(Selected_clip),
 
     ?D("Result_string  = ~s~n", [Result_string]),
 
@@ -155,7 +155,7 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
 make_acv_xml(List) ->
     {Acc_str, Acc_duration} = make_acv_xml_item(List, {[], 0}),
     ?XML_TOP ++
-    ?FMT("<block duration=\"~s\" loadnext=\"600\">", [Acc_duration]) ++
+    ?FMT("<block duration=\"~p\" loadnext=\"600\">", [Acc_duration]) ++
         Acc_str ++
     "</block>".
 
