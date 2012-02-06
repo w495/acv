@@ -5,28 +5,30 @@
 %        ]
 %    },
 
-    {advsystem, [
+    {web, [
         {site_owner, "tvzavr"},
         {log_level, {debug,all}},
         {cookiename, "FK"},
         {expcookie, 180000}, % in seconds  300 min
 
-        {fk_db_user, "cff"},
-        {fk_db_password, "cff"},
+        {fk_db_user, "w-495"},
+        {fk_db_password, "eiir"},
         {fk_db_name, "fk"},
         {fk_db_host, "127.0.0.1"},
 
         {vk_db_user, "repl"},
         {vk_db_password, "yhbvft"},
         {vk_db_name, "vk"},
-        {vk_db_host, " 192.168.2.110"},
+        {vk_db_host, "192.168.2.110"},
+
+        {vk_streamer, "http://192.168.2.187:8000"},
 
         {web_session_gc_period, 600000}, % 10 min
         {web_session_expire_timeout, 180000}, % in sec 300 min
 
         {http_host,  "0.0.0.0"},
         {https_host, "0.0.0.0"},
-        {http_port,  8000},
+        {http_port,  8001},
         {https_port, 8443},
         {https_certfile, "priv/https-files/cert.pem"},
         {https_keyfile,  "priv/https-files/key.pem"},
