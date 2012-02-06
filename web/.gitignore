@@ -1,4 +1,6 @@
 *~
+
+*.app
 *.beam
 *.bup
 *.log
@@ -6,19 +8,24 @@
 *.pyc
 *.swp
 *.so
-*/db/*
-*.config
 
-*/ebin/*.app
-*/ebin/*.ebin
-*/cbin/*
-*/js*/source/script
-*/js*/source/script/*
-*/js*/cache/*
-*/js*/cache
-mochiweb/doc/*
+*.LOG
+*.DAT
+*.DCD
 
-web/js/build
+app.config
+app_dev.config
 
-web/static/data
-web/static.old/data
+ebin/*
+cbin/*
+priv/db/*
+
+js*/source/script/*
+js*/cache/*
+js*/build/*
+
+static/data/*
+static/data/adv/*
+static/data/game/*
+static/data/docs/*
+static/data/*
