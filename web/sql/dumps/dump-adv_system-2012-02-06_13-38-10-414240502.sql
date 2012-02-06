@@ -29,7 +29,7 @@ ALTER TABLE public.seq_acv_banner OWNER TO "w-495";
 -- Name: seq_acv_banner; Type: SEQUENCE SET; Schema: public; Owner: w-495
 --
 
-SELECT pg_catalog.setval('seq_acv_banner', 59, true);
+SELECT pg_catalog.setval('seq_acv_banner', 1, false);
 
 
 SET default_tablespace = '';
@@ -42,13 +42,13 @@ SET default_with_oids = false;
 
 CREATE TABLE acv_banner (
     id integer DEFAULT nextval('seq_acv_banner'::regclass) NOT NULL,
-    customer_id integer,
     name character varying(100),
     datestart timestamp without time zone,
     datestop timestamp without time zone,
-    banner_place_id integer,
     url character varying(200),
-    ref character varying(1000)
+    ref character varying(1000),
+    banner_place_id integer,
+    customer_id integer
 );
 
 
@@ -72,7 +72,7 @@ ALTER TABLE public.seq_acv_video OWNER TO "w-495";
 -- Name: seq_acv_video; Type: SEQUENCE SET; Schema: public; Owner: w-495
 --
 
-SELECT pg_catalog.setval('seq_acv_video', 39, true);
+SELECT pg_catalog.setval('seq_acv_video', 1, false);
 
 
 --
@@ -81,7 +81,6 @@ SELECT pg_catalog.setval('seq_acv_video', 39, true);
 
 CREATE TABLE acv_video (
     id integer DEFAULT nextval('seq_acv_video'::regclass) NOT NULL,
-    customer_id integer,
     name character varying(100),
     datestart timestamp without time zone,
     datestop timestamp without time zone,
@@ -94,7 +93,14 @@ CREATE TABLE acv_video (
     pauseroll boolean DEFAULT true,
     user_male boolean,
     age_from integer,
-    age_to integer
+    age_to integer,
+    time_from integer,
+    time_to integer,
+    duration integer DEFAULT 0,
+    link_title character varying(200) DEFAULT NULL::character varying,
+    alt_title character varying(200) DEFAULT NULL::character varying,
+    shown integer DEFAULT 0,
+    customer_id integer
 );
 
 
@@ -176,7 +182,7 @@ ALTER TABLE public.seq_customer_id OWNER TO "w-495";
 -- Name: seq_customer_id; Type: SEQUENCE SET; Schema: public; Owner: w-495
 --
 
-SELECT pg_catalog.setval('seq_customer_id', 7, true);
+SELECT pg_catalog.setval('seq_customer_id', 1, true);
 
 
 --
@@ -195,6 +201,7 @@ CREATE TABLE customer (
     lastname character varying(1024) NOT NULL,
     patronimic character varying(1024) NOT NULL,
     deleted boolean DEFAULT false,
+    issystem boolean DEFAULT false,
     birthday date,
     password_hash character(32) NOT NULL
 );
@@ -232,7 +239,7 @@ ALTER TABLE public.seq_customer_group_id OWNER TO "w-495";
 -- Name: seq_customer_group_id; Type: SEQUENCE SET; Schema: public; Owner: w-495
 --
 
-SELECT pg_catalog.setval('seq_customer_group_id', 2, true);
+SELECT pg_catalog.setval('seq_customer_group_id', 1, true);
 
 
 --
@@ -267,7 +274,7 @@ ALTER TABLE public.seq_geo_region OWNER TO "w-495";
 -- Name: seq_geo_region; Type: SEQUENCE SET; Schema: public; Owner: w-495
 --
 
-SELECT pg_catalog.setval('seq_geo_region', 1, true);
+SELECT pg_catalog.setval('seq_geo_region', 14, true);
 
 
 --
@@ -369,21 +376,7 @@ ALTER TABLE public.permission_type OWNER TO "w-495";
 -- Data for Name: acv_banner; Type: TABLE DATA; Schema: public; Owner: w-495
 --
 
-COPY acv_banner (id, customer_id, name, datestart, datestop, banner_place_id, url, ref) FROM stdin;
-44	1	some name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	1	url	ref
-45	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-48	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-49	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-50	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-51	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-52	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-53	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-54	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-55	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-56	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-57	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-58	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
-59	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	2	url	ref
+COPY acv_banner (id, name, datestart, datestop, url, ref, banner_place_id, customer_id) FROM stdin;
 \.
 
 
@@ -391,13 +384,7 @@ COPY acv_banner (id, customer_id, name, datestart, datestop, banner_place_id, ur
 -- Data for Name: acv_video; Type: TABLE DATA; Schema: public; Owner: w-495
 --
 
-COPY acv_video (id, customer_id, name, datestart, datestop, url, ref, wish, postroll, preroll, midroll, pauseroll, user_male, age_from, age_to) FROM stdin;
-29	\N	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
-30	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
-36	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
-37	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
-38	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
-39	1	some new name	10865-03-14 16:25:39.1	10855-06-04 07:16:30	url	ref	1	t	t	t	t	t	1	2
+COPY acv_video (id, name, datestart, datestop, url, ref, wish, postroll, preroll, midroll, pauseroll, user_male, age_from, age_to, time_from, time_to, duration, link_title, alt_title, shown, customer_id) FROM stdin;
 \.
 
 
@@ -431,11 +418,8 @@ COPY banner_place (id, name, alias) FROM stdin;
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: w-495
 --
 
-COPY customer (id, email, login, pic_url, city, organization, "position", firstname, lastname, patronimic, deleted, birthday, password_hash) FROM stdin;
-1	\N	admin	\N	\N	\N	\N	fadmin	ladmin	padmin	f	\N	21232F297A57A5A743894A0E4A801FC3
-2	sdsd	sds	null	sdsd	sdsd	sdsd	sdsd	sdsd	sdsds	f	\N	CC2BD8F09BB88B5DD20F9B432631B8CA
-6	asas	asas	null	ASS	ASAS	SASAS	ASASA	ASAS	SASSASA	f	\N	BAA7A52965B99778F38EF37F235E9053
-7	lamer	lamer	null	lamer	lamer	lamer	lamer	lamer	lamer	f	\N	3E3A378C63AA1E55E3E9AE9D2BDCD6A1
+COPY customer (id, email, login, pic_url, city, organization, "position", firstname, lastname, patronimic, deleted, issystem, birthday, password_hash) FROM stdin;
+1	\N	admin	\N	\N	\N	\N	fadmin	ladmin	padmin	f	f	\N	21232F297A57A5A743894A0E4A801FC3
 \.
 
 
@@ -454,7 +438,6 @@ COPY customer2group (customer_id, group_id) FROM stdin;
 
 COPY customer_group (id, name, description, deleted) FROM stdin;
 1	admin	администраторы	f
-2	SSS	SSS	f
 \.
 
 
@@ -463,7 +446,20 @@ COPY customer_group (id, name, description, deleted) FROM stdin;
 --
 
 COPY geo_region (id, alias, name) FROM stdin;
-1	world	весь мир
+1	R1	Рег 1
+2	R2	Рег 2
+3	R3	Рег 3
+4	R4	Рег 4
+5	R5	Рег 6
+6	R7	Рег 7
+7	R8	Рег 8
+8	R9	Рег 9
+9	RA	Рег A
+10	RB	Рег B
+11	RC	Рег C
+12	RD	Рег D
+13	RE	Рег E
+14	RF	Рег F
 \.
 
 
