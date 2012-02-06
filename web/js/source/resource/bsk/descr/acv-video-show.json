@@ -1,0 +1,8 @@
+{
+    type : "form",
+    controller : "acvVideoShow",
+    toolbar : [
+        {type : "back"}
+    ]
+
+}
