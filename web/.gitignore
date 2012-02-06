@@ -29,3 +29,4 @@ static/data/adv/*
 static/data/game/*
 static/data/docs/*
 static/data/*
+priv/session-db/*
