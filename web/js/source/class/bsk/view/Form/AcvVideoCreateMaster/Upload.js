@@ -45,8 +45,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         inp : {
             Link_title:        null,
             Alt_title:         null,
-            Url:        null,
             Ref:        null,
+            Url:        null,
             Duration:          null
         },
         
@@ -54,8 +54,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             
             /* Сопровождающая картинка */
-            this.fileButton = new bsk.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
-            this.fileForm = new bsk.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
+            this.refButton = new bsk.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
+            this.refForm = new bsk.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
                         
             var layout = new qx.ui.layout.Grid(2, 5);
             layout.setColumnFlex(1, 1);
@@ -69,9 +69,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.inp.Alt_title =    new qx.ui.form.TextField()
                 .set({placeholder: "Текст подсказки"});
             
-            this.inp.Url = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/"});
             this.inp.Ref = new qx.ui.form.TextField()
+                .set({placeholder: "http://my-company.com/"});
+            this.inp.Url = new qx.ui.form.TextField()
                 .set({placeholder: "http://my-company.com/"});
             
             var pageName = new qx.ui.basic.Label()
@@ -97,7 +97,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             
             this.composite.add(new qx.ui.basic.Label().set({value: "Урл",  rich : true}),
                     {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Ref,   {row:vertical_offset, column:1});
+            this.composite.add(this.inp.Url,   {row:vertical_offset, column:1});
             
             this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
                     {row:++vertical_offset, column:0});
@@ -114,31 +114,31 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         addListeners: function() {
             var _this = this;
             /* События виджетов для сопровождающей картикни  */
-            this.fileButton.addListener('changeFileName',function(e){
+            this.refButton.addListener('changeFileName',function(e){
                 if('' != e.getData()) {
                     bsk.view.Form.Upload.UploadFakeStatusBar.on();
                     
-                    _this.fileForm.setParameter("prev", _this.inp.Url.getValue());
-                    _this.inp.Url.setValue(_this.fileButton.getFileName());
-                    _this.fileForm.send();    
+                    _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
+                    _this.inp.Ref.setValue(_this.refButton.getFileName());
+                    _this.refForm.send();    
                 }
             });
-            this.fileForm.addListener('completed',function(e) {
-                var response = _this.fileForm.getIframeTextContent();
+            this.refForm.addListener('completed',function(e) {
+                var response = _this.refForm.getIframeTextContent();
                 bsk.view.Form.Upload.UploadFakeStatusBar.off();
-                _this.inp.Url.setValue(response);
+                _this.inp.Ref.setValue(response);
             });
         },
         
         /**
             @overload
-                Функция блокировки\разблокировки элементов ввода,
-                которые не относятся
+            Функция блокировки\разблокировки элементов ввода,
+            которые не относятся
                 к this.inp, и там их нельзя обработать.
         **/
         onChangeEnabled: function(enabled) {
-            this.fileForm.setEnabled(enabled);
-            this.fileButton.setEnabled(enabled);
+            this.refForm.setEnabled(enabled)
+            this.refButton.setEnabled(enabled)
         },
         
         /**
@@ -149,16 +149,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             var picFormCnt = new qx.ui.container.Composite(pic_layout).set({
                 allowGrowX: true
               });
-            if(!this.inp.Url)
+            if(!this.inp.Ref)
                 return picFormCnt;
             
             pic_layout.setColumnFlex(0, 1);
             pic_layout.setColumnAlign(0, "right", "middle");
-            picFormCnt.add(this.inp.Url,  {row:0, column:0});
-            this.fileForm.setParameter('rm','upload');
-            this.fileForm.setLayout(new qx.ui.layout.Basic);
-            picFormCnt.add(this.fileForm, {row:0, column:1});
-            this.fileForm.add(this.fileButton , {left:0,top:0});
+            picFormCnt.add(this.inp.Ref,  {row:0, column:0});
+            this.refForm.setParameter('rm','upload');
+            this.refForm.setLayout(new qx.ui.layout.Basic);
+            picFormCnt.add(this.refForm, {row:0, column:1});
+            this.refForm.add(this.refButton , {left:0,top:0});
             return picFormCnt;
         },
         

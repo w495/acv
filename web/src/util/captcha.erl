@@ -23,9 +23,9 @@ new(Opt, Size, Pointsize) ->
 
     Cmd = io_lib:format(
         "convert -background 'none' -fill '#222222' -size ~p -gravity Center "
-        "-wave 5x~p -swirl 5 -font DejaVu-Serif-Book -pointsize ~p label:\"~s\""
+        "-wave 5x~p -swirl ~p -font DejaVu-Serif-Book -pointsize ~p label:\"~s\""
         " -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s",
-            [Size, random:uniform(50)+50, Pointsize, Code, File]),
+            [Size, random:uniform(50)+50, random:uniform(20)+5, Pointsize, Code, File]),
 
     os:cmd(Cmd),
 
@@ -99,6 +99,59 @@ generate_rand({ngram, {Pass_len_1, Offset_1}, {Pass_len_2, Offset_2}}) ->
         % "rmsmybeamishboyofrabjousdaycaLLoohcallayhechortledinhisjoytwasbrilliga"
         % "ndtheslithytovesdidgyreandgimbleinthewabeallmimsyweretheborogovesandth"
         % "emomerathsoutgrabe"
+
+    %%% Текст с http://www.erlang.org/doc/
+
+        "somehintsthatmaygetyoustartedfasterthecompleteerlanglanguageisd"
+        "escribedintheerlangreferencemanualanerlangtutorialcanbefounding"
+        "ettingstartedwitherlanginadditiontothedocumentationhereerlangis"
+        "describedinseveralrecentbookslikeerlangprogrammingfromoreillypr"
+        "ogrammingerlangfrompragmaticthesebooksarehighlyrecommendedasast"
+        "artforlearningerlangerlangotpisdividedintoanumberofotpapplicati"
+        "onsanapplicationnormallycontainserlangmodulessomeotpapplication"
+        "ssuchasthecinterfaceerlinterfacearewritteninotherlanguagesandha"
+        "venoerlangmodulesonaunixsystemyoucanviewthemanualpagesfromtheco"
+        "mmandlineusingerlmanmoduleyoucanofcourseuseanyeditoryouliketowr"
+        "iteerlangprogramsbutifyouuseemacsthereexistseditingsupportsucha"
+        "sindentationsyntaxhighlightingelectriccommandsmodulenameverific"
+        "ationcommentsupportincludingparagraphfillingskeletonstagssuppor"
+        "tandmoreseethetoolsapplicationfordetailsthereisalsoanerlangplug"
+        "inerlideforeclipseifyoupreferamoregraphicalenvironmenterlideisu"
+        "nderactivedevelopmentwithnewfeaturesinalmosteveryreleasewhendev"
+        "elopingwitherlangotpyouusuallytestyourprogramsfromtheinteractiv"
+        "eshellseegettingstartedwitherlangwhereyoucancallindividualfunct"
+        "ionsthereisalsoanumberoftoolsavailablesuchasthegraphicaldebugge"
+        "rtheprocessmanagerpmanandtableviewertvalsonotethattherearesomes"
+        "hellfeatureslikehistorylistcontrolpandcontrolninlineeditingemac"
+        "skeybindingsandmoduleandfunctionnamecompletiontabifthemoduleisl"
+        "oadedopensourceuserscanaskquestionsandshareexperiencesontheerla"
+        "ngquestionsmailinglistbeforeaskingaquestionyoucanbrowsethemaili"
+        "nglistarchiveandreadthefrequentlyaskedquestionsadditionalinform"
+        "ationandlinksofinterestforerlangprogrammerscanbefoundontheerlan"
+        "gopensourcesitehttpwwwerlangorg"
+
+    %%% CAPTCHA с википедии
+        "captchasareusedinattemptstopreventautomatedsoftwar"
+        "efromperformingactionswhichdegradethequalityofserv"
+        "iceofagivensystemwhetherduetoabuseorresourceexpend"
+        "iturecaptchascanbedeployedtoprotectsystemsvulnerab"
+        "letoemailspamsuchasthewebmailservicesofgmailhotmai"
+        "landyahoomailmostinteractivesitestodayarerunbydata"
+        "basesandbecomequicklycloggedandsluggishwhenadataba"
+        "setableexceedscapabilitiestheoperatingservercanhan"
+        "dleawebsite'sgooglepagerankcanalsobereducedbyexces"
+        "sivecommerciallinkscreatedbyautomatedpostingcaptch"
+        "asarealsousedtominimizeautomatedpostingtoblogsforu"
+        "msandwikiswhetherasaresultofcommercialpromotionorh"
+        "arassmentandvandalismcaptchasalsoserveanimportantf"
+        "unctioninratelimitingautomatedusageofaservicemight"
+        "bedesirableuntilsuchusageisdonetoexcessandtothedet"
+        "rimentofhumanusersinsuchcasesadministratorscanusec"
+        "aptchatoenforceautomatedusagepoliciesbasedongivent"
+        "hresholdsthearticleratingsystemsusedbymanynewswebs"
+        "itesareanotherexampleofanonlinefacilityvulnerablet"
+        "omanipulationbyautomatedsoftware"
+
     %%% Английские паннграммы
         "thequickbrownfoxjumpsoverthislazydog"
             % the quick brown fox jumps over this (the) lazy dog

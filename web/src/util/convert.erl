@@ -41,11 +41,11 @@ to_plain(Val) ->
 % ---------------------------------------------------------------------------
 
 
+to_integer(Val) when erlang:is_atom(Val) -> Val;
+
 to_integer(Val) when erlang:is_integer(Val) -> Val;
 
 to_integer(Val) when erlang:is_float(Val) -> trunc(Val);
-
-to_integer(Val) -> Val;
 
 to_integer(Val) when erlang:is_list(Val) ->
     case catch(erlang:list_to_integer(Val)) of

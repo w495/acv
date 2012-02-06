@@ -21,6 +21,8 @@
     delete_acv_video_shown_expired/0,
     delete_acv_video_shown_expired/1,
     test_acv_video/0,
+    test_eunit_1/0,
+    test_eunit_2/0,
     test/0,
     test/1
 ]).
@@ -513,7 +515,7 @@ test_eunit_1()->
     ?MODULE:get_all_acv_videos([]),
     ?MODULE:get_acv_videos(Customer_id),
     {ok, Acv_video_id} =
-        ?MODULE:update_acv_video({null,
+        dao_acv_video:update_acv_video({null,
             Name, Datestart, Datestop, Url, Ref, Wish,
                 Postroll, Preroll, Midroll, Pauseroll, User_male,
                     Age_from, Age_to, Time_from, Time_to,
@@ -521,7 +523,7 @@ test_eunit_1()->
                             Rerun_hours, Rerun_minutes,
                                 Customer_id}),
 
-    ?MODULE:update_acv_video({Acv_video_id,
+    dao_acv_video:update_acv_video({Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
                 Age_from, Age_to, Time_from, Time_to,
@@ -613,16 +615,20 @@ test_eunit_2()->
                         Rerun_hours, Rerun_minutes,
                             Customer_id}, R_list_new, []}),
 
-    ?MODULE:full_delete_acv_video(Acv_video_id),
+    dao_acv_video:full_delete_acv_video(Acv_video_id),
     lists:foreach(fun(R)->
-        dao_geo_region:delete_geo_region(R),
+        dao_geo_region:delete_geo_region(convert:to_integer(R)),
     ok end,R_list),
 
     lists:foreach(fun(R)->
-        dao_geo_region:delete_geo_region(R),
+        dao_geo_region:delete_geo_region(convert:to_integer(R)),
     ok end,R_list_new),
 
     ok.
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
