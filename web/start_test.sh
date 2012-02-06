@@ -3,7 +3,7 @@
     PATH=$PATH:/usr/local/lib/
     export PATH
 
-    NODENAME="advsystem@192.168.2.156"
+    NODENAME="advsystem@localhost"
     CONFIG=app_dev
 
     ERL_ARGS="+K true +A 128 +P 1000000"
