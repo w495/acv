@@ -6,8 +6,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row) {
-        this.base(arguments, uReq, Row);
+    construct : function(uReq, Row, Options) {
+        this.Options = Options;
+        this.base(arguments, uReq, Options);
     },
 
     members : {
@@ -67,7 +68,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
                 SortedSelListTreeContainer(
                     this.categoryListOptions.url,
                     this.categoryListOptions.labelFieldName,
-                    this.categoryListOptions.descrFieldName
+                    this.categoryListOptions.descrFieldName,
+                    this.Options
                 );
             
             var vertical_offset = -1;

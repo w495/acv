@@ -6,8 +6,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row) {
-        this.base(arguments, uReq, Row);
+    construct : function(uReq, Row, Options) {
+        this.base(arguments, uReq, Row, Options);
     },
 
     members : {
@@ -111,14 +111,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             this.inp.Age_to = new qx.ui.form.Spinner(2, 2, 100);
             var vertical_offset = 0;
             var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст");
-            var layout2 = new qx.ui.layout.Grid(1, 2)
-            boxAge.setLayout(layout2);
+            var layout = new qx.ui.layout.Grid(1, 5)
+            layout.setColumnFlex(1, 1);
+            layout.setColumnFlex(2, 1);
+            layout.setColumnFlex(4, 1);
+            boxAge.setLayout(layout);
             boxAge.setValue(false);
-            layout2.setColumnFlex(1, 1);
-            boxAge.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
+            boxAge.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:vertical_offset, column:0});
             boxAge.add(this.inp.Age_from, {row:vertical_offset, column:1});
-            boxAge.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
-            boxAge.add(this.inp.Age_to, {row:vertical_offset, column:1});
+            boxAge.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:vertical_offset, column:3});
+            boxAge.add(this.inp.Age_to, {row:vertical_offset, column:4});
             return boxAge;
         },
         
@@ -127,14 +129,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             this.inp.Time_to = new qx.ui.form.Spinner(0, 24, 24);
             var vertical_offset = 0;
             var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа");
-            var layout3 = new qx.ui.layout.Grid(1, 2);
-            layout3.setColumnFlex(1, 1);
-            boxTime.setLayout(layout3);
+            var layout = new qx.ui.layout.Grid(1, 5);
+            layout.setColumnFlex(1, 1);
+            layout.setColumnFlex(2, 1);
+            layout.setColumnFlex(4, 1);
+            boxTime.setLayout(layout);
             boxTime.setValue(false);
-            boxTime.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:++vertical_offset, column:0});
+            boxTime.add(new qx.ui.basic.Label().set({value: "От:",  rich : true}), {row:vertical_offset, column:0});
             boxTime.add(this.inp.Time_from, {row:vertical_offset, column:1});
-            boxTime.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:++vertical_offset, column:0});
-            boxTime.add(this.inp.Time_to, {row:vertical_offset, column:1});
+            boxTime.add(new qx.ui.basic.Label().set({value: "До:",  rich : true}), {row:vertical_offset, column:3});
+            boxTime.add(this.inp.Time_to, {row:vertical_offset, column:4});
             return boxTime;
         },
         

@@ -6,9 +6,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row, IsModerator) {
-        this.base(arguments, uReq, Row);
-        this.IsModerator = IsModerator;
+    construct : function(uReq, Row, Options) {
+        this.base(arguments, uReq, Row, Options);
+        this.IsModerator = false;
     },
 
     members : {

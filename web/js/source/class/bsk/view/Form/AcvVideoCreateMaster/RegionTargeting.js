@@ -6,9 +6,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row) {
-        this.uReq = uReq;
-        this.buildForm();
+    construct : function(uReq, Row, Options) {
+        this.Options = Options;
+        this.base(arguments, uReq, Options);
     },
 
     members : {
@@ -62,7 +62,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
                 SortedSelListTreeContainer(
                     this.regionListOptions.url,
                     this.regionListOptions.labelFieldName,
-                    this.regionListOptions.descrFieldName
+                    this.regionListOptions.descrFieldName,
+                    this.Options
                 );
                 
             var vertical_offset = -1;

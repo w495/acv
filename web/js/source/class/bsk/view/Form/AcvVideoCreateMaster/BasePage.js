@@ -7,15 +7,22 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
     type : "abstract",
     
     extend: qx.core.Object,
-        /* qx.core.Object !=  Object */
-    
-    construct : function(uReq, Row) {
+
+    construct : function(uReq, Row, Options) {
         this.uReq = uReq;
         this.buildForm();
         if(Row != undefined && Row["id"] != undefined)
             this.loadFormData(Row["id"], "id");
         this.addListeners();
-        // this.disableAll();
+        //this.disableAll();
+        
+        if(Options){
+            if(Options.disabled)
+            {
+                this.disableAll();
+            }
+        }
+
         
     },
 
@@ -106,8 +113,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
                     {
                         console.log("not false");
                     }
-                    this.onChangeEnabled(enabled);
-                    
+                    if(this.onChangeEnabled){
+                        this.onChangeEnabled(enabled);
+                    }
                     //field.addListener('changeEnabled',function(enabled){
                     //    console.log("change enabled");
                     //});

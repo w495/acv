@@ -8,9 +8,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row, isNew) {
-        this.base(arguments, uReq, Row);
-        this.isNew = isNew;
+    construct : function(uReq, Row, Options) {
+        this.base(arguments, uReq, Row, Options);
+        this.isNew = false;
         console.log(this.isNew);
     },
 
@@ -138,14 +138,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             var vertical_offset = 0;
             var boxRerun  = new qx.ui.groupbox.CheckGroupBox("Повтор ролика");
             //var boxRerun = new qx.ui.groupbox.GroupBox("Повтор ролика");
-            var layout = new qx.ui.layout.Grid(1, 2);
+            var layout = new qx.ui.layout.Grid(1, 5)
             layout.setColumnFlex(1, 1);
+            layout.setColumnFlex(2, 1);
+            layout.setColumnFlex(4, 1);
             boxRerun.setLayout(layout);
             boxRerun.setValue(false);
-            boxRerun.add(new qx.ui.basic.Label().set({value: "Часы",  rich : true}), {row:++vertical_offset, column:0});
+            boxRerun.add(new qx.ui.basic.Label().set({value: "Часы",  rich : true}), {row:vertical_offset, column:0});
             boxRerun.add(this.inp.Rerun_hours, {row:vertical_offset, column:1});
-            boxRerun.add(new qx.ui.basic.Label().set({value: "Минуты",  rich : true}), {row:++vertical_offset, column:0});
-            boxRerun .add(this.inp.Rerun_minutes, {row:vertical_offset, column:1});
+            boxRerun.add(new qx.ui.basic.Label().set({value: "Минуты",  rich : true}), {row:vertical_offset, column:3});
+            boxRerun .add(this.inp.Rerun_minutes, {row:vertical_offset, column:4});
             return boxRerun ;
         },
         
@@ -185,7 +187,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
                 к this.inp, и там их нельзя обработать.
         **/
         onChangeEnabled: function(enabled) {
-            this.boxRerun.setEnabled(enabled);
+            //this.boxRerun.setEnabled(enabled);
+            //this.fileButton.setEnabled(enabled);
         },
         
         /**

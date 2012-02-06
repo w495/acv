@@ -39,5 +39,5 @@
     sort : "id",
     ascending : false,
 
-    dblclick_action : "resource/bsk/descr/acv-video-copy.json"
+    dblclick_action : "resource/bsk/descr/acv-video-show.json"
 }

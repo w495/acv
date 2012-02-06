@@ -8,8 +8,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
 {
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row) {
-        this.base(arguments, uReq, Row);
+    construct : function(uReq, Row, Options) {
+        this.Options = Options;
+        console.log("this.Options = = ", this.Options);
+        this.base(arguments, uReq, Row, Options);
     },
 
     members : {
@@ -99,9 +101,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Url,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
+            if((this.Options) && (!this.Options.disabled)){
+                this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
+            }
             
             return this.composite;
         },

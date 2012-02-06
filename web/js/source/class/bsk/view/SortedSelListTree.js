@@ -28,6 +28,10 @@ qx.Class.define("bsk.view.SortedSelListTree",
         this.pattern = /.*/gi;
         
         this.root = new qx.ui.tree.TreeFolder();
+        
+        this.root.setHeight(100);
+        this.setHeight(100);
+        
         this.setRoot(this.root);
         this.root.setOpen(true);
         this.data = {};
