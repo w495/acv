@@ -148,6 +148,12 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             }
         },
         
+        onChangeEnabled: function(enabled) {
+            this.boxGender.setEnabled(enabled);
+            this.boxAge.setEnabled(enabled);
+            this.boxTime.setEnabled(enabled);
+        },
+        
         _onLoadFormDataCompl : function(response) {
             var result = response.getContent();
             if (false == bsk.util.errors.process(this, result))

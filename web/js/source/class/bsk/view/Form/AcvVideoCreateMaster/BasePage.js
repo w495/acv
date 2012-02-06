@@ -15,6 +15,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
         if(Row != undefined && Row["id"] != undefined)
             this.loadFormData(Row["id"], "id");
         this.addListeners();
+        this.disableAll();
+        
     },
 
     members : {
@@ -80,6 +82,45 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
                 return false;
             this.fillForm(result);
             return true;
+        },
+        
+        disableAll: function() { this.changeEnabled(false);},
+        
+        /**
+            Функция блокировки\разблокировки элементов ввода.
+        **/
+        changeEnabled: function(enabled) {
+            if(this.inp){
+                for(var name in this.inp){
+                    var field = this.inp[name]
+                    if(field.setReadOnly)
+                    {
+                        console.log("field.setReadOnly");
+                        this.inp[name].setReadOnly(!enabled);
+                    }
+                    else if(field.setEnabled)
+                    {
+                        console.log("field.setEnabled");
+                        this.inp[name].setEnabled(enabled);
+                    }else
+                    {
+                        console.log("not false");
+                    }
+                    this.onChangeEnabled(enabled);
+                    
+                    //field.addListener('changeEnabled',function(enabled){
+                    //    console.log("change enabled");
+                    //});
+                }
+            }
+        },
+        
+        /**
+            Функция блокировки\разблокировки элементов ввода, которые не относятся
+                к this.inp, и там их нельзя обработать.
+        **/
+        onChangeEnabled: function(enabled) {
+
         },
         
         /**

@@ -179,6 +179,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
         },
         
         /**
+            @overload
+                Функция блокировки\разблокировки элементов ввода,
+                которые не относятся
+                к this.inp, и там их нельзя обработать.
+        **/
+        onChangeEnabled: function(enabled) {
+            this.boxRerun.setEnabled(enabled);
+        },
+        
+        /**
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {

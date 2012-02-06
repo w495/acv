@@ -54,9 +54,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             
             /* Сопровождающая картинка */
-            this.picButton = new bsk.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
-            this.picForm = new bsk.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
-            
+            this.fileButton = new bsk.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
+            this.fileForm = new bsk.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
+                        
             var layout = new qx.ui.layout.Grid(2, 5);
             layout.setColumnFlex(1, 1);
             layout.setColumnAlign(0, "right", "top");
@@ -111,23 +111,34 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                 которые не удалось вынести внутрь
                     отдельных виджетов.
         **/
-        addListeners: function() {            
+        addListeners: function() {
             var _this = this;
             /* События виджетов для сопровождающей картикни  */
-            this.picButton.addListener('changeFileName',function(e){
+            this.fileButton.addListener('changeFileName',function(e){
                 if('' != e.getData()) {
                     bsk.view.Form.Upload.UploadFakeStatusBar.on();
                     
-                    _this.picForm.setParameter("prev", _this.inp.Url.getValue());
-                    _this.inp.Url.setValue(_this.picButton.getFileName());
-                    _this.picForm.send();    
+                    _this.fileForm.setParameter("prev", _this.inp.Url.getValue());
+                    _this.inp.Url.setValue(_this.fileButton.getFileName());
+                    _this.fileForm.send();    
                 }
             });
-            this.picForm.addListener('completed',function(e) {
-                var response = _this.picForm.getIframeTextContent();
+            this.fileForm.addListener('completed',function(e) {
+                var response = _this.fileForm.getIframeTextContent();
                 bsk.view.Form.Upload.UploadFakeStatusBar.off();
                 _this.inp.Url.setValue(response);
             });
+        },
+        
+        /**
+            @overload
+                Функция блокировки\разблокировки элементов ввода,
+                которые не относятся
+                к this.inp, и там их нельзя обработать.
+        **/
+        onChangeEnabled: function(enabled) {
+            this.fileForm.setEnabled(enabled);
+            this.fileButton.setEnabled(enabled);
         },
         
         /**
@@ -144,10 +155,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             pic_layout.setColumnFlex(0, 1);
             pic_layout.setColumnAlign(0, "right", "middle");
             picFormCnt.add(this.inp.Url,  {row:0, column:0});
-            this.picForm.setParameter('rm','upload');
-            this.picForm.setLayout(new qx.ui.layout.Basic);
-            picFormCnt.add(this.picForm, {row:0, column:1});
-            this.picForm.add(this.picButton , {left:0,top:0});
+            this.fileForm.setParameter('rm','upload');
+            this.fileForm.setLayout(new qx.ui.layout.Basic);
+            picFormCnt.add(this.fileForm, {row:0, column:1});
+            this.fileForm.add(this.fileButton , {left:0,top:0});
             return picFormCnt;
         },
         
