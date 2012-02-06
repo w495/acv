@@ -8,6 +8,7 @@
 *.pyc
 *.swp
 *.so
+*.o
 
 *.LOG
 *.DAT
