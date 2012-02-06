@@ -15,7 +15,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
         if(Row != undefined && Row["id"] != undefined)
             this.loadFormData(Row["id"], "id");
         this.addListeners();
-        this.disableAll();
+        // this.disableAll();
         
     },
 
