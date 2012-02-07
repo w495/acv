@@ -85,9 +85,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             var vertical_offset = -1;
             this.composite.add(pageName, {row:++vertical_offset, column:0, colSpan:2})
 
+            /*
             this.composite.add(new qx.ui.basic.Label().set({value: "Alt_title",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Alt_title,   {row:vertical_offset, column:1});
+            */
 
             this.composite.add(new qx.ui.basic.Label().set({value: "Link_title",  rich : true}),
                     {row:++vertical_offset, column:0});
