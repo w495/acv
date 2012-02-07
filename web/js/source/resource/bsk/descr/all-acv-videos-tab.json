@@ -2,30 +2,32 @@
     type : "table",
     toolbar : [
         {type : "button", name : "Создать",
-            action : "resource/bsk/descr/acv-create.json",
+            action : "resource/bsk/descr/acv-video-create.json",
             icon : "icon/32/apps/preferences-users.png"},
 
         {type : "button", name : "Копировать",
             action : "resource/bsk/descr/acv-video-copy.json",
-            icon : "icon/32/actions/zoom-in.png",
+            icon : "icon/32/actions/edit-copy.png",
             specParam: "tab-row"},
 
         {type : "button",
             name : "Удалить",
-            action : "/delete-adv-com-vid",
+            action : "/full-delete-acv-video", // полное удаление
+            // action : "/delete-acv-video",   // сокрытие
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action",
             confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"},
             
         {type : "button",
             name : "Обновить",
-            action : "/f5",
-            icon : "icon/32/actions/edit-delete.png",
-            specParam: "tab-row-action"}
+            action : "/get-acv-videos",
+            icon : "icon/32/actions/edit-redo.png",
+            specParam: "tab-change-state-action"}
     ],
     columns : [
-        {name : "id", alias : "#", type : "float", sortable : true, width:"5%"},
-        {name : "name", alias : "Название", type : "string", sortable : true},
+        {name : "id",       alias : "#", type : "float", sortable : true, width:"5%"},
+        {name : "name",     alias : "Название", type : "string", sortable : true},
+        {name : "comment",  alias : "Комментарий", type : "string", sortable : true},
         {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
         {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true}
     ],
@@ -38,5 +40,5 @@
     sort : "id",
     ascending : false,
 
-    dblclick_action : "resource/bsk/descr/adv-com-vid-form.json"
+    dblclick_action : "resource/bsk/descr/acv-video-show.json"
 }
