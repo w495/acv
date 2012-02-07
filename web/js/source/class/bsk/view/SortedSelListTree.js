@@ -25,7 +25,8 @@ qx.Class.define("bsk.view.SortedSelListTree",
         this.setOpenMode("click");
         this.addListener("changeSelection", this._onMenuSelect, this);
 
-        this.pattern = /.*/gi;
+        this.pattern = "";
+        this.string = "";
         
         this.root = new qx.ui.tree.TreeFolder();
         
@@ -55,8 +56,25 @@ qx.Class.define("bsk.view.SortedSelListTree",
             return this.pattern;
         },
         
-        testItems : function(pattern) {
-            this.pattern = RegExp("^" + pattern );
+        testItems : function(string) {
+            var PATTERN_LENGTH_DIFF = 4;
+            var REGEXP_ADDITIONS = "^";
+            
+            /*
+            if(Math.abs(this.string.length
+                        - string.length
+                        - REGEXP_ADDITIONS.length) < PATTERN_LENGTH_DIFF){
+                console.log("this.pattern = ", this.string);
+                console.log("     pattern = ",      string);
+                return false;
+            }
+            */
+            
+            
+            console.log("this.pattern = ", this.string, "     pattern = ", string);
+            
+            this.string = string;
+            this.pattern = RegExp(REGEXP_ADDITIONS + string );
             //this.data = bsk.util.utils.clone(this.shadow_data);
             
             for(var key in this.shadow_data){
@@ -90,6 +108,7 @@ qx.Class.define("bsk.view.SortedSelListTree",
                     }
                 }
             }
+            return true;
         },
         
         reset : function() {

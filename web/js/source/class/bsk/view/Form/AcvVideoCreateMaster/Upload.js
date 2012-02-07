@@ -107,6 +107,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                 this.composite.add(new qx.ui.basic.Label().set({value: "Файл",  rich : true}),
                         {row:++vertical_offset, column:0});
                 this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
+            }else{
+                this.composite.add(new qx.ui.basic.Label().set({value: "Ссылка",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                this.composite.add(this.inp.Ref,   {row:vertical_offset, column:1});
             }
             
             return this.composite;
