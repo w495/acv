@@ -187,8 +187,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
                 к this.inp, и там их нельзя обработать.
         **/
         onChangeEnabled: function(enabled) {
-            //this.boxRerun.setEnabled(enabled);
-            //this.fileButton.setEnabled(enabled);
+            this.boxRerun.setEnabled(enabled);  
         },
         
         /**

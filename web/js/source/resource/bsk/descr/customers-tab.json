@@ -17,7 +17,13 @@
             action : "/delete-customer",
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action",
-            confirmMsg : "Уверены ли вы в том что хотите удалить пользователя?"}
+            confirmMsg : "Уверены ли вы в том что хотите удалить пользователя?"},
+            
+        {type : "button",
+            name : "Обновить",
+            action : "/get-acv-videos",
+            icon : "icon/32/actions/edit-redo.png",
+            specParam: "tab-change-state-action"}
     ],
     columns : [
         {name : "id", alias : "#", type : "float", sortable : true, width:"5%"},

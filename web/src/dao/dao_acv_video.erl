@@ -109,11 +109,15 @@ get_acv_videos(Customer_id) ->
 get_acv_video(Acv_video_id) ->
     Query =
         "select "
-            "acv_video.id, acv_video.name, acv_video.comment, "
-            "acv_video.datestart, acv_video.datestop "
+            " acv_video.id,    acv_video.name, acv_video.comment, "
+            " acv_video.url,   acv_video.ref, "
+            " acv_video.wish,  acv_video.link_title, "
+            " acv_video.shown, acv_video.duration, "
+            " acv_video.datestart, acv_video.datestop "
         " from acv_video "
             " where acv_video.id = $1;",
     dao:simple(Query, [(Acv_video_id)]).
+
 
 %%% @doc
 %%% get_acv_video_common
@@ -533,6 +537,12 @@ test_eunit_1()->
     ?assertEqual({ok,[[
             {"datestop",    Datestop},
             {"datestart",   Datestart},
+            {"duration",    Duration},
+            {"shown",       0},
+            {"link_title",  Link_title},
+            {"wish",        Wish},
+            {"ref",         Ref},
+            {"url",         Url},
             {"comment",     Comment},
             {"name",        Name_new},
             {"id",          Acv_video_id}]]},
@@ -596,7 +606,6 @@ test_eunit_2()->
     Comment =       "internal comment",
     Rerun_hours =   1,
     Rerun_minutes = 1,
-
     Customer_id =   1,
 
     {ok, Acv_video_id} = ?MODULE:update_acv_video({{null,

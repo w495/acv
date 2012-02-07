@@ -15,6 +15,8 @@
 -define(DELIM, []).
 -define(SPACE, " ").
 
+-define(DEFAULT_PEER,   0).
+-define(DEFAULT_USERID, null).
 
 -compile(export_all).
 
@@ -25,7 +27,11 @@ get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
     get_acv({Type, Resourse, _User_id}, Peer).
 
  %5615d6c0-79c3-4a90-bf34-9d23ae78c14a
-get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "postroll"; Type =:= "midroll"; Type =:= "pauseroll"->
+get_acv({Type, Resourse, User_id}, Peer) when
+        Type =:= "preroll";
+        Type =:= "postroll";
+        Type =:= "midroll";
+        Type =:= "pauseroll"->
 
     ?D("Type = ~p~n", [Type]),
     ?D("Resourse = ~p~n", [Resourse]),
@@ -41,10 +47,11 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
 
     %TODO реюзать prepare
     mysql:prepare(get_clip_categories, Query),
-    {data,{mysql_result, _Cols, Vals, _X31, _X32}} = mysql:execute(mySqlConPool, get_clip_categories, [list_to_binary(Resourse)]),
+    {data,{mysql_result, _Cols, Vals, _X31, _X32}} =
+        mysql:execute(mySqlConPool, get_clip_categories,
+            [list_to_binary(Resourse)]),
 
     ?D("------------~nFilm (~p) categories: ~p~n", [Resourse, Vals]),
-    
 
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
     Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, ref, wish, link_title, shown, duration "
@@ -68,7 +75,8 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
     QC = <<"select * from customer where uid=?;">>,
     %TODO реюзать prepare
     mysql:prepare(get_customer, QC),
-    {data,{mysql_result, CCols, CVals, _X31, _X32}} = mysql:execute(mySqlConPool, get_customer, [User_id]),
+    {data,{mysql_result, CCols, CVals, _X31, _X32}} =
+        mysql:execute(mySqlConPool, get_customer, [User_id]),
     CL = mysql_dao:make_proplist(CCols, CVals),
 
     % таргетирование по параметрам кастомера
@@ -78,7 +86,8 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
             ?D("Q2S2 = ~p", [Q2S2]),
             ?D("~n------------------------~n", []),
 
-            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL";
+            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
+                " acv_video.age_from is NULL and acv_video.age_to is NULL";
         [Customer] ->
             Q2S3 = string:join([
                 Q2S2, 
@@ -88,7 +97,7 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
                     "female" ->
                         " and (acv_video.user_male=false or acv_video.user_male is NULL) ";
                     EGender ->
-                        io:format("ERROR: invalid gender - ~p~n", [EGender]),
+                        ?D("ERROR: invalid gender - ~p~n", [EGender]),
                         ""
                 end,
                 ?D("~n------------------------~n", []),
@@ -101,18 +110,19 @@ get_acv({Type, Resourse, User_id}, Peer) when Type =:= "preroll"; Type =:= "post
                         ?FMT(" and (acv_video.age_from < ~p or acv_video.age_from is NULL) and "
                              "(acv_video.age_to > ~p or acv_video.age_to is NULL) ", [CAge, CAge]);
                     EBirthday ->
-                        io:format("ERROR: invalid birthday - ~p~n", [EBirthday]),
+                        ?D("ERROR: invalid birthday - ~p~n", [EBirthday]),
                         ""
                 end
             ], " ");
         Other -> 
             ?D("ERROR: get_acv - invalid customer: ~p~n", [Other]),
-            Q2S3 = Q2S2 ++ "and acv_video.user_male is NULL and acv_video.age_from is NULL and acv_video.age_to is NULL"
+            Q2S3 = Q2S2 ++ "and acv_video.user_male is NULL and "
+                "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
 
     Q2 = Q2S3 ++ ";",
 
-    io:format("===============~n~p~n", [Q2]),
+    ?D("===============~n~p~n", [Q2]),
     {ok, Ret} = dao:simple(Q2),
 
     if
@@ -211,6 +221,11 @@ creative_string(Creative) ->
         ]
     ).
 
+
+random_nth(List)->
+    random:seed(now()),
+    lists:nth(random:uniform(length(List)), List).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 -include_lib("eunit/include/eunit.hrl").
@@ -220,21 +235,175 @@ creative_string(Creative) ->
 %%%
 
 mysql_test_1() ->
-    R = {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:fetch(mySqlConPool, <<"select * from customer where uid = 1265;">>),
+    R = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer where uid = 1265;">>),
     ?D("------------~n~p~n", [R]),
     R2 = mysql_dao:make_proplist(Cols, Vals, []),
     ?D("------------~n~p~n", [R2]),
     ok.
 
 mysql_test_2() ->
-    R = mysql:fetch(mySqlConPool, <<"select ** from customer where uid = 1265111;">>),
+    R = mysql:fetch(mySqlConPool,
+        <<"select ** from customer where uid = 1265111;">>),
     ?D("------------~n~p~n", [R]),
     ok.
 
+%%%
+%%% test_x$n$ (Datestart::{date(), time()}, Datestop::::{date(), time()},
+%%%     RandomInt::integer()) -> Result::proplist().
+%%%
+
+test_x0_example(Datestart, Datestop, Micro_sec) ->
+    %%% интерфейс ужасен, но функция будет переписываться,
+    %%%     и потом это просто тестирование.
+    [
+        {"original", []},
+        {"preroll",  []},
+        {"postroll", []},
+        {"midroll",  []}
+    ].
+
+%%%
+%%% Тестирует XML первого фильма, первой категории.
+%%% Производит проверку таргетирования по категорям.
+%%% 
+%%% Создаем фильм и проверяем его по возвращаемому XML.
+%%% 
+test_x1_cat(Datestart, Datestop, Micro_sec) ->
+    {ok, [Cat| _ ]} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", Cat),
+    %%%     dao_acv_video:update_acv_video({{Acv_video_id,
+    %%%         Name_new, Datestart, Datestop, Url, Ref, Wish,
+    %%%             Postroll, Preroll, Midroll, Pauseroll, User_male,
+    %%%                 Age_from, Age_to, Time_from, Time_to,
+    %%%                     Duration, Link_title, Alt_title, Comment,
+    %%%                         Rerun_hours, Rerun_minutes,
+    %%%                             Customer_id}, R_list_new, []}),
+    {ok, Acv_video_id} = dao_acv_video:update_acv_video({{null,
+        "Name-test-1-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], [Cat_id]}),
+    {ok, [Film| _ ]}  = dao_cat:get_clips_url(Cat_id),
+    Film_url = proplists:get_value("url", Film),
+    {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
+    Result_original = make_acv_xml(Acv_videos),
+    Result_preroll    =
+        get_acv({"preroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_postroll   =
+        get_acv({"postroll",   Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_midroll    =
+        get_acv({"midroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url]),
+    [
+        {"original", Result_original},
+        {"preroll", Result_preroll},
+        {"postroll", Result_postroll},
+        {"midroll", Result_midroll}
+    ].
+
+%%%
+%%% Тестирует XML случайного фильма, случайной категории
+%%% Производит проверку таргетирования по категорям.
+%%%
+test_x2_cat(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", random_nth(Cats)),
+    {ok, Acv_video_id} = dao_acv_video:update_acv_video({{null,
+        "Name-test-1-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], [Cat_id]}),
+
+    {ok, Films}  = dao_cat:get_clips_url(Cat_id),
+    Film_url = proplists:get_value("url", random_nth(Films)),
+    {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
+    Result_original = make_acv_xml(Acv_videos),
+    Result_preroll    =
+        get_acv({"preroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_postroll   =
+        get_acv({"postroll",   Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_midroll    =
+        get_acv({"midroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url]),
+    [
+        {"original", Result_original},
+        {"preroll", Result_preroll},
+        {"postroll", Result_postroll},
+        {"midroll", Result_midroll}
+    ].
+
+%%%
+%%% Тестирует XML случайного фильма, случайной категории
+%%% Категории при этом не учитываются.
+%%%
+test_x1_uncat(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", random_nth(Cats)),
+    {ok, Acv_video_id} = dao_acv_video:update_acv_video({{null,
+        "Name-test-1-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], []}),
+
+    {ok, Films}  = dao_cat:get_clips_url(Cat_id),
+    Film_url = proplists:get_value("url", random_nth(Films)),
+    {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
+    Result_original = make_acv_xml(Acv_videos),
+    Result_preroll    =
+        get_acv({"preroll", Film_url, ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_postroll   =
+        get_acv({"postroll",Film_url, ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    Result_midroll    =
+        get_acv({"midroll", Film_url, ?DEFAULT_USERID}, ?DEFAULT_PEER),
+    ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url]),
+    [
+        {"original", Result_original},
+        {"preroll", Result_preroll},
+        {"postroll", Result_postroll},
+        {"midroll", Result_midroll}
+    ].
+
+%%%
+%%% @spec test_simple(Test_function::fun/3) -> ok.
+%%% Функция юнит тестирования
+%%%
+test_simple(Test_function) ->
+    dao:simple("truncate table acv_video cascade;", []),
+    {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
+    Datestart = calendar:now_to_universal_time
+        ({Macro_sec - 1, Normal_sec, Micro_sec}),
+    Datestop = calendar:now_to_universal_time
+        ({Macro_sec + 1, Normal_sec, Micro_sec}),
+    Result = Test_function(Datestart, Datestop, Micro_sec),
+    ?assertEqual(proplists:get_value("original", Result),
+        proplists:get_value("preroll", Result)),
+    ?assertEqual(proplists:get_value("original", Result),
+        proplists:get_value("postroll", Result)),
+    ?assertEqual(proplists:get_value("original", Result),
+        proplists:get_value("midroll", Result)),
+    ok.
+
+%%%
+%%% Основная функция юнит тестирования
+%%%
 test()->
-
-        biz_adv_manager:get_acv_mp4({"preroll", "5615d6c0-79c3-4a90-bf34-9d23ae78c14a.mp4", "de130992-cf98-5284-a32b-bf256d15f4e6"}, 0),
-
+    test_simple(fun test_x1_cat/3),
+    test_simple(fun test_x2_cat/3),
+    test_simple(fun test_x1_uncat/3),
     ok.
 
 %%%

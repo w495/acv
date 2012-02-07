@@ -125,7 +125,7 @@ qx.Class.define("bsk.view.Form.BaseForm",
             this._uploadData(e);
             if(this.uReq){
                 this.submit(this.uReq);
-                // this.controller.refresh();
+                this.controller.onCancelClick();
                 // console.log("this.controller  = ", this.controller);
             }
         },
