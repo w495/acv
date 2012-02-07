@@ -91,7 +91,7 @@ qx.Class.define("bsk.view.Controller.TabController",
             
         **/
         _tabChangeStateAction: function(actionUrl){
-            // pass
+            this.refresh();
         },
 
         /**

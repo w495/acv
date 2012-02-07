@@ -7,12 +7,13 @@
 
         {type : "button", name : "Копировать",
             action : "resource/bsk/descr/acv-video-copy.json",
-            icon : "icon/32/actions/zoom-in.png",
+            icon : "icon/32/actions/edit-copy.png",
             specParam: "tab-row"},
 
         {type : "button",
             name : "Удалить",
-            action : "/delete-adv-com-vid",
+            action : "/full-delete-acv-video", // полное удаление
+            // action : "/delete-acv-video",   // сокрытие
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action",
             confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"},
@@ -20,8 +21,8 @@
         {type : "button",
             name : "Обновить",
             action : "/get-acv-videos",
-            icon : "icon/32/actions/edit-delete.png",
-            specParam: "tab-row-action"}
+            icon : "icon/32/actions/edit-redo.png",
+            specParam: "tab-change-state-action"}
     ],
     columns : [
         {name : "id",       alias : "#", type : "float", sortable : true, width:"5%"},

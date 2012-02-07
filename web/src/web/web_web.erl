@@ -259,6 +259,12 @@ simple_map_controllers(Path) ->
             -> {inside, get_acv_video_category_targeting};
 
 
+        "/delete-acv-video"
+            -> {inside, delete_acv_video};
+
+        "/full-delete-acv-video"
+            -> {inside, full_delete_acv_video};
+
 
         "/get-acv-banners"  -> {inside, get_acv_banners};
 

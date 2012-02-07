@@ -7,7 +7,10 @@
 #asset(qx/icon/Tango/32/actions/zoom-in.png)
 #asset(qx/icon/Tango/32/apps/office-chart.png)
 #asset(qx/icon/Tango/32/apps/preferences-users.png)
+
 #asset(qx/icon/Tango/32/actions/edit-delete.png)
+#asset(qx/icon/Tango/32/actions/edit-redo.png)
+#asset(qx/icon/Tango/32/actions/edit-copy.png)
 
 
 #asset(qx/icon/Tango/22/actions/go-previous.png)
