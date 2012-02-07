@@ -63,6 +63,8 @@ get_adv(Req) ->
 %     "            url=\"http://get-here/paused.jpg\"/>"
 %     "</block>",
 
+    ?D("~n!!!------------------------------~n!!! Result = ~p ~n!!!------------------------------~n ", [Result]),
+
     {?OUTPUT_HTML, [], [Result]}.
 
 test()->
