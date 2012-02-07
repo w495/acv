@@ -65,7 +65,7 @@ get_adv(Req) ->
 
     ?D("~n!!!------------------------------~n!!! Result = ~p ~n!!!------------------------------~n ", [Result]),
 
-    {?OUTPUT_HTML, [], [Result]}.
+    {"application/xml", [], [Result]}.
 
 test()->
     ok.
