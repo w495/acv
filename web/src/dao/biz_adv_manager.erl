@@ -22,9 +22,20 @@
 -define(DEFAULT_PEER,   0).
 -define(DEFAULT_USERID, null).
 
+-define(DAYS_IN_YEAR, 365.242199 ).
+    %%% $ DAYS_IN_YEAR \ne 365.0 $
+    %%%     но postgre sql округляет именно так
+    %%% $ DAYS_IN_YEAR \approx 365.242199 $
 
-get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
-    {Resourse, _ } = lists:split(length(Resourse_mp4) - 4, Resourse_mp4),
+-define(EXT_LEN, 4).
+
+
+
+get_acv_ext({Type, Resourse_mp4, _User_id}, Peer) ->
+    get_acv_ext_by_len({Type, Resourse, _User_id}, Peer, ?EXT_LEN).
+
+get_acv_ext_by_len({Type, Resourse_mp4, _User_id}, Peer, Ext_len) ->
+    {Resourse, _ } = lists:split(length(Resourse_mp4) - Ext_len, Resourse_mp4),
     get_acv({Type, Resourse, _User_id}, Peer).
 
 %%%
@@ -131,11 +142,9 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 %%% Обработка возрасата.
                 case proplists:get_value("birthday", Customer) of
                     {_year, _month, _day}=Customer_birthday ->
-                        ?D("~n[!]Customer_birthday = ~p~n", [Customer_birthday]),
-                        Customer_age =
-                            abs((calendar:date_to_gregorian_days(erlang:date())
-                                - calendar:date_to_gregorian_days(Customer_birthday)) / 365),
-                        ?D(" [!]Customer_age = ~p~n", [Customer_age]),
+                        ?D("~n[!]Customer_birthday = ~p", [Customer_birthday]),
+                        Customer_age = compute_customer_age(Customer_birthday),
+                        ?D("~n[!]Customer_age = ~p~n", [Customer_age]),
                         ?FMT( %%% acv_video.age_from < ~p < acv_video.age_to
                             " and ( acv_video.age_from < ~p "
                                 " or acv_video.age_from is NULL)"
@@ -188,6 +197,11 @@ get_acv({Type, Resourse, User_id}, Peer) when
     ?D("Result_string  = ~s~n", [Result_string]),
 
     Result_string .
+
+compute_customer_age(Customer_birthday) ->
+    abs((calendar:date_to_gregorian_days(erlang:date())
+        - calendar:date_to_gregorian_days(Customer_birthday)) / ?DAYS_IN_YEAR).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
