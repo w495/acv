@@ -1,14 +1,18 @@
-%%% @file -.erl
+    %%% @file biz_adv_manager.erl
 %%%
 %%%    Бизнес логика раздачи рекламных креативов.
 %%%
 
 -module(biz_adv_manager).
 
--export([
-    test/0,
-    test/1
-]).
+-compile(export_all).
+
+-include("common.hrl").
+
+% -export([
+%     test/0,
+%     test/1
+% ]).
 
 -define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
 -define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
@@ -17,17 +21,16 @@
 
 -define(DEFAULT_PEER,   0).
 -define(DEFAULT_USERID, null).
--define(TRUNCATE, )
 
--compile(export_all).
-
--include("common.hrl").
 
 get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
     {Resourse, _ } = lists:split(length(Resourse_mp4) - 4, Resourse_mp4),
     get_acv({Type, Resourse, _User_id}, Peer).
 
- %5615d6c0-79c3-4a90-bf34-9d23ae78c14a
+%%%
+%%% TODO:
+%%%     * нет учета time_from, time_to;
+%%%
 get_acv({Type, Resourse, User_id}, Peer) when
         Type =:= "preroll";
         Type =:= "postroll";
@@ -73,51 +76,52 @@ get_acv({Type, Resourse, User_id}, Peer) when
             Q2S2 = Q2S1 ++ " and acv_video2cat.cat_id is NULL "
     end,
 
-    QC = <<"select * from customer where uid=?;">>,
-    %TODO реюзать prepare
-    mysql:prepare(get_customer, QC),
-    {data,{mysql_result, CCols, CVals, _X31, _X32}} =
+    Customer_query = <<"select * from customer where uuid=?;">>,
+    mysql:prepare(get_customer, Customer_query),
+    {data,{mysql_result, Customer_cols, Customer_vals, _X31, _X32}} =
         mysql:execute(mySqlConPool, get_customer, [User_id]),
-    CL = mysql_dao:make_proplist(CCols, CVals),
+    Customer_list = mysql_dao:make_proplist(Customer_cols, Customer_vals),
 
-    % таргетирование по параметрам кастомера
-    case CL of
+    ?D("------------~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
+    ?D("~n------------------------~n", []),
+    ?D("Q2S2 = ~p", [Q2S2]),
+    ?D("~n------------------------~n", []),
+
+    %%% Таргетирование по параметрам кастомера.
+    case Customer_list of
         [] ->
-            ?D("~n------------------------~n", []),
-            ?D("Q2S2 = ~p", [Q2S2]),
-            ?D("~n------------------------~n", []),
-
             Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
                 " acv_video.age_from is NULL and acv_video.age_to is NULL";
         [Customer] ->
             Q2S3 = string:join([
-                Q2S2, 
+                Q2S2,
+                %%% Обработка пола.
                 case proplists:get_value("gender", Customer) of
                     "male" ->
                         " and (acv_video.user_male=true or acv_video.user_male is NULL) ";
                     "female" ->
                         " and (acv_video.user_male=false or acv_video.user_male is NULL) ";
-                    EGender ->
-                        ?D("ERROR: invalid gender - ~p~n", [EGender]),
-                        ""
+                    Other_gender ->
+                        ?E("ERROR: invalid gender - ~p~n", [Other_gender]),[]
                 end,
-                ?D("~n------------------------~n", []),
-                ?D("Q2S3 = ~p", [Q2S2]),
-                ?D("~n------------------------~n", []),
-
-                case proplists:get_value("birthday") of
-                    {_CYear, _CMonth, _CDay}=CBirthday ->
-                        CAge = abs((calendar:date_to_gregorian_days(date()) - calendar:date_to_gregorian_days(CBirthday)) / 365),
+                %%% Обработка возрасата.
+                case proplists:get_value("birthday", Customer) of
+                    {_year, _month, _day}=Customer_birthday ->
+                        ?D("~n[!]Customer_birthday = ~p~n", [Customer_birthday]),
+                        Customer_age =
+                            abs((calendar:date_to_gregorian_days(erlang:date())
+                                - calendar:date_to_gregorian_days(Customer_birthday)) / 365),
+                        ?D(" [!]Customer_age = ~p~n", [Customer_age]),
                         ?FMT(" and (acv_video.age_from < ~p or acv_video.age_from is NULL) and "
-                             "(acv_video.age_to > ~p or acv_video.age_to is NULL) ", [CAge, CAge]);
-                    EBirthday ->
-                        ?D("ERROR: invalid birthday - ~p~n", [EBirthday]),
-                        ""
+                             "(  ~p < acv_video.age_to or acv_video.age_to is NULL) ",
+                            [Customer_age, Customer_age]);
+                    Wrong_birthday ->
+                        ?E("ERROR: invalid birthday - ~p~n", [Wrong_birthday]),  []
                 end
             ], " ");
         Other -> 
-            ?D("ERROR: get_acv - invalid customer: ~p~n", [Other]),
-            Q2S3 = Q2S2 ++ "and acv_video.user_male is NULL and "
+            ?E("ERROR: get_acv - invalid customer: ~p~n", [Other]),
+            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
                 "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
 
@@ -223,10 +227,6 @@ creative_string(Creative) ->
     ).
 
 
-random_nth(List)->
-    random:seed(now()),
-    lists:nth(random:uniform(length(List)), List).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 -include_lib("eunit/include/eunit.hrl").
@@ -235,20 +235,123 @@ random_nth(List)->
 %%% Юнит тестирование
 %%%
 
-mysql_test_1() ->
-    R = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+test_some_user() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer where uid = 1265;">>),
-    ?D("------------~n~p~n", [R]),
-    R2 = mysql_dao:make_proplist(Cols, Vals, []),
-    ?D("------------~n~p~n", [R2]),
-    ok.
 
-mysql_test_2() ->
-    R = mysql:fetch(mySqlConPool,
-        <<"select ** from customer where uid = 1265111;">>),
-    ?D("------------~n~p~n", [R]),
-    ok.
+    % Proplists = [[{"uuid","a0144f36-4158-11df-affb-003048d95bc0"},
+    %               {"description",null},
+    %               {"publish_profile",1},
+    %               {"admin_rights",null},
+    %               {"mobile_number",null},
+    %               {"icq",null},
+    %               {"website",null},
+    %               {"city",null},
+    %               {"country",null},
+    %               {"birthday",{1983,3,9}},
+    %               {"regkey","6ccfc59db3ab213589f1f53e3d2c0e8b"},
+    %               {"company",null},
+    %               {"is_modified",null},
+    %               {"gender","female"},
+    %               {"name","lina"},
+    %               {"nickname","besttranslations@mail.ru"},
+    %               {"created",{{2010,4,6},{12,44,34}}},
+    %               {"uid",1265}]]
+
+    ?D("TEST_FEMALE-----------~nQuery = ~p~n", [Query]),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    ?D("TEST_FEMALE-----------~nProplists = ~p~n", [Proplists]),
+    [Proplist] = Proplists,
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного мужика
+%%%
+test_random_male() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer where gender = \"male\" limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайной бабы
+%%%
+test_random_female() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer where gender = \"female\" limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного неопределившегося
+%%%
+test_random_it() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer where gender = \"none\" limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного ребенка
+%%%
+test_random_child() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer where date(birthday) "
+                " between date_sub(date(now()), interval 18 year) "
+                    " and date(now()) limit 1000;">>),
+
+
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    ?D("Proplist = ~p~n", [Proplist]),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного взрослого
+%%%
+test_random_adult() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select *  from customer where date(birthday) "
+                " between date_sub(date(now()), interval 100 year) "
+                    " and date_sub(date(now()), interval 18 year)  "
+                        " limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного нежитя (родился до Революции)
+%%%
+test_random_undead() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer "
+                " where year(birthday) <  1917 limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
+%%%
+%%% Возвращает uuid случайного пришельца из будущего
+%%%
+test_random_fromfuture() ->
+    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+        mysql:fetch(mySqlConPool,
+            <<"select * from customer "
+                " where date(birthday) >  date(now()) limit 1000;">>),
+    Proplists = mysql_dao:make_proplist(Cols, Vals, []),
+    Proplist = utils:random_nth(Proplists),
+    proplists:get_value("uuid", Proplist).
+
 
 %%%
 %%% test_x$n$ (Datestart::{date(), time()}, Datestop::::{date(), time()},
@@ -295,11 +398,11 @@ test_x1_cat(Datestart, Datestop, Micro_sec) ->
     {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
     Result_original = make_acv_xml(Acv_videos),
     Result_preroll    =
-        get_acv({"preroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"preroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
     Result_postroll   =
-        get_acv({"postroll",   Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"postroll",   Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
     Result_midroll    =
-        get_acv({"midroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"midroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
     ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url]),
     [
         {"original", Result_original},
@@ -315,16 +418,9 @@ test_x1_cat(Datestart, Datestop, Micro_sec) ->
 %%%
 test_x2_cat(Datestart, Datestop, Micro_sec) ->
     {ok, Cats} = dao_cat:get_all_cats([]),
-    Cat_id = proplists:get_value("id", random_nth(Cats)),
-    {ok, Acv_video_id} = dao_acv_video:update_acv_video({{null,
-        "Name-test-2-c-" ++ erlang:integer_to_list(Micro_sec),
-            Datestart, Datestop, "http://ya.ru",
-            "/static/test-data/tvzavr-01.mp4", 100,
-            true, true, true, true, null,
-                null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
-                        1, 1,
-                            null}, [], [Cat_id]}),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} =
+        test_x2_query(Datestart, Datestop, Micro_sec, [Cat_id]),
     handle_random_cat(Cat_id, Acv_video_id).
 
 %%%
@@ -334,18 +430,210 @@ test_x2_cat(Datestart, Datestop, Micro_sec) ->
 %%% 
 test_x2_uncat(Datestart, Datestop, Micro_sec) ->
     {ok, Cats} = dao_cat:get_all_cats([]),
-    Cat_id = proplists:get_value("id", random_nth(Cats)),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x2_query(Datestart, Datestop, Micro_sec, []),
+    handle_random_cat(Cat_id, Acv_video_id).
 
-    {ok, Acv_video_id} = dao_acv_video:update_acv_video({{null,
-        "Name-test-2-u-" ++ erlang:integer_to_list(Micro_sec),
+%%%
+%%% Возвращает видео (образец)
+%%%
+test_x2_query(Datestart, Datestop, Micro_sec, Cats)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-2-" ++ erlang:integer_to_list(Micro_sec),
             Datestart, Datestop, "http://ya.ru",
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, null,
                 null, null, null, null,
                     1, "Link_title", "Alt_title", "Comment",
                         1, 1,
-                            null}, [], []}),
-    handle_random_cat(Cat_id, Acv_video_id).
+                            null}, [], Cats}).
+%%%
+%%% 
+%%% 
+%%% Пока обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для мужиков
+%%%
+test_x3_male(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x3_male_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_male()).
+
+%%%
+%%%
+%%%
+%%% Пока обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для мужиков
+%%%
+test_x3_male_anti(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x3_male_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_female()).
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ОТРИЦАТЕЛЬНУЮ ситуацию.
+%%% Только для мужиков
+%%% Пришел пользователь с полом none
+%%%
+test_x3_male_anti_it(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x3_male_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_it()).
+
+%%%
+%%%
+%%%
+%%% Пока обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для баб
+%%%
+test_x3_female(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),  
+    {ok, Acv_video_id} = test_x3_female_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_female()).
+
+%%%
+%%%
+%%%
+%%% Пока обрабатывает только ОТРИЦАТЕЛЬНУЮ ситуацию.
+%%% Только для баб
+%%%
+test_x3_female_anti(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x3_female_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_male()).
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ОТРИЦАТЕЛЬНУЮ ситуацию.
+%%% Только для баб
+%%% Пришел пользователь с полом none
+%%%
+test_x3_female_anti_it(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x3_female_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_it()).
+
+
+%%%
+%%% Возвращает видео (образец) для неопределенного рода.
+%%%
+test_x3_it_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-3-it-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], []}).
+%%%
+%%% Возвращает видео (образец) для мужского рода.
+%%%
+test_x3_male_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-3-male-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, true,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], []}).
+
+%%%
+%%% Возвращает видео (образец) для женского рода.
+%%%
+test_x3_female_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-3-female-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, false,
+                null, null, null, null,
+                    1, "Link_title", "Alt_title", "Comment",
+                        1, 1,
+                            null}, [], []}).
+
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для детей
+%%%
+test_x4_child(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x4_child_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_child()).
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ОТРИЦАТЕЛЬНУЮ ситуацию.
+%%% Только для детей
+%%%
+test_x4_child_anti(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x4_child_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_adult()).
+
+
+test_x4_child_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-4-child-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                0, 20, null, null,
+                    1, "test_x4_child_query", "test_x4_child_query", "Comment",
+                        1, 1,
+                            null}, [], []}).
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для взрослых
+%%%
+test_x4_adult(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x4_adult_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_adult()).
+
+%%%
+%%%
+%%%
+%%% обрабатывает только ОТРИЦАТЕЛЬНУЮ ситуацию.
+%%% Только для взрослых
+%%%
+test_x4_adult_anti(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x4_adult_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id, test_random_child()).
+
+test_x4_adult_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-4-adult-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                25, 100, null, null,
+                    1, "test_x4_adult_query", "test_x4_adult_query", "Comment",
+                        1, 1,
+                            null}, [], []}).
 
 %%%
 %%% Обрабатывает случайную категорию,
@@ -355,7 +643,6 @@ handle_random_cat(Cat_id, Acv_video_id) ->
     {ok, Films}  = dao_cat:get_clips_url(Cat_id),
     case dao_cat:get_clips_url(Cat_id) of
         {ok, []} -> % Нет фильма --- нет xml.
-            Cat_id   = nil,
             Film_url = nil,
             Result_original  = [],
             Result_preroll   = [],
@@ -363,7 +650,7 @@ handle_random_cat(Cat_id, Acv_video_id) ->
             Result_midroll   = [];
 
         {ok, Films} ->
-            Film_url = proplists:get_value("url", random_nth(Films)),
+            Film_url = proplists:get_value("url", utils:random_nth(Films)),
             {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
             Result_original = make_acv_xml(Acv_videos),
             Result_preroll    =
@@ -372,6 +659,42 @@ handle_random_cat(Cat_id, Acv_video_id) ->
                 get_acv({"postroll",Film_url, ?DEFAULT_USERID}, ?DEFAULT_PEER),
             Result_midroll    =
                 get_acv({"midroll",Film_url, ?DEFAULT_USERID}, ?DEFAULT_PEER),
+            ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url])
+    end,
+    [
+        {"cat_id",   Cat_id},
+        {"film_url", Film_url},
+        {"original", Result_original},
+        {"preroll",  Result_preroll},
+        {"postroll", Result_postroll},
+        {"midroll",  Result_midroll}
+    ].
+
+
+%%%
+%%% Обрабатывает случайную категорию,
+%%%     возвращает набор XML для случайного фильма
+%%%
+handle_random_cat(Cat_id, Acv_video_id, Genger) ->
+    {ok, Films}  = dao_cat:get_clips_url(Cat_id),
+    case dao_cat:get_clips_url(Cat_id) of
+        {ok, []} -> % Нет фильма --- нет xml.
+            Film_url = nil,
+            Result_original  = [],
+            Result_preroll   = [],
+            Result_postroll  = [],
+            Result_midroll   = [];
+
+        {ok, Films} ->
+            Film_url = proplists:get_value("url", utils:random_nth(Films)),
+            {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
+            Result_original = make_acv_xml(Acv_videos),
+            Result_preroll    =
+                biz_adv_manager:get_acv({"preroll",Film_url,  Genger}, ?DEFAULT_PEER),
+            Result_postroll   =
+                biz_adv_manager:get_acv({"postroll",Film_url, Genger}, ?DEFAULT_PEER),
+            Result_midroll    =
+                biz_adv_manager:get_acv({"midroll",Film_url,  Genger}, ?DEFAULT_PEER),
             ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url])
     end,
     [
@@ -395,16 +718,44 @@ test_simple(Test_function) ->
     Datestop = calendar:now_to_universal_time
         ({Macro_sec + 1, Normal_sec, Micro_sec}),
     Result = Test_function(Datestart, Datestop, Micro_sec),
-    ?assertEqual(proplists:get_value("original", Result),
-        proplists:get_value("preroll", Result)),
-    ?assertEqual(proplists:get_value("original", Result),
-        proplists:get_value("postroll", Result)),
-    ?assertEqual(proplists:get_value("original", Result),
-        proplists:get_value("midroll", Result)),
-    ok.
+    case proplists:get_value("film_url", Result) of
+        nil -> test_simple(Test_function);
+        _ ->
+            ?assertEqual(proplists:get_value("original", Result),
+                proplists:get_value("preroll",  Result)),
+            ?assertEqual(proplists:get_value("original", Result),
+                proplists:get_value("postroll", Result)),
+            ?assertEqual(proplists:get_value("original", Result),
+                proplists:get_value("midroll",  Result)),
+            ok
+    end.
 
 %%%
 %%% @spec test_simple(Test_function::fun/3) -> ok.
+%%% Функция юнит тестирования
+%%%
+test_simple_anti(Test_function) ->
+    test_truncate(),
+    {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
+    Datestart = calendar:now_to_universal_time
+        ({Macro_sec - 1, Normal_sec, Micro_sec}),
+    Datestop = calendar:now_to_universal_time
+        ({Macro_sec + 1, Normal_sec, Micro_sec}),
+    Result = Test_function(Datestart, Datestop, Micro_sec),
+    case proplists:get_value("film_url", Result) of
+        nil -> test_simple(Test_function);
+        _ ->
+            ?assertNotEqual(proplists:get_value("original", Result),
+                proplists:get_value("preroll",  Result)),
+            ?assertNotEqual(proplists:get_value("original", Result),
+                proplists:get_value("postroll", Result)),
+            ?assertNotEqual(proplists:get_value("original", Result),
+                proplists:get_value("midroll",  Result)),
+            ok
+    end.
+
+%%%
+%%% @spec test_simple(Test_function_1::fun/3, Test_function_2::fun/3) -> ok.
 %%% Функция юнит тестирования
 %%%
 test_simple(Test_function_1, Test_function_2) ->
@@ -415,63 +766,35 @@ test_simple(Test_function_1, Test_function_2) ->
     Datestop = calendar:now_to_universal_time
         ({Macro_sec + 1, Normal_sec, Micro_sec}),
     Result_1 = Test_function_1(Datestart, Datestop, Micro_sec),
-    Result_2 = Test_function_2(Datestart, Datestop, Micro_sec),
-    ?assertEqual(proplists:get_value("original", Result_1),
-        proplists:get_value("preroll",  Result_2)),
-    ?assertEqual(proplists:get_value("original", Result_1),
-        proplists:get_value("postroll", Result_2)),
-    ?assertEqual(proplists:get_value("original", Result_1),
-        proplists:get_value("midroll",  Result_2)),
-    ok.
+    case proplists:get_value("film_url", Result_1) of
+        nil -> test_simple(Test_function_1, Test_function_2);
+        _ ->
+            Result_2 = Test_function_2(Datestart, Datestop, Micro_sec),
+            case proplists:get_value("film_url", Result_2) of
+                nil -> test_simple(Test_function_1, Test_function_2);
+                _ ->
+                    ?assertEqual(proplists:get_value("original", Result_1),
+                        proplists:get_value("preroll",  Result_2)),
+                    ?assertEqual(proplists:get_value("original", Result_1),
+                        proplists:get_value("postroll", Result_2)),
+                    ?assertEqual(proplists:get_value("original", Result_1),
+                        proplists:get_value("midroll",  Result_2)),
+                    ok
+            end
+    end.
 
-test_contro(Test_function_1, Test_function_2) ->
-    ?D("test_contro", []),
-    test_truncate(),
-    {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
-    Datestart = calendar:now_to_universal_time
-        ({Macro_sec - 1, Normal_sec, Micro_sec }),
-    Datestop = calendar:now_to_universal_time
-        ({Macro_sec + 1, Normal_sec, Micro_sec}),
-    Result_1 = Test_function_1(Datestart, Datestop, Micro_sec * 10),
-    Result_2 = Test_function_2(Datestart, Datestop, Micro_sec * 100),
-
-    try
-        false = (nil == proplists:get_value("cat_id", Result_1)),
-        false = (nil == proplists:get_value("cat_id", Result_2)),
-        false = (proplists:get_value("cat_id", Result_1) == proplists:get_value("cat_id", Result_2)),
-        false = (nil == proplists:get_value("film_url", Result_1)),
-        false = (nil == proplists:get_value("film_url", Result_2)),
-        false = (proplists:get_value("film_url", Result_1) == proplists:get_value("film_url", Result_2))
-    catch
-        T:E -> test_contro(Test_function_1, Test_function_2)
-    end,
-    % Не проходит, но надо смотреть, чтобы не было совпадающих категорий
-    false = (proplists:get_value("preroll", Result_1) == proplists:get_value("preroll", Result_2)),
-
-    ok.
 
 test_truncate() ->
     %%% truncate or not truncate that is the question
-    %dao:simple("truncate table acv_video cascade;", []),
+    dao:simple("truncate table acv_video cascade;", []),
     ok.
 
-
-%%%
-%%% Основная функция юнит тестирования
-%%%
-test()->
-%     Параметры рекламной кампании для проверки:
-%     + показ рекламы без таргетирования
-%     + таргетирование по одной категории.
-%     - показ рекламы не более чем было заказано (требует доработки модуля статистики)
-%     - таргетирование по нескольким категориям видео.
-%     - таргетирование по полу кастомера
-%     -- таргетирование по возрасту кастомера
-%     -- таргетирование по местоположению кастомера
-%     -- показ рекламы не чаще чем заказано
-%     -- показ рекламы в указанное время
-%     -- проверка места размещения ролика (преролл, мидролл, постролл) - выставить один из них.
-
+%%% 
+%%% Тестирует:
+%%%     + показ рекламы без таргетирования
+%%%     + таргетирование по одной категории.
+%%% 
+test_cats()->
     ok = test_simple(fun test_x1_cat/3),  % Первый фильм первая категория.
     ok = test_simple(fun test_x2_cat/3),  % Случайный фильм случайная категория.
     ok = test_simple(fun test_x2_uncat/3),% Случайный фильм нет категорий.
@@ -479,9 +802,47 @@ test()->
         % Два случайных фильма нет категорий.
     ok = test_simple(fun test_x2_uncat/3, fun test_x1_cat/3),
         % Случайный фильм нет категорий + Первый фильм первая категория.
+    ok.
 
-    % Не проходит, но надо смотреть, чтобы не было совпадающих категорий
-    % ok = test_contro(fun test_x2_cat/3, fun test_x2_cat/3),
+%%%
+%%% Тестирует:
+%%%     + таргетирование по полу кастомера
+%%%     + таргетирование по возрасту кастомера
+%%% 
+test_users()->
+    ok = test_simple(fun test_x3_male/3),   % показываем только МУЖИКАМ
+    ok = test_simple(fun test_x3_female/3), % показываем только БАБАМ
+    ok = test_simple(fun test_x3_male_anti_it/3),
+        % показываем как будто мужикам, неопределившимся
+    ok = test_simple(fun test_x3_female_anti_it/3),
+        % показываем как будто бабам, неопределившимся
+    ok = test_simple_anti(fun test_x3_male_anti/3),
+        % показываем ТОЛЬКО мужикам, но не бабам
+    ok = test_simple_anti(fun test_x3_female_anti/3),
+        % показываем ТОЛЬКО бабам, но не мужикам
+    ok = test_simple(fun test_x4_child/3), % показываем детям
+    ok = test_simple(fun test_x4_adult/3), % показываем взрослым
+    ok = test_simple_anti(fun test_x4_child_anti/3), % не показываем детям
+    ok = test_simple_anti(fun test_x4_adult_anti/3), % не показываем взрослым
+
+    ok.
+
+%%%
+%%% Основная функция юнит тестирования
+%%%
+test()->
+%     Параметры рекламной кампании для проверки:
+
+%     -- показ рекламы не более чем было заказано (требует доработки модуля статистики)
+%     -- таргетирование по нескольким категориям видео.
+%     -- таргетирование по местоположению кастомера
+%     - показ рекламы не чаще чем заказано
+%     - показ рекламы в указанное время
+%     -- проверка места размещения ролика (преролл, мидролл, постролл) - выставить один из них.
+
+    ok = test_cats(),
+    ok = test_users(),
+
 
     ok.
 
