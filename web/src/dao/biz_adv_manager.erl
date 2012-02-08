@@ -29,7 +29,7 @@ get_acv_mp4({Type, Resourse_mp4, _User_id}, Peer) ->
 
 %%%
 %%% TODO:
-%%%     * нет учета time_from, time_to;
+%%%     ПОЧЕМУ НЕ ВСЕ В ОДНОЙ ТРАНЗАКЦИИ?
 %%%
 get_acv({Type, Resourse, User_id}, Peer) when
         Type =:= "preroll";
@@ -42,12 +42,14 @@ get_acv({Type, Resourse, User_id}, Peer) when
     ?D("User_id = ~p~n", [User_id]),
     ?D("Peer = ~p~n", [Peer]),
 
-    %   biz_adv_manager:get_acv({{"preroll", "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", null}, 0})
+    %   biz_adv_manager:get_acv({{"preroll",
+    %       "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", null}, 0})
 
-    Query = <<"select mark.id from clip_mark join clip on clip_mark.clip_id = clip.id "
-            "join mark on clip_mark.mark_id = mark.id "
-            "join mark_type on mark.mark_type_id = mark_type.id "
-            "where mark_type.name=\"Categories\" and clip.url=?;">>,
+    Query = <<"select distinct(mark.id) from clip_mark "
+                " join clip on clip_mark.clip_id = clip.id "
+                " join mark on clip_mark.mark_id = mark.id "
+                " join mark_type on mark.mark_type_id = mark_type.id "
+                " where mark_type.name=\"Categories\" and clip.url=?;">>,
 
     %TODO реюзать prepare
     mysql:prepare(get_clip_categories, Query),
@@ -58,19 +60,39 @@ get_acv({Type, Resourse, User_id}, Peer) when
     ?D("------------~nFilm (~p) categories: ~p~n", [Resourse, Vals]),
 
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
-    Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, ref, wish, link_title, shown, duration "
-            "from acv_video left join acv_video2cat on acv_video.id=acv_video2cat.acv_video_id "
-                    "left join acv_video2geo_region on acv_video.id=acv_video2geo_region.acv_video_id "
+    Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, "
+                " ref, wish, link_title, shown, duration "
+            "from acv_video left "
+                " join acv_video2cat "
+                    " on acv_video.id = acv_video2cat.acv_video_id "
+                "left join acv_video2geo_region "
+                    " on acv_video.id = acv_video2geo_region.acv_video_id "
             "where "
-                "acv_video.datestart < (select NOW()) and acv_video.datestop > (select NOW()) and "
-                "acv_video.wish > acv_video.shown and "
-                "acv_video." ++ Type ++ " = true and "
-                "not exists (select * from acv_video_shown where acv_video_shown.acv_video_id = acv_video.id "
-                                "and acv_video_shown.user_id='" ++ utils:to_list(User_id) ++ "') ",
+                " acv_video.datestart < (select NOW()) and "
+                " acv_video.datestop > (select NOW()) and "
+                " acv_video.wish > acv_video.shown and "
+                " acv_video." ++ Type ++ " = true and "
+                %%% Ограничение по времени показа
+                %%% acv_video.time_from < \now(hours) < acv_video.time_to
+                " (acv_video.time_from < "
+                        " (select (extract( hour from  now()::time))) "
+                    " or acv_video.time_from is NULL) "
+                        " and "
+                " ((select (extract( hour from  now()::time))) "
+                        " < acv_video.time_to "
+                    " or acv_video.time_to is NULL) "
+                        " and "
+                "not exists "
+                    " (select * from acv_video_shown "
+                        " where "
+                            " acv_video_shown.acv_video_id = acv_video.id and "
+                            " acv_video_shown.user_id='"
+                            ++ utils:to_list(User_id) ++ "') ",
     if
         length(Vals) > 0 ->
             Q2S2 = Q2S1 ++ " and (acv_video2cat.cat_id in (" ++ 
-                string:join([integer_to_list(X) || X <- lists:flatten(Vals)], ",") ++
+                string:join([integer_to_list(X)
+                    || X <- lists:flatten(Vals)], ",") ++
                 ") or acv_video2cat.cat_id is NULL) ";
         true ->
             Q2S2 = Q2S1 ++ " and acv_video2cat.cat_id is NULL "
@@ -82,7 +104,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
         mysql:execute(mySqlConPool, get_customer, [User_id]),
     Customer_list = mysql_dao:make_proplist(Customer_cols, Customer_vals),
 
-    ?D("------------~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
+    ?D("--~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
     ?D("~n------------------------~n", []),
     ?D("Q2S2 = ~p", [Q2S2]),
     ?D("~n------------------------~n", []),
@@ -98,9 +120,11 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 %%% Обработка пола.
                 case proplists:get_value("gender", Customer) of
                     "male" ->
-                        " and (acv_video.user_male=true or acv_video.user_male is NULL) ";
+                        " and (acv_video.user_male=true "
+                            " or acv_video.user_male is NULL) ";
                     "female" ->
-                        " and (acv_video.user_male=false or acv_video.user_male is NULL) ";
+                        " and (acv_video.user_male=false "
+                            " or acv_video.user_male is NULL) ";
                     Other_gender ->
                         ?E("ERROR: invalid gender - ~p~n", [Other_gender]),[]
                 end,
@@ -112,8 +136,11 @@ get_acv({Type, Resourse, User_id}, Peer) when
                             abs((calendar:date_to_gregorian_days(erlang:date())
                                 - calendar:date_to_gregorian_days(Customer_birthday)) / 365),
                         ?D(" [!]Customer_age = ~p~n", [Customer_age]),
-                        ?FMT(" and (acv_video.age_from < ~p or acv_video.age_from is NULL) and "
-                             "(  ~p < acv_video.age_to or acv_video.age_to is NULL) ",
+                        ?FMT( %%% acv_video.age_from < ~p < acv_video.age_to
+                            " and ( acv_video.age_from < ~p "
+                                " or acv_video.age_from is NULL)"
+                            " and (  ~p < acv_video.age_to "
+                                " or acv_video.age_to is NULL) ",
                             [Customer_age, Customer_age]);
                     Wrong_birthday ->
                         ?E("ERROR: invalid birthday - ~p~n", [Wrong_birthday]),  []
@@ -132,7 +159,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
 
     if
         length(Ret) > 0 ->
-            Rand_clip = lists:nth(random:uniform(length(Ret)), Ret),
+            Rand_clip = utils:random_nth(Ret),
             case proplists:get_value("rerun_hours", Rand_clip, null) of
                 null -> 
                     done;
@@ -143,7 +170,10 @@ get_acv({Type, Resourse, User_id}, Peer) when
                     Gregorian_seconds = calendar:datetime_to_gregorian_seconds(Localtime),
                     Start_time = Gregorian_seconds + Rerun_seconds,
                     DTStart = calendar:gregorian_seconds_to_datetime(Gregorian_seconds + Rerun_seconds),
-                    Q3 = "insert into acv_video_shown (user_id, acv_video_id, dateshow) values (%1, %2, %3);",
+                    Q3 =
+                        "insert into acv_video_shown "
+                            "(user_id, acv_video_id, dateshow) "
+                        " values ($1, $2, $3);",
                     dao:simple(Q3, [User_id, proplists:get_value("id", Rand_clip), DTStart]);
                 _ -> 
                     done
@@ -354,7 +384,7 @@ test_random_fromfuture() ->
 
 
 %%%
-%%% test_x$n$ (Datestart::{date(), time()}, Datestop::::{date(), time()},
+%%% test_x$n$ (Datestart::{date(), time()}, Datestop::{date(), time()},
 %%%     RandomInt::integer()) -> Result::proplist().
 %%%
 
@@ -398,11 +428,14 @@ test_x1_cat(Datestart, Datestop, Micro_sec) ->
     {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
     Result_original = make_acv_xml(Acv_videos),
     Result_preroll    =
-        biz_adv_manager:get_acv({"preroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"preroll", Film_url,?DEFAULT_USERID},
+            ?DEFAULT_PEER),
     Result_postroll   =
-        biz_adv_manager:get_acv({"postroll",   Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"postroll",Film_url,?DEFAULT_USERID},
+            ?DEFAULT_PEER),
     Result_midroll    =
-        biz_adv_manager:get_acv({"midroll",    Film_url , ?DEFAULT_USERID}, ?DEFAULT_PEER),
+        biz_adv_manager:get_acv({"midroll",Film_url,?DEFAULT_USERID},
+            ?DEFAULT_PEER),
     ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url]),
     [
         {"original", Result_original},
@@ -410,6 +443,10 @@ test_x1_cat(Datestart, Datestop, Micro_sec) ->
         {"postroll", Result_postroll},
         {"midroll", Result_midroll}
     ].
+
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X2
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 %%%
 %%% Тестирует XML случайного фильма, случайной категории.
@@ -447,6 +484,11 @@ test_x2_query(Datestart, Datestop, Micro_sec, Cats)->
                     1, "Link_title", "Alt_title", "Comment",
                         1, 1,
                             null}, [], Cats}).
+
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X3
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 %%%
 %%% 
 %%% 
@@ -521,7 +563,6 @@ test_x3_female_anti_it(Datestart, Datestop, Micro_sec) ->
     {ok, Acv_video_id} = test_x3_female_query(Datestart, Datestop, Micro_sec),
     handle_random_cat(Cat_id, Acv_video_id, test_random_it()).
 
-
 %%%
 %%% Возвращает видео (образец) для неопределенного рода.
 %%%
@@ -548,7 +589,6 @@ test_x3_male_query(Datestart, Datestop, Micro_sec)->
                     1, "Link_title", "Alt_title", "Comment",
                         1, 1,
                             null}, [], []}).
-
 %%%
 %%% Возвращает видео (образец) для женского рода.
 %%%
@@ -563,9 +603,10 @@ test_x3_female_query(Datestart, Datestop, Micro_sec)->
                         1, 1,
                             null}, [], []}).
 
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X4
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-%%%
-%%%
 %%%
 %%% обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
 %%% Только для детей
@@ -600,8 +641,10 @@ test_x4_child_query(Datestart, Datestop, Micro_sec)->
                         1, 1,
                             null}, [], []}).
 
-%%%
-%%%
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X4
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 %%%
 %%% обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
 %%% Только для взрослых
@@ -635,10 +678,60 @@ test_x4_adult_query(Datestart, Datestop, Micro_sec)->
                         1, 1,
                             null}, [], []}).
 
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X5
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 %%%
+%%% обрабатывает только ПОЛОЖИТЕЛЬНУЮ ситуацию.
+%%% Только для взрослых
+%%%
+test_x5_now(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x5_now_query(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id).
+
+test_x5_now_anti(Datestart, Datestop, Micro_sec) ->
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    {ok, Acv_video_id} = test_x5_now_query_anti(Datestart, Datestop, Micro_sec),
+    handle_random_cat(Cat_id, Acv_video_id).
+
+test_x5_now_query(Datestart, Datestop, Micro_sec)->
+    {Init_hours, _minutes, _seconds} = erlang:time(),
+    From_hours = Init_hours - 1,
+    To_hours = Init_hours + 1,
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-5-now-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, From_hours, To_hours,
+                    1, "test_x5_now_query", "test_x5_now_query", "Comment",
+                        1, 1,
+                            null}, [], []}).
+
+test_x5_now_query_anti(Datestart, Datestop, Micro_sec)->
+    {Init_hours, _minutes, _seconds} = erlang:time(),
+    From_hours = Init_hours + 2,
+    To_hours = Init_hours + 3,
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-5-now-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, From_hours, To_hours,
+                    1, "test_x5_now_query", "test_x5_now_query", "Comment",
+                        1, 1,
+                            null}, [], []}).
+
+
+%%% ----------------------------------------------------------------------
 %%% Обрабатывает случайную категорию,
 %%%     возвращает набор XML для случайного фильма
-%%% 
+%%% ----------------------------------------------------------------------
+
 handle_random_cat(Cat_id, Acv_video_id) ->
     {ok, Films}  = dao_cat:get_clips_url(Cat_id),
     case dao_cat:get_clips_url(Cat_id) of
@@ -670,11 +763,6 @@ handle_random_cat(Cat_id, Acv_video_id) ->
         {"midroll",  Result_midroll}
     ].
 
-
-%%%
-%%% Обрабатывает случайную категорию,
-%%%     возвращает набор XML для случайного фильма
-%%%
 handle_random_cat(Cat_id, Acv_video_id, Genger) ->
     {ok, Films}  = dao_cat:get_clips_url(Cat_id),
     case dao_cat:get_clips_url(Cat_id) of
@@ -690,11 +778,14 @@ handle_random_cat(Cat_id, Acv_video_id, Genger) ->
             {ok, Acv_videos} = dao_acv_video:get_acv_video(Acv_video_id),
             Result_original = make_acv_xml(Acv_videos),
             Result_preroll    =
-                biz_adv_manager:get_acv({"preroll",Film_url,  Genger}, ?DEFAULT_PEER),
+                biz_adv_manager:get_acv({"preroll",Film_url,  Genger},
+                    ?DEFAULT_PEER),
             Result_postroll   =
-                biz_adv_manager:get_acv({"postroll",Film_url, Genger}, ?DEFAULT_PEER),
+                biz_adv_manager:get_acv({"postroll",Film_url, Genger},
+                    ?DEFAULT_PEER),
             Result_midroll    =
-                biz_adv_manager:get_acv({"midroll",Film_url,  Genger}, ?DEFAULT_PEER),
+                biz_adv_manager:get_acv({"midroll",Film_url,  Genger},
+                    ?DEFAULT_PEER),
             ?D("~n[Cat_id = ~p, Film_url ~p]~n", [Cat_id, Film_url])
     end,
     [
@@ -705,6 +796,11 @@ handle_random_cat(Cat_id, Acv_video_id, Genger) ->
         {"postroll", Result_postroll},
         {"midroll",  Result_midroll}
     ].
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                                                                        %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%
 %%% @spec test_simple(Test_function::fun/3) -> ok.
@@ -828,21 +924,35 @@ test_users()->
     ok.
 
 %%%
+%%% Тестирует:
+%%%     + показ рекламы в указанное время
+%%%     + показ рекламы не чаще чем заказано
+%%%
+test_time_and_times()->
+
+    ok = test_simple(fun test_x5_now/3),
+        % показ рекламы в указанное время
+    ok = test_simple_anti(fun test_x5_now_anti/3),
+        % не показ рекламы иное время
+    ok.
+
+%%%
 %%% Основная функция юнит тестирования
 %%%
 test()->
 %     Параметры рекламной кампании для проверки:
 
-%     -- показ рекламы не более чем было заказано (требует доработки модуля статистики)
+%     -- показ рекламы не более чем было заказано
+%               (требует доработки модуля статистики)
 %     -- таргетирование по нескольким категориям видео.
 %     -- таргетирование по местоположению кастомера
-%     - показ рекламы не чаще чем заказано
-%     - показ рекламы в указанное время
-%     -- проверка места размещения ролика (преролл, мидролл, постролл) - выставить один из них.
+
+%     -- проверка места размещения ролика
+%           (преролл, мидролл, постролл) - выставить один из них.
 
     ok = test_cats(),
     ok = test_users(),
-
+    ok = test_time_and_times(),
 
     ok.
 
