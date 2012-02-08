@@ -794,7 +794,7 @@ test_simple_x6() ->
         Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
         {ok, Acv_video_id} = test_x6_now_query(Datestart, Datestop, Micro_sec),
         ?D("1", []),
-        Result_1 = handle_random_cat(Cat_id, Acv_video_id),
+        Result_1 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
         case proplists:get_value("film_url", Result_1) of
             nil -> test_simple_x6();
             _ ->
@@ -806,10 +806,12 @@ test_simple_x6() ->
                     proplists:get_value("midroll",  Result_1)),
                 ok
         end,
+        Dbg_res = dao:simple("select * from acv_video_shown;"),
+        ?D("~n test_simple_x6 --> 1 passed ~p", [Dbg_res ]),
         ?D("~n test_simple_x6 --> 1 passed ~n~n", []),
         timer:sleep(32000),
         ?D("2", []),
-        Result_2 = handle_random_cat(Cat_id, Acv_video_id),
+        Result_2 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
         case proplists:get_value("film_url", Result_2) of
             nil -> test_simple_x6();
             _ ->
@@ -823,9 +825,9 @@ test_simple_x6() ->
         end,
         ?D("~n test_simple_x6 --> 2 passed ~n~n", []),
         timer:sleep(32000),
-        dao_acv_video:delete_acv_video_shown_expired(),
+        % dao_acv_video:delete_acv_video_shown_expired(),
         ?D("3", []),
-        Result_3 = handle_random_cat(Cat_id, Acv_video_id),
+        Result_3 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
         case proplists:get_value("film_url", Result_3) of
             nil -> test_simple_x6();
             _ ->
