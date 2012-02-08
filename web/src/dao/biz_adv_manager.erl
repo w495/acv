@@ -31,12 +31,12 @@
 
 
 
-get_acv_ext({Type, Resourse_mp4, _User_id}, Peer) ->
-    get_acv_ext_by_len({Type, Resourse, _User_id}, Peer, ?EXT_LEN).
+get_acv_ext({Type, Resourse_ext, User_id}, Peer) ->
+    get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, ?EXT_LEN).
 
-get_acv_ext_by_len({Type, Resourse_mp4, _User_id}, Peer, Ext_len) ->
-    {Resourse, _ } = lists:split(length(Resourse_mp4) - Ext_len, Resourse_mp4),
-    get_acv({Type, Resourse, _User_id}, Peer).
+get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, Ext_len) ->
+    {Resourse, _ } = lists:split(erlang:length(Resourse_ext) - Ext_len, Resourse_ext),
+    get_acv({Type, Resourse, User_id}, Peer).
 
 %%%
 %%% TODO:
@@ -177,7 +177,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
                     Rerun_seconds = (Rerun_hours*60 + Rerun_minutes)*60,
                     Localtime = erlang:localtime(),
                     Gregorian_seconds = calendar:datetime_to_gregorian_seconds(Localtime),
-                    Start_time = Gregorian_seconds + Rerun_seconds,
+                    % Start_time = Gregorian_seconds + Rerun_seconds,
                     DTStart = calendar:gregorian_seconds_to_datetime(Gregorian_seconds + Rerun_seconds),
                     Q3 =
                         "insert into acv_video_shown "
@@ -224,7 +224,7 @@ make_acv_xml(List) ->
 %%% В этой строки находится полное описание рекламы.
 %%%
 make_acv_xml_item([], Acc) -> Acc;
-make_acv_xml_item([Creative|Tail] = List, {Acc_str, Acc_duration})->
+make_acv_xml_item([Creative|Tail], {Acc_str, Acc_duration})->
     Creative_string = creative_string(Creative),
     make_acv_xml_item(Tail,
         {Acc_str ++ Creative_string,
@@ -313,7 +313,7 @@ test_some_user() ->
 %%% Возвращает uuid случайного мужика
 %%%
 test_random_male() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer where gender = \"male\" limit 1000;">>),
     Proplists = mysql_dao:make_proplist(Cols, Vals, []),
@@ -324,7 +324,7 @@ test_random_male() ->
 %%% Возвращает uuid случайной бабы
 %%%
 test_random_female() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer where gender = \"female\" limit 1000;">>),
     Proplists = mysql_dao:make_proplist(Cols, Vals, []),
@@ -335,7 +335,7 @@ test_random_female() ->
 %%% Возвращает uuid случайного неопределившегося
 %%%
 test_random_it() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer where gender = \"none\" limit 1000;">>),
     Proplists = mysql_dao:make_proplist(Cols, Vals, []),
@@ -346,7 +346,7 @@ test_random_it() ->
 %%% Возвращает uuid случайного ребенка
 %%%
 test_random_child() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer where date(birthday) "
                 " between date_sub(date(now()), interval 18 year) "
@@ -362,7 +362,7 @@ test_random_child() ->
 %%% Возвращает uuid случайного взрослого
 %%%
 test_random_adult() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select *  from customer where date(birthday) "
                 " between date_sub(date(now()), interval 100 year) "
@@ -376,7 +376,7 @@ test_random_adult() ->
 %%% Возвращает uuid случайного нежитя (родился до Революции)
 %%%
 test_random_undead() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer "
                 " where year(birthday) <  1917 limit 1000;">>),
@@ -388,7 +388,7 @@ test_random_undead() ->
 %%% Возвращает uuid случайного пришельца из будущего
 %%%
 test_random_fromfuture() ->
-    Query = {data,{mysql_result, Cols, Vals, _X31, _X32}} =
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} =
         mysql:fetch(mySqlConPool,
             <<"select * from customer "
                 " where date(birthday) >  date(now()) limit 1000;">>),
@@ -402,7 +402,7 @@ test_random_fromfuture() ->
 %%%     RandomInt::integer()) -> Result::proplist().
 %%%
 
-test_x0_example(Datestart, Datestop, Micro_sec) ->
+test_x0_example(_datestart, _datestop, _micro_sec) ->
     %%% интерфейс ужасен, но функция будет переписываться,
     %%%     и потом это просто тестирование.
     [
