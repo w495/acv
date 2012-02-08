@@ -1,4 +1,4 @@
-    %%% @file biz_adv_manager.erl
+%%% @file biz_adv_manager.erl
 %%%
 %%%    Бизнес логика раздачи рекламных креативов.
 %%%
@@ -10,9 +10,13 @@
 -include("common.hrl").
 
 % -export([
+%     get_acv_ext/2,
+%     get_acv_ext/3,
+%     get_acv/3,
 %     test/0,
 %     test/1
 % ]).
+
 
 -define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
 -define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
@@ -24,18 +28,20 @@
 
 -define(DAYS_IN_YEAR, 365.242199 ).
     %%% $ DAYS_IN_YEAR \ne 365.0 $
-    %%%     но postgre sql округляет именно так
     %%% $ DAYS_IN_YEAR \approx 365.242199 $
+-define(MIN_IN_HOUR, 60). % спс, кеп
+-define(SEC_IN_MIN,  60). % спс, кеп
+
 
 -define(EXT_LEN, 4).
-
 
 
 get_acv_ext({Type, Resourse_ext, User_id}, Peer) ->
     get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, ?EXT_LEN).
 
 get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, Ext_len) ->
-    {Resourse, _ } = lists:split(erlang:length(Resourse_ext) - Ext_len, Resourse_ext),
+    {Resourse, _ } =
+        lists:split(erlang:length(Resourse_ext) - Ext_len, Resourse_ext),
     get_acv({Type, Resourse, User_id}, Peer).
 
 %%%
@@ -43,15 +49,15 @@ get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, Ext_len) ->
 %%%     ПОЧЕМУ НЕ ВСЕ В ОДНОЙ ТРАНЗАКЦИИ?
 %%%
 get_acv({Type, Resourse, User_id}, Peer) when
-        Type =:= "preroll";
+    Type =:= "preroll";
         Type =:= "postroll";
-        Type =:= "midroll";
-        Type =:= "pauseroll"->
+            Type =:= "midroll";
+                Type =:= "pauseroll"->
 
-    ?D("Type = ~p~n", [Type]),
-    ?D("Resourse = ~p~n", [Resourse]),
-    ?D("User_id = ~p~n", [User_id]),
-    ?D("Peer = ~p~n", [Peer]),
+    ?D("Type = ~p~n",       [Type]),
+    ?D("Resourse = ~p~n",   [Resourse]),
+    ?D("User_id = ~p~n",    [User_id]),
+    ?D("Peer = ~p~n",       [Peer]),
 
     %   biz_adv_manager:get_acv({{"preroll",
     %       "354b9bd8-c2aa-4a92-81ee-0fccc85a9273", null}, 0})
@@ -142,9 +148,11 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 %%% Обработка возрасата.
                 case proplists:get_value("birthday", Customer) of
                     {_year, _month, _day}=Customer_birthday ->
+                        ?D("~n[!]~n[!]", []),
                         ?D("~n[!]Customer_birthday = ~p", [Customer_birthday]),
-                        Customer_age = compute_customer_age(Customer_birthday),
-                        ?D("~n[!]Customer_age = ~p~n", [Customer_age]),
+                        Customer_age = customer_age(Customer_birthday),
+                        ?D("~n[!]Customer_age = ~p", [Customer_age]),
+                        ?D("~n[!]~n[!]", []),
                         ?FMT( %%% acv_video.age_from < ~p < acv_video.age_to
                             " and ( acv_video.age_from < ~p "
                                 " or acv_video.age_from is NULL)"
@@ -152,7 +160,8 @@ get_acv({Type, Resourse, User_id}, Peer) when
                                 " or acv_video.age_to is NULL) ",
                             [Customer_age, Customer_age]);
                     Wrong_birthday ->
-                        ?E("ERROR: invalid birthday - ~p~n", [Wrong_birthday]),  []
+                        ?E("ERROR: invalid birthday - ~p~n", [Wrong_birthday]),
+                        []
                 end
             ], " ");
         Other -> 
@@ -173,17 +182,14 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 null -> 
                     done;
                 Rerun_hours when User_id =/= null ->
-                    Rerun_minutes = proplists:get_value("rerun_minutes", Rand_clip, 0),
-                    Rerun_seconds = (Rerun_hours*60 + Rerun_minutes)*60,
-                    Localtime = erlang:localtime(),
-                    Gregorian_seconds = calendar:datetime_to_gregorian_seconds(Localtime),
-                    % Start_time = Gregorian_seconds + Rerun_seconds,
-                    DTStart = calendar:gregorian_seconds_to_datetime(Gregorian_seconds + Rerun_seconds),
-                    Q3 =
-                        "insert into acv_video_shown "
-                            "(user_id, acv_video_id, dateshow) "
-                        " values ($1, $2, $3);",
-                    dao:simple(Q3, [User_id, proplists:get_value("id", Rand_clip), DTStart]);
+                    Rerun_minutes =
+                        proplists:get_value("rerun_minutes", Rand_clip, 0),
+                    Start_datetime = start_datetime(Rerun_hours, Rerun_minutes),
+                    Q3 =    "insert into acv_video_shown "
+                                "(user_id, acv_video_id, dateshow) "
+                            " values ($1, $2, $3);",
+                    dao:simple(Q3, [User_id,
+                        proplists:get_value("id", Rand_clip), Start_datetime]);
                 _ -> 
                     done
             end,
@@ -191,20 +197,40 @@ get_acv({Type, Resourse, User_id}, Peer) when
         true ->
             Selected_clip = []
     end,
-
     Result_string = make_acv_xml(Selected_clip),
+    ?D("~nResult_string  = ~s~n", [Result_string]),
+    Result_string.
 
-    ?D("Result_string  = ~s~n", [Result_string]),
+%%% 
+%%% @spec
+%%% customer_age({Year::integer(), Month::integer(), Day::integer()})
+%%%     ->  float().
+%%% @doc
+%%% Вычиляет возраст на основании даты рождения
+%%%
+customer_age(Customer_birthday) ->
+    Now = calendar:date_to_gregorian_days(erlang:date()),
+    Birthday = calendar:date_to_gregorian_days(Customer_birthday),
+    {Year, Month, Day} =
+        calendar:gregorian_days_to_date(erlang:abs(Now  - Birthday)),
+    Year.
 
-    Result_string .
 
-compute_customer_age(Customer_birthday) ->
-    abs((calendar:date_to_gregorian_days(erlang:date())
-        - calendar:date_to_gregorian_days(Customer_birthday)) / ?DAYS_IN_YEAR).
+%%% 
+%%% @spec
+%%% start_datetime({Hours::integer(), Minutes::integer()) -> integer().
+%%% @doc
+%%% Количество секунд на основании текущего времени
+%%%     и Rerun_hours, Rerun_minutes
+%%%
+start_datetime(Rerun_hours, Rerun_minutes) ->
+    Rerun_seconds = (Rerun_hours*?MIN_IN_HOUR + Rerun_minutes)*?SEC_IN_MIN,
+    Localtime = erlang:localtime(),
+    Localtime_seconds = calendar:datetime_to_gregorian_seconds(Localtime),
+    calendar:gregorian_seconds_to_datetime(Localtime_seconds + Rerun_seconds).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 %%%
 %%% @doc
@@ -434,7 +460,7 @@ test_x1_cat(Datestart, Datestop, Micro_sec) ->
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, null,
                 null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
+                    1, "test_x1_cat", "test_x1_cat", "Comment",
                         1, 1,
                             null}, [], [Cat_id]}),
     {ok, [Film| _ ]}  = dao_cat:get_clips_url(Cat_id),
@@ -495,7 +521,7 @@ test_x2_query(Datestart, Datestop, Micro_sec, Cats)->
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, null,
                 null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
+                    1, "test_x2_query", "test_x2_query", "Comment",
                         1, 1,
                             null}, [], Cats}).
 
@@ -587,7 +613,7 @@ test_x3_it_query(Datestart, Datestop, Micro_sec)->
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, null,
                 null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
+                    1, "test_x3_it_query", "test_x3_it_query", "Comment",
                         1, 1,
                             null}, [], []}).
 %%%
@@ -600,7 +626,7 @@ test_x3_male_query(Datestart, Datestop, Micro_sec)->
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, true,
                 null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
+                    1, "test_x3_male_query", "test_x3_male_query", "Comment",
                         1, 1,
                             null}, [], []}).
 %%%
@@ -613,7 +639,7 @@ test_x3_female_query(Datestart, Datestop, Micro_sec)->
             "/static/test-data/tvzavr-01.mp4", 100,
             true, true, true, true, false,
                 null, null, null, null,
-                    1, "Link_title", "Alt_title", "Comment",
+                    1, "test_x3_female_query", "test_x3_female_query", "Comment",
                         1, 1,
                             null}, [], []}).
 
@@ -740,6 +766,81 @@ test_x5_now_query_anti(Datestart, Datestop, Micro_sec)->
                         1, 1,
                             null}, [], []}).
 
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%%% X6
+%%% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+test_x6_now_query(Datestart, Datestop, Micro_sec)->
+    dao_acv_video:update_acv_video({{null,
+        "Name-test-6-now-" ++ erlang:integer_to_list(Micro_sec),
+            Datestart, Datestop, "http://ya.ru",
+            "/static/test-data/tvzavr-01.mp4", 100,
+            true, true, true, true, null,
+                null, null, null, null,
+                    1, "test_x6_now_query", "test_x6_now_query", "Comment",
+                        0, 1,
+                            null}, [], []}).
+
+
+test_simple_x6() ->
+    test_truncate(),
+    spawn(fun()->
+        {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
+        Datestart = calendar:now_to_universal_time
+            ({Macro_sec - 1, Normal_sec, Micro_sec}),
+        Datestop = calendar:now_to_universal_time
+            ({Macro_sec + 1, Normal_sec, Micro_sec}),
+        {ok, Cats} = dao_cat:get_all_cats([]),
+        Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+        {ok, Acv_video_id} = test_x6_now_query(Datestart, Datestop, Micro_sec),
+        ?D("1", []),
+        Result_1 = handle_random_cat(Cat_id, Acv_video_id),
+        case proplists:get_value("film_url", Result_1) of
+            nil -> test_simple_x6();
+            _ ->
+                ?assertEqual(proplists:get_value("original", Result_1),
+                    proplists:get_value("preroll",  Result_1)),
+                ?assertEqual(proplists:get_value("original", Result_1),
+                    proplists:get_value("postroll", Result_1)),
+                ?assertEqual(proplists:get_value("original", Result_1),
+                    proplists:get_value("midroll",  Result_1)),
+                ok
+        end,
+        ?D("~n test_simple_x6 --> 1 passed ~n~n", []),
+        timer:sleep(32000),
+        ?D("2", []),
+        Result_2 = handle_random_cat(Cat_id, Acv_video_id),
+        case proplists:get_value("film_url", Result_2) of
+            nil -> test_simple_x6();
+            _ ->
+                ?assertEqual(proplists:get_value("original", Result_2),
+                    proplists:get_value("preroll",  Result_2)),
+                ?assertEqual(proplists:get_value("original", Result_2),
+                    proplists:get_value("postroll", Result_2)),
+                ?assertEqual(proplists:get_value("original", Result_2),
+                    proplists:get_value("midroll",  Result_2)),
+                ok
+        end,
+        ?D("~n test_simple_x6 --> 2 passed ~n~n", []),
+        timer:sleep(32000),
+        dao_acv_video:delete_acv_video_shown_expired(),
+        ?D("3", []),
+        Result_3 = handle_random_cat(Cat_id, Acv_video_id),
+        case proplists:get_value("film_url", Result_3) of
+            nil -> test_simple_x6();
+            _ ->
+                ?assertEqual(proplists:get_value("original", Result_3),
+                    proplists:get_value("preroll",  Result_3)),
+                ?assertEqual(proplists:get_value("original", Result_3),
+                    proplists:get_value("postroll", Result_3)),
+                ?assertEqual(proplists:get_value("original", Result_3),
+                    proplists:get_value("midroll",  Result_3)),
+                ok
+        end,
+        ?D("~n test_simple_x6 --> 3 passed ~n~n", []),
+        ok
+    end),
+    ok.
 
 %%% ----------------------------------------------------------------------
 %%% Обрабатывает случайную категорию,
@@ -853,7 +954,7 @@ test_simple_anti(Test_function) ->
         ({Macro_sec + 1, Normal_sec, Micro_sec}),
     Result = Test_function(Datestart, Datestop, Micro_sec),
     case proplists:get_value("film_url", Result) of
-        nil -> test_simple(Test_function);
+        nil -> test_simple_anti(Test_function);
         _ ->
             ?assertNotEqual(proplists:get_value("original", Result),
                 proplists:get_value("preroll",  Result)),
@@ -910,8 +1011,8 @@ test_cats()->
     ok = test_simple(fun test_x2_uncat/3),% Случайный фильм нет категорий.
     ok = test_simple(fun test_x2_uncat/3, fun test_x2_uncat/3),
         % Два случайных фильма нет категорий.
-    ok = test_simple(fun test_x2_uncat/3, fun test_x1_cat/3),
-        % Случайный фильм нет категорий + Первый фильм первая категория.
+    % ok = test_simple(fun test_x2_uncat/3, fun test_x1_cat/3),
+    %     % Случайный фильм нет категорий + Первый фильм первая категория.
     ok.
 
 %%%
@@ -948,6 +1049,8 @@ test_time_and_times()->
         % показ рекламы в указанное время
     ok = test_simple_anti(fun test_x5_now_anti/3),
         % не показ рекламы иное время
+    ok = test_simple_x6(),
+
     ok.
 
 %%%
@@ -960,7 +1063,6 @@ test()->
 %               (требует доработки модуля статистики)
 %     -- таргетирование по нескольким категориям видео.
 %     -- таргетирование по местоположению кастомера
-
 %     -- проверка места размещения ролика
 %           (преролл, мидролл, постролл) - выставить один из них.
 
