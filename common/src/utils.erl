@@ -17,6 +17,7 @@
          upgrade/1, do_upgrade/1,
          unixtime_to_localDatetime/1, unixtime_to_universalDatetime/1,
          unixtime_to_localDate/1,
+        random_nth/1,
          hex_to_binary/1, to_hex/1, hex_to_list/1, setPlistVal/2, to_string/1, sformat/2,
          getTargetId/2, moveFile/2]).
 
@@ -678,6 +679,13 @@ setPlistVal([], Plist) ->
     Plist;
 setPlistVal({Key, Val}, Plist) ->
     [{Key, Val} | proplists:delete(Key, Plist)].
+
+%%% 
+%%% Возвращает случайный элемент списка
+%%% 
+random_nth(List)->
+    random:seed(now()),
+    lists:nth(random:uniform(length(List)), List).
 
 %% ----------------------------------------------------------------------------
 %% Controllers

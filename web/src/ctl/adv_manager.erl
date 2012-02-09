@@ -25,7 +25,7 @@ get_adv(Req) ->
     In = erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [proplists:get_value("userid", Data, null)]),
 
     Peer = Req:get(peer),
-    Result = biz_adv_manager:get_acv_mp4(In, Peer),
+    Result = biz_adv_manager:get_acv_ext(In, Peer),
 
 
 %     Fake_result_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
