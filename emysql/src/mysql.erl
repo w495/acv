@@ -278,8 +278,10 @@ connect(PoolId, Host, Port, User, Password, Database, Encoding, Reconnect,
 	    case gen_server:call(
 		   ?SERVER, {add_conn, Conn}) of
 		ok ->
+
 		    {ok, ConnPid};
 		Res ->
+
 		    Res
 	    end;
 	Err->

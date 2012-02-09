@@ -21,6 +21,12 @@
         {vk_db_name, "vk"},
         {vk_db_host, "192.168.2.110"},
 
+        {stat_db_user, "cff"},
+        {stat_db_password, "k9an612e"},
+        {stat_db_name, "AVSrv"},
+        {stat_db_host, "192.168.2.102"},
+
+
         {vk_streamer, "http://192.168.2.187:8000"},
 
         {web_session_gc_period, 600000}, % 10 min

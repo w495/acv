@@ -93,6 +93,36 @@ init([]) ->
         [mySqlConPool]
     },
 
+    MySqlConPoolStat = { %%% соединение с внешней базой данных статистики
+        mySqlConPoolStat,
+        {mysql_con_pool, start_link, [
+            mysqlStat,
+            config:get(stat_db_host, "localhost"),
+            config:get(stat_db_user, "root"),
+            config:get(stat_db_password, "1111"),
+            config:get(stat_db_name, "vk"),
+            10 % количество соединений
+        ]},
+        permanent,
+        1000,
+        worker,
+        [mySqlConPoolStat]
+    },
+
+%    Emysql = {
+%    },
+
+    mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"), 
+        config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
+    mysql:connect(mysqlStat, 
+        config:get(stat_db_host, "localhost"), 
+        undefined, 
+        config:get(stat_db_user, "root"), 
+        config:get(stat_db_password, "1111"), 
+        config:get(stat_db_name, "vk"),
+        true),
+    dao_stat:mk_ets(),
+
     Xslt_processor = { %%% преодбразователь
         xslt_sup,
         {xslt_sup, start_link, []},
@@ -106,8 +136,9 @@ init([]) ->
         CLog,           % Логирование
         AssistSrv,      % Авторизация
         PgConPool,      % Связь с локальной базой
-        Xslt_processor,
-        MySqlConPool    % Связь с tvzavr vk
+        Xslt_processor
+%        ,MySqlConPool   % Связь с tvzavr vk
+%        ,MySqlConPoolStat
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 
