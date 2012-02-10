@@ -162,7 +162,8 @@ compose_stat([]) ->
 toDB(ToDB) ->
     Adv_Video_URLs = proplists:get_keys(ToDB),
     io:format("KEYS: ~p~n", [Adv_Video_URLs]),
-    Q = "select id, url from acv_video where url in (" ++ string:join(["'" ++ binary_to_list(X) ++ "'" || X <- lists:flatten(Adv_Video_URLs)], ",") ++ ");",
+    Q = "select id, url, shown from acv_video where url in (" ++ 
+        string:join(["'" ++ binary_to_list(X) ++ "'" || X <- lists:flatten(Adv_Video_URLs)], ",") ++ ");",
     io:format("QS1: ~p~n", [Q]),
     {ok, Advs} = dao:simple(Q),
     io:format("ADVS: ~p~n", [Advs]),
@@ -172,8 +173,9 @@ toDB(ToDB) ->
 toDB_ADV_VideoUrl([Adv|T], ToDB) ->
     Key = proplists:get_value("url", Adv),
     Id = proplists:get_value("id", Adv),
+    Shown = proplists:get_value("shown", Adv),
 
-    Values = proplists:get_all_values(list_to_binary(Key), ToDB),
+    Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), ToDB)),
 
     try
         create_vstat_tbl(Id)
@@ -192,16 +194,22 @@ toDB_ADV_VideoUrl([Adv|T], ToDB) ->
             "click"         % timestamp without time zone
             ") values ", [Id]),
 
-    io:format("VALUES: ~p~n", [lists:flatten(Values)]),
+    io:format("VALUES: ~p~n", [Values]),
 
-    ADV_Values = format_ADV(lists:flatten(Values), []),
+    ADV_Values = format_ADV(Values, []),
     io:format("ADV  VALUES: ~p~n", [ADV_Values]),
     Q = Q1 ++ string:join(ADV_Values, ", ") ++ ";",
     io:format("QQ:~p~n~n", [Q]),
-    RQ = dao:simple(Q),
+
+    QUp = "update acv_video set shown=$1 where id=$2;",
+
+
+    RQ = dao:with_connection_fk(fun(Con) ->
+        R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Id]),
+        R2 = pgsql:equery(Con, Q),
+        {R1, R2}
+    end),
     io:format("RQ: ~p~n", [RQ]),
-
-
     toDB_ADV_VideoUrl(T, ToDB);
 toDB_ADV_VideoUrl([], _) ->
     done.
