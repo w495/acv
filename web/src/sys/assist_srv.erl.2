@@ -1,17 +1,29 @@
--module(assistSrv).
+-module(assist_srv).
 -behaviour(gen_server).
+
+%%%
+%%% Этому методу никто не посылает запросов.
+%%% Используется как таймер.
+%%% События происходят по истечению
+%%%     ASSIST_SRV_TIMEOUT
+%%% и обрабатываются в handle_info(timeout, State)
+%%%
+%%% Более никакой функциональности сервер не несет
+%%% 
 
 %% --------------------------------------------------------------------
 %% Include files
 %% --------------------------------------------------------------------
 
-
--include("../include/common.hrl").
+-include("common.hrl").
 %% ----------------------------------------------------------------------------
 %% Defines
 %% ----------------------------------------------------------------------------
 -record(state, {debug=false, ldap}). %% Server state
--define(TIMEOUT, 1000).
+%-define(ASSIST_SRV_TIMEOUT, 300000). %% 5*60*1000
+
+-define(ASSIST_SRV_TIMEOUT, 1000). 
+
 
 %% ----------------------------------------------------------------------------
 %% External exports
@@ -39,17 +51,14 @@ start_link()->
 %% --------------------------------------------------------------------
 %% Function: init/1
 %% Description: Initiates the server
-%% Returns: {ok, State}          |
-%%          {ok, State, Timeout} |
-%%          ignore               |
-%%          {stop, Reason}
+%% Returns: []
 %% --------------------------------------------------------------------
 init([]) ->
     ?INFO(?FMT("ASSIST STARTING...~n~n~n", [])),
     process_flag(trap_exit, true),
     captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
     captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),
-    {ok, #state{}, ?TIMEOUT}.
+    {ok, #state{}, ?ASSIST_SRV_TIMEOUT}.
 
 %% --------------------------------------------------------------------
 %% Function: handle_call/3
@@ -74,17 +83,16 @@ handle_call({apply,{Module, Action, Param}}, From, State) when is_atom(Module), 
             end,
             gen_server:reply(From, Reply)
     end),
-    {noreply, State, ?TIMEOUT};
+    {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
 handle_call({biz_info, {Obj, Events, Pids}}, _From, State) ->
-    notifyFeed(Obj, Events, Pids),
-    {reply, done, State, ?TIMEOUT};
+    notify_feed(Obj, Events, Pids),
+    {reply, done, State, ?ASSIST_SRV_TIMEOUT};
 handle_call(Request, _From, State) ->
     flog:error(?FMT("~p:~p unexpected call: ~p~n", [?MODULE, ?LINE, Request])),
-    {reply, {error, unexpected_call},  State, ?TIMEOUT}.
+    {reply, {error, unexpected_call},  State, ?ASSIST_SRV_TIMEOUT}.
 
-
-notifyFeed(Obj, Events, [Pid|T]) ->
+notify_feed(Obj, Events, [Pid|T]) ->
     P = list_to_pid(utils:hex_to_list(Pid)),
     case erlang:is_process_alive(P) of
         true ->
@@ -94,8 +102,9 @@ notifyFeed(Obj, Events, [Pid|T]) ->
             %crpc:call({biz_srv, config:get(biz_srv, biz@localhost)}, webSubscriberDAO, unsubscribe, 
             %{binary_to_list(term_to_binary({?MODULE, node()})), Pid})
     end,
-    notifyFeed(Obj, Events, T);
-notifyFeed(_Obj, _Events, []) ->
+    notify_feed(Obj, Events, T);
+
+notify_feed(_Obj, _Events, []) ->
     done.
 
 %% --------------------------------------------------------------------
@@ -116,17 +125,17 @@ handle_cast({subscribe, {Tracker_phone_list, Pid, Events_tracker_phone, D1, D2}}
         {ok, Events} ->
             Pid ! {update, {null, Events}}
     end,
-    {noreply, State, ?TIMEOUT};
+    {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
 handle_cast({unsubscribe, Pid}, State) ->
 %    csrv:unsubscribeWeb(TrackerPhone, {?MODULE, node()}, [Pid]),
     crpc:call({biz_srv, config:get(biz_srv, biz@localhost)}, webSubscriberDAO, unsubscribe, 
             {{?MODULE, node()}, utils:to_hex(pid_to_list(Pid))}),
-    {noreply, State, ?TIMEOUT};
+    {noreply, State, ?ASSIST_SRV_TIMEOUT};
  
 handle_cast(Msg, State) ->
     flog:error(?FMT("~p:~p unexpected cast: ~p~n", [?MODULE, ?LINE, Msg])),
-    {noreply, State, ?TIMEOUT}.
+    {noreply, State, ?ASSIST_SRV_TIMEOUT}.
 
 %% --------------------------------------------------------------------
 %% Function: handle_info/2
@@ -136,17 +145,16 @@ handle_cast(Msg, State) ->
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
 handle_info(timeout, State) ->
-    %flog:debug(?FMT("~p:~p GC process at node ~p~n", [?MODULE, ?LINE, node()])),
+    ?D("~n<handle_info 1>~n(timeout, State) = ~p ~n</handle_info>~n", [State]),
     web_session_DAO:removeExpired(),
-
     captcha:remove_expired(),
-
     dao_acv_video:delete_acv_video_shown_expired(),
+    {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
-    {noreply, State, ?TIMEOUT};
 handle_info(Info, State) ->
+    ?D("~n<handle_info 2>~n(Info, State) = (~p, ~p) ~n</handle_info>~n", [Info, State]),
     flog:error(?FMT("~p:~p info at node ~p, info=~p~n", [?MODULE, ?LINE, node(), Info])),
-    {noreply, State, ?TIMEOUT}.
+    {noreply, State, ?ASSIST_SRV_TIMEOUT}.
 
 %% --------------------------------------------------------------------
 %% Function: terminate/2

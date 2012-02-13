@@ -9,7 +9,7 @@
 %% supervisor callbacks
 -export([init/1]).
 
--include("../include/common.hrl").
+-include("common.hrl").
 
 %% @spec start_link() -> ServerRet
 %% @doc API for starting the supervisor.
@@ -39,10 +39,10 @@ upgrade() ->
 %% @doc supervisor callback.
 init([]) ->
 
-    AssistSrv = {
-        assistSrv,
-        {assistSrv, start_link, []},
-        permanent, 5000, worker, [assistSrv]},
+    Assist_srv = {
+        assist_srv,
+        {assist_srv, start_link, []},
+        permanent, 5000, worker, [assist_srv]},
 
     CLog = {
         clog,
@@ -134,7 +134,7 @@ init([]) ->
 
     Processes = [
         CLog,           % Логирование
-        AssistSrv,      % Авторизация
+        Assist_srv,      % Авторизация
         PgConPool,      % Связь с локальной базой
         Xslt_processor
 %        ,MySqlConPool   % Связь с tvzavr vk

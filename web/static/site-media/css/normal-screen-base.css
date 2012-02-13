@@ -1,38 +1,11 @@
-﻿* {
-    padding: 0;
-    margin: 0;
-    outline: none;
-    border: none;
-    font-family: sans-serif, verdana;
-    background-color: white;
-}
 
-output{
-    display: block;
-}
-
-.b-header-group{
-    display: block;
-    color: black;
-}
-
-.text-output{
-    background-color: white;
-    margin: 0.5em;
-    font-size: 12px;
-    line-height: 20px;
-    font-family: monospace;
-    max-width: 390px;    
-    min-width: 390px;
-    max-height: 80px;
-    min-height: 80px;
-    border: solid 1px gray;
-}
-
-.e-input{
-
-}
-
-.e-output{
-
-}
+/*
+    *{
+        padding: 0;
+        margin: 0;
+        outline: none;
+        border: none;
+        font-family: sans-serif, verdana;
+        background-color: #fafffa;
+    }
+*/

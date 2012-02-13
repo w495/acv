@@ -120,7 +120,7 @@
     <!--
         Стили страницы - нулевой уровень
     -->
-    <link rel="stylesheet" type="text/css" media="all" href="/static/base.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="/c/normal-screen-base.css" />
     <xsl:call-template name="link-css-1" />
 </xsl:template>
 
@@ -163,7 +163,7 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h1><xsl:text>τυζαυρ(∀ΔV(CΩM+))</xsl:text></h1>
+        <h1><xsl:text>τυζαυρ(∀ΔV(CΩM))</xsl:text></h1>
         <h2 class="b-header-caption"><xsl:text>система рекламы τυζαυρ</xsl:text></h2>
     </hgroup>
 </xsl:template>
