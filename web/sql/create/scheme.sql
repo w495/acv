@@ -137,8 +137,10 @@ create table acv_video (
     stoped  bool default false,
         /* остановка */
 
-    customer_id int references customer(id)
+    customer_id int references customer(id),
         /* зачем пользователю знать про чужие баннеры */
+
+    clicks int default 0
 );
 
 /**

@@ -203,7 +203,6 @@ toDB_ADV_VideoUrl([Adv|T], ToDB) ->
 
     QUp = "update acv_video set shown=$1 where id=$2;",
 
-
     RQ = dao:with_connection_fk(fun(Con) ->
         R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Id]),
         R2 = pgsql:equery(Con, Q),

@@ -57,6 +57,11 @@
                 name : "Видео",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/acv-videos-tab.json"
+            },
+            {
+                name : "Статистика",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/acv-stat-tab.json"
             }
         ]
     },

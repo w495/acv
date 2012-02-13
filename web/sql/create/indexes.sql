@@ -9,4 +9,4 @@
 -- create index directory_doc_description_id_idx on directory(doc_description_id);
 -- create index  document_dir_id_idx on document(dir_id);
 
-
+create index acv_video_url_idx on acv_video(url);
