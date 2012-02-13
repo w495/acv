@@ -219,7 +219,9 @@ update_acv_video({null, Name, Datestart, Datestop, Url, Ref, Wish,
                             Rerun_hours,
                             Rerun_minutes,
                                 Customer_id])  of
-        {ok, 1, _, [{Id}]} -> {ok, Id};
+        {ok, 1, _, [{Id}]} ->
+            dao_stat:create(Id),
+            {ok, Id};
         Error -> Error
     end;
 
@@ -328,6 +330,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                             {ok, _} = pgsql:equery(Con,
                                 Query_acv_video2cat, [])
                     end,
+                    dao_stat:create(Con, Id),
                     {ok, Id};
                 Error -> Error
             end

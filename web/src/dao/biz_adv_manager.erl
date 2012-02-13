@@ -14,6 +14,7 @@
 %     get_acv_ext/3,
 %     get_acv/3,
 %     test/0,
+%     test_dirty/0,
 %     test/1
 % ]).
 
@@ -170,37 +171,32 @@ get_acv({Type, Resourse, User_id}, Peer) when
             Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
                 "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
-
     Q2 = Q2S3 ++ ";",
-
     ?D("===============~n~p~n", [Q2]),
-    {ok, Ret} = dao:simple(Q2),
-
-
-    ?D("~n~n~nlength(Ret) = ~p~n~n~n", [length(Ret)]),
-
+    {ok, Acv_videos} = dao:simple(Q2),
     if
-        length(Ret) > 0 ->
-            Rand_clip = utils:random_nth(Ret),
-            case proplists:get_value("rerun_hours", Rand_clip, null) of
+        length(Acv_videos) > 0 ->
+            Random_acv_video = utils:random_nth(Acv_videos),
+            case proplists:get_value("rerun_hours", Random_acv_video, null) of
                 null ->
                     ?D("~n~n~ndone = no rerun_hours ~n~n~n", []),
                     done;
                 Rerun_hours when User_id =/= null ->
                     Rerun_minutes =
-                        proplists:get_value("rerun_minutes", Rand_clip, 0),
+                        proplists:get_value("rerun_minutes",Random_acv_video,0),
                     Start_datetime = start_datetime(Rerun_hours, Rerun_minutes),
                     Q3 =    "insert into acv_video_shown "
                                 "(user_id, acv_video_id, dateshow) "
                             " values ($1, $2, $3);",
                     Return = dao:simple(Q3, [User_id,
-                        proplists:get_value("id", Rand_clip), Start_datetime]),
+                        proplists:get_value("id", Random_acv_video),
+                            Start_datetime]),
                     ?D("~n~n~nReturn = ~p~n~n~n", [Return]),
                     done;
                 _ -> 
                     done
             end,
-            Selected_clip = [Rand_clip];
+            Selected_clip = [Random_acv_video];
         true ->
             Selected_clip = []
     end,
@@ -1058,7 +1054,7 @@ test_time_and_times()->
 %%%
 %%% Основная функция юнит тестирования
 %%%
-test()->
+test_dirty() -> 
 %     Параметры рекламной кампании для проверки:
 
 %     -- показ рекламы не более чем было заказано
@@ -1076,6 +1072,9 @@ test()->
 
     ok.
 
+test()-> 
+    ok.
+
 %%%
 %%% Нагрузочное тестирование
 %%%
@@ -1083,4 +1082,5 @@ test()->
 test(speed)->
 
     ok.
+
 

@@ -14,9 +14,9 @@
 
 -include("common.hrl").
 
-% create sequence seq_adv_video_stat;
-% create table adv_video_stat (
-%    id int primary key default nextval('seq_adv_video_stat'),
+% create sequence seq_acv_video_stat;
+% create table acv_video_stat (
+%    id int primary key default nextval('seq_acv_video_stat'),
 %    ip varchar(15),
 %    acv_video_id int references acv_video(id),
 %    video_uid varchar(50),
@@ -24,9 +24,9 @@
 %    stop timestamp without time zone,
 %    clicked bool
 %);
-% CREATE INDEX start_date_idx on adv_video_stat(start);
-% CREATE INDEX stop_date_idx on adv_video_stat(stop);
-% CREATE INDEX video_uid_idx on adv_video_stat(video_uid);
+% CREATE INDEX start_date_idx on acv_video_stat(start);
+% CREATE INDEX stop_date_idx on acv_video_stat(stop);
+% CREATE INDEX video_uid_idx on acv_video_stat(video_uid);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,13 +47,21 @@
     dbg_list
 }).
 
+%%%
+%%% Создает таблицу статистики
+%%% 
+create(Acv_video_id) ->
+    dao:with_transaction_fk(fun(Con) ->
+        create(Con, Acv_video_id)
+    end).
 
-
-
-create_vstat_tbl(Adv_video_id) ->
-    Q1 = ?FMT("create sequence seq_adv_video_stat_~p;", [Adv_video_id]),
-    Q2 = ?FMT(  "create table adv_video_stat_~p ("
-                    "id int primary key default nextval('seq_adv_video_stat_~p'),"
+%%%
+%%% Создает таблицу статистики
+%%% 
+create(Con, Acv_video_id) ->
+    Q1 = ?FMT("create sequence seq_acv_video_stat_~p;", [Acv_video_id]),
+    Q2 = ?FMT(  "create table acv_video_stat_~p ("
+                    "id int primary key default nextval('seq_acv_video_stat_~p'),"
                     "peer varchar(15),"
                     "video_url text,"
                     "node_name varchar(100),"
@@ -61,63 +69,65 @@ create_vstat_tbl(Adv_video_id) ->
                     "stop timestamp without time zone,"
                     "user_id varchar(100),"
                     "tmp_dbg text,"
-                    "click timestamp without time zone);", [Adv_video_id, Adv_video_id]),
-    Q3 = ?FMT("CREATE INDEX adv_video_stat_~p_start_date_idx on adv_video_stat_~p(start);", [Adv_video_id, Adv_video_id]),
-    Q4 = ?FMT("CREATE INDEX adv_video_stat_~p_stop_date_idx on adv_video_stat_~p(stop);", [Adv_video_id, Adv_video_id]),
-    Q5 = ?FMT("CREATE INDEX adv_video_stat_~p_video_uid_idx on adv_video_stat_~p(video_url);", [Adv_video_id, Adv_video_id]),
-    dao:with_transaction_fk(fun(Con) -> {
-        pgsql:equery(Con, Q1),
-        pgsql:equery(Con, Q2),
-        pgsql:equery(Con, Q3),
-        pgsql:equery(Con, Q4),
-        pgsql:equery(Con, Q5)
-    } end).
+                    "click timestamp without time zone);", [Acv_video_id, Acv_video_id]),
+    Q3 = ?FMT("create index acv_video_stat_~p_start_date_idx on acv_video_stat_~p(start);", [Acv_video_id, Acv_video_id]),
+    Q4 = ?FMT("create index acv_video_stat_~p_stop_date_idx on acv_video_stat_~p(stop);", [Acv_video_id, Acv_video_id]),
+    Q5 = ?FMT("create index acv_video_stat_~p_video_uid_idx on acv_video_stat_~p(video_url);", [Acv_video_id, Acv_video_id]),
+    pgsql:equery(Con, Q1),
+    pgsql:equery(Con, Q2),
+    pgsql:equery(Con, Q3),
+    pgsql:equery(Con, Q4),
+    pgsql:equery(Con, Q5).
 
-delete_vstat_tbl(Adv_video_id) ->
-    Q = ?FMT("drop SEQUENCE seq_adv_video_stat_~p;", [Adv_video_id]),
+%delete_vstat_tbl(Acv_video_id) ->
+delete(Acv_video_id) ->
+    Q = ?FMT("drop sequence seq_acv_video_stat_~p;", [Acv_video_id]),
     dao:simple(Q).
 
+fetch_stat() ->
+    fetch_stat(null).
 
-
-fetchStat(null) ->
+fetch_stat(null) ->
     {Day, _} = erlang:localtime(),
-    fetchStat({Day, {0,0,0}});
-fetchStat(FromDate) ->
+    fetch_stat({Day, {0,0,0}});
+
+fetch_stat(From_date) ->
     Q = <<"select * from AVStats where time > ? order by time desc;">>,
     mysql:prepare(get_stats, Q),
-    {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:execute(mysqlStat, get_stats, [FromDate]),
+    {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:execute(mysqlStat, get_stats, [From_date]),
+
     L = mysql_dao:make_proplist(Cols, Vals),
 
-    io:format("===================~n"),
-    io:format("Stats stream: ~p~n", [L]),
+    ?D("===================~n", []),
+    ?D("Stats stream: ~p~n", [L]),
 
     compose_stat(L),
 
     EL = ets:tab2list(stat_clt),
 
-    io:format("===================~n"),
-    io:format("Composed stats: ~p~n", [EL]),
+    ?D("===================~n", []),
+    ?D("Composed stats: ~p~n", [EL]),
 
 
-    ToDB = collect(EL, []),
-    io:format("===================~n"),
-    io:format("Stats to DB:~p~n", [ToDB]),
+    To_db = collect(EL, []),
+    ?D("===================~n", []),
+    ?D("Stats to DB:~p~n", [To_db]),
 
-    toDB(ToDB).
+    to_db(To_db).
 
 
 compose_stat([R|T]) ->
-    Adv_Video_URL = proplists:get_value("GUID", R), % Adv_Video_URL
-    USID = proplists:get_value ("user session id", R),
+    Acv_video_url = proplists:get_value("GUID", R), % Acv_video_url
+    Usid = proplists:get_value ("user session id", R),
     Peer = proplists:get_value("IP address", R),
-    TransServerNodeName = proplists:get_value("Node name", R),
+    Trans_server_node_name = proplists:get_value("Node name", R),
     Time = proplists:get_value("time", R),
     Action = proplists:get_value("action", R),
-    VideoURL = proplists:get_value("URL", R),
-    UserId = proplists:get_value("UserId", R),
+    Video_url = proplists:get_value("URL", R),
+    User_id = proplists:get_value("UserId", R),
 
-    SFish = #stat{video_url=VideoURL, peer=Peer, server_node=TransServerNodeName, start=null, stop=null, click=null, user_id=UserId, dbg_list=[R]},
-    StatList = case ets:lookup(stat_clt, {Adv_Video_URL, USID}) of
+    SFish = #stat{video_url=Video_url, peer=Peer, server_node=Trans_server_node_name, start=null, stop=null, click=null, user_id=User_id, dbg_list=[R]},
+    StatList = case ets:lookup(stat_clt, {Acv_video_url, Usid}) of
         [] -> 
             case Action of
                 <<"AC_SHOW">> ->    [SFish#stat{start=Time}];
@@ -129,7 +139,7 @@ compose_stat([R|T]) ->
                 <<"AC_FULLSHOW">> -> [];
                 % пришел клик, нет старта. вариант - инфа о начале потеряна из за дельты. ставим начало == клик
                 <<"AC_CLICK">> ->   [SFish#stat{start=Time, click=Time}]
-                                    %[{VideoURL, Peer, TransServerNodeName, Time, null, Time}];
+                                    %[{Video_url, Peer, Trans_server_node_name, Time, null, Time}];
             end;
         [{_, AVList}] ->
             S=#stat{dbg_list=DBGL} = lists:last(AVList),
@@ -148,42 +158,44 @@ compose_stat([R|T]) ->
 
     if
         length(StatList) > 0 -> 
-            io:format("CS step: ~p~n", [{{Adv_Video_URL, USID}, StatList}]),
-            ets:insert(stat_clt, {{Adv_Video_URL, USID}, StatList});
+            ?D("CS step: ~p~n", [{{Acv_video_url, Usid}, StatList}]),
+            ets:insert(stat_clt, {{Acv_video_url, Usid}, StatList});
         true -> 
-            io:format("CS step: none~n"),
+            ?D("CS step: none~n", []),
             done
     end,
     compose_stat(T);
+
 compose_stat([]) ->
     done.
 
+to_db([]) -> [];
 
-toDB(ToDB) ->
-    Adv_Video_URLs = proplists:get_keys(ToDB),
-    io:format("KEYS: ~p~n", [Adv_Video_URLs]),
+to_db(To_db) ->
+    Acv_video_urls = proplists:get_keys(To_db),
+    ?D("KEYS: ~p~n", [Acv_video_urls]),
     Q = "select id, url, shown from acv_video where url in (" ++ 
-        string:join(["'" ++ binary_to_list(X) ++ "'" || X <- lists:flatten(Adv_Video_URLs)], ",") ++ ");",
-    io:format("QS1: ~p~n", [Q]),
+        string:join(["'" ++ binary_to_list(X) ++ "'" || X <- lists:flatten(Acv_video_urls)], ",") ++ ");",
+    ?D("QS1: ~p~n", [Q]),
     {ok, Advs} = dao:simple(Q),
-    io:format("ADVS: ~p~n", [Advs]),
-    toDB_ADV_VideoUrl(Advs, ToDB).
+    ?D("ADVS: ~p~n", [Advs]),
+    to_db_acv_video_url(Advs, To_db).
 
 
-toDB_ADV_VideoUrl([Adv|T], ToDB) ->
+to_db_acv_video_url([Adv|T], To_db) ->
     Key = proplists:get_value("url", Adv),
     Id = proplists:get_value("id", Adv),
     Shown = proplists:get_value("shown", Adv),
 
-    Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), ToDB)),
+    Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), To_db)),
 
     try
-        create_vstat_tbl(Id)
+        create(Id)
     catch
-        A:B -> io:format("info: ~p:~p", [A, B])
+        A:B -> ?D("info: ~p:~p", [A, B])
     end,
 
-    Q1 = ?FMT("insert into adv_video_stat_~p ("
+    Q1 = ?FMT("insert into acv_video_stat_~p ("
             "peer,"         % varchar(15)
             "video_url, "   % varchar(50)
             "node_name, "   % varchar(100)
@@ -194,12 +206,12 @@ toDB_ADV_VideoUrl([Adv|T], ToDB) ->
             "click"         % timestamp without time zone
             ") values ", [Id]),
 
-    io:format("VALUES: ~p~n", [Values]),
+    ?D("VALUES: ~p~n", [Values]),
 
     ADV_Values = format_ADV(Values, []),
-    io:format("ADV  VALUES: ~p~n", [ADV_Values]),
+    ?D("ADV  VALUES: ~p~n", [ADV_Values]),
     Q = Q1 ++ string:join(ADV_Values, ", ") ++ ";",
-    io:format("QQ:~p~n~n", [Q]),
+    ?D("QQ:~p~n~n", [Q]),
 
     QUp = "update acv_video set shown=$1 where id=$2;",
 
@@ -208,14 +220,14 @@ toDB_ADV_VideoUrl([Adv|T], ToDB) ->
         R2 = pgsql:equery(Con, Q),
         {R1, R2}
     end),
-    io:format("RQ: ~p~n", [RQ]),
-    toDB_ADV_VideoUrl(T, ToDB);
-toDB_ADV_VideoUrl([], _) ->
+    ?D("RQ: ~p~n", [RQ]),
+    to_db_acv_video_url(T, To_db);
+to_db_acv_video_url([], _) ->
     done.
 
 
 format_ADV([#stat{
-            video_url=VideoURL, peer=Peer, server_node=TransServerNodeName, 
+            video_url=Video_url, peer=Peer, server_node=Trans_server_node_name,
             start = {{StartYear, StartMonth, StartDay}, {StartHour, StartMin, StartSec}}, 
             stop = {{StopYear, StopMonth, StopDay}, {StopHour, StopMin, StopSec}}, 
             click = Click, %{{ClickYear, ClickMonth, ClickDay},{ClickHour, ClickMin, ClickSec}}, 
@@ -224,8 +236,8 @@ format_ADV([#stat{
         }|T], Ret) ->
     SL1 = [
         "'" ++ utils:to_list(Peer) ++ "'", 
-        "'" ++ utils:to_list(VideoURL) ++ "'", 
-        "'" ++ utils:to_list(TransServerNodeName) ++ "'", 
+        "'" ++ utils:to_list(Video_url) ++ "'",
+        "'" ++ utils:to_list(Trans_server_node_name) ++ "'",
         ?FMT("'~p-~p-~p ~p:~p:~p'", [StartYear, StartMonth, StartDay, StartHour, StartMin, StartSec]),
         ?FMT("'~p-~p-~p ~p:~p:~p'", [StopYear, StopMonth, StopDay, StopHour, StopMin, StopSec]),
         "'" ++ utils:to_list(UserId) ++ "'", 
@@ -243,57 +255,57 @@ format_ADV([], Ret) ->
     lists:reverse(Ret).
     
 
-collect([{{Adv_Video_URL, USID}, StatList}|T], DBRecords) ->
-    {Last, ToDB} = collect_adv_stats(StatList, [], []),
+collect([{{Acv_video_url, Usid}, StatList}|T], DBRecords) ->
+    {Last, To_db} = collect_acv_stats(StatList, [], []),
     if
-        length(Last) > 0    -> ets:insert(stat_clt, {{Adv_Video_URL, USID}, Last});
-        true                -> ets:delete(stat_clt, {Adv_Video_URL, USID})
+        length(Last) > 0    -> ets:insert(stat_clt, {{Acv_video_url, Usid}, Last});
+        true                -> ets:delete(stat_clt, {Acv_video_url, Usid})
     end,
 
-    collect(T, [{Adv_Video_URL, ToDB}|DBRecords]);
-    %NewList = proplists:get_value("Adv_Video_URL", DBRecords), ToDB)
+    collect(T, [{Acv_video_url, To_db}|DBRecords]);
+    %NewList = proplists:get_value("Acv_video_url", DBRecords), To_db)
 collect([], DBRecords) ->
     DBRecords.
 
 % только первый кусок сообщения, кешируем в ets, если не прошло времени с прихода больше дельты
-collect_adv_stats([S=#stat{start=Start, stop=null, click=null}|[]], Last, ToDB) ->
+collect_acv_stats([S=#stat{start=Start, stop=null, click=null}|[]], Last, To_db) ->
     case calendar:datetime_to_gregorian_seconds(erlang:localtime()) - calendar:datetime_to_gregorian_seconds(Start) > ?STAT_SKIP_SECOND of
         true -> % skip
-            collect_adv_stats([], Last, ToDB);
+            collect_acv_stats([], Last, To_db);
         false -> % wait
-            collect_adv_stats([], [S|Last], ToDB) % вообще-то last всегда == []
+            collect_acv_stats([], [S|Last], To_db) % вообще-то last всегда == []
     end;
 
 % скип. ошибка потока сознания от сервера
-collect_adv_stats([#stat{stop=null, click=null}|T], Last, ToDB) ->
-    collect_adv_stats(T, Last, ToDB);
+collect_acv_stats([#stat{stop=null, click=null}|T], Last, To_db) ->
+    collect_acv_stats(T, Last, To_db);
 
 % клик не пустой. ставим стоп=клик, в базу.
-collect_adv_stats([S=#stat{stop=null, click=Click}|T], Last, ToDB) ->
-    collect_adv_stats(T, Last, [S#stat{stop=Click}|ToDB]);
+collect_acv_stats([S=#stat{stop=null, click=Click}|T], Last, To_db) ->
+    collect_acv_stats(T, Last, [S#stat{stop=Click}|To_db]);
 
 % корректная запись, без клика.
-collect_adv_stats([S=#stat{start=Start, stop=Stop, click=null}|T], Last, ToDB) when Start =< Stop ->
-    collect_adv_stats(T, Last, [S|ToDB]);
+collect_acv_stats([S=#stat{start=Start, stop=Stop, click=null}|T], Last, To_db) when Start =< Stop ->
+    collect_acv_stats(T, Last, [S|To_db]);
 
 % корректная запись с кликом.
-collect_adv_stats([S=#stat{start=Start, stop=Stop, click=Click}|T], Last, ToDB) when Start =< Click, Click =< Stop ->
-    collect_adv_stats(T, Last, [S|ToDB]);
+collect_acv_stats([S=#stat{start=Start, stop=Stop, click=Click}|T], Last, To_db) when Start =< Click, Click =< Stop ->
+    collect_acv_stats(T, Last, [S|To_db]);
 
 % все остальные случаи - скип
-collect_adv_stats([S|T], Last, ToDB) ->
-    io:format("skip stat: ~p~n", S),
-     collect_adv_stats(T, Last, ToDB);
+collect_acv_stats([S|T], Last, To_db) ->
+    ?D("skip stat: ~p~n", S),
+     collect_acv_stats(T, Last, To_db);
 
-collect_adv_stats([], Last, ToDB) ->
-    {lists:reverse(Last), lists:reverse(ToDB)}.
+collect_acv_stats([], Last, To_db) ->
+    {lists:reverse(Last), lists:reverse(To_db)}.
 
 
 mk_ets() ->
     utils:make_ets(stat_clt, [{write_concurrency,true}]).
 
 
-%{Adv_Video_URL, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
+%{Acv_video_url, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
 
 
 %collect([R|T]) ->
@@ -317,7 +329,7 @@ t1() ->
     Guard = [{'<','$1',{const, PastDt}}],
 %    ets:insert(stat_clt, {{1, "b"}, {{{2012,1,2},{10,5,0}}, kit, pechen, treska}}),
     
-%    io:format("~p~n", [ets:lookup(stat_clt, {1, "a"})]),
+%    ?D("~p~n", [ets:lookup(stat_clt, {1, "a"})]),
     
     ets:select(stat_clt, [{Match, Guard, ['$_']}]).
 
@@ -352,7 +364,7 @@ mk_year(Year, VideoList) ->
     end, [{calendar:gregorian_days_to_date(calendar:date_to_gregorian_days(Year, 1, 1) + X), VideoList} || X <- lists:seq(0, 364)]).
 
 mk_day(Date, VideoList) ->
-    io:format("date: ~p~n", [Date]),
+    ?D("date: ~p~n", [Date]),
     %apply(mk_rec, [[calendar:gregorian_seconds_to_datetime(calendar:date_to_gregorian_days(Date) * 24*60*60 + X), VideoList] || X <- lists:seq(0, 23*60*60, 5)]).
     mk_rec([calendar:gregorian_seconds_to_datetime(calendar:date_to_gregorian_days(Date) * 24*60*60 + X) || X <- lists:seq(0, 23*60*60, 5)],
         VideoList, [], []).
@@ -376,9 +388,9 @@ mk_rec(StartList, VideoList, PL, QL) ->
     mk_rec(StartList, VideoList, [], []).
 
 do_insert(PL, QL) ->
-    Q = "insert into adv_video_stat (ip, acv_video_id, video_uid, start, stop, clicked) values " ++ 
+    Q = "insert into acv_video_stat (ip, acv_video_id, video_uid, start, stop, clicked) values " ++
         string:join(QL, ", ") ++ ";",
-    %io:format("QQQ: ~p~n~n", [Q]).
+    %?D("QQQ: ~p~n~n", [Q]).
     dao:simple(Q, PL).
  
 gen_vstat() ->
@@ -388,7 +400,7 @@ gen_vstat() ->
 test1() ->
     D1 = {{2011, 1,1},{0,0,0}}, 
     D2 = {{2011, 5,31},{0,0,0}},
-    Q = "select * from adv_video_stat where video_uid = '1748' and start > $1 and stop < $2;",
+    Q = "select * from acv_video_stat where video_uid = '1748' and start > $1 and stop < $2;",
     dao:simple(Q, [D1, D2]),
     done.
 

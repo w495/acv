@@ -1,6 +1,4 @@
--module(assist_srv).
--behaviour(gen_server).
-
+%%% @file assist_srv.erl
 %%%
 %%% Этому модулю никто не посылает запросов.
 %%% Используется как таймер.
@@ -10,7 +8,10 @@
 %%%
 %%% Более никакой функциональности сервер не несет
 %%% Прежняя версия кода: assist_srv.erl.2
-%%% 
+%%%
+
+-module(assist_srv).
+-behaviour(gen_server).
 
 %% --------------------------------------------------------------------
 %% Include files
@@ -96,6 +97,8 @@ handle_info(timeout, State) ->
     web_session_DAO:removeExpired(),
     captcha:remove_expired(),
     dao_acv_video:delete_acv_video_shown_expired(),
+
+    dao_stat:fetch_stat(),%%% Сбор статистики.
     {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
 handle_info(Info, State) ->
