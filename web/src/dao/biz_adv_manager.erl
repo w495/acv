@@ -78,6 +78,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
 
     % TODO перевести дататаймы в UTC и селектить NOW аналогично в UTC
     Q2S1 = "select distinct(acv_video.id), url, datestart, datestop, "
+                "rerun_hours, rerun_minutes, "
                 " ref, wish, link_title, shown, duration "
             "from acv_video left "
                 " join acv_video2cat "
@@ -175,11 +176,15 @@ get_acv({Type, Resourse, User_id}, Peer) when
     ?D("===============~n~p~n", [Q2]),
     {ok, Ret} = dao:simple(Q2),
 
+
+    ?D("~n~n~nlength(Ret) = ~p~n~n~n", [length(Ret)]),
+
     if
         length(Ret) > 0 ->
             Rand_clip = utils:random_nth(Ret),
             case proplists:get_value("rerun_hours", Rand_clip, null) of
-                null -> 
+                null ->
+                    ?D("~n~n~ndone = no rerun_hours ~n~n~n", []),
                     done;
                 Rerun_hours when User_id =/= null ->
                     Rerun_minutes =
@@ -188,8 +193,10 @@ get_acv({Type, Resourse, User_id}, Peer) when
                     Q3 =    "insert into acv_video_shown "
                                 "(user_id, acv_video_id, dateshow) "
                             " values ($1, $2, $3);",
-                    dao:simple(Q3, [User_id,
-                        proplists:get_value("id", Rand_clip), Start_datetime]);
+                    Return = dao:simple(Q3, [User_id,
+                        proplists:get_value("id", Rand_clip), Start_datetime]),
+                    ?D("~n~n~nReturn = ~p~n~n~n", [Return]),
+                    done;
                 _ -> 
                     done
             end,
@@ -198,7 +205,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
             Selected_clip = []
     end,
     Result_string = make_acv_xml(Selected_clip),
-    ?D("~nResult_string  = ~s~n", [Result_string]),
+    ?D("~nType = ~p, Result_string  = ~s~n", [Type, Result_string]),
     Result_string.
 
 %%% 
@@ -784,59 +791,52 @@ test_x6_now_query(Datestart, Datestop, Micro_sec)->
 
 test_simple_x6() ->
     test_truncate(),
-    spawn(fun()->
-        {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
-        Datestart = calendar:now_to_universal_time
-            ({Macro_sec - 1, Normal_sec, Micro_sec}),
-        Datestop = calendar:now_to_universal_time
-            ({Macro_sec + 1, Normal_sec, Micro_sec}),
-        {ok, Cats} = dao_cat:get_all_cats([]),
-        Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
-        {ok, Acv_video_id} = test_x6_now_query(Datestart, Datestop, Micro_sec),
-        ?D("1", []),
-        Result_1 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
-        case proplists:get_value("film_url", Result_1) of
-            nil -> test_simple_x6();
-            _ ->
-                ?assertEqual(proplists:get_value("original", Result_1),
-                    proplists:get_value("preroll",  Result_1)),
-                ?assertEqual(proplists:get_value("original", Result_1),
-                    proplists:get_value("postroll", Result_1)),
-                ?assertEqual(proplists:get_value("original", Result_1),
-                    proplists:get_value("midroll",  Result_1)),
-                ok
-        end,
-        Dbg_res = dao:simple("select * from acv_video_shown;"),
-        ?D("~n test_simple_x6 --> 1 passed ~p", [Dbg_res ]),
-        ?D("~n test_simple_x6 --> 1 passed ~n~n", []),
+    {Macro_sec, Normal_sec, Micro_sec} = erlang:now(),
+    Datestart = calendar:now_to_universal_time
+        ({Macro_sec - 1, Normal_sec, Micro_sec}),
+    Datestop = calendar:now_to_universal_time
+        ({Macro_sec + 1, Normal_sec, Micro_sec}),
+    {ok, Cats} = dao_cat:get_all_cats([]),
+    Cat_id = proplists:get_value("id", utils:random_nth(Cats)),
+    Random_adult = test_random_adult(),
+    {ok, Acv_video_id} = test_x6_now_query(Datestart, Datestop, Micro_sec),
+    ?D("1", []),
+    Result_1 = handle_random_cat(Cat_id, Acv_video_id, Random_adult),
+    case proplists:get_value("film_url", Result_1) of
+        nil -> test_simple_x6();
+        _ ->
+            ?assertEqual(proplists:get_value("original", Result_1),
+                proplists:get_value("preroll",  Result_1)),
+            ok
+    end,
+    Dbg_res = dao:simple("select * from acv_video_shown;"),
+    ?D("~n test_simple_x6 --> 1 passed ~p", [Dbg_res ]),
+    ?D("~n test_simple_x6 --> 1 passed ~n~n", []),
+    %timer:sleep(32000),
+    ?D("2", []),
+    Result_2 = handle_random_cat(Cat_id, Acv_video_id, Random_adult),
+    ?D("~n~n~nResult_2 = ~p ~n~n~n", [Result_2]),
+    case proplists:get_value("film_url", Result_2) of
+        nil -> test_simple_x6();
+        _ ->
+            ?assertNotEqual(proplists:get_value("original", Result_2),
+                proplists:get_value("preroll",  Result_2)),
+            ok
+    end,
+    ?D("~n test_simple_x6 --> 2 passed ~n~n", []),
+    spawn(fun() ->
         timer:sleep(32000),
-        ?D("2", []),
-        Result_2 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
-        case proplists:get_value("film_url", Result_2) of
-            nil -> test_simple_x6();
-            _ ->
-                ?assertEqual(proplists:get_value("original", Result_2),
-                    proplists:get_value("preroll",  Result_2)),
-                ?assertEqual(proplists:get_value("original", Result_2),
-                    proplists:get_value("postroll", Result_2)),
-                ?assertEqual(proplists:get_value("original", Result_2),
-                    proplists:get_value("midroll",  Result_2)),
-                ok
-        end,
-        ?D("~n test_simple_x6 --> 2 passed ~n~n", []),
-        timer:sleep(32000),
-        % dao_acv_video:delete_acv_video_shown_expired(),
+        dao_acv_video:delete_acv_video_shown_expired(),
         ?D("3", []),
-        Result_3 = handle_random_cat(Cat_id, Acv_video_id, test_random_adult()),
+        Result_3 = handle_random_cat(Cat_id, Acv_video_id, Random_adult),
         case proplists:get_value("film_url", Result_3) of
             nil -> test_simple_x6();
             _ ->
-                ?assertEqual(proplists:get_value("original", Result_3),
-                    proplists:get_value("preroll",  Result_3)),
-                ?assertEqual(proplists:get_value("original", Result_3),
-                    proplists:get_value("postroll", Result_3)),
-                ?assertEqual(proplists:get_value("original", Result_3),
-                    proplists:get_value("midroll",  Result_3)),
+                ?D("~n~n +++ ~n~n", []),
+                Result_31 = proplists:get_value("original", Result_3),
+                Result_32 = proplists:get_value("preroll",  Result_3),
+                ?D("~n~n ~p ~n~n ~p ~n~n", [Result_31, Result_32]),
+                ?assertEqual(Result_31, Result_32),
                 ok
         end,
         ?D("~n test_simple_x6 --> 3 passed ~n~n", []),
@@ -1047,9 +1047,9 @@ test_users()->
 %%%
 test_time_and_times()->
 
-    ok = test_simple(fun test_x5_now/3),
+    %ok = test_simple(fun test_x5_now/3),
         % показ рекламы в указанное время
-    ok = test_simple_anti(fun test_x5_now_anti/3),
+    %ok = test_simple_anti(fun test_x5_now_anti/3),
         % не показ рекламы иное время
     ok = test_simple_x6(),
 
@@ -1068,9 +1068,11 @@ test()->
 %     -- проверка места размещения ролика
 %           (преролл, мидролл, постролл) - выставить один из них.
 
-    ok = test_cats(),
-    ok = test_users(),
+    %ok = test_cats(),
+    %ok = test_users(),
     ok = test_time_and_times(),
+
+    test_truncate(),
 
     ok.
 
