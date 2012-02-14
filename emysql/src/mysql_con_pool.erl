@@ -23,6 +23,12 @@ start_link_iter(PoolId, Host, User, Password, Database, Step) ->
     mysql:connect(PoolId,Host,undefined,User,Password,Database,true),
     start_link_iter(PoolId, Host, User, Password, Database, Step-1).
 
+
+    %mysql:connect(pool,"192.168.2.102",undefined,"cff","k9an612e","AVSrv",true),
+    %mysql:connect(pool,"192.168.2.110",undefined,"repl","yhbvft","vk",true),
+
+
+
 test()->
     ok.
 
