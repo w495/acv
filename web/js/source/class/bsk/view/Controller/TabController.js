@@ -63,12 +63,14 @@ qx.Class.define("bsk.view.Controller.TabController",
             Производит сложное действие над строкой.
         **/
         _tabRow:  function(actionUrl){
+                        
             var id = this.tab.getSelectionModel().getSelectedRanges()[0];
+            console.log("id = ", id);
             if (id == undefined)
                 return false;
             var d = this.tab.model.getData();
             var rowId = d[id.minIndex];
-            // console.log("this.tab.model.data[rowId] = ", this.tab.model.data[rowId]);
+            console.log("this.tab.model.data[rowId] = ", this.tab.model.data[rowId]);
             this.biz.onAction(this.tab.model.data[rowId], this.filterForm.getValues(), actionUrl);
             this.refresh();
             return true;

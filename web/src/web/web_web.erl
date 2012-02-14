@@ -241,9 +241,10 @@ simple_map_controllers(Path) ->
     % advertising company video
         "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
 
-        "/get-all-acv-videos"   ->  {inside, get_all_acv_videos};
-        "/get-all-geo-regions"  ->  {inside, get_all_geo_regions};
-        "/get-all-acv-banners"  ->  {inside, get_all_acv_banners};
+        "/get-all-acv-video-stats"   ->  {inside, get_all_acv_video_stats};
+        "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};
+        "/get-all-geo-regions"       ->  {inside, get_all_geo_regions};
+        "/get-all-acv-banners"       ->  {inside, get_all_acv_banners};
 
         "/get-acv-videos"   -> {inside, get_acv_videos};
 

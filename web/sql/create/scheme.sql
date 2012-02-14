@@ -19,7 +19,7 @@ create table config(
 
 create table var(
     id bool primary key default true;
-    av_stats_max_id int;
+    av_stats_max_id numeric(20);
 );
 
 -------------------------------------------------------------------------------
@@ -146,19 +146,15 @@ create table acv_video (
 
     /* ПОЛЯ НЕ ДЛЯ ВСЕХ */
 
-    shown   int default 0,
-        /*количество показов, это поле никто менять не может */
-    active  bool default null,
-        /* условие предмодерации */
-    deleted bool default false,
-        /* удаление */
-    stoped  bool default false,
-        /* остановка */
+    shown   int default 0,          /* количество показов */
+    clicks int default 0            /* количество кликов */
+    active  bool default null,      /* условие предмодерации */
+    deleted bool default false,     /* удаление */
+    stoped  bool default false,     /* остановка */
 
-    customer_id int references customer(id),
+    customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
 
-    clicks int default 0
 );
 
 /**

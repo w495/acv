@@ -91,30 +91,25 @@ fetch_stat(null) ->
     {Day, _} = erlang:localtime(),
     fetch_stat({Day, {0,0,0}});
 
+fetch_stat(all) ->
+    fetch_stat({{1970,01, 1}, {0,0,0}});
+
 fetch_stat(From_date) ->
-    Q = <<"select * from AVStats where time > ? order by time desc;">>,
+    Q = <<"select * from AVStats where id > ? order by time desc;">>,
     mysql:prepare(get_stats, Q),
-    {data,{mysql_result, Cols, Vals, _X31, _X32}} = mysql:execute(mysqlStat, get_stats, [From_date]),
-
+    {data,{mysql_result, Cols, Vals, _X31, _X32}}
+        = mysql:execute(mysqlStat, get_stats, [From_date]),
     L = mysql_dao:make_proplist(Cols, Vals),
-
     ?D("===================~n", []),
     ?D("Stats stream: ~p~n", [L]),
-
     compose_stat(L),
-
     EL = ets:tab2list(stat_clt),
-
     ?D("===================~n", []),
     ?D("Composed stats: ~p~n", [EL]),
-
-
     To_db = collect(EL, []),
     ?D("===================~n", []),
     ?D("Stats to DB:~p~n", [To_db]),
-
     to_db(To_db).
-
 
 compose_stat([R|T]) ->
     Acv_video_url = proplists:get_value("GUID", R), % Acv_video_url
@@ -208,7 +203,7 @@ to_db_acv_video_url([Adv|T], To_db) ->
 
     ?D("VALUES: ~p~n", [Values]),
 
-    ADV_Values = format_ADV(Values, []),
+    ADV_Values = format_adv(Values, []),
     ?D("ADV  VALUES: ~p~n", [ADV_Values]),
     Q = Q1 ++ string:join(ADV_Values, ", ") ++ ";",
     ?D("QQ:~p~n~n", [Q]),
@@ -226,7 +221,7 @@ to_db_acv_video_url([], _) ->
     done.
 
 
-format_ADV([#stat{
+format_adv([#stat{
             video_url=Video_url, peer=Peer, server_node=Trans_server_node_name,
             start = {{StartYear, StartMonth, StartDay}, {StartHour, StartMin, StartSec}}, 
             stop = {{StopYear, StopMonth, StopDay}, {StopHour, StopMin, StopSec}}, 
@@ -248,12 +243,10 @@ format_ADV([#stat{
         _ ->
             SL2 = ["null"]
     end,
-
     AL = "(" ++ string:join(lists:append(SL1, SL2), ", ") ++ ")",
-    format_ADV(T, [AL|Ret]);
-format_ADV([], Ret) ->
+    format_adv(T, [AL|Ret]);
+format_adv([], Ret) ->
     lists:reverse(Ret).
-    
 
 collect([{{Acv_video_url, Usid}, StatList}|T], DBRecords) ->
     {Last, To_db} = collect_acv_stats(StatList, [], []),

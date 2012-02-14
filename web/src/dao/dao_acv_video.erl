@@ -7,6 +7,7 @@
 
 -export([
     get_all_acv_videos/1,
+    get_all_acv_video_stats/1,
     get_acv_videos/1,
     get_acv_video/1,
     get_acv_video_common/1,
@@ -88,6 +89,23 @@ get_all_acv_videos(_) ->
         " from acv_video;",
     dao:simple(Query).
 
+
+%%% @doc
+%%% Возвращает список всех acv_video для всех пользователей
+%%% 
+get_all_acv_video_stats(_) ->
+    Query =
+        "select "
+            " acv_video.id, "
+            " acv_video.name, "
+            " acv_video.datestart, "
+            " acv_video.datestop, "
+            " acv_video.shown, "
+            " acv_video.clicks "
+        " from acv_video;",
+    dao:simple(Query).
+
+
 %%% @doc
 %%% Возвращает список всех acv_video для данного пользователя
 %%% 
@@ -98,7 +116,9 @@ get_acv_videos(Customer_id) ->
             " acv_video.name, "
             " acv_video.comment, "
             " acv_video.datestart, "
-            " acv_video.datestop "
+            " acv_video.datestop, "
+            " acv_video.shown, "
+            " acv_video.clicks "
         " from acv_video "
             " where customer_id = $1;",
     dao:simple(Query, [(Customer_id)]).

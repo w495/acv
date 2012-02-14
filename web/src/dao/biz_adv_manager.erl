@@ -299,7 +299,6 @@ creative_string(Creative) ->
         ]
     ).
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 -include_lib("eunit/include/eunit.hrl").
@@ -424,7 +423,6 @@ test_random_fromfuture() ->
     Proplists = mysql_dao:make_proplist(Cols, Vals, []),
     Proplist = utils:random_nth(Proplists),
     proplists:get_value("uuid", Proplist).
-
 
 %%%
 %%% test_x$n$ (Datestart::{date(), time()}, Datestop::{date(), time()},

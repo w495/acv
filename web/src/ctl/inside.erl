@@ -204,6 +204,7 @@ get_all_geo_regions(Req) ->
     Res = dao:dao_call(dao_geo_region, get_all_geo_regions, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+
 %%
 %% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
 %%
@@ -214,11 +215,18 @@ get_acv_videos(Req) ->
 
 %%----------------------------------------------------------------------------
 %%
-%% Возвращает полный спис регионов
+%% Возвращает полный 
 %%
 get_all_acv_videos(Req) ->
     authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%
+%% Возвращает полный 
+%%
+get_all_acv_video_stats(Req) ->
+    Res = dao:dao_call(dao_acv_video, get_all_acv_video_stats, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
