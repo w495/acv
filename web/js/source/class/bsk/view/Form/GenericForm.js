@@ -216,35 +216,36 @@ qx.Class.define("bsk.view.Form.GenericForm",
                     methodFlag = true;
                 }
 
-                if(this.formFieldDescr != undefined && this.formFieldDescr != {}) {
-                    
-                    var params = null;
-                    if(this.formModel)
-                        params = qx.util.Serializer.toNativeObject(this.formModel);
-                    else
-                        params = qx.util.Serializer.toNativeObject(this.formFieldDescr);
-                    
-                    console.log("this.formModel = ", this.formModel)
-                    console.log("this.formFieldDescr = ", this.formFieldDescr)
-                    
-                    
-                    params = this.controller.getExtraParams(params); // доп параметры запроса - пейджер и сортировка
-                    var fFields = this.form.getItems();
-                    // доп параметры запроса - пейджер и сортировка
-                    for(var k in params) {
-                        var fField = fFields[k];
-                        var val = params[k];
-                        if(fField instanceof qx.ui.form.DateField)
-                            val = val.getTime();
-                        req.setParameter(k, val, methodFlag);
-                    }
+                var params = null;
+                if(this.formModel)
+                    params = qx.util.Serializer.toNativeObject(this.formModel);
+                else if(this.formFieldDescr)
+                    params = qx.util.Serializer.toNativeObject(this.formFieldDescr);
+                else if(this.formDescription)
+                    params = qx.util.Serializer.toNativeObject(this.formDescription);
+                else{
+                    this.controller.enableForm();
+                    this._showValidationResult();
+                    return false;
                 }
-                this.submit(req);
+                    
+                console.log("this.formModel = ", this.formModel)
+                console.log("this.formFieldDescr = ", this.formFieldDescr)
+                
+                
+                params = this.controller.getExtraParams(params); // доп параметры запроса - пейджер и сортировка
+                var fFields = this.form.getItems();
+                // доп параметры запроса - пейджер и сортировка
+                for(var k in params) {
+                    var fField = fFields[k];
+                    var val = params[k];
+                    if(fField instanceof qx.ui.form.DateField)
+                        val = val.getTime();
+                    req.setParameter(k, val, methodFlag);
+                }
             }
-            else {
-                this.controller.enableForm();
-                this._showValidationResult();
-            }
+            this.submit(req);
+            return true;
         },
 
         _showValidationResult  : function() {

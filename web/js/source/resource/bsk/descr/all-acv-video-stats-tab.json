@@ -3,7 +3,7 @@
     toolbar : [
         {type : "button",
             name : "Подробнее",
-            action : "resource/bsk/descr/all-acv-video-stats-tab.json",
+            action : "resource/bsk/descr/all-acv-video-stat-tab.json",
             icon : "icon/32/actions/zoom-in.png",
             specParam: "tab-row"
         },
@@ -35,5 +35,5 @@
     sort : "id",
     ascending : false,
 
-    // dblclick_action : "resource/bsk/descr/all-acv-video-stats-tab.json"
+    dblclick_action : "resource/bsk/descr/all-acv-video-stat-tab.json"
 }
