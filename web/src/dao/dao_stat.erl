@@ -8,9 +8,16 @@
 -compile(export_all).
 
 -export([
+    create/1,
+    create/2,
+    delete/1,
+    fetch_stat/0,
+    fetch_stat/1,
+    get_acv_video_stat_by_films/3,
     test/0,
     test/1
 ]).
+
 
 -include("common.hrl").
 
@@ -122,7 +129,7 @@ compose_stat([R|T]) ->
     User_id = proplists:get_value("UserId", R),
 
     SFish = #stat{video_url=Video_url, peer=Peer, server_node=Trans_server_node_name, start=null, stop=null, click=null, user_id=User_id, dbg_list=[R]},
-    StatList = case ets:lookup(stat_clt, {Acv_video_url, Usid}) of
+    Stat_list = case ets:lookup(stat_clt, {Acv_video_url, Usid}) of
         [] -> 
             case Action of
                 <<"AC_SHOW">> ->    [SFish#stat{start=Time}];
@@ -136,25 +143,25 @@ compose_stat([R|T]) ->
                 <<"AC_CLICK">> ->   [SFish#stat{start=Time, click=Time}]
                                     %[{Video_url, Peer, Trans_server_node_name, Time, null, Time}];
             end;
-        [{_, AVList}] ->
-            S=#stat{dbg_list=DBGL} = lists:last(AVList),
+        [{_, Av_list}] ->
+            S=#stat{dbg_list=DBGL} = lists:last(Av_list),
             case Action of
                 % всегда создаем новый показ. если предыдущий был не закрыт - потом при записи отфильтруем его
                 <<"AC_SHOW">> ->
-                    lists:append(AVList, [SFish#stat{start=Time}]);
+                    lists:append(Av_list, [SFish#stat{start=Time}]);
                 % апдейтим предыдущую запись - если конец был заполнен, то это ошибка с неизвестным источником
                 <<"AC_FULLSHOW">> ->    
-                    lists:append(lists:delete(S, AVList), [S#stat{stop=Time, dbg_list=[R|DBGL]}]);
+                    lists:append(lists:delete(S, Av_list), [S#stat{stop=Time, dbg_list=[R|DBGL]}]);
                 % апдейтим предыдущую запись, если время клика будет больше времени конца просмотра, то это ошибка  с неизвестным источником
                 <<"AC_CLICK">> ->
-                    lists:append(lists:delete(S, AVList), [S#stat{click=Time, dbg_list=[R|DBGL]}])
+                    lists:append(lists:delete(S, Av_list), [S#stat{click=Time, dbg_list=[R|DBGL]}])
             end
     end,
 
     if
-        length(StatList) > 0 -> 
-            ?D("CS step: ~p~n", [{{Acv_video_url, Usid}, StatList}]),
-            ets:insert(stat_clt, {{Acv_video_url, Usid}, StatList});
+        length(Stat_list) > 0 ->
+            ?D("CS step: ~p~n", [{{Acv_video_url, Usid}, Stat_list}]),
+            ets:insert(stat_clt, {{Acv_video_url, Usid}, Stat_list});
         true -> 
             ?D("CS step: none~n", []),
             done
@@ -248,8 +255,8 @@ format_adv([#stat{
 format_adv([], Ret) ->
     lists:reverse(Ret).
 
-collect([{{Acv_video_url, Usid}, StatList}|T], DBRecords) ->
-    {Last, To_db} = collect_acv_stats(StatList, [], []),
+collect([{{Acv_video_url, Usid}, Stat_list}|T], DBRecords) ->
+    {Last, To_db} = collect_acv_stats(Stat_list, [], []),
     if
         length(Last) > 0    -> ets:insert(stat_clt, {{Acv_video_url, Usid}, Last});
         true                -> ets:delete(stat_clt, {Acv_video_url, Usid})
@@ -298,25 +305,22 @@ mk_ets() ->
     utils:make_ets(stat_clt, [{write_concurrency,true}]).
 
 
-
-
 get_acv_video_stat_by_films(FromDatetime, ToDatetime, Acv_Id) ->
     Q = "select * from adv_video_stat_" ++ utils:to_list(Acv_Id) ++ 
         " where (start < $1 and stop > $1) or (stop < $2  and stop > $2) or (start > $1 and stop < $2);",
     {ok, Vals} = dao:simple(Q, [FromDatetime, ToDatetime]),
     PL = [{proplists:get_value("video_url", X), X} || X <- Vals],
     Films = proplists:get_keys(PL),
+    group_by_film(Films, PL, []).
 
-    groupByFilm(Films, PL, []).
 
-
-groupByFilm([], _PL, Ret) ->
+group_by_film([], _PL, Ret) ->
     Ret;
-groupByFilm([H|T], PL, Ret) ->
+group_by_film([H|T], PL, Ret) ->
     SL = proplists:get_all_values(H, PL),
     Shows = length(SL),
     Clicks = length([X || X <- SL, proplists:get_value("click", X)=/=null]),
-    groupByFilm(T, PL, [[{"video_url", H}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
+    group_by_film(T, PL, [[{"video_url", H}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
 
 
 %{Acv_video_url, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
