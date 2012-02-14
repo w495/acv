@@ -360,19 +360,28 @@ get_acv_video_stat_by_films(From_datetime, To_datetime, Acv_Id) ->
     Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
         " where (datestart < $1 and datestop > $1) or (datestop < $2  and datestop > $2) or (datestart > $1 and datestop < $2);",
     {ok, Vals} = dao:simple(Q, [From_datetime, To_datetime]),
-    PL = [{proplists:get_value("video_url", X), X} || X <- Vals],
-    Films = proplists:get_keys(PL),
-    group_by_film(Films, PL, []).
-
+    All_videos_proplist = [{proplists:get_value("video_url", X), X} || X <- Vals],
+    Video_urls = proplists:get_keys(All_videos_proplist),
+    group_by_film(Video_urls, All_videos_proplist, []).
 
 group_by_film([], _PL, Ret) ->
     Ret;
 
-group_by_film([Film|Rest_films], PL, Ret) ->
-    SL = proplists:get_all_values(Film, PL),
-    Shows = length(SL),
-    Clicks = length([X || X <- SL, proplists:get_value("click", X)=/=null]),
-    group_by_film(Rest_films, PL, [[{"video_url", Film}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
+group_by_film([Video_url|Rest_video_urls], All_videos_proplist, Ret) ->
+    Video_name = proplists:get_value("video_name",
+        proplists:get_value(Video_url, All_videos_proplist)),
+    Shown_list = proplists:get_all_values(Video_url, All_videos_proplist),
+    Video_shows = length(Shown_list),
+    Video_clicks = length([X || X <- Shown_list,
+        proplists:get_value("click", X)=/=null]),
+    group_by_film(Rest_video_urls, All_videos_proplist,
+        [[
+            {"video_name",  Video_name},
+            {"video_url",   Video_url},
+            {"shows",       Video_shows},
+            {"clicks",      Video_clicks}]
+        | Ret]
+    ).
 
 %{Acv_video_url, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
 %collect([R|T]) ->
