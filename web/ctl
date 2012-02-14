@@ -2,7 +2,7 @@
 
 CMD=$1
 NODENAME="`date +web_ctl_%H_%M_%S_%N`@192.168.2.110"
-NODEMAIN="advsystem@192.168.2.190"
+NODEMAIN="advsystem@192.168.2.156"
 COOKIE=OCFDAZSCILRVUEHEWFWA
 
 ERL_ARGS="+K true +A 128 +P 1000000"
@@ -26,4 +26,3 @@ else
   shift
   ./start.sh $@
 fi
-

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NODENAME="advsystem@192.168.2.190"
+NODENAME="advsystem@192.168.2.156"
 CONFIG=app
 COOKIE=OCFDAZSCILRVUEHEWFWA
 
