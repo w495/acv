@@ -9,6 +9,7 @@
     get_all_acv_videos/1,
     get_all_acv_video_stats/1,
     get_acv_videos/1,
+    get_acv_video_stats/1,
     get_acv_video/1,
     get_acv_video_common/1,
     get_acv_video_show/1,
@@ -61,7 +62,7 @@
         % Active           ::integer(),
             % это поле может редактировать только модератор
         % Shown           ::integer(),
-            % это поле пользователь менять не может
+            % это поле покупатель менять не может
         Comment         ::boolean(),
         Rerun_hours     ::integer()|null,
         Rerun_minutes   ::integer()|null,
@@ -76,7 +77,7 @@
                         [Cat_id_list::integer()]}) -> integer().
 
 %%% @doc
-%%% Возвращает список всех acv_video для всех пользователей
+%%% Возвращает список всех acv_video для всех покупателей
 %%% 
 get_all_acv_videos(_) ->
     Query =
@@ -91,7 +92,7 @@ get_all_acv_videos(_) ->
 
 
 %%% @doc
-%%% Возвращает список всех acv_video для всех пользователей
+%%% Возвращает список всех acv_video для всех покупателей
 %%% 
 get_all_acv_video_stats(_) ->
     Query =
@@ -107,7 +108,7 @@ get_all_acv_video_stats(_) ->
 
 
 %%% @doc
-%%% Возвращает список всех acv_video для данного пользователя
+%%% Возвращает список всех acv_video для данного покупателя
 %%% 
 get_acv_videos(Customer_id) ->
     Query =
@@ -115,6 +116,21 @@ get_acv_videos(Customer_id) ->
             " acv_video.id, "
             " acv_video.name, "
             " acv_video.comment, "
+            " acv_video.datestart, "
+            " acv_video.datestop "
+        " from acv_video "
+            " where customer_id = $1;",
+    dao:simple(Query, [(Customer_id)]).
+
+
+%%% @doc
+%%% Возвращает список всех acv_video для данного покупателя
+%%%
+get_acv_video_stats(Customer_id) ->
+    Query =
+        "select "
+            " acv_video.id, "
+            " acv_video.name, "
             " acv_video.datestart, "
             " acv_video.datestop, "
             " acv_video.shown, "
@@ -137,7 +153,6 @@ get_acv_video(Acv_video_id) ->
         " from acv_video "
             " where acv_video.id = $1;",
     dao:simple(Query, [(Acv_video_id)]).
-
 
 %%% @doc
 %%% get_acv_video_common

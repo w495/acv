@@ -1,7 +1,7 @@
-%%% \file inside_test.erl
-%%%
-%%%     Контроллеры, активируются, когда пользователь уже зашел в систему
-%%%
+%%%% \file inside_test.erl
+%%%%
+%%%%     Контроллеры, активируются, когда пользователь уже зашел в систему
+%%%%
 
 -module(inside).
 -compile(export_all).
@@ -197,93 +197,92 @@ get_encoding(_Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
-%%
-%% Возвращает ...
-%%
+%%%
+%%% Возвращает ...
+%%%
 get_all_geo_regions(Req) ->
     Res = dao:dao_call(dao_geo_region, get_all_geo_regions, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+%%% ---------------------------------------------------------------------------
 
-%%
-%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
-%%
-get_acv_videos(Req) ->
-    Customer_id = authorization:get_customer_id(Req),
-    Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
-    {"application/json", [], [mochijson2:encode(Res)]}.
-
-%%----------------------------------------------------------------------------
-%%
-%% Возвращает полный 
-%%
+%%%
+%%% Возвращает полный список рекламных компаний для ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
+%%%
 get_all_acv_videos(Req) ->
     authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-%%
-%% Возвращает список статистики для всех рекламных компаний
-%%
+%%%
+%%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
+%%%
+get_acv_videos(Req) ->
+    Customer_id = authorization:get_customer_id(Req),
+    Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% Возвращает список статистики для всех рекламных компаний
+%%%
 get_all_acv_video_stats(Req) ->
+    authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_acv_video, get_all_acv_video_stats, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-%%
-%% Возвращает список статистики для конкретной рекламной компании 
-%%
-get_acv_video_stat(Req) ->
-    Info = norm:extr(Req:parse_qs(), [
-        {"fromdate", [datetimeUnixtime]},
-        {"todate",   [datetimeUnixtime]},
-        {"id",       [nullable,integer]}
-    ]),
-    % Res = dao_stat:get_acv_video_stat_by_films({{2000,1,1},{1,1,1}},
-    %    {{2100,1,1},{1,1,1}}, 7).
-    Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
-    ?D("Res  = ~p~n", [Res]),
+%%%
+%%% Возвращает полный статистики реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
+%%%
+get_acv_video_stats(Req) ->
+    Customer_id = authorization:get_customer_id(Req),
+    Res = dao:dao_call(dao_acv_video, get_acv_video_stats, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+%%%
+%%% Возвращает список статистики для конкретной рекламной компании
+%%%
+get_acv_video_stat(Req) ->
+    get_acv_video_stat_by_films(Req).
 
-%%
-%% Возвращает список статистики для конкретной рекламной компании
-%%
+%%%
+%%% Возвращает список статистики ПО ФИЛЬМАМ
+%%%      для конкретной рекламной компании
+%%%
 get_acv_video_stat_by_films(Req) ->
     Info = norm:extr(Req:parse_qs(), [
         {"fromdate", [datetimeUnixtime]},
         {"todate",   [datetimeUnixtime]},
         {"id",       [nullable,integer]}
     ]),
-    % Res = dao_stat:get_acv_video_stat_by_films({{2000,1,1},{1,1,1}},
-    %    {{2100,1,1},{1,1,1}}, 7).
     Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
     ?D("Res  = ~p~n", [Res]),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
+%%%----------------------------------------------------------------------------
 
 
-%%
-%% Возвращает полный спис реклам для баннеров
-%%
+%%%
+%%% Возвращает полный спис реклам для баннеров
+%%%
 get_all_acv_banners(Req) ->
     authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_acv_banner, get_all_acv_banners, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-%%----------------------------------------------------------------------------
+%%%----------------------------------------------------------------------------
 
 
-%%
-%% Возвращает полный спис категорий
-%%
+%%%
+%%% Возвращает полный спис категорий
+%%%
 get_all_cats(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Res = mysql_dao:dao_call(dao_cat, get_all_cats, [], values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-%%
-%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
-%%
+%%%
+%%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
+%%%
 get_acv_banners(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
@@ -319,9 +318,9 @@ get_acv_video_category_targeting(Req) ->
     Res = dao:dao_value(dao_acv_video, get_acv_video_category_targeting, Acv_video_id),
     {"application/json", [], [Res]}.
 
-%%
-%% Изменяет рекламу для роликов
-%%
+%%%
+%%% Изменяет рекламу для роликов
+%%%
 update_acv_video(Req) ->
 
 
@@ -450,9 +449,9 @@ test(speed) ->
     Times_1 = 1000000,
     Tuple = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
 
-    %%%
-    %%% l2t(t2l(t)++l) лучше
-    %%%
+    %%%%
+    %%%% l2t(t2l(t)++l) лучше
+    %%%%
     tests:print_speed("a(t) 1",
         fun() ->
             erlang:append_element(Tuple , a)
