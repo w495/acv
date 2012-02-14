@@ -234,14 +234,33 @@ get_all_acv_video_stats(Req) ->
 %%
 get_acv_video_stat(Req) ->
     Info = norm:extr(Req:parse_qs(), [
-        {"fromdate", [nullable, integer]},
-        {"todate", [datetimeUnixtime]},
-        {"id", [datetimeUnixtime]}
+        {"fromdate", [datetimeUnixtime]},
+        {"todate",   [datetimeUnixtime]},
+        {"id",       [nullable,integer]}
     ]),
     % Res = dao_stat:get_acv_video_stat_by_films({{2000,1,1},{1,1,1}},
     %    {{2100,1,1},{1,1,1}}, 7).
     Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
+    ?D("Res  = ~p~n", [Res]),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+%%
+%% Возвращает список статистики для конкретной рекламной компании
+%%
+get_acv_video_stat_by_films(Req) ->
+    Info = norm:extr(Req:parse_qs(), [
+        {"fromdate", [datetimeUnixtime]},
+        {"todate",   [datetimeUnixtime]},
+        {"id",       [nullable,integer]}
+    ]),
+    % Res = dao_stat:get_acv_video_stat_by_films({{2000,1,1},{1,1,1}},
+    %    {{2100,1,1},{1,1,1}}, 7).
+    Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
+    ?D("Res  = ~p~n", [Res]),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+
 
 %%
 %% Возвращает полный спис реклам для баннеров

@@ -9,8 +9,8 @@
 **/
 
 create table config(
-    id bool primary key default true;
-    acv_video_loadnext int;
+    id bool primary key default true,
+    acv_video_loadnext int
 );
 
 /**
@@ -18,8 +18,8 @@ create table config(
 **/
 
 create table var(
-    id bool primary key default true;
-    av_stats_max_id numeric(20);
+    id bool primary key default true,
+    av_stats_max_id numeric(20)
 );
 
 -------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ create table acv_video (
     /* ПОЛЯ НЕ ДЛЯ ВСЕХ */
 
     shown   int default 0,          /* количество показов */
-    clicks int default 0            /* количество кликов */
+    clicks int default 0,            /* количество кликов */
     active  bool default null,      /* условие предмодерации */
     deleted bool default false,     /* удаление */
     stoped  bool default false,     /* остановка */
