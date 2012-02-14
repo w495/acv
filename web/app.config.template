@@ -16,6 +16,11 @@
         {fk_db_name, "fk"},
         {fk_db_host, "127.0.0.1"},
 
+        {stat_db_user, "cff"},
+        {stat_db_password, "k9an612e"},
+        {stat_db_name, "AVSrv"},
+        {stat_db_host, "192.168.2.102"},
+
         {vk_db_user, "repl"},
         {vk_db_password, "yhbvft"},
         {vk_db_name, "vk"},

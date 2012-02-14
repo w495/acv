@@ -11,21 +11,23 @@
         {cookiename, "FK"},
         {expcookie, 180000}, % in seconds  300 min
 
-        {fk_db_user, "w-495"},
-        {fk_db_password, "eiir"},
-        {fk_db_name, "fk"},
-        {fk_db_host, "127.0.0.1"},
+        %% База данных рекламных компаний.
+            {fk_db_user, "w-495"},
+            {fk_db_password, "eiir"},
+            {fk_db_name, "fk"},
+            {fk_db_host, "127.0.0.1"},
 
-        {vk_db_user, "repl"},
-        {vk_db_password, "yhbvft"},
-        {vk_db_name, "vk"},
-        {vk_db_host, "192.168.2.110"},
+        %% База ВНЕШНЯЯ данных видео
+            {vk_db_user, "repl"},
+            {vk_db_password, "yhbvft"},
+            {vk_db_name, "vk"},
+            {vk_db_host, "192.168.2.110"},
 
-        {stat_db_user, "cff"},
-        {stat_db_password, "k9an612e"},
-        {stat_db_name, "AVSrv"},
-        {stat_db_host, "192.168.2.102"},
-
+        %% База ВНЕШНЯЯ данных со статистикой
+            {stat_db_user, "cff"},
+            {stat_db_password, "k9an612e"},
+            {stat_db_name, "AVSrv"},
+            {stat_db_host, "192.168.2.102"},
 
         {vk_streamer, "http://192.168.2.187:8000"},
 
