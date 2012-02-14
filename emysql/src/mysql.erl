@@ -176,16 +176,23 @@
 
 %% Log messages are designed to instantiated lazily only if the logging level
 %% permits a log message to be logged
--define(Log(LogFun,Level,Msg),
-	LogFun(?MODULE,?LINE,Level,fun()-> {Msg,[]} end)).
--define(Log2(LogFun,Level,Msg,Params),
-	LogFun(?MODULE,?LINE,Level,fun()-> {Msg,Params} end)).
-			     
 
-log(Module, Line, _Level, FormatFun) ->
-    {Format, Arguments} = FormatFun(),
-    io:format("~w:~b: "++ Format ++ "~n", [Module, Line] ++ Arguments).
+%-define(Log(LogFun,Level,Msg),
+%	LogFun(?MODULE,?LINE,Level,fun()-> {Msg,[]} end)).
 
+-define(Log(_LogFun,_Level,_Msg), undefined).
+
+%-define(Log2(LogFun,Level,Msg,Params),
+%	LogFun(?MODULE,?LINE,Level,fun()-> {Msg,Params} end)).
+
+-define(Log2(_LogFun,_Level,_Msg,_Params),  undefined).			     
+
+log(_Module, _Line, _Level, FormatFun) ->
+    {Format, Arguments} = FormatFun().
+
+%%% log(Module, Line, _Level, FormatFun) ->
+%%%     {Format, Arguments} = FormatFun(),
+%%%     io:format("~w:~b: "++ Format ++ "~n", [Module, Line] ++ Arguments).
 
 %% External functions
 

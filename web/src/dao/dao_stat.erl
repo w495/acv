@@ -11,8 +11,10 @@
     create/1,
     create/2,
     delete/1,
-    fetch_stat/0,
-    fetch_stat/1,
+    fetch_stat_by_time/0,
+    fetch_stat_by_time/1,
+    fetch_stat_by_id/0,
+    fetch_stat_by_id/1,
     get_acv_video_stat_by_films/1,
     get_acv_video_stat_by_films/3,
     test/0,
@@ -39,7 +41,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--include_lib("eunit/include/eunit.hrl").
+
 
 -define(STAT_SKIP_SECOND, 3600).
 
@@ -69,22 +71,25 @@ create(Acv_video_id) ->
 %%% 
 create(Con, Acv_video_id) ->
     Q1 = ?FMT("create sequence seq_acv_video_stat_~p;", [Acv_video_id]),
-    Q2 = ?FMT(  "create table acv_video_stat_~p ("
-                    "id int primary key default nextval('seq_acv_video_stat_~p'),"
-                    "parent_id int default ~p,"
-                    "peer varchar(15),"
-                    "video_url text,"
-                    "video_name text,"
-                    "node_name varchar(100),"
-                    "datestart timestamp without time zone,"
-                    "datestop timestamp without time zone,"
-                    "user_id varchar(100),"
-                    "tmp_dbg text,"
-                    "click timestamp without time zone);",
+    Q2 = ?FMT("create table acv_video_stat_~p ("
+                "id int primary key default nextval('seq_acv_video_stat_~p'),"
+                "parent_id int default ~p,"
+                "peer varchar(15),"
+                "video_url text,"
+                "video_name text,"
+                "node_name varchar(100),"
+                "datestart timestamp without time zone,"
+                "datestop timestamp without time zone,"
+                "user_id varchar(100),"
+                "tmp_dbg text,"
+                "click timestamp without time zone);",
         [Acv_video_id, Acv_video_id, Acv_video_id]),
-    Q3 = ?FMT("create index acv_video_stat_~p_datestart_date_idx on acv_video_stat_~p(datestart);", [Acv_video_id, Acv_video_id]),
-    Q4 = ?FMT("create index acv_video_stat_~p_datestop_date_idx on acv_video_stat_~p(datestop);", [Acv_video_id, Acv_video_id]),
-    Q5 = ?FMT("create index acv_video_stat_~p_video_uid_idx on acv_video_stat_~p(video_url);", [Acv_video_id, Acv_video_id]),
+    Q3 = ?FMT("create index acv_video_stat_~p_datestart_date_idx "
+        "on acv_video_stat_~p(datestart);", [Acv_video_id, Acv_video_id]),
+    Q4 = ?FMT("create index acv_video_stat_~p_datestop_date_idx "
+        "on acv_video_stat_~p(datestop);", [Acv_video_id, Acv_video_id]),
+    Q5 = ?FMT("create index acv_video_stat_~p_video_uid_idx "
+        "on acv_video_stat_~p(video_url);", [Acv_video_id, Acv_video_id]),
     pgsql:equery(Con, Q1),
     pgsql:equery(Con, Q2),
     pgsql:equery(Con, Q3),
@@ -96,21 +101,25 @@ delete(Acv_video_id) ->
     Q = ?FMT("drop sequence seq_acv_video_stat_~p;", [Acv_video_id]),
     dao:simple(Q).
 
-fetch_stat() ->
-    fetch_stat(null).
+fetch_stat_by_time() ->
+    fetch_stat_by_time(null).
 
-fetch_stat(null) ->
+fetch_stat_by_time(null) ->
     {_day, _} = erlang:localtime(),
-    fetch_stat({_day, {0,0,0}});
+    fetch_stat_by_time({_day, {0,0,0}});
 
-fetch_stat(all) ->
-    fetch_stat({{1970,01, 1}, {0,0,0}});
+fetch_stat_by_time(all) ->
+    fetch_stat_by_time({{1970,01, 1}, {0,0,0}});
 
-fetch_stat(From_id) ->
-    Q = <<"select * from AVStats where id > ? order by time desc;">>,
-    mysql:prepare(get_stats, Q),
+fetch_stat_by_time(From_id) ->
+    case mysql:get_prepared(fetch_stat_by_time) of
+        {error, _ } ->
+            Q = <<"select * from AVStats where time > ? order by time desc;">>,
+            mysql:prepare(fetch_stat_by_time, Q);
+        _ -> ok
+    end,
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
-        = mysql:execute(mysqlStat, get_stats, [From_id]),
+        = mysql:execute(mysqlStat, fetch_stat_by_time, [From_id]),
     L = mysql_dao:make_proplist(Cols, Vals),
     ?D("===================~n", []),
     ?D("Stats stream: ~p~n", [L]),
@@ -122,6 +131,66 @@ fetch_stat(From_id) ->
     ?D("===================~n", []),
     ?D("Stats to DB:~p~n", [To_db]),
     to_db(To_db).
+
+fetch_stat_by_id() ->
+    dao:with_transaction_fk(fun(Con) ->
+        Cid = compute_stat_max_id(),
+        Gid = get_max_id(Con),
+        case Cid > Gid of
+            true ->
+                put_max_id(Con, Cid),
+                fetch_stat_by_id(Cid);
+            _ ->
+                % а зачем?
+                fetch_stat_by_id(Gid)
+        end
+    end).
+
+fetch_stat_by_id(null) ->
+    fetch_stat_by_id(0);
+
+fetch_stat_by_id(From_id) ->
+    case mysql:get_prepared(fetch_stat_by_id) of
+        {error, _ } ->
+            Q = <<"select * from AVStats where id > ? order by time desc;">>,
+            mysql:prepare(fetch_stat_by_id, Q);
+        _ -> ok
+    end,
+    {data,{mysql_result, Cols, Vals, _X31, _X32}}
+        = mysql:execute(mysqlStat, fetch_stat_by_id, [From_id]),
+    L = mysql_dao:make_proplist(Cols, Vals),
+    ?D("===================~n", []),
+    ?D("Stats stream: ~p~n", [L]),
+    compose_stat(L),
+    EL = ets:tab2list(stat_clt),
+    ?D("===================~n", []),
+    ?D("Composed stats: ~p~n", [EL]),
+    To_db = collect(EL, []),
+    ?D("===================~n", []),
+    ?D("Stats to DB:~p~n", [To_db]),
+    to_db(To_db).
+
+compute_stat_max_id() ->
+    case mysql:get_prepared(get_stat_max_id) of
+        {error, _ } ->
+            Q = <<"select max(id) as max_id from AVStats;">>,
+            mysql:prepare(get_stat_max_id, Q);
+        _ -> ok
+    end,
+    {data,{mysql_result, Cols, Vals, _X31, _X32}}
+        = mysql:execute(mysqlStat, get_stat_max_id, []),
+    [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals),
+    Max_id.
+
+put_max_id(Con, Max_id) ->
+    Query = "update var set av_stats_max_id = $1;",
+    pgsql:equery(Con, Query, [Max_id]).
+
+get_max_id(Con) ->
+    Query = "select av_stats_max_id from var;",
+    S = dao:pgret(pgsql:equery(Con, Query)),
+    {ok,[[{"av_stats_max_id",Max_id}]]}  = S,
+    Max_id.
 
 compose_stat([R|T]) ->
     Acv_video_url = proplists:get_value("GUID", R), % Acv_video_url
@@ -182,7 +251,8 @@ to_db(To_db) ->
     Acv_video_urls = proplists:get_keys(To_db),
     ?D("KEYS: ~p~n", [Acv_video_urls]),
     Q = "select id, url, shown from acv_video where url in (" ++ 
-        string:join(["'" ++ binary_to_list(X) ++ "'" || X <- lists:flatten(Acv_video_urls)], ",") ++ ");",
+        string:join(["'" ++ binary_to_list(X) ++ "'"
+            || X <- lists:flatten(Acv_video_urls)], ",") ++ ");",
     ?D("QS1: ~p~n", [Q]),
     {ok, Advs} = dao:simple(Q),
     ?D("ADVS: ~p~n", [Advs]),
@@ -329,11 +399,13 @@ collect_acv_stats([S=#stat{datestop=null, click=Click}|T], Last, To_db) ->
     collect_acv_stats(T, Last, [S#stat{datestop=Click}|To_db]);
 
 % корректная запись, без клика.
-collect_acv_stats([S=#stat{datestart=Start, datestop=Stop, click=null}|T], Last, To_db) when Start =< Stop ->
+collect_acv_stats([S=#stat{datestart=Start, datestop=Stop, click=null}|T],
+        Last, To_db) when Start =< Stop ->
     collect_acv_stats(T, Last, [S|To_db]);
 
 % корректная запись с кликом.
-collect_acv_stats([S=#stat{datestart=Start, datestop=Stop, click=Click}|T], Last, To_db) when Start =< Click, Click =< Stop ->
+collect_acv_stats([S=#stat{datestart=Start, datestop=Stop, click=Click}|T],
+        Last, To_db) when Start =< Click, Click =< Stop ->
     collect_acv_stats(T, Last, [S|To_db]);
 
 % все остальные случаи - скип
@@ -358,9 +430,12 @@ get_acv_video_stat_by_films({From_datetime, To_datetime, Acv_Id}) ->
 %%%
 get_acv_video_stat_by_films(From_datetime, To_datetime, Acv_Id) ->
     Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
-        " where (datestart < $1 and datestop > $1) or (datestop < $2  and datestop > $2) or (datestart > $1 and datestop < $2);",
+        " where (datestart < $1 and datestop > $1) "
+            " or (datestop < $2  and datestop > $2) "
+            " or (datestart > $1 and datestop < $2);",
     {ok, Vals} = dao:simple(Q, [From_datetime, To_datetime]),
-    All_videos_proplist = [{proplists:get_value("video_url", X), X} || X <- Vals],
+    All_videos_proplist =
+        [{proplists:get_value("video_url", X), X} || X <- Vals],
     Video_urls = proplists:get_keys(All_videos_proplist),
     group_by_film(Video_urls, All_videos_proplist, []).
 
@@ -411,6 +486,8 @@ t1() ->
 %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+-include_lib("eunit/include/eunit.hrl").
+
 test()->
     ok.
 
@@ -454,7 +531,8 @@ mk_rec(StartList, VideoList, PL, QL) ->
     mk_rec(StartList, VideoList, [], []).
 
 do_insert(PL, QL) ->
-    Q = "insert into acv_video_stat (ip, acv_video_id, video_uid, datestart, datestop, clicked) values " ++
+    Q = "insert into acv_video_stat (ip, acv_video_id, video_uid, "
+            " datestart, datestop, clicked) values " ++
         string:join(QL, ", ") ++ ";",
     %?D("QQQ: ~p~n~n", [Q]).
     dao:simple(Q, PL).
@@ -466,11 +544,38 @@ gen_vstat() ->
 test1() ->
     D1 = {{2011, 1,1},{0,0,0}}, 
     D2 = {{2011, 5,31},{0,0,0}},
-    Q = "select * from acv_video_stat where video_uid = '1748' and datestart > $1 and datestop < $2;",
+    Q = "select * from acv_video_stat where video_uid = '1748' "
+        "and datestart > $1 and datestop < $2;",
     dao:simple(Q, [D1, D2]),
     done.
 
 test(speed)->
+    Times_1 = 1000,
+    %%%
+    %%% Лучше использовать mysql:get_prepared, с ним в 2 раза быстрее
+    %%%     1349527 против 2840849
+    %%%
+    tests:print_speed("+",
+        fun() -> % лучше
+            case mysql:get_prepared('get_stat_max_id_get_prepared') of
+                {error, _ } ->
+                    Q = <<"select max(id) as max_id from AVStats;">>,
+                    mysql:prepare('get_stat_max_id_get_prepared', Q);
+                _ -> ok
+            end,
+            {data,{mysql_result, Cols, Vals, _X31, _X32}}
+                = mysql:execute(mysqlStat, 'get_stat_max_id_get_prepared', []),
+            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
+        end, Times_1 ),
+
+    tests:print_speed("-",
+        fun() ->
+            Q = <<"select max(id) as max_id from AVStats;">>,
+            mysql:prepare('get_stat_max_id_prepare', Q),
+            {data,{mysql_result, Cols, Vals, _X31, _X32}}
+                = mysql:execute(mysqlStat, 'get_stat_max_id_prepare', []),
+            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
+        end, Times_1 ),
 
     ok.
 

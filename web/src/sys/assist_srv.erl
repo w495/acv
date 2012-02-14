@@ -98,7 +98,7 @@ handle_info(timeout, State) ->
     captcha:remove_expired(),
     dao_acv_video:delete_acv_video_shown_expired(),
 
-    dao_stat:fetch_stat(),%%% Сбор статистики.
+    dao_stat:fetch_stat_by_id(),%%% Сбор статистики.
     {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
 handle_info(Info, State) ->

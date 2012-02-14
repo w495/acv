@@ -114,6 +114,10 @@ to_type(null, _Type) ->
     null;
 to_type(V, int4) ->
     utils:to_int(V);
+
+to_type(V, numeric) ->
+    utils:to_int(V);
+
 to_type(V, varchar) ->
     binary_to_list(V);
 to_type(V, text) ->

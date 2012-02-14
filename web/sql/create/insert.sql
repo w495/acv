@@ -4,6 +4,9 @@
  *
 ***********************************************************************/
 
+insert into var (av_stats_max_id) values (0);
+
+
 insert into permission_type (name)
 	values
 		('static');
