@@ -15,12 +15,9 @@
             specParam: "tab-change-state-action"}
     ],
     columns : [
-        {name : "id", alias : "#", type : "float", sortable : true, width:"5%"},
         {name : "video_url", alias : "Урл", type : "string", sortable : true},
         {name : "video_name", alias : "Название", type : "string", sortable : true},
-        {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
-        {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true},
-        {name : "shown", alias : "Показан", type : "string", sortable : true},
+        {name : "shows", alias : "Показан", type : "string", sortable : true},
         {name : "clicks", alias : "Клики", type : "string", sortable : true}
     ],
 

@@ -367,11 +367,12 @@ get_acv_video_stat_by_films(From_datetime, To_datetime, Acv_Id) ->
 
 group_by_film([], _PL, Ret) ->
     Ret;
-group_by_film([H|T], PL, Ret) ->
-    SL = proplists:get_all_values(H, PL),
+
+group_by_film([Film|Rest_films], PL, Ret) ->
+    SL = proplists:get_all_values(Film, PL),
     Shows = length(SL),
     Clicks = length([X || X <- SL, proplists:get_value("click", X)=/=null]),
-    group_by_film(T, PL, [[{"video_url", H}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
+    group_by_film(Rest_films, PL, [[{"video_url", Film}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
 
 %{Acv_video_url, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
 %collect([R|T]) ->
