@@ -298,6 +298,27 @@ mk_ets() ->
     utils:make_ets(stat_clt, [{write_concurrency,true}]).
 
 
+
+
+get_acv_video_stat_by_films(FromDatetime, ToDatetime, Acv_Id) ->
+    Q = "select * from adv_video_stat_" ++ utils:to_list(Acv_Id) ++ 
+        " where (start < $1 and stop > $1) or (stop < $2  and stop > $2) or (start > $1 and stop < $2);",
+    {ok, Vals} = dao:simple(Q, [FromDatetime, ToDatetime]),
+    PL = [{proplists:get_value("video_url", X), X} || X <- Vals],
+    Films = proplists:get_keys(PL),
+
+    groupByFilm(Films, PL, []).
+
+
+groupByFilm([], _PL, Ret) ->
+    Ret;
+groupByFilm([H|T], PL, Ret) ->
+    SL = proplists:get_all_values(H, PL),
+    Shows = length(SL),
+    Clicks = length([X || X <- SL, proplists:get_value("click", X)=/=null]),
+    groupByFilm(T, PL, [[{"video_url", H}, {"shows", Shows}, {"clicks", Clicks}] | Ret]).
+
+
 %{Acv_video_url, UserSessionId}, {Peer, NodeName, Start, Stop, Clicked}
 
 
