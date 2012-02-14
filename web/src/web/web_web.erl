@@ -239,10 +239,17 @@ simple_map_controllers(Path) ->
             {adv_manager, get_adv};
 
     % advertising company video
-        "/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
+        %"/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
 
-        "/get-all-acv-video-stats"   ->  {inside, get_all_acv_video_stats};
-        "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};
+        %% Вся статисттика всех покупателей
+            "/get-all-acv-video-stats"   ->  {inside, get_all_acv_video_stats};
+            "/get-acv-video-stat"        ->  {inside, get_acv_video_stat};
+
+        %% Все рекламные компании всех покупателей
+            "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};
+
+
+
         "/get-all-geo-regions"       ->  {inside, get_all_geo_regions};
         "/get-all-acv-banners"       ->  {inside, get_all_acv_banners};
 

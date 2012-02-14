@@ -223,10 +223,24 @@ get_all_acv_videos(Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
-%% Возвращает полный 
+%% Возвращает список статистики для всех рекламных компаний
 %%
 get_all_acv_video_stats(Req) ->
     Res = dao:dao_call(dao_acv_video, get_all_acv_video_stats, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%
+%% Возвращает список статистики для конкретной рекламной компании 
+%%
+get_acv_video_stat(Req) ->
+    Info = norm:extr(Req:parse_qs(), [
+        {"fromdate", [nullable, integer]},
+        {"todate", [datetimeUnixtime]},
+        {"id", [datetimeUnixtime]}
+    ]),
+    % Res = dao_stat:get_acv_video_stat_by_films({{2000,1,1},{1,1,1}},
+    %    {{2100,1,1},{1,1,1}}, 7).
+    Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%
@@ -255,9 +269,6 @@ get_acv_banners(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
-
-
-
 
 get_acv_video_common(Req) ->
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
