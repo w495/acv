@@ -4,7 +4,7 @@
         {type : "back"},
         {type : "button",
             name : "Подробнее",
-            action : "resource/bsk/descr/acv-video-stat-by-films-tab.json",
+            action : "resource/bsk/descr/acv-video-stat-by-film-tab.json",
             icon : "icon/32/actions/zoom-in.png",
             specParam: "tab-row"
         },
@@ -34,5 +34,5 @@
     sort : "id",
     ascending : false,
 
-    dblclick_action : "resource/bsk/descr/acv-video-stat-by-films-tab.json"
+    dblclick_action : "resource/bsk/descr/acv-video-stat-by-film-tab.json"
 }
