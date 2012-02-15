@@ -313,12 +313,14 @@ to_db_acv_video_url([Adv|T], To_db) ->
 
     ClickCounter = length([X || X <- Values, X#stat.click=/=null]),
 
+    ?D("ClickCounter: ~p~n", [ClickCounter]),
+
     _RQ = dao:with_connection_fk(fun(Con) ->
         R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Clicks + ClickCounter, Id]),
         R2 = pgsql:equery(Con, Q),
         {R1, R2}
     end),
-?D("RQ: ~p~n", [_RQ]),
+    ?D("RQ: ~p~n", [_RQ]),
     to_db_acv_video_url(T, To_db);
 to_db_acv_video_url([], _) ->
     done.
