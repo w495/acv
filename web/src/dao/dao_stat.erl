@@ -257,12 +257,18 @@ to_db([]) -> [];
 
 to_db(To_db) ->
     Pre_acv_video_urls = proplists:get_keys(To_db),
-    Acv_video_urls = [ lists:split(erlang:length(config:get(vk_streamer, ?VK_STREAMER_DEFAULT)), Url) || Url <- Pre_acv_video_urls ],
+    ?D("~n~nPre_acv_video_urls  ?VK_STREAMER_DEFAULT ==== ~p ~p ~n~n", [Pre_acv_video_urls, ?VK_STREAMER_DEFAULT ]),
+
+    Acv_video_urls = [
+            erlang:element(2, lists:split(1 + erlang:length(config:get(vk_streamer,
+                ?VK_STREAMER_DEFAULT)),
+            erlang:binary_to_list(Url)))
+    || Url <- Pre_acv_video_urls ],
 
     ?D("KEYS: ~p~n", [Acv_video_urls]),
     Q = "select id, ref, shown from acv_video where ref in (" ++
-        string:join(["'" ++ binary_to_list(X) ++ "'"
-            || X <- lists:flatten(Acv_video_urls)], ",") ++ ");",
+        string:join(["'" ++ X ++ "'"
+            || X <- Acv_video_urls], ",") ++ ");",
     ?D("QS1: ~p~n", [Q]),
     {ok, Advs} = dao:simple(Q),
     ?D("ADVS: ~p~n", [Advs]),
