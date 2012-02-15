@@ -6,6 +6,10 @@
 -define(APP, web).
 
 
+-define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
+
+
+
 -define( INFO(P),  flog:info(P) ).
 -define( ERROR(P), flog:error(P) ).
 %-define( DEBUG(P), flog:debug(P) ).

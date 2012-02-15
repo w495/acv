@@ -210,8 +210,7 @@ compose_stat([R|T]) ->
         datestop=null,
         click=null,
         user_id=User_id,
-        dbg_list=[R]
-    },
+        dbg_list=[R]},
     Stat_list = case ets:lookup(stat_clt, {Acv_video_url, Usid}) of
         [] -> 
             case Action of
@@ -257,7 +256,9 @@ compose_stat([]) ->
 to_db([]) -> [];
 
 to_db(To_db) ->
-    Acv_video_urls = proplists:get_keys(To_db),
+    Pre_acv_video_urls = proplists:get_keys(To_db),
+    Acv_video_urls = [ lists:split(erlang:length(config:get(vk_streamer, ?VK_STREAMER_DEFAULT)), Url) || Url <- Pre_acv_video_urls ],
+
     ?D("KEYS: ~p~n", [Acv_video_urls]),
     Q = "select id, ref, shown from acv_video where ref in (" ++
         string:join(["'" ++ binary_to_list(X) ++ "'"

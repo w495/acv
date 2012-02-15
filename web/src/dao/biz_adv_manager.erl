@@ -19,7 +19,6 @@
 % ]).
 
 
--define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
 -define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
 -define(DELIM, []).
 -define(SPACE, " ").
