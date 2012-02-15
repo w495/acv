@@ -266,7 +266,7 @@ to_db(To_db) ->
     || Url <- Pre_acv_video_urls ],
 
     ?D("KEYS: ~p~n", [Acv_video_urls]),
-    Q = "select id, ref, shown from acv_video where ref in (" ++
+    Q = "select id, ref, shown, clicks from acv_video where ref in (" ++
         string:join(["'" ++ X ++ "'"
             || X <- Acv_video_urls], ",") ++ ");",
     ?D("QS1: ~p~n", [Q]),
