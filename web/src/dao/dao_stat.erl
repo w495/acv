@@ -318,7 +318,7 @@ to_db_acv_video_url([Adv|T], To_db) ->
         R2 = pgsql:equery(Con, Q),
         {R1, R2}
     end),
-?D("RQ: ~p~n", [RQ]),
+?D("RQ: ~p~n", [_RQ]),
     to_db_acv_video_url(T, To_db);
 to_db_acv_video_url([], _) ->
     done.
