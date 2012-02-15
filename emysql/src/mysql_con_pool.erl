@@ -1,5 +1,5 @@
 
--module(mysql_con_pool).
+-module(mysql_con_pool).    
 
 -define(NUMBER, 10).
 
@@ -23,10 +23,13 @@ start_link_iter(PoolId, Host, User, Password, Database, Step) ->
     mysql:connect(PoolId,Host,undefined,User,Password,Database,true),
     start_link_iter(PoolId, Host, User, Password, Database, Step-1).
 
-
-    %mysql:connect(pool,"192.168.2.102",undefined,"cff","k9an612e","AVSrv",true),
-    %mysql:connect(pool,"192.168.2.110",undefined,"repl","yhbvft","vk",true),
-
+    %
+    % mysql:start_link(pool102,"192.168.2.102","cff","k9an612e","AVSrv").
+    % mysql:connect(pool102,"192.168.2.102",undefined,"cff","k9an612e","AVSrv",true).
+    %
+    % mysql:start_link(pool110,"192.168.2.110","repl","yhbvft","vk").
+    % mysql:connect(pool110,"192.168.2.110",undefined,"repl","yhbvft","vk",true).
+    %
 
 
 test()->
