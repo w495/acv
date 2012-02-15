@@ -250,7 +250,7 @@ to_db([]) -> [];
 to_db(To_db) ->
     Acv_video_urls = proplists:get_keys(To_db),
     ?D("KEYS: ~p~n", [Acv_video_urls]),
-    Q = "select id, url, shown from acv_video where url in (" ++ 
+    Q = "select id, ref, shown from acv_video where ref in (" ++
         string:join(["'" ++ binary_to_list(X) ++ "'"
             || X <- lists:flatten(Acv_video_urls)], ",") ++ ");",
     ?D("QS1: ~p~n", [Q]),
