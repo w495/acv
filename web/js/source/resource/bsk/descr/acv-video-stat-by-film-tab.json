@@ -20,14 +20,14 @@
 
     filter : {
         fields : [
-            {name : "fromdate", alias : "с даты", input : {type : "date-field"}},
-            {name : "todate", alias : "по дату", input : {type : "date-field"}}
+            {name : "fromdate", alias : "с даты", input : {type : "date-field-md"}},
+            {name : "todate", alias : "по дату", input : {type : "date-field-pd"}}
         ],
         render : "horisontal",
         submit_url : "/get-acv-video-stat/by-film"
     },
     
-    index_name : ["id"],
+    index_name : ["video_url", "parent_id"],
     sort : "id",
     ascending : false,
 

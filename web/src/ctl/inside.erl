@@ -249,12 +249,33 @@ get_acv_video_stat(Req) ->
 %%%      для конкретной рекламной компании
 %%%
 get_acv_video_stat_by_films(Req) ->
-    Info = norm:extr(Req:parse_qs(), [
+    Data = Req:parse_qs(),
+    ?D("~n~nData  = ~p~n~n", [Data]),
+    Info = norm:extr(Data , [
         {"fromdate", [datetimeUnixtime]},
         {"todate",   [datetimeUnixtime]},
         {"id",       [nullable,integer]}
     ]),
+    ?D("~n~nInfo   = ~p~n~n", [Info]),
     Res = dao:dao_call(dao_stat, get_acv_video_stat_by_films, Info, values),
+    ?D("Res  = ~p~n", [Res]),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% Возвращает список статистики ПО ФИЛЬМАМ
+%%%      для конкретной рекламной компании
+%%%
+get_acv_video_stat_by_film(Req) ->
+    Data = Req:parse_qs(),
+    ?D("~n~nData  = ~p~n~n", [Data]),
+    Info = norm:extr(Data , [
+        {"fromdate",    [datetimeUnixtime]},
+        {"todate",      [datetimeUnixtime]},
+        {"parent_id",   [integer]},
+        {"video_url",   [string]}
+    ]),
+    ?D("~n~nInfo   = ~p~n~n", [Info]),
+    Res = dao:dao_call(dao_stat, get_acv_video_stat_by_film, Info, values),
     ?D("Res  = ~p~n", [Res]),
     {"application/json", [], [mochijson2:encode(Res)]}.
 

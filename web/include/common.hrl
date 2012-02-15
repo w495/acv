@@ -6,7 +6,7 @@
 -define(APP, web).
 
 
--define(VK_STREAMER_DEFAULT, "http://192.168.2.187:8000").
+-define(VK_STREAMER_DEFAULT, "http://192.168.2.156:7000").
 
 
 

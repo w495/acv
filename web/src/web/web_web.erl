@@ -252,6 +252,9 @@ simple_map_controllers(Path) ->
             "/get-acv-video-stat/by-films" ->
                 {inside, get_acv_video_stat_by_films};
 
+        %%% Cтатистика конкретной рекламной компании (по фильмам)
+            "/get-acv-video-stat/by-film" ->
+                {inside, get_acv_video_stat_by_film};
 
         %%% Все рекламные компании всех покупателей
             "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};

@@ -15,6 +15,8 @@
     fetch_stat_by_time/1,
     fetch_stat_by_id/0,
     fetch_stat_by_id/1,
+    get_acv_video_stat_by_film/1,
+    get_acv_video_stat_by_film/4,
     get_acv_video_stat_by_films/1,
     get_acv_video_stat_by_films/3,
     test/0,
@@ -41,10 +43,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
 -define(STAT_SKIP_SECOND, 3600).
-
 
 -record(stat, {
     video_url,
@@ -282,9 +281,11 @@ to_db_acv_video_url([Adv|T], To_db) ->
     Shown   = proplists:get_value("shown", Adv),
     Clicks  = proplists:get_value("clicks", Adv),
 
-    
+    Vk_streamer = config:get(vk_streamer, ?VK_STREAMER_DEFAULT) ++ "/",
 
-    Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), To_db)),
+    Values = lists:flatten(proplists:get_all_values(list_to_binary(Vk_streamer ++ Key), To_db)),
+%     ?D("~n~nTo_db = ~p", [To_db]),
+%     ?D("~n~nlist_to_binary(Vk_streamer ++ Key) = ~p", [list_to_binary(Vk_streamer ++ Key)]),
 
     try
         create(Id)
@@ -315,7 +316,7 @@ to_db_acv_video_url([Adv|T], To_db) ->
 
     ClickCounter = length([X || X <- Values, X#stat.click=/=null]),
 
-?D("~nClicks = ~p~n", [Clicks]),
+    ?D("~nClicks = ~p~n", [Clicks]),
     ?D("ClickCounter: ~p~n", [ClickCounter]),
 
     _RQ = dao:with_connection_fk(fun(Con) ->
@@ -444,6 +445,24 @@ collect_acv_stats([], Last, To_db) ->
 mk_ets() ->
     utils:make_ets(stat_clt, [{write_concurrency,true}]).
 
+
+%%%
+%%% Возвращает {ok, proplist()}
+%%%
+get_acv_video_stat_by_film({From_datetime, To_datetime, Acv_Id, Video_url}) ->
+    get_acv_video_stat_by_film(From_datetime, To_datetime, Acv_Id, Video_url).
+
+%%%
+%%% Возвращает {ok, proplist()}
+%%%
+get_acv_video_stat_by_film(From_datetime, To_datetime, Acv_Id, Video_url) ->
+    Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
+        " where ((datestart < $1 and datestop > $1)  "
+            " or (datestop < $2  and datestop > $2)  "
+            " or (datestart > $1 and datestop < $2)) "
+            " and video_url = $3;",
+    dao:simple(Q, [From_datetime, To_datetime, Video_url]).
+
 %%%
 %%% Возвращает {ok, proplist()}
 %%%
@@ -462,23 +481,24 @@ get_acv_video_stat_by_films(From_datetime, To_datetime, Acv_Id) ->
     All_videos_proplist =
         [{proplists:get_value("video_url", X), X} || X <- Vals],
     Video_urls = proplists:get_keys(All_videos_proplist),
-    group_by_film(Video_urls, All_videos_proplist, []).
+    group_by_film(Video_urls, All_videos_proplist, Acv_Id, []).
 
-group_by_film([], _PL, Ret) ->
+group_by_film([], _PL, _parent_id, Ret) ->
     Ret;
 
-group_by_film([Video_url|Rest_video_urls], All_videos_proplist, Ret) ->
+group_by_film([Video_url|Rest_video_urls], All_videos_proplist, Parent_id, Ret) ->
     Video_name = proplists:get_value("video_name",
         proplists:get_value(Video_url, All_videos_proplist)),
     Shown_list = proplists:get_all_values(Video_url, All_videos_proplist),
     Video_shows = length(Shown_list),
     Video_clicks = length([X || X <- Shown_list,
         proplists:get_value("click", X)=/=null]),
-    group_by_film(Rest_video_urls, All_videos_proplist,
+    group_by_film(Rest_video_urls, All_videos_proplist, Parent_id,
         [[
             {"video_name",  Video_name},
             {"video_url",   Video_url},
             {"shows",       Video_shows},
+            {"parent_id",   Parent_id},
             {"clicks",      Video_clicks}]
         | Ret]
     ).

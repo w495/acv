@@ -23,15 +23,15 @@
 
     filter : {
         fields : [
-            {name : "fromdate", alias : "с даты", input : {type : "date-field"}},
-            {name : "todate", alias : "по дату", input : {type : "date-field"}}
+            {name : "fromdate", alias : "с даты", input : {type : "date-field-md"}},
+            {name : "todate", alias : "по дату", input : {type : "date-field-pd"}}
         ],
         render : "horisontal",
         submit_url : "/get-acv-video-stat/by-films"
     },
     
     index_name : ["id"],
-    sort : "id",
+    sort : "shows",
     ascending : false,
 
     dblclick_action : "resource/bsk/descr/acv-video-stat-by-film-tab.json"
