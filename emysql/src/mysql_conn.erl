@@ -178,7 +178,7 @@ post_start(Pid, LogFun) ->
 	    ?Log2(LogFun, error,
 		 "received unknown signal, exiting: ~p", [Unknown]),
 	    {error, "unknown signal received"}
-    after 5000 ->
+    after 5000*4 ->
 	    {error, "timed out"}
     end.
 
