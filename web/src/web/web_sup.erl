@@ -126,13 +126,13 @@ init([]) ->
         config:get(vk_db_name, "vk"),
         true),
 
-    mysql:connect(mysqlStat,
-        config:get(stat_db_host, "localhost"),
-        undefined,
-        config:get(stat_db_user, "root"),
-        config:get(stat_db_password, "1111"),
-        config:get(stat_db_name, "vk"),
-        true),
+%     mysql:connect(mysqlStat,
+%         config:get(stat_db_host, "localhost"),
+%         undefined,
+%         config:get(stat_db_user, "root"),
+%         config:get(stat_db_password, "1111"),
+%         config:get(stat_db_name, "vk"),
+%         true),
 
     dao_stat:mk_ets(),
 
