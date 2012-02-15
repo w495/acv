@@ -202,7 +202,16 @@ compose_stat([R|T]) ->
     Video_url = proplists:get_value("URL", R),
     User_id = proplists:get_value("User_id", R),
 
-    SFish = #stat{video_url=Video_url, peer=Peer, server_node=Trans_server_node_name, datestart=null, datestop=null, click=null, user_id=User_id, dbg_list=[R]},
+    SFish = #stat{
+        video_url=Video_url,
+        peer=Peer,
+        server_node=Trans_server_node_name,
+        datestart=null,
+        datestop=null,
+        click=null,
+        user_id=User_id,
+        dbg_list=[R]
+    },
     Stat_list = case ets:lookup(stat_clt, {Acv_video_url, Usid}) of
         [] -> 
             case Action of
@@ -260,7 +269,7 @@ to_db(To_db) ->
 
 
 to_db_acv_video_url([Adv|T], To_db) ->
-    Key     = proplists:get_value("url", Adv),
+    Key     = proplists:get_value("ref", Adv),
     Id      = proplists:get_value("id", Adv),
     Shown   = proplists:get_value("shown", Adv),
     Clicks  = proplists:get_value("clicks", Adv),
