@@ -305,9 +305,9 @@ to_db_acv_video_url([Adv|T], To_db) ->
     ?D("VALUES: ~p~n", [Values]),
 
     ADV_Values = format_adv(Values, []),
-%    ?D("ADV  VALUES: ~p~n", [ADV_Values]),
+    ?D("ADV  VALUES: ~p~n", [ADV_Values]),
     Q = Q1 ++ string:join(ADV_Values, ", ") ++ ";",
-%    ?D("QQ:~p~n~n", [Q]),
+    ?D("QQ:~p~n~n", [Q]),
 
     QUp = "update acv_video set shown=$1, clicks=$2 where id=$3;",
 
@@ -318,7 +318,7 @@ to_db_acv_video_url([Adv|T], To_db) ->
         R2 = pgsql:equery(Con, Q),
         {R1, R2}
     end),
-%    ?D("RQ: ~p~n", [RQ]),
+?D("RQ: ~p~n", [RQ]),
     to_db_acv_video_url(T, To_db);
 to_db_acv_video_url([], _) ->
     done.
@@ -493,7 +493,7 @@ t1() ->
     PastDt = calendar:gregorian_seconds_to_datetime(calendar:datetime_to_gregorian_seconds(erlang:localtime()) - 5*60),
     Guard = [{'<','$1',{const, PastDt}}],
 %    ets:insert(stat_clt, {{1, "b"}, {{{2012,1,2},{10,5,0}}, kit, pechen, treska}}),
-%    ?D("~p~n", [ets:lookup(stat_clt, {1, "a"})]),
+?D("~p~n", [ets:lookup(stat_clt, {1, "a"})]),
     ets:select(stat_clt, [{Match, Guard, ['$_']}]).
 
 %compose_stat(StartDatetime, StopDatetime) ->
