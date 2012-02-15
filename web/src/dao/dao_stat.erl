@@ -260,9 +260,10 @@ to_db(To_db) ->
 
 
 to_db_acv_video_url([Adv|T], To_db) ->
-    Key = proplists:get_value("url", Adv),
-    Id = proplists:get_value("id", Adv),
-    Shown = proplists:get_value("shown", Adv),
+    Key     = proplists:get_value("url", Adv),
+    Id      = proplists:get_value("id", Adv),
+    Shown   = proplists:get_value("shown", Adv),
+    Clicks  = proplists:get_value("clicks", Adv),
 
     Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), To_db)),
 
@@ -287,18 +288,20 @@ to_db_acv_video_url([Adv|T], To_db) ->
     ?D("VALUES: ~p~n", [Values]),
 
     ADV_Values = format_adv(Values, []),
-    ?D("ADV  VALUES: ~p~n", [ADV_Values]),
+%    ?D("ADV  VALUES: ~p~n", [ADV_Values]),
     Q = Q1 ++ string:join(ADV_Values, ", ") ++ ";",
-    ?D("QQ:~p~n~n", [Q]),
+%    ?D("QQ:~p~n~n", [Q]),
 
-    QUp = "update acv_video set shown=$1 where id=$2;",
+    QUp = "update acv_video set shown=$1, clicks=$2 where id=$3;",
 
-    RQ = dao:with_connection_fk(fun(Con) ->
-        R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Id]),
+    ClickCounter = length([X || X <- Values, X#stat.click=/=null]),
+
+    _RQ = dao:with_connection_fk(fun(Con) ->
+        R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Clicks + ClickCounter, Id]),
         R2 = pgsql:equery(Con, Q),
         {R1, R2}
     end),
-    ?D("RQ: ~p~n", [RQ]),
+%    ?D("RQ: ~p~n", [RQ]),
     to_db_acv_video_url(T, To_db);
 to_db_acv_video_url([], _) ->
     done.
