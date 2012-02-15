@@ -28,8 +28,12 @@
             {name : "todate", alias : "по дату", input : {type : "date-field-pd"}}
         ],
         render : "horisontal",
-        submit_url : "/get-all-acv-video-stats"
+        submit_url : "/get-all-acv-video-stats",
+        
+        disableCancel : true
     },
+    
+    
     
     index_name : ["id"],
     sort : "id",

@@ -158,6 +158,11 @@ qx.Class.define("bsk.view.Form.GenericForm",
                 var cancelButton = new qx.ui.form.Button(formDescription.cancel_btn_label || "Отмена");
                 this.form.addButton(cancelButton);
                 cancelButton.addListener("execute", this._onCancelClick, this);
+                console.log("formDescription = ", formDescription);
+                
+                if(formDescription.disableCancel == true){
+                    cancelButton.setEnabled(false);
+                }
             }
 
             var auxButtons = Array();

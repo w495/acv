@@ -170,7 +170,6 @@ qx.Class.define("bsk.view.GenericTableModel",
                                     rowVal = "отсутвует"
                                 }
                                 break;
-                            
                             case "erl_datetime_utc":
                                 var dt = bsk.util.utils.getDate(rowVal, 0);
                                 rowVal = bsk.util.utils.formatJsDateTime(dt);
