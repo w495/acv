@@ -97,10 +97,10 @@ init([]) ->
         mySqlConPoolStat,
         {mysql_con_pool, start_link, [
             mysqlStat,
-            config:get(stat_db_host, "localhost"),
-            config:get(stat_db_user, "root"),
-            config:get(stat_db_password, "1111"),
-            config:get(stat_db_name, "vk"),
+            config:get(stat_db_host, "192.168.2.102"),
+            config:get(stat_db_user, "cff"),
+            config:get(stat_db_password, "k9an612e"),
+            config:get(stat_db_name, "AVSrv"),
             10 % количество соединений
         ]},
         permanent,
@@ -112,15 +112,28 @@ init([]) ->
 %    Emysql = {
 %    },
 
-    mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"), 
+    mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
         config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
-    mysql:connect(mysqlStat, 
-        config:get(stat_db_host, "localhost"), 
-        undefined, 
-        config:get(stat_db_user, "root"), 
-        config:get(stat_db_password, "1111"), 
+
+    mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
+        config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
+
+    mysql:connect(mySqlConPool,
+        config:get(vk_db_host, "localhost"),
+        undefined,
+        config:get(vk_db_user, "root"),
+        config:get(vk_db_password, "1111"),
+        config:get(vk_db_name, "vk"),
+        true),
+
+    mysql:connect(mysqlStat,
+        config:get(stat_db_host, "localhost"),
+        undefined,
+        config:get(stat_db_user, "root"),
+        config:get(stat_db_password, "1111"),
         config:get(stat_db_name, "vk"),
         true),
+
     dao_stat:mk_ets(),
 
     Xslt_processor = { %%% преодбразователь
@@ -137,8 +150,8 @@ init([]) ->
         Assist_srv,      % Авторизация
         PgConPool,      % Связь с локальной базой
         Xslt_processor
-%        ,MySqlConPool   % Связь с tvzavr vk
-%        ,MySqlConPoolStat
+        %,MySqlConPool   % Связь с tvzavr vk
+        %,MySqlConPoolStat
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 
