@@ -162,7 +162,15 @@ qx.Class.define("bsk.view.GenericTableModel",
                                 var dt = bsk.util.utils.getDateLocal(rowVal, 0);
                                 rowVal = bsk.util.utils.formatJsDateTime(dt);
                                 break;
-
+                            case "erl_datetime_nullable":
+                                if("" != rowVal){
+                                    var dt = bsk.util.utils.getDateLocal(rowVal, 0);
+                                    rowVal = bsk.util.utils.formatJsDateTime(dt);
+                                } else {
+                                    rowVal = "отсутвует"
+                                }
+                                break;
+                            
                             case "erl_datetime_utc":
                                 var dt = bsk.util.utils.getDate(rowVal, 0);
                                 rowVal = bsk.util.utils.formatJsDateTime(dt);

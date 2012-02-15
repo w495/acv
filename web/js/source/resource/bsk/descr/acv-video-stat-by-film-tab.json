@@ -15,7 +15,7 @@
         {name : "peer", alias : "ip", type : "string", sortable : true},
         {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
         {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true},
-        {name : "click", alias : "Дата клика", type : "erl_datetime", sortable : true}
+        {name : "click", alias : "Дата клика", type : "erl_datetime_nullable", sortable : true}
     ],
 
     filter : {
