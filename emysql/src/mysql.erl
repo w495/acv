@@ -167,7 +167,7 @@
 %% Macros
 -define(SERVER, mysql_dispatcher).
 -define(STATE_VAR, mysql_connection_state).
--define(CONNECT_TIMEOUT, 5000).
+-define(CONNECT_TIMEOUT, 5000*4).
 -define(LOCAL_FILES, 128).
 -define(PORT, 3306).
 
