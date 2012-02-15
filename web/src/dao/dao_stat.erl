@@ -274,8 +274,9 @@ to_db(To_db) ->
     ?D("ADVS: ~p~n", [Advs]),
     to_db_acv_video_url(Advs, To_db).
 
-
 to_db_acv_video_url([Adv|T], To_db) ->
+    ?D("~n~nAdv = ~p~n~n", [Adv]),
+
     Key     = proplists:get_value("ref", Adv),
     Id      = proplists:get_value("id", Adv),
     Shown   = proplists:get_value("shown", Adv),
