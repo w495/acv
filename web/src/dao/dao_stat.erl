@@ -282,6 +282,8 @@ to_db_acv_video_url([Adv|T], To_db) ->
     Shown   = proplists:get_value("shown", Adv),
     Clicks  = proplists:get_value("clicks", Adv),
 
+    
+
     Values = lists:flatten(proplists:get_all_values(list_to_binary(Key), To_db)),
 
     try
@@ -313,6 +315,7 @@ to_db_acv_video_url([Adv|T], To_db) ->
 
     ClickCounter = length([X || X <- Values, X#stat.click=/=null]),
 
+?D("~nClicks = ~p~n", [Clicks]),
     ?D("ClickCounter: ~p~n", [ClickCounter]),
 
     _RQ = dao:with_connection_fk(fun(Con) ->
