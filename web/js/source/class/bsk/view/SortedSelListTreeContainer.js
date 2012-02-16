@@ -27,7 +27,7 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         this.field.addListener("input", this._OnChange, this);
         //this.field.addListener("input", this._OnChange, this);
         
-        this.TIMER_INTERVAL = 100;
+        this.TIMER_INTERVAL = 200;
     },
 
     members : {
@@ -35,9 +35,9 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         _OnChange : function(e){
             var _this = this;
             var _data = e.getData();
-            /*no_var */ _testItems =  function(){_this.tree.testItems(_data);}
-            this.proc = window.clearInterval(this.proc);
-            this.proc = window.setInterval("_testItems()",this.TIMER_INTERVAL * _data.length);
+            qx.event.Timer.once(function() {
+                _this.tree.testItems(_data);
+            }, this, this.TIMER_INTERVAL);
         },
         
         getSelectedId : function() {

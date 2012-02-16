@@ -400,23 +400,33 @@ update_acv_video(Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
-full_delete_acv_video(Req) ->
+
+stop_acv_video(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_post(),
-
     Id = convert:to_integer(proplists:get_value("id", Data)),
-
-    Res = dao:dao_call(dao_acv_video, full_delete_acv_video, Id, values),
+    Res = dao:dao_call(dao_acv_video, stop_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
 
 delete_acv_video(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_post(),
-
     Id = convert:to_integer(proplists:get_value("id", Data)),
-
     Res = dao:dao_call(dao_acv_video, delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+full_delete_acv_video(Req) ->
+    Customer_id = authorization:get_customer_id(Req),
+    Data = Req:parse_post(),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+    Res = dao:dao_call(dao_acv_video, full_delete_acv_video, Id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+
+
 
 get_adv_coms_vid(_Req) ->
     Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),

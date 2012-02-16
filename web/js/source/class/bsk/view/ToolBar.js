@@ -13,6 +13,14 @@
 #asset(qx/icon/Tango/32/actions/edit-copy.png)
 
 
+#asset(qx/icon/Tango/32/actions/document-new.png)
+#asset(qx/icon/Tango/32/actions/view-refresh.png)
+
+#asset(qx/icon/Tango/32/actions/media-playback-stop.png)
+
+
+
+
 #asset(qx/icon/Tango/22/actions/go-previous.png)
 #asset(qx/icon/Tango/22/actions/system-log-out.png)
 #asset(qx/icon/Tango/22/actions/list-add.png)
