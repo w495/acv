@@ -25,7 +25,6 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         this.add(this.tree);
         
         this.field.addListener("input", this._OnChange, this);
-        //this.field.addListener("input", this._OnChange, this);
         
         this.TIMER_INTERVAL = 200;
     },
@@ -37,7 +36,7 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
             var _data = e.getData();
             qx.event.Timer.once(function() {
                 _this.tree.testItems(_data);
-            }, this, this.TIMER_INTERVAL);
+            }, this, bsk.Config.SORTEDSELLISTTREE_TIMEOUT);
         },
         
         getSelectedId : function() {

@@ -151,7 +151,8 @@ qx.Class.define("bsk.view.SortedSelListTree",
                 this.biz.on_selDataLoaded(this);
             return true;
         },
-
+        
+        
         addItems : function(values) {
             for(var i=0; i<values.length; i++) {
                 var E = values[i];
