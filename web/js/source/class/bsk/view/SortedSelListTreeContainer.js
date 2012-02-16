@@ -35,11 +35,8 @@ qx.Class.define("bsk.view.SortedSelListTreeContainer",
         _OnChange : function(e){
             var _this = this;
             var _data = e.getData();
-            var _testItems =  function(){
-                _this.tree.testItems(_data);
-             }
+            /*no_var */ _testItems =  function(){_this.tree.testItems(_data);}
             this.proc = window.clearInterval(this.proc);
-            
             this.proc = window.setInterval("_testItems()",this.TIMER_INTERVAL * _data.length);
         },
         

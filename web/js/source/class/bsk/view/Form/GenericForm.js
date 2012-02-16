@@ -71,14 +71,10 @@ qx.Class.define("bsk.view.Form.GenericForm",
                         date.setDate(date.getDate() - 1);
                         FField.setValue(date);
                         break;
-                    
                     case "date-field":
                         FField = new qx.ui.form.DateField();
                         FField.setValue(new Date());
                         break;
-                    
-
-                    
                     case "password":
                         FField = new qx.ui.form.PasswordField();
                         break;

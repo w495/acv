@@ -343,19 +343,13 @@ get_acv_video_category_targeting(Req) ->
 %%% Изменяет рекламу для роликов
 %%%
 update_acv_video(Req) ->
-
-
     Customer_id = authorization:get_customer_id(Req),
-
     Data = Req:parse_post(),
-
     ?D("~n----------------------------------------------------------------~nData  = ~p", [Data ]),
-
     Geo_region_list =
         [convert:to_integer(X) || X <- proplists:get_all_values("geo_region_list", Data)],
     Cat_list =
         [convert:to_integer(X) || X <- proplists:get_all_values("cat_list", Data)],
-
     ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
     ?D("~n---------------------~nCat_list = ~p", [Cat_list]),
 
@@ -415,7 +409,6 @@ full_delete_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, full_delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-
 delete_acv_video(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_post(),
@@ -424,9 +417,6 @@ delete_acv_video(Req) ->
 
     Res = dao:dao_call(dao_acv_video, delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
-
-
-
 
 get_adv_coms_vid(_Req) ->
     Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),
