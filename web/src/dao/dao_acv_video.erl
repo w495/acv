@@ -14,9 +14,9 @@
     get_acv_video_common/1,
     get_acv_video_show/1,
     get_acv_video_upload/1,
-    get_acv_video_category_targeting/1,
-    get_acv_video_region_targeting/1,
-    get_acv_video_users_targeting/1,
+    get_acv_video_cats/1,
+    get_acv_video_geos/1,
+    get_acv_video_users/1,
     update_acv_video/1,
     delete_acv_video/1,
 
@@ -163,6 +163,20 @@ get_acv_video(Acv_video_id) ->
             " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
 
+% %%% @doc
+% %%% Возвращает данное acv_video
+% %%%
+% get_acv_video_all(Acv_video_id) ->
+%     case get_acv_video(Acv_video_id) of
+%         {ok, R1} ->
+%             case get_acv_video2cat(Acv_video_id) of
+%                 {ok, R2} -> {ok, R1, [X || [{"cat_id", X}] <- R2]};
+%                 E2 -> E2
+%             end;
+%         E1 -> E1
+%     end.
+
+
 %%% @doc
 %%% Возвращает владельца.
 %%%
@@ -192,7 +206,7 @@ is_owner(Customer_id, Acv_video_id) ->
     end.
 
 %%% @doc
-%%% get_acv_video_common
+%%% Возвращает общую информацию о ролике
 %%% 
 get_acv_video_common(Acv_video_id) ->
     Query =
@@ -204,7 +218,7 @@ get_acv_video_common(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% get_acv_video_show
+%%% Возвращает информацию о показах ролика
 %%% 
 get_acv_video_show(Acv_video_id) ->
     Query =
@@ -218,7 +232,7 @@ get_acv_video_show(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% get_acv_video_upload
+%%% Возвращает информацию о файле ролика
 %%%
 get_acv_video_upload(Acv_video_id) ->
     Query =
@@ -230,9 +244,9 @@ get_acv_video_upload(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% get_acv_video_category_targeting
+%%% Возвращает информацию для таргетирования по категориям
 %%%
-get_acv_video_category_targeting(Acv_video_id) ->
+get_acv_video_cats(Acv_video_id) ->
     Query =
         "select "
             " cat_id "
@@ -241,9 +255,9 @@ get_acv_video_category_targeting(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% get_acv_video_region_targeting
+%%% Возвращает информацию для таргетирования по регионам
 %%%
-get_acv_video_region_targeting(Acv_video_id) ->
+get_acv_video_geos(Acv_video_id) ->
     Query =
         "select "
             " geo_region_id "
@@ -252,9 +266,9 @@ get_acv_video_region_targeting(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% get_acv_video_users_targeting
+%%% Возвращает информацию для таргетирования по пользователям
 %%%
-get_acv_video_users_targeting(Acv_video_id) ->
+get_acv_video_users(Acv_video_id) ->
     Query =
         "select "
             " acv_video.age_from, acv_video.age_to, "

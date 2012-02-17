@@ -50,9 +50,7 @@ get_customer_groups(_Req) ->
 get_customer_group_info(Req) ->
     Data = Req:parse_qs(),
     Id = utils:to_integer(proplists:get_value("id", Data)),
-
     io:format("Id = ~p~n", [Id]),
-
     case dao_customer:get_customer_group(Id) of
         {ok, Val, Perms} ->
             Res1 = db2json:encode(Val),

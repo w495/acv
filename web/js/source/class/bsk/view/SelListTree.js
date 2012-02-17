@@ -36,10 +36,11 @@ qx.Class.define("bsk.view.SelListTree",
     },
 
     members : {
-
+        
         _onMenuSelect : function(e) {
+            
         },
-
+        
         reset : function() {
             this.setHideRoot(true);
             this.setOpenMode("click");
@@ -51,7 +52,7 @@ qx.Class.define("bsk.view.SelListTree",
             if(this.url)
                 this._requestItems(this.url);
         },
-
+        
         requestItems : function() {
             this._requestItems(this.url);
         },
@@ -64,8 +65,7 @@ qx.Class.define("bsk.view.SelListTree",
             req.addListener("completed", this._onIncomeItems, this);
             req.send();
         },
-
-
+        
         setParamdict: function(paramdict) {
             this.paramdict = paramdict;
         },
@@ -102,7 +102,7 @@ qx.Class.define("bsk.view.SelListTree",
                 this.data[E.id] = checkbox;
             }
         },
-
+        
         remItem : function(value) {
             var newData = {};
 

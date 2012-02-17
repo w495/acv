@@ -55,7 +55,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             var layout = new qx.ui.layout.Grid(2, 1);
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
-            this.composite  = new qx.ui.container.Composite (layout);
+            this.composite  = new qx.ui.container.Composite(layout);
             
             
             this.inp.List = new bsk.view.
@@ -94,17 +94,13 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         **/
         saveData : function(e) {
             var formIsValid = this.validateForm();
-            
-            var list = this.inp.List.tree.getSelectedId();
-            
+            var list = this.inp.List.getSelectedId();
             console.log("geo_region_list ---<")
-            console.log(this.inp.List.tree.getSelectedId());
+            console.log(this.inp.List.getSelectedId());
             console.log(">---")
-            
             if(this.validateForm()) {
                 this.uReq.setParameter("geo_region_list", list, true);
             }
-            
             return formIsValid;
         }
     }

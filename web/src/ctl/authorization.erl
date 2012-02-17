@@ -62,7 +62,7 @@ auth_getlogin(Req) ->
 %%% Is_owner_fun(Customer_id, Obj) -> true | false
 %%%
 
-auth_required(Req, {Is_owner_fun, Obj, Alt_perm}) ->
+auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined ->
@@ -70,10 +70,16 @@ auth_required(Req, {Is_owner_fun, Obj, Alt_perm}) ->
         A ->
             case auth_biz:get_session(A) of
                 [] -> throw(auth_required);
-                [H = #web_session{customer_id = Customer_id}|_T] ->
+                [H = #web_session{customer_id = Customer_id, permissions=PList}|_T] ->
                     case Is_owner_fun(Customer_id, Obj) of
                         true -> H;
-                        false -> auth_required(Req, Alt_perm)
+                        false ->
+                            case lists:member(Perm, PList) of
+                                true -> H;
+                                false ->
+                                    ?INFO(?FMT("Permission required: ~p~n",[Perm])),
+                                    throw({permission_required, Perm})
+                            end
                     end
             end
     end;

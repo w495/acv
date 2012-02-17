@@ -43,7 +43,7 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
             
         this.ltree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
         this.rtree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
-
+        
         var layout = new qx.ui.layout.Grid(2, 2);
         layout.setColumnFlex(0, 1);
         layout.setColumnFlex(1, 1);
@@ -75,7 +75,7 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         this.addButton.addListener("execute", this._OnAdd, this);
         this.delButton.addListener("execute", this._OnDel, this);
     },
-
+    
     members : {
         
         ltree: null,
@@ -108,7 +108,7 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         },
         
         getSelectedId : function() {
-            this.tree.getSelectedId();
+            this.rtree.getAllId();
         }
     }
 });
