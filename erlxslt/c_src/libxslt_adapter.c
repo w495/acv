@@ -86,19 +86,19 @@ void apply_xsl(template_map_t* global_template_map) {
         Если нам нужна высокая эффективность, то мы кешируем шаблоны.
         Но если нам нужно удобство разработки мы этого не делаем.
     */
-#ifndef DEBUG
-    if(global_template_map->
-            find((const char*)xslfile) != global_template_map->end()) {
-        xsl = global_template_map->find((const char*)xslfile)->second;
-    }
-    else {
-        xsl = xsltParseStylesheetFile((const xmlChar*) xslfile);
-        global_template_map->insert(template_pair_t((const char*)xslfile, xsl));
-    }
-#endif
-#ifdef DEBUG
+// #ifndef DEBUG
+//     if(global_template_map->
+//             find((const char*)xslfile) != global_template_map->end()) {
+//         xsl = global_template_map->find((const char*)xslfile)->second;
+//     }
+//     else {
+//         xsl = xsltParseStylesheetFile((const xmlChar*) xslfile);
+//         global_template_map->insert(template_pair_t((const char*)xslfile, xsl));
+//     }
+// #endif
+// #ifdef DEBUG
     xsl = xsltParseStylesheetFile((const xmlChar*) xslfile);
-#endif
+//#endif
     xmlDocPtr doc = xmlParseMemory((const char *)input_xml_str,
                                    strlen(input_xml_str));
     xmlDocPtr result = xsltApplyStylesheet(xsl, doc, NULL);

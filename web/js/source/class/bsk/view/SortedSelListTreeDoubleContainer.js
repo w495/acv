@@ -40,7 +40,7 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         this.rtree = new bsk.view
             .SortedSelListTree(this, undefined, labelFieldName,
                 descrFieldName, paramdict);
-            
+         
         this.ltree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
         this.rtree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
         
@@ -69,7 +69,6 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         this.add(this.ltree , {row:vertical_offset, column:0});
         this.add(this.rtree , {row:vertical_offset, column:1});
         //this.field.addListener("input", this._OnChange, this);
-        
         
         this.tfield.addListener("input", this._OnChange, this);
         this.addButton.addListener("execute", this._OnAdd, this);

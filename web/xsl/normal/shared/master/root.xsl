@@ -91,10 +91,10 @@
     <xsl:param name="Delim" select="': '" />
     <xsl:text>Система рекламы tvzavr</xsl:text>
     <xsl:value-of select="$Delim" />
-    <xsl:call-template name="s-title-1"/>
+    <xsl:call-template name="s-title-root"/>
 </xsl:template>
 
-<xsl:template name="s-title-1">
+<xsl:template name="s-title-root">
     <!--
         Подзаголовок страницы.
     -->
@@ -135,9 +135,12 @@
         Скрипты добавляемые вверху страницы.
         Рекомендовано это использовать, если сами скрипты
         изменяют начальный вид страницы или ее DOM (до загрузки).
-        Например, modernizer.js.
+        Например, modernizr.
         Для обычного использования НЕ РЕКОМЕНДОВАНЫ.
     -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.0.6/modernizr.min.js">
+        <xsl:text><![CDATA[ ]]></xsl:text>
+    </script>
 </xsl:template>
 
 <xsl:template name="s-body">
@@ -147,9 +150,6 @@
     <header class="s-header">
         <xsl:call-template name="s-header" />
     </header>
-    <nav>
-        <xsl:call-template name="s-nav" />
-    </nav>
     <section class="s-main">
         <xsl:call-template name="s-main" />
     </section>
@@ -163,9 +163,12 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h1><xsl:text>τυζαυρ(∀ΔV(CΩM))</xsl:text></h1>
-        <h2 class="b-header-caption"><xsl:text>система рекламы τυζαυρ</xsl:text></h2>
+        <h2 class="b-thehead-caption"><xsl:text>сайт для рекламодателей</xsl:text></h2>
+        <h1 class="b-thehead"><xsl:text>tvzavr</xsl:text></h1>
     </hgroup>
+    <div class="b-siginblock">
+        <span>tvzavr 00</span>
+    </div>
 </xsl:template>
 
 
@@ -187,24 +190,24 @@
     <!--
         Основное содержимое документа.
     -->
-    <xsl:call-template name="s-main-1" />
+    <xsl:call-template name="s-main-root" />
 </xsl:template>
 
-<xsl:template name="s-main-1">
+<xsl:template name="s-main-root">
     <!--
         Основное содержимое документа.
         Первый уровенгь вложенности.
     -->
-    <xsl:call-template name="s-main-2" />
+    <xsl:call-template name="s-main-base" />
 </xsl:template>
 
 
-<xsl:template name="s-main-2">
+<xsl:template name="s-main-base">
     <!--
         Основное содержимое документа.
         Второй уровенгь вложенности.
 
-        <xsl:call-template name="s-main-3" />
+        <xsl:call-template name="s-main-concrete" />
     -->
 </xsl:template>
 
