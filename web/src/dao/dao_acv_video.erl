@@ -152,7 +152,7 @@ get_acv_video(Acv_video_id) ->
             " acv_video.shown, acv_video.duration, "
             " acv_video.datestart, acv_video.datestop "
         " from acv_video "
-            " where acv_video.id = $ and deleted = false1;",
+            " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
@@ -485,7 +485,7 @@ full_delete_acv_video(Id) ->
     Query_video2cat =
         "delete from acv_video2cat where acv_video_id = $1;",
     Query_stat =
-        "drop table acv_video_stat_" ++ erlang:integer_to_list(Id);
+        "drop table acv_video_stat_" ++ erlang:integer_to_list(Id) ++ ";",
     dao:with_transaction_fk(
         fun(Con) ->
             pgsql:equery(Con, Query_stat, []),
