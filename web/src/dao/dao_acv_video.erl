@@ -19,6 +19,7 @@
     get_acv_video_users_targeting/1,
     update_acv_video/1,
     delete_acv_video/1,
+    stop_acv_video/1,
     full_delete_acv_video/1,
     delete_acv_video_shown_expired/0,
     delete_acv_video_shown_expired/1,
@@ -445,11 +446,19 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
     ).
 
 %%% @doc
-%%% "Удаляет" обвязки рекламы и ее сущность
+%%% "Удаляет" сущность рекламы
 %%%
 delete_acv_video(Acv_video_id) ->
     Query = "update acv_video set deleted = true where id=$1;",
     dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% "Удаляет" сущность рекламы
+%%%
+stop_acv_video(Acv_video_id) ->
+    Query = "update acv_video set stoped = true where id=$1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
 
 %%% @doc
 %%% Удаляет устаревшие записи в acv_video_shown
@@ -565,6 +574,8 @@ test_eunit_1()->
                             Rerun_hours, Rerun_minutes,
                                 Customer_id}),
 
+    dao_acv_video:stop_acv_video(Acv_video_id),
+
     dao_acv_video:update_acv_video({Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,
             Postroll, Preroll, Midroll, Pauseroll, User_male,
@@ -653,6 +664,8 @@ test_eunit_2()->
                     Duration, Link_title, Alt_title, Comment,
                         Rerun_hours, Rerun_minutes,
                             Customer_id}, R_list, []}),
+
+    dao_acv_video:stop_acv_video(Acv_video_id),
 
     ?MODULE:update_acv_video({{Acv_video_id,
         Name_new, Datestart, Datestop, Url, Ref, Wish,

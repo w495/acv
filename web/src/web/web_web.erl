@@ -244,9 +244,12 @@ simple_map_controllers(Path) ->
         %%% Вся статисттика всех покупателей
             "/get-all-acv-video-stats" -> {inside, get_all_acv_video_stats};
 
+        %%% Вся статисттика всех покупателей
+            "/get-acv-video-stats" -> {inside, get_acv_video_stats};
+
         %%% Cтатистика конкретной рекламной компании
-        %    "/get-acv-video-stat"      ->
-        %        {inside, get_acv_video_stat};
+           "/get-acv-video-stat"      ->
+               {inside, get_acv_video_stat};
 
         %%% Cтатистика конкретной рекламной компании (по фильмам)
             "/get-acv-video-stat/by-films" ->
@@ -258,7 +261,6 @@ simple_map_controllers(Path) ->
 
         %%% Все рекламные компании всех покупателей
             "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};
-
 
 
         "/get-all-geo-regions"       ->  {inside, get_all_geo_regions};
@@ -277,6 +279,9 @@ simple_map_controllers(Path) ->
         "/get-acv-video/category-targeting"
             -> {inside, get_acv_video_category_targeting};
 
+
+        "/stop-acv-video"
+            -> {inside, stop_acv_video};
 
         "/delete-acv-video"
             -> {inside, delete_acv_video};

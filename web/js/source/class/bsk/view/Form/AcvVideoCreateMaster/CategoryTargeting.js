@@ -65,7 +65,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             this.composite  = new qx.ui.container.Composite (layout);
 
             this.inp.List = new bsk.view.
-                SortedSelListTreeContainer(
+                SortedSelListTreeDoubleContainer(
                     this.categoryListOptions.url,
                     this.categoryListOptions.labelFieldName,
                     this.categoryListOptions.descrFieldName,
@@ -109,10 +109,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.tree.getSelectedId();
+            var list = this.inp.List.ltree.getSelectedId();
             
             console.log("cat_list ---<")
-            console.log(this.inp.List.tree.getSelectedId());
+            console.log(this.inp.List.ltree.getSelectedId());
             console.log(">---")
             
             if(this.validateForm()) {

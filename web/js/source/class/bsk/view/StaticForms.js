@@ -8,15 +8,6 @@ qx.Class.define("bsk.view.StaticForms",
     extend : Object,
 
     statics : {
-        // форма создания и редактирования рекламной компании
-        advComVidForm : function(biz, Row, formDescr) {
-            return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
-        },
-        
-        // форма создания и редактирования рекламной компании
-        advComForm : function(biz, Row, formDescr) {
-            return new bsk.view.Form.AdvComForm(biz, Row, formDescr);
-        },
         
         // мастер создания и редактирования рекламной компании
         acvVideoCreate : function(biz, Row, formDescr) {
@@ -35,10 +26,6 @@ qx.Class.define("bsk.view.StaticForms",
             return new bsk.view.Form.AcvVideoShow(biz, Row, formDescr);
         },
         
-        // форма создания и редактирования рекламной компании
-        advComVidForm : function(biz, Row, formDescr) {
-            return new bsk.view.Form.AdvComVidForm(biz, Row, formDescr);
-        },
         
         /// Форма создания и редактирования групп пользователей
         customerGroupForm : function(biz, Row, formDescr) {
