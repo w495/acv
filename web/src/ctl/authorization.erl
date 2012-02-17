@@ -53,6 +53,34 @@ auth_getlogin(Req) ->
 %%%
 %%% Возвращает сессию,
 %%%     если текущий запрос удовлетворяет правам.
+%%% В данном случае используется некоторый костыл,
+%%% для определения прав доступа к acv_video
+%%% Доступ предоставляется или владельцу Instance,
+%%% или пользователю с правами Alt_perm.
+%%% Если не удовлетворяет выкидывает исключение.
+%%% 
+%%% Is_owner_fun(Customer_id, Obj) -> true | false
+%%%
+
+auth_required(Req, {Is_owner_fun, Obj, Alt_perm}) ->
+    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined ->
+            throw(auth_required);
+        A ->
+            case auth_biz:get_session(A) of
+                [] -> throw(auth_required);
+                [H = #web_session{customer_id = Customer_id}|_T] ->
+                    case Is_owner_fun(Customer_id, Obj) of
+                        true -> H;
+                        false -> auth_required(Req, Alt_perm)
+                    end
+            end
+    end;
+
+%%%
+%%% Возвращает сессию,
+%%%     если текущий запрос удовлетворяет правам.
 %%% Если не удовлетворяет выкидывает исключение.
 %%%
 auth_required(Req, Perm) ->

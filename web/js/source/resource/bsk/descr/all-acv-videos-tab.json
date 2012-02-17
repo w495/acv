@@ -16,14 +16,35 @@
             action : "resource/bsk/descr/acv-video-copy.json",
             icon : "icon/32/actions/edit-copy.png",
             specParam: "tab-row"},
-            
+          
+        {type : "button",
+            name : "Разрешить",
+            action : "/activate-acv-video",
+            icon : "icon/32/actions/dialog-apply.png",
+            specParam: "tab-row-action"
+        },
+        
+        {type : "button",
+            name : "Запустить",
+            action : "/start-acv-video",
+            icon : "icon/32/actions/media-playback-start.png",
+            specParam: "tab-row-action"
+        },
+        
         {type : "button",
             name : "Остановить",
             action : "/stop-acv-video",
             icon : "icon/32/actions/media-playback-stop.png",
-            specParam: "tab-row-action",
-            confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"},
-            
+            specParam: "tab-row-action"
+        },
+        
+        {type : "button",
+            name : "Запретить",
+            action : "/disactivate-acv-video",
+            icon : "icon/32/actions/dialog-close.png",
+            specParam: "tab-row-action"
+        },
+        
         {type : "button",
             name : "Удалить",
             // action : "/full-delete-acv-video", // полное удаление
@@ -31,7 +52,7 @@
             icon : "icon/32/actions/edit-delete.png",
             specParam: "tab-row-action",
             confirmMsg : "Уверены ли вы в том что хотите удалить рекламную компанию?"}
-            
+        
     ],
     columns : [
         {name : "id",       alias : "#", type : "float", sortable : true, width:"5%"},

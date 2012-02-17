@@ -280,8 +280,20 @@ simple_map_controllers(Path) ->
             -> {inside, get_acv_video_category_targeting};
 
 
+        "/disactivate-acv-video"
+            -> {inside, disactivate_acv_video};
+
+        "/activate-acv-video"
+            -> {inside, activate_acv_video};
+
+
+        "/start-acv-video"
+            -> {inside, start_acv_video};
+
         "/stop-acv-video"
             -> {inside, stop_acv_video};
+
+
 
         "/delete-acv-video"
             -> {inside, delete_acv_video};

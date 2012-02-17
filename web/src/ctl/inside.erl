@@ -399,30 +399,63 @@ update_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, update_acv_video, {Info_1, Geo_region_list, Cat_list}, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-
-
-stop_acv_video(Req) ->
-    Customer_id = authorization:get_customer_id(Req),
+start_acv_video(Req) ->
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
+
+    Res = dao:dao_call(dao_acv_video, start_acv_video, Id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+stop_acv_video(Req) ->
+    Data = Req:parse_post(),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
+
     Res = dao:dao_call(dao_acv_video, stop_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
 delete_acv_video(Req) ->
-    Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
+
     Res = dao:dao_call(dao_acv_video, delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-
-full_delete_acv_video(Req) ->
-    Customer_id = authorization:get_customer_id(Req),
+activate_acv_video(Req) ->
+    authorization:auth_required(Req, "admin"),
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+    Res = dao:dao_call(dao_acv_video, activate_acv_video, Id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+disactivate_acv_video(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Data = Req:parse_post(),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+    Res = dao:dao_call(dao_acv_video, disactivate_acv_video, Id, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+full_delete_acv_video(Req) ->
+    Data = Req:parse_post(),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
+
     Res = dao:dao_call(dao_acv_video, full_delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+
 
 
 

@@ -19,7 +19,16 @@
     get_acv_video_users_targeting/1,
     update_acv_video/1,
     delete_acv_video/1,
+
+    start_acv_video/1,
     stop_acv_video/1,
+
+    get_owner/1,
+    is_owner/2,
+
+    activate_acv_video/1,
+    disactivate_acv_video/1,
+
     full_delete_acv_video/1,
     delete_acv_video_shown_expired/0,
     delete_acv_video_shown_expired/1,
@@ -107,7 +116,6 @@ get_all_acv_video_stats(_) ->
         " from acv_video where deleted = false;",
     dao:simple(Query).
 
-
 %%% @doc
 %%% Возвращает список всех acv_video для данного покупателя
 %%% 
@@ -154,6 +162,34 @@ get_acv_video(Acv_video_id) ->
         " from acv_video "
             " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% Возвращает владельца.
+%%%
+get_owner(Acv_video_id) ->
+    Query =
+        "select "
+            " acv_video.customer_id "
+        " from acv_video "
+            " where acv_video.id = $1",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% Проверяет владельца.
+%%%     Customer_id is_owner of Acv_video_id.
+%%% Не применима для dao:dao_call.
+%%%
+is_owner(Customer_id, Acv_video_id) ->
+    Query =
+        "select "
+            " acv_video.id "
+        " from acv_video "
+            " where acv_video.id = $1 "
+                " and acv_video.customer_id = $2;",
+    case dao:simple(Query, [Acv_video_id,Customer_id]) of
+        {ok, []} -> false;
+        {ok, _}  -> true
+    end.
 
 %%% @doc
 %%% get_acv_video_common
@@ -395,7 +431,7 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
             " duration = $17, link_title = $18, alt_title = $19, comment = $20,"
             " rerun_hours = $21, rerun_minutes = $22, "
             " customer_id = $23 where id=$1;",
-    Pre_result = dao:with_transaction_fk(
+    dao:with_transaction_fk(
         fun(Con) ->
             case pgsql:equery(Con, Query_update,
                 [Id, Name, Datestart, Datestop, Url, Ref,
@@ -453,12 +489,32 @@ delete_acv_video(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
-%%% "Удаляет" сущность рекламы
+%%% Остагнавливает кампанию. Ее остаитьможет в том числе и сам заказчик
 %%%
 stop_acv_video(Acv_video_id) ->
     Query = "update acv_video set stoped = true where id=$1;",
     dao:simple(Query, [(Acv_video_id)]).
 
+%%% @doc
+%%% Запускает остановленную кампанию.
+%%%
+start_acv_video(Acv_video_id) ->
+    Query = "update acv_video set stoped = false where id=$1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% Активирует рекламную компанию.
+%%%
+activate_acv_video(Acv_video_id) ->
+    Query = "update acv_video set active = true where id=$1;",
+    dao:simple(Query, [(Acv_video_id)]).
+
+%%% @doc
+%%% Деактивирует рекламную компанию.
+%%%
+disactivate_acv_video(Acv_video_id) ->
+    Query = "update acv_video set active = false where id=$1;",
+    dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
 %%% Удаляет устаревшие записи в acv_video_shown
@@ -600,6 +656,7 @@ test_eunit_1()->
             {"id",          Acv_video_id}]]},
         ?MODULE:get_acv_video(Acv_video_id)),
     ?MODULE:full_delete_acv_video(Acv_video_id),
+
     ok.
 
 %%%
@@ -688,10 +745,6 @@ test_eunit_2()->
     ok end,R_list_new),
 
     ok.
-
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%

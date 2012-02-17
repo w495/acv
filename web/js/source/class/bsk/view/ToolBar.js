@@ -17,7 +17,9 @@
 #asset(qx/icon/Tango/32/actions/view-refresh.png)
 
 #asset(qx/icon/Tango/32/actions/media-playback-stop.png)
-
+#asset(qx/icon/Tango/32/actions/media-playback-start.png)
+#asset(qx/icon/Tango/32/actions/dialog-apply.png)
+#asset(qx/icon/Tango/32/actions/dialog-close.png)
 
 
 
