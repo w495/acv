@@ -54,6 +54,9 @@ get_acv({Type, Resourse, User_id}, Peer) when
             Type =:= "midroll";
                 Type =:= "pauseroll"->
 
+    CountryCode = null,
+    City = null,
+
     ?D("Type = ~p~n",       [Type]),
     ?D("Resourse = ~p~n",   [Resourse]),
     ?D("User_id = ~p~n",    [User_id]),
@@ -85,6 +88,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
                     " on acv_video.id = acv_video2cat.acv_video_id "
                 "left join acv_video2geo_region "
                     " on acv_video.id = acv_video2geo_region.acv_video_id "
+                "left join geo_region on acv_video2geo_region.geo_region_id=geo_region.id "
             "where "
                 " acv_video.datestart < (select NOW()) and "
                 " acv_video.datestop > (select NOW()) and "
@@ -116,6 +120,22 @@ get_acv({Type, Resourse, User_id}, Peer) when
             Q2S2 = Q2S1 ++ " and acv_video2cat.cat_id is NULL "
     end,
 
+    Q2S3 = Q2S2 ++ " and (" ++ if
+        CountryCode =:= null -> % только те кампании, для которых нет гео-таргетирования
+            "";
+            %" and acv_video2geo_region.geo_region_id is NULL";
+        true, City =:= null -> % только те кампании, у которых поставлена данная страна страна, или нет таргетирования
+            %" and ( "
+                    "(geo_region.code =  '" ++ CountryCode ++ "' geo_region.country_id is null) or ";
+            %        "acv_video2geo_region.geo_region_id is NULL "
+            %    ") ";
+        true ->
+            %" and ( "
+                    "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.name_en = '" ++ City ++ "') or "
+            %        "acv_video2geo_region.geo_region_id is NULL "
+            %    ") "
+    end ++ " acv_video2geo_region.geo_region_id is NULL) ",
+
     Customer_query = <<"select * from customer where uuid=?;">>,
     mysql:prepare(get_customer, Customer_query),
     {data,{mysql_result, Customer_cols, Customer_vals, _X31, _X32}} =
@@ -124,17 +144,17 @@ get_acv({Type, Resourse, User_id}, Peer) when
 
     ?D("--~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
     ?D("~n------------------------~n", []),
-    ?D("Q2S2 = ~p", [Q2S2]),
+    ?D("Q2S3 = ~p", [Q2S3]),
     ?D("~n------------------------~n", []),
 
     %%% Таргетирование по параметрам кастомера.
     case Customer_list of
         [] ->
-            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
+            Q2S4 = Q2S3 ++ " and acv_video.user_male is NULL and "
                 " acv_video.age_from is NULL and acv_video.age_to is NULL";
         [Customer] ->
-            Q2S3 = string:join([
-                Q2S2,
+            Q2S4 = string:join([
+                Q2S3,
                 %%% Обработка пола.
                 case proplists:get_value("gender", Customer) of
                     "male" ->
@@ -146,7 +166,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
                     Other_gender ->
                         ?E("ERROR: invalid gender - ~p~n", [Other_gender]),[]
                 end,
-                %%% Обработка возрасата.
+                %%% Обработка возраста.
                 case proplists:get_value("birthday", Customer) of
                     {_year, _month, _day}=Customer_birthday ->
                         ?D("~n[!]~n[!]", []),
@@ -167,10 +187,10 @@ get_acv({Type, Resourse, User_id}, Peer) when
             ], " ");
         Other -> 
             ?E("ERROR: get_acv - invalid customer: ~p~n", [Other]),
-            Q2S3 = Q2S2 ++ " and acv_video.user_male is NULL and "
+            Q2S4 = Q2S3 ++ " and acv_video.user_male is NULL and "
                 "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
-    Q2 = Q2S3 ++ ";",
+    Q2 = Q2S4 ++ ";",
     ?D("===============~n~p~n", [Q2]),
     {ok, Acv_videos} = dao:simple(Q2),
     if

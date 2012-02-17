@@ -624,3 +624,59 @@ test(speed)->
 
     ok.
 
+
+%create table geo_region(
+%    id int primary key,
+%    country_id int default null,
+%    name_ru varchar(100),
+%    name_en varchar(100),
+%    code varchar(2)
+%);
+%insert into geo_region (id, country_id, name_ru, name_en, code) select net_city.id, null, net_city.name_ru, net_city.name_en, net_country.code from net_city join net_country on  net_city.country_id = net_country.id;
+
+
+up_country() ->
+    {ok, F} = file:open("/tmp/1", [raw]),
+    uread(F, []).
+
+
+uread(F, Ret) ->
+    case file:read_line(F) of
+        eof -> done;
+        {error, R} -> io:format("ERROR: ~p", [R]), done;
+        {ok, Line} ->
+            [A, B|_] = [string:strip(X, both, $") || X <- string:tokens(Line, ",")],
+            dao:simple("insert into geo_region (id, country_id, name_ru, name_en, code) values ($1, null, null, null, $2);", [utils:to_integer(A), B]),
+            uread(F, Ret)
+    end.
+
+ulast() ->
+    Q = "select name_ru, name_en, code from net_country;",
+    {ok, CList} = dao:simple(Q),
+    %io:format("-----: ~p~n", [CList]).
+    upiter(CList).
+
+upiter([]) ->
+    done;
+upiter([H|T]) ->
+    Code = proplists:get_value("code", H),
+    Name_ru = proplists:get_value("name_ru", H),
+    Name_en = proplists:get_value("name_en", H),
+
+    io:format("zzzzz~p~n", [H]),
+    Q1 = "select id from geo_region where id < 244 and code=$1;",
+    Q2 = "update geo_region set country_id = $1 where code=$2 and id > 243;",
+%    Q3 = "update geo_region set name_ru=$1, name_en=$2 where id=$3;",
+
+    case dao:simple(Q1, [Code]) of
+        {ok, []} -> %skip
+            ok;
+        {ok, [[{"id", CID}]]} ->
+            dao:simple(Q2, [utils:to_integer(CID), Code]);
+%            dao:simple(Q3, [Name_ru, Name_en, CID]);
+%            io:format("xxxxxx: ~p~n", [CID]);
+        E ->
+            io:format("Error: ~p~n", [E])
+    end,
+    upiter(T).
+
