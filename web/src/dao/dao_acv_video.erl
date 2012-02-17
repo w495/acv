@@ -88,7 +88,7 @@ get_all_acv_videos(_) ->
             " acv_video.comment, "
             " acv_video.datestart, "
             " acv_video.datestop "
-        " from acv_video;",
+        " from acv_video where deleted = false;",
     dao:simple(Query).
 
 
@@ -104,7 +104,7 @@ get_all_acv_video_stats(_) ->
             " acv_video.datestop, "
             " acv_video.shown, "
             " acv_video.clicks "
-        " from acv_video;",
+        " from acv_video where deleted = false;",
     dao:simple(Query).
 
 
@@ -120,7 +120,7 @@ get_acv_videos(Customer_id) ->
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video "
-            " where customer_id = $1;",
+            " where customer_id = $1 and deleted = false;",
     dao:simple(Query, [(Customer_id)]).
 
 
@@ -137,7 +137,7 @@ get_acv_video_stats(Customer_id) ->
             " acv_video.shown, "
             " acv_video.clicks "
         " from acv_video "
-            " where customer_id = $1;",
+            " where customer_id = $1 and deleted = false;",
     dao:simple(Query, [(Customer_id)]).
 
 %%% @doc
@@ -152,7 +152,7 @@ get_acv_video(Acv_video_id) ->
             " acv_video.shown, acv_video.duration, "
             " acv_video.datestart, acv_video.datestop "
         " from acv_video "
-            " where acv_video.id = $1;",
+            " where acv_video.id = $ and deleted = false1;",
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
@@ -164,7 +164,7 @@ get_acv_video_common(Acv_video_id) ->
             "acv_video.id, acv_video.name, acv_video.comment, "
             "acv_video.datestart, acv_video.datestop "
         " from acv_video "
-            " where acv_video.id = $1;",
+            " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
@@ -178,7 +178,7 @@ get_acv_video_show(Acv_video_id) ->
             " acv_video.midroll, acv_video.pauseroll, "
             " acv_video.rerun_hours, acv_video.rerun_minutes "
         " from acv_video "
-            " where acv_video.id = $1;",
+            " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
@@ -190,7 +190,7 @@ get_acv_video_upload(Acv_video_id) ->
             " acv_video.duration, acv_video.Link_title, "
             " acv_video.Alt_title, acv_video.Url, acv_video.Ref "
         " from acv_video "
-            " where acv_video.id = $1;",
+            " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
@@ -484,8 +484,11 @@ full_delete_acv_video(Id) ->
         "delete from acv_video2geo_region where acv_video_id = $1;",
     Query_video2cat =
         "delete from acv_video2cat where acv_video_id = $1;",
+    Query_stat =
+        "drop table acv_video_stat_" ++ erlang:integer_to_list(Id);
     dao:with_transaction_fk(
         fun(Con) ->
+            pgsql:equery(Con, Query_stat, []),
             pgsql:equery(Con, Query_video2geo_region, [(Id)]),
             pgsql:equery(Con, Query_video2cat, [(Id)]),
             pgsql:equery(Con, Query_video, [(Id)])
