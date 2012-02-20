@@ -91,10 +91,10 @@
     <xsl:param name="Delim" select="': '" />
     <xsl:text>Система рекламы tvzavr</xsl:text>
     <xsl:value-of select="$Delim" />
-    <xsl:call-template name="s-title-root"/>
+    <xsl:call-template name="s-title-1"/>
 </xsl:template>
 
-<xsl:template name="s-title-root">
+<xsl:template name="s-title-1">
     <!--
         Подзаголовок страницы.
     -->
@@ -120,7 +120,7 @@
     <!--
         Стили страницы - нулевой уровень
     -->
-    <link rel="stylesheet" type="text/css" media="all" href="/c/base.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="/c/normal-screen-base.css" />
     <xsl:call-template name="link-css-1" />
 </xsl:template>
 
@@ -135,12 +135,9 @@
         Скрипты добавляемые вверху страницы.
         Рекомендовано это использовать, если сами скрипты
         изменяют начальный вид страницы или ее DOM (до загрузки).
-        Например, modernizr.
+        Например, modernizer.js.
         Для обычного использования НЕ РЕКОМЕНДОВАНЫ.
     -->
-    <script src="/j/mm.js">
-        <xsl:text><![CDATA[ ]]></xsl:text>
-    </script>
 </xsl:template>
 
 <xsl:template name="s-body">
@@ -150,6 +147,9 @@
     <header class="s-header">
         <xsl:call-template name="s-header" />
     </header>
+    <nav>
+        <xsl:call-template name="s-nav" />
+    </nav>
     <section class="s-main">
         <xsl:call-template name="s-main" />
     </section>
@@ -163,12 +163,9 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h2 class="b-thehead-caption"><xsl:text>сайт для рекламодателей</xsl:text></h2>
-        <h1 class="b-thehead"><xsl:text>tvzavr</xsl:text></h1>
+        <h1><xsl:text>τυζαυρ(∀ΔV(CΩM))</xsl:text></h1>
+        <h2 class="b-header-caption"><xsl:text>система рекламы τυζαυρ</xsl:text></h2>
     </hgroup>
-    <div class="b-siginblock">
-        <span>tvzavr 00</span>
-    </div>
 </xsl:template>
 
 
@@ -190,24 +187,24 @@
     <!--
         Основное содержимое документа.
     -->
-    <xsl:call-template name="s-main-root" />
+    <xsl:call-template name="s-main-1" />
 </xsl:template>
 
-<xsl:template name="s-main-root">
+<xsl:template name="s-main-1">
     <!--
         Основное содержимое документа.
         Первый уровенгь вложенности.
     -->
-    <xsl:call-template name="s-main-base" />
+    <xsl:call-template name="s-main-2" />
 </xsl:template>
 
 
-<xsl:template name="s-main-base">
+<xsl:template name="s-main-2">
     <!--
         Основное содержимое документа.
         Второй уровенгь вложенности.
 
-        <xsl:call-template name="s-main-concrete" />
+        <xsl:call-template name="s-main-3" />
     -->
 </xsl:template>
 

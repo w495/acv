@@ -33,7 +33,36 @@
 </xsl:template>
 
 <xsl:template name="s-news">
-    <xsl:text>&nbsp;</xsl:text>
+    <header class="b-news-header">
+        <h1 class="e-news-head">
+            <xsl:text>Обращение к рекамодателям</xsl:text>
+        </h1>
+        <a class="b-news-doc" href="" >
+            <xsl:text>Документ</xsl:text>
+        </a>
+    </header>
+    <ul class="s-news-list">
+        <xsl:call-template name="s-news-list" />
+    </ul>
+</xsl:template>
+
+<xsl:template name="s-news-list">
+<!-- <xsl:for> -->
+        <li class="s-news-list-item">
+            <xsl:call-template name="s-news-list-item" />
+        </li>
+<!-- </xsl:for> -->
+</xsl:template>
+
+<xsl:template name="s-news-list-item">
+    <a>
+        <figure>
+            <img />
+            <figcaption>
+                <xsl:text>Документ</xsl:text>
+            </figcaption>
+        </figure>
+    </a>
 </xsl:template>
 
 <xsl:template name="s-about">

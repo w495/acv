@@ -2,11 +2,13 @@
 
 release:
 	$(call make_ebin); \
+	$(call make_css); \
 	$(call make_js,$(1),$(2),build);
 
 
 debug:
 	(cd src && $(MAKE) debug) || exit 1; \
+	(cd static/site-media/css/ && ./generate.py $(3)) || exit 1; \
 	(cd js && ./generate.py source) || exit 1
 
 clean:
@@ -17,4 +19,8 @@ make_ebin =  \
 
 make_js =                                                \
 	(cd js &&                                              \
+	 ./generate.py $(3)) || exit 1
+
+make_css =                                                \
+	(cd static/site-media/css/ &&                                              \
 	 ./generate.py $(3)) || exit 1
