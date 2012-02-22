@@ -13,221 +13,160 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
         
         if(Row)
             this.createNew = (Row.isNew == true);
+
+        this.row = Row;
         this.base(arguments, controller, Row);
         
-        this.counterLabel = new qx.ui.basic.Label();
-        // кнопки
-        // ---------------------------------------------------------------
-        this.nextButton =  new qx.ui.form.Button("Далее");
-        this.nextButton.addListener("execute", this._onNextClick, this);
-        this.prevButton =  new qx.ui.form.Button("Назад");
-        this.prevButton.addListener("execute", this._onPrevClick, this);
-        this.cancelButton = new qx.ui.form.Button("Отмена");
-        this.cancelButton.addListener("execute", this._onCancelClick, this);
-        this.sendButton = new qx.ui.form.Button("Послать!");
-        this.sendButton.addListener("execute", this._onSendClick, this);
-        
-        this.__hidebutton(this.sendButton);
-        this.__hidebutton(this.prevButton);
-        // ---------------------------------------------------------------
-        
-        // запрос
-        // ---------------------------------------------------------------
-        this.uReq = new qx.io.remote.Request
-            (this.urc.url, this.urc.method, this.urc.mimetype);
-        // ---------------------------------------------------------------
-        
-        // список окон
-        // ---------------------------------------------------------------
-        this.__list = [];
-        
-        console.log("!");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Common(this.uReq, Row, {disabled: true}));
-        console.log("Common");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Upload(this.uReq, Row, {disabled: true}));
-        console.log("Upload");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.Show(this.uReq, Row, {disabled: true}));
-        console.log("Show");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq, Row, {disabled: true}));
-        console.log("UsersTargeting");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, Row, {disabled: true, minWidthType: true}));
-        console.log("RegionTargeting");
-        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row, {disabled: true, minWidthType: true}));
-        console.log("CategoryTargeting");
-        
-        this.__step = 0;
-        this.__length = this.__list.length;
-        // ---------------------------------------------------------------
-
         this.buildForm();
-        //this.addListeners();
-        //this.showCurrentPage();
     },
     
     members : {
-        
-        urc : {
-            url:        "/update-acv-video",
-            imgurl:     "/update-acv-video/upload-video",
-            method:     "POST",
-            mimetype:   "application/json"
-        },
-        
-        __step:     null,     // шаг мастера
-        __list :   null,      // формы мастера
-        __length :  null,     // длинна мастера
-        placeholder : null,
-        
-        __hidebutton: function(but){
-            but.setEnabled(false);
-        },
-        
-        __showbutton: function(but){
-            but.setEnabled(true);
-        },
-        
-        __gotoNext : function(){
-            if(this.__step < this.__getLength() - 1){
-                this.__step += 1;
-                if(this.__step == this.__getLength() - 1){
-                    this.__hidebutton(this.nextButton);
-                    this.__showbutton(this.sendButton);
-                }
-            }
-            else{
-                this.__hidebutton(this.nextButton);
-                this.__showbutton(this.sendButton);
-            }
-            this.__showbutton(this.prevButton);
-        },
-        
-        __gotoPrev : function(){
-            if(0 < this.__step){
-                this.__step -= 1;
-                if(0 == this.__step)
-                    this.__hidebutton(this.prevButton);
-            }
-            else{
-                this.__hidebutton(this.prevButton);
-            }
-            this.__hidebutton(this.sendButton);
-            this.__showbutton(this.nextButton);
-        },
-        
-        __getCur : function(){
-            return this.__list[this.__step];
-        },
-
-        __delCur : function(){
-            this.placeholder.removeAll();
-        },
-        
-        validateCurrent : function(){
-            var formIsValid = false;
-            var cur = this.__getCur();
-            if(cur["saveData"]){
-                formIsValid = cur.saveData();
-            }
-            return formIsValid;
-        },
-        
-        showCurrentPage : function(){
-            var cur = this.__getCur();
-            this.placeholder.add(cur.getComposite());
-            this.counterLabel.setValue("Шаг " + (1 + this.__step) +
-                " из " + this.__getLength() + ".");
-        },
-        
-        __getLength : function(){
-            return this.__length;
-        },
-        
+       
+       
+       
         d: function(){console.log(arguments);},
         
         buildForm : function(){
-            var layout = new qx.ui.layout.Grid(1, 3);
-            var cnt = new qx.ui.container.Composite(layout);
-            layout.setColumnFlex(1, 1);
-            layout.setColumnAlign(0, "left", "top");
-            var work_layout = new qx.ui.layout.VBox(1);
-            this.placeholder = new qx.ui.container.Composite(work_layout);
-            // -------------------------------------------------------------
-            var vertical_offset = -1;
-            cnt.add(this.__list[0].getComposite(),  {row:++vertical_offset, column:0});
-            cnt.add(this.__list[2].getComposite(),  {row:++vertical_offset, column:0});
-            cnt.add(this.__list[4].getComposite(),  {row:++vertical_offset, column:0});
-            var vertical_offset = -1;
-            cnt.add(this.__list[1].getComposite(),  {row:++vertical_offset, column:2});
-            cnt.add(this.__list[3].getComposite(),  {row:++vertical_offset, column:2});
-            cnt.add(this.__list[5].getComposite(),  {row:++vertical_offset, column:2});
+            var cnt = new qx.ui.container.Composite(new qx.ui.layout.HBox(10));
+
+            this.taSummary = new qx.ui.form.TextArea();
+            this.taSummary.set({width:500, height:300});
             
-            
-            
-            //cnt.add(this.placeholder,   {row:++vertical_offset, column:0});
-            //this.addbuttonRow(cnt,      ++vertical_offset);
-            
-            //this.placeholder.add();
-            
+            cnt.add(this.taSummary, {flex : 1});
+
+            this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+            cnt.add(this.flashBar);
+
+            this.flashBar.setWidth(640);
+            this.flashBar.setHeight(480);
+
+            this.flashPlayer = new qx.ui.embed.Flash("resource/bsk/flash/gddflvplayer.swf").set({
+//                scale: "noscale",
+                width: 640,
+                height: 480,
+                variables : {
+//                    vdo: "video.mp4",
+                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
+                    autoplay : "false"
+                }
+            });
+
+            this.flashBar.add(this.flashPlayer);//, {flex: 1});
+           
             // -------------------------------------------------------------
             this.controller.placeForm(cnt);
-            return {controller : cnt, offset: vertical_offset};
+
+            var req = new qx.io.remote.Request("/get_acv_video_by_id", "GET", "application/json");
+            req.setParameter("id", this.row.id);
+
+            req.addListener("completed", this._onAcvIncome, this);
+            req.send();
+
+            return {controller : cnt, offset: 0};
         },
-        
-        addbuttonRow: function(cnt, vertical_offset) {
-            var buttonRow = new qx.ui.container.Composite();
-            buttonRow.setMarginTop(5);
-            var hbox = new qx.ui.layout.HBox(5);
-            hbox.setAlignX("right");
-            buttonRow.setLayout(hbox);
-            buttonRow.add(this.prevButton);
-            buttonRow.add(this.nextButton);
-            buttonRow.add(this.cancelButton);
-            buttonRow.add(this.sendButton);
-            cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
+
+        _onAcvIncome : function(response) {
+            var result = response.getContent();
+            if (bsk.util.errors.process(this, result)==false) return false;
+
+            var clip = result.value;
+            var catList = result.cats.values;
+            var geoList = result.geo.values;
+
+            var txt = "Рекламная кампания, размещение видео в видео.\n";
+            txt += "Название: " + clip.name + "\n";
+            txt += "Комментарий: " + clip.comment + "\n";
+            txt += "Статус: ";
+            switch(clip.active) {
+                case "":        txt += "на модерации"; break;
+                case "false":   txt += "запрещен"; break;
+                case "true":    txt += "разрешен"; break;
+            }
+            txt += "\n";
+
+            txt += "Дата начала: " + bsk.util.utils.formatJsDateTime(bsk.util.utils.getDate(clip.datestart, 0)) + "\n";
+            txt += "Дата конца: " + bsk.util.utils.formatJsDateTime(bsk.util.utils.getDate(clip.datestop, 0)) + "\n";
+            txt += "Внешняя ссылка: " + clip.url + "\n";
+            txt += "URL ролика: " + clip.ref + "\n";
+            txt += "Продолжительность ролика: " + clip.duration + " секунд\n";
+            txt += "Желаемое количество показов: " + clip.wish + "\n";
+            txt += "Показано: " + clip.shown + "\n";
+            var tpl = "";
+            var apl = ["preroll", "midroll", "postroll"];
+            for(var i=0; i<apl.length; i++) {
+                if(clip[apl[i]] == "true") {
+                    if(tpl != "")
+                        tpl += ", ";
+                    tpl += apl[i];
+                }
+            }
+            txt += "Размещение ролика: " + tpl + "\n";
+
+            txt += "Повторный показ ролика учтенному пользователю: ";
+            if(clip.rerun_hours == "")
+                txt += "не ограничен";
+            else
+                txt += clip.rerun_hours + ":" + clip.rerun_minutes;
+            txt += "\n";
+
+            txt += "\nТаргетирование пользователей:\n";
+            txt += "Пол: ";
+            switch(clip.user_male) {
+                case "true": txt += "для мужчин"; break;
+                case "false": txt += "для женщин"; break;
+                default: txt += "---";
+            }
+            txt += "\n";
+
+            txt += "Возраст:";
+            if(clip.age_from == "")
+                txt += "---";
+            else
+                txt += "от " + clip.age_from + " до " + clip.age_to + " лет";
+            txt += "\n";
+
+            txt += "Время показа: ";
+            if(clip.time_from == "")
+                txt += "---";
+            else
+                txt += "с " + clip.time_from + " до " + clip.time_to + " часов";
+            txt += "\n";
+            
+            txt += "\nТаргетирование по регионам: ";
+            if(geoList.length == 0)
+                txt += "весь мир\n";
+            else
+                txt += "\n";
+
+            for(var i=0; i<geoList.length; i++)
+                txt += geoList[i].name + " (" + geoList[i].code + ")\n";
+
+            txt += "\nТаргетирование по жанрам: ";
+            if(catList.length == 0)
+                txt += "все жанры\n";
+            else
+                txt += "\n";
+
+
+            for(var i=0; i<catList.length; i++)
+                txt += catList[i].name + "\n";
+
+            txt += "\n";
+
+            this.taSummary.setValue(txt);
         },
-        
+       
         addListeners: function() {
             var _this = this;
         },
         
-        _onNextClick: function() {
-            if(this.validateCurrent()){
-                this.__delCur();
-                this.__gotoNext();
-                this.showCurrentPage();
-            }
-         },
-         
-        _onPrevClick: function() {
-            if(this.validateCurrent()){
-                this.__delCur();
-                this.__gotoPrev();
-                this.showCurrentPage();
-            }
-         },
-         
         _onCancelClick : function(e) {
             this.controller.onCancelClick();
         },
         
         _onSendClick: function() {
-            if(this.validateCurrent()){
-                if(this.uReq){
-                    this.submit(this.uReq);
-                }
-            }
-        },
-        
-        /**
-         * Проверяет коректность ВСЕХ данных.
-        **/
-        validateForm : function() {
-            var flag = true;
-            for(var i = 0; i!=  this.__list.length ; ++i){
-                flag = flag && this.__list[i].validateForm();
-            }
-            return flag;
         }
+        
     }
 });
 
