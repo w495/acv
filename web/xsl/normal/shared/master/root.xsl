@@ -53,12 +53,16 @@
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" >
         <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
             <xsl:call-template name="s-head" />
+            <xsl:text>&#xa;<!-- \n, чтобы файл не был в 1 строку --></xsl:text>
         </head>
         <body xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
+            <xsl:text>&#xa;</xsl:text>
             <xsl:call-template name="s-body" />
+            <xsl:text>&#xa;</xsl:text>
+            <xsl:call-template name="foot-scripts" />
         </body>
-        <xsl:call-template name="foot-scripts" />
     </html>
+    <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
 <xsl:template name="s-head">
@@ -138,7 +142,7 @@
         Например, modernizr.
         Для обычного использования НЕ РЕКОМЕНДОВАНЫ.
     -->
-    <script src="/j/mm.js">
+    <script src="/j/mm.js" type="text/javascript" >
         <xsl:text><![CDATA[ ]]></xsl:text>
     </script>
 </xsl:template>
@@ -150,9 +154,11 @@
     <header class="s-header">
         <xsl:call-template name="s-header" />
     </header>
+    <xsl:text>&#xa;</xsl:text>
     <section class="s-main">
         <xsl:call-template name="s-main" />
     </section>
+    <xsl:text>&#xa;</xsl:text>
     <footer class="s-footer">
         <xsl:call-template name="s-footer" />
     </footer>
@@ -163,14 +169,19 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h2 class="b-thehead-caption"><xsl:text>сайт для рекламодателей</xsl:text></h2>
-        <h1 class="b-thehead"><xsl:text>tvzavr</xsl:text></h1>
+        <h2 class="b-thehead-caption"><xsl:text>портал для рекламодателей</xsl:text></h2>
+        <h1 class="b-thehead">
+            <img class="b-thehead-logo" src="/i/logo.png" alt="tvzavr" title="tvzavr" />
+        </h1>
     </hgroup>
-    <div class="b-siginblock">
-        <span>tvzavr 00</span>
+    <div class="s-signin">
+        <xsl:call-template name="s-signin" />
     </div>
 </xsl:template>
 
+<xsl:template name="s-signin">
+    <xsl:text><![CDATA[ ]]></xsl:text>
+</xsl:template>
 
 <xsl:template name="s-nav">
     <!--
@@ -225,6 +236,7 @@
         Рекомендовано это использовать, если сами скрипты не меняют
         начальный вид страницы или ее DOM (до загрузки)
     -->
+    <xsl:call-template name="foot-scripts-root" />
 </xsl:template>
 
 

@@ -30,36 +30,170 @@
 
 <xsl:template name="s-roller">
     <xsl:text>&nbsp;</xsl:text>
+    <div class="b-roller">
+        <ul class="b-roller-frames">
+            <li class="s-roller-frame">
+                <xsl:call-template name="s-roller-frame">
+                    <xsl:with-param name="Name" select="'pre-roll'"/>
+                    <xsl:with-param name="Head" select="'Видеореклама1'"/>
+                    <xsl:with-param name="Subhead" select="'PRE-ROLL'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-0.png'"/>
+                    <xsl:with-param name="Content" >
+                        <xsl:call-template name="s-roller-frame-pre-roll" />
+                    </xsl:with-param>
+                </xsl:call-template>
+            </li>
+            <li class="s-roller-frame hidden">
+                <xsl:call-template name="s-roller-frame">
+                    <xsl:with-param name="Name" select="'mid-roll'"/>
+                    <xsl:with-param name="Head" select="'Видеореклама2'"/>
+                    <xsl:with-param name="Subhead" select="'MID-ROLL'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
+                    <xsl:with-param name="Content" >
+                        <xsl:call-template name="s-roller-frame-pre-roll" />
+                    </xsl:with-param>
+                </xsl:call-template>
+            </li>
+            <li class="s-roller-frame hidden">
+                <xsl:call-template name="s-roller-frame">
+                    <xsl:with-param name="Name" select="'post-roll'"/>
+                    <xsl:with-param name="Head" select="'Видеореклама3'"/>
+                    <xsl:with-param name="Subhead" select="'POST-ROLL'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-b.png'"/>
+                    <xsl:with-param name="Content" >
+                        <xsl:call-template name="s-roller-frame-pre-roll" />
+                    </xsl:with-param>
+                </xsl:call-template>
+            </li>
+        </ul>
+        <div class="b-roller-nav">
+            <ul class="b-rn-ul">
+                <li class="e-rn-ul">
+                    <a class="e-rn-but current" href="#pre-roll">
+                        <xsl:text><![CDATA[ ]]></xsl:text>
+                    </a>
+                </li>
+                <li class="e-rn-ul">
+                    <a class="e-rn-but" href="#mid-roll">
+                        <xsl:text><![CDATA[ ]]></xsl:text>
+                    </a>
+                </li>
+                <li class="e-rn-ul">
+                    <a class="e-rn-but" href="#post-roll">
+                        <xsl:text><![CDATA[ ]]></xsl:text>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </xsl:template>
+
+<xsl:template name="s-roller-frame">
+    <xsl:param name="Name" select="'name'"/>
+    <xsl:param name="Head" select="'Видеореклама'"/>
+    <xsl:param name="Subhead" select="'PRE-ROLL'"/>
+    <xsl:param name="Content" select="'s'"/>
+    <xsl:param name="Pic_url" select="'/s/'"/>
+    <xsl:param name="Ct" select="'s-roller-frame-1'"/>
+    <div class="b-rf-text" id="{$Name}">
+        <hgroup class="b-rf-hg">
+            <h1 class="b-rf-head">
+                <xsl:value-of select="$Head" />
+            </h1>
+            <h2 class="b-rf-caption">
+                <xsl:value-of select="$Subhead" />
+            </h2>
+        </hgroup>
+        <div class="b-rf-content" >
+            <xsl:copy-of select="$Content" />
+        </div>
+    </div>
+    <div class="b-rf-picture">
+        <img class="b-rfp" src="{$Pic_url}" alt="{$Head}:{$Subhead}" title="{$Head}:{$Subhead}"/>
+    </div>
+</xsl:template>
+
+<xsl:template name="s-roller-frame-pre-roll">
+    <ul class="b-rf-ul">
+        <li class="e-rf-ul">
+            <xsl:text>Запускается автоматически перед видеороликом</xsl:text>
+        </li>
+        <li class="e-rf-ul">
+            <xsl:text>Может быть до 20 секунд</xsl:text>
+        </li>
+        <li class="e-rf-ul">
+            <xsl:text>Содержит видео и звук</xsl:text>
+        </li>
+        <li class="e-rf-ul">
+            <xsl:text>rCTR до 15%</xsl:text>
+        </li>
+        <li class="e-rf-ul">
+            <xsl:text>Оплата за полный просмотр ролика</xsl:text>
+        </li>
+    </ul>
+</xsl:template>
+
+
 
 <xsl:template name="s-news">
     <header class="b-news-header">
         <h1 class="e-news-head">
-            <xsl:text>Обращение к рекамодателям</xsl:text>
+            <xsl:text>Информация для рекламодателя</xsl:text>
         </h1>
         <a class="b-news-doc" href="" >
-            <xsl:text>Документ</xsl:text>
+            <xsl:text>Документация</xsl:text>
         </a>
     </header>
-    <ul class="s-news-list">
-        <xsl:call-template name="s-news-list" />
-    </ul>
+    <div class="b-news">
+        <ul class="s-news-list">
+            <xsl:call-template name="s-news-list" />
+        </ul>
+        <div class="s-news-all">
+            <xsl:text>Посмотреть все</xsl:text>
+        </div>
+    </div>
 </xsl:template>
 
 <xsl:template name="s-news-list">
 <!-- <xsl:for> -->
         <li class="s-news-list-item">
-            <xsl:call-template name="s-news-list-item" />
+            <xsl:call-template name="s-news-list-item">
+                <xsl:with-param name="Caption" select="'TVZavr вам покажет'" />
+                <xsl:with-param name="Pic_url" select="'/i/acv-1.jpg'" />
+            </xsl:call-template>
+        </li>
+        <li class="s-news-list-item">
+            <xsl:call-template name="s-news-list-item">
+                <xsl:with-param name="Caption" select="'Вам покажет acv-2.jpg'" />
+                <xsl:with-param name="Pic_url" select="'/i/acv-2.jpg'" />
+            </xsl:call-template>
+        </li>
+        <li class="s-news-list-item">
+            <xsl:call-template name="s-news-list-item">
+                <xsl:with-param name="Caption" select="'пок вамажет TVZ'" />
+                <xsl:with-param name="Pic_url" select="'/i/acv-3.jpg'" />
+            </xsl:call-template>
         </li>
 <!-- </xsl:for> -->
 </xsl:template>
 
 <xsl:template name="s-news-list-item">
-    <a>
-        <figure>
-            <img />
-            <figcaption>
-                <xsl:text>Документ</xsl:text>
+    <xsl:param name="Id" select="'id'"/>
+    <xsl:param name="Link" select="'/1/'"/>
+    <xsl:param name="Pic_url" select="'Pic_url'"/>
+    <xsl:param name="Caption"  select="'default'" />
+    <xsl:param name="Alt" select="'default'" />
+    <xsl:param name="Title"  select="'default'" />
+    <a class="b-nlil" href="{$Link}" title="{$Caption}">
+        <figure class="b-nli">
+            <img
+                class="b-nliim"
+                src="{$Pic_url}"
+                alt="{$Caption}"
+                title="{$Caption}"
+            />
+            <figcaption class="b-nlic">
+                <xsl:value-of select="$Caption"/>
             </figcaption>
         </figure>
     </a>
@@ -69,4 +203,16 @@
     <xsl:text>&nbsp;</xsl:text>
 </xsl:template>
 
+
+<xsl:template name="foot-scripts-base">
+    <!--
+        Скрипты добавляемые внизу страницы.
+        Рекомендовано это использовать, если сами скрипты не меняют
+        начальный вид страницы или ее DOM (до загрузки)
+    -->
+    <script src="/j/jm.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
+    <script src="/j/sl.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
+</xsl:template>
+
 </xsl:stylesheet>
+
