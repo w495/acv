@@ -523,6 +523,7 @@ class Base(generate.gen_css.Gen_css):
         """
 
         res += """.b-a{
+            padding-top:20px;
             }
         """
 
@@ -533,15 +534,17 @@ class Base(generate.gen_css.Gen_css):
         """
 
         res += """.b-ac{
-            }
+        
+        }
         """
 
         res += """.b-ac-p{
-            }
+            margin-top: 20px;
+        }
         """
 
         res +=""".b-ac-ul{
-            margin: 0px 0px 0px 15px;
+            margin: 20px 0px 0px 15px;
             list-style: outside url(%s);
         }
         """%(
@@ -550,9 +553,10 @@ class Base(generate.gen_css.Gen_css):
 
 
         res += """.e-ac-ul{
-            }
+            margin: 20px 0px 0px 15px;
+        }
         """
-        
+
         return res;
 
     def s_footer(self):

@@ -160,11 +160,12 @@ create table acv_video (
 /**
  * Регион
 **/
-create sequence seq_geo_region;
 create table geo_region (
-    id int primary key default nextval('seq_geo_region'),
-    alias varchar(30) UNIQUE,
-    name varchar (100)
+    id integer not null primary key,
+    country_id integer,
+    name_ru character varying(100),
+    name_en character varying(100),
+    code character varying(2)
 );
 
 /**

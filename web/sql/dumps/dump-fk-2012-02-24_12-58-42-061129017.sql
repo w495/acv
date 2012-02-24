@@ -11,6 +11,456 @@ SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
+--
+-- Name: seq_acv_banner; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_acv_banner
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_acv_banner; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_acv_banner', 1, false);
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: acv_banner; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acv_banner (
+    id integer DEFAULT nextval('seq_acv_banner'::regclass) NOT NULL,
+    name character varying(100),
+    datestart timestamp without time zone,
+    datestop timestamp without time zone,
+    url character varying(200),
+    ref character varying(1000),
+    banner_place_id integer,
+    customer_id integer
+);
+
+
+--
+-- Name: seq_acv_video; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_acv_video
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_acv_video; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_acv_video', 1, false);
+
+
+--
+-- Name: acv_video; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acv_video (
+    id integer DEFAULT nextval('seq_acv_video'::regclass) NOT NULL,
+    name character varying(100),
+    datestart timestamp without time zone,
+    datestop timestamp without time zone,
+    url character varying(200),
+    ref character varying(1000),
+    wish integer,
+    postroll boolean DEFAULT true,
+    preroll boolean DEFAULT true,
+    midroll boolean DEFAULT true,
+    pauseroll boolean DEFAULT true,
+    user_male boolean,
+    age_from integer,
+    age_to integer,
+    time_from integer,
+    time_to integer,
+    duration integer DEFAULT 0,
+    link_title character varying(200) DEFAULT NULL::character varying,
+    alt_title character varying(200) DEFAULT NULL::character varying,
+    rerun_hours integer,
+    rerun_minutes integer,
+    comment character varying(200) DEFAULT NULL::character varying,
+    shown integer DEFAULT 0,
+    clicks integer DEFAULT 0,
+    active boolean,
+    deleted boolean DEFAULT false,
+    stoped boolean DEFAULT false,
+    customer_id integer
+);
+
+
+--
+-- Name: acv_video2cat; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acv_video2cat (
+    acv_video_id integer,
+    cat_id integer
+);
+
+
+--
+-- Name: acv_video2geo_region; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acv_video2geo_region (
+    acv_video_id integer,
+    geo_region_id integer
+);
+
+
+--
+-- Name: seq_acv_video_shown; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_acv_video_shown
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_acv_video_shown; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_acv_video_shown', 1, false);
+
+
+--
+-- Name: acv_video_shown; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE acv_video_shown (
+    id integer DEFAULT nextval('seq_acv_video_shown'::regclass) NOT NULL,
+    dateshow timestamp without time zone,
+    user_id character varying(37),
+    acv_video_id integer
+);
+
+
+--
+-- Name: seq_banner_place; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_banner_place
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_banner_place; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_banner_place', 2, true);
+
+
+--
+-- Name: banner_place; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE banner_place (
+    id integer DEFAULT nextval('seq_banner_place'::regclass) NOT NULL,
+    name character varying(30),
+    alias character varying(100)
+);
+
+
+--
+-- Name: config; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE config (
+    id boolean DEFAULT true NOT NULL,
+    acv_video_loadnext integer
+);
+
+
+--
+-- Name: seq_customer_id; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_customer_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_customer_id; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_customer_id', 1, true);
+
+
+--
+-- Name: customer; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE customer (
+    id integer DEFAULT nextval('seq_customer_id'::regclass) NOT NULL,
+    email character varying(1024),
+    login character varying(1024) NOT NULL,
+    pic_url text,
+    city character varying(1024),
+    organization character varying(1024),
+    "position" character varying(1024),
+    firstname character varying(1024) NOT NULL,
+    lastname character varying(1024) NOT NULL,
+    patronimic character varying(1024) NOT NULL,
+    deleted boolean DEFAULT false,
+    issystem boolean DEFAULT false,
+    birthday date,
+    password_hash character(32) NOT NULL
+);
+
+
+--
+-- Name: customer2group; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE customer2group (
+    customer_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+--
+-- Name: seq_customer_group_id; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_customer_group_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_customer_group_id; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_customer_group_id', 1, true);
+
+
+--
+-- Name: customer_group; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE customer_group (
+    id integer DEFAULT nextval('seq_customer_group_id'::regclass) NOT NULL,
+    name character varying(1024),
+    description character varying(1024),
+    deleted boolean DEFAULT false
+);
+
+
+--
+-- Name: geo_region; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE geo_region (
+    id integer NOT NULL,
+    country_id integer,
+    name_ru character varying(100),
+    name_en character varying(100),
+    code character varying(2)
+);
+
+
+--
+-- Name: seq_permission; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_permission
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_permission; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_permission', 1, true);
+
+
+--
+-- Name: permission; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE permission (
+    id integer DEFAULT nextval('seq_permission'::regclass) NOT NULL,
+    perm_type_id integer,
+    entity_id integer,
+    name character varying(1024),
+    description character varying(1024),
+    type integer
+);
+
+
+--
+-- Name: permission2group; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE permission2group (
+    perm_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+--
+-- Name: seq_permission_type; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE seq_permission_type
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: seq_permission_type; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('seq_permission_type', 1, true);
+
+
+--
+-- Name: permission_type; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE permission_type (
+    id integer DEFAULT nextval('seq_permission_type'::regclass) NOT NULL,
+    name character varying(1024)
+);
+
+
+--
+-- Name: var; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE var (
+    id boolean DEFAULT true NOT NULL,
+    av_stats_max_id numeric(20,0)
+);
+
+
+--
+-- Data for Name: acv_banner; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY acv_banner (id, name, datestart, datestop, url, ref, banner_place_id, customer_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: acv_video; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY acv_video (id, name, datestart, datestop, url, ref, wish, postroll, preroll, midroll, pauseroll, user_male, age_from, age_to, time_from, time_to, duration, link_title, alt_title, rerun_hours, rerun_minutes, comment, shown, clicks, active, deleted, stoped, customer_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: acv_video2cat; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY acv_video2cat (acv_video_id, cat_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: acv_video2geo_region; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY acv_video2geo_region (acv_video_id, geo_region_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: acv_video_shown; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY acv_video_shown (id, dateshow, user_id, acv_video_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: banner_place; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY banner_place (id, name, alias) FROM stdin;
+1	right	справа
+2	bottom	снизу
+\.
+
+
+--
+-- Data for Name: config; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY config (id, acv_video_loadnext) FROM stdin;
+\.
+
+
+--
+-- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY customer (id, email, login, pic_url, city, organization, "position", firstname, lastname, patronimic, deleted, issystem, birthday, password_hash) FROM stdin;
+1	\N	admin	\N	\N	\N	\N	fadmin	ladmin	padmin	f	f	\N	21232F297A57A5A743894A0E4A801FC3
+\.
+
+
+--
+-- Data for Name: customer2group; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY customer2group (customer_id, group_id) FROM stdin;
+1	1
+\.
+
+
+--
+-- Data for Name: customer_group; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY customer_group (id, name, description, deleted) FROM stdin;
+1	admin	администраторы	f
+\.
+
+
+--
+-- Data for Name: geo_region; Type: TABLE DATA; Schema: public; Owner: -
+--
 
 COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 358	155	Виндхук	Windhoek	NA
@@ -1682,6 +2132,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 42331	77	Лондондерри	Londonderry	GB
 42152	190	Седертелье	Södertälje	SE
 42137	17	Недлендс	Nedlands	AU
+49290	47	Копьяпо	Copiapó	CL
 42140	17	Таррагинди	Tarragindi	AU
 42142	17	Анли	Unley	AU
 42144	17	Глен Уэверли	Glen Waverley	AU
@@ -2032,7 +2483,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 49287	47	Кокимбо	Coquimbo	CL
 49288	47	Лос-Анхелес	Los Ángeles	CL
 49289	47	Сан-Фернандо	San Fernando	CL
-49290	47	Копьяпо	Copiapó	CL
 49302	47	Пунта-Аренас	Punta Arenas	CL
 49386	47	Осорно	Osorno	CL
 49388	47	Анголь	Angol	CL
@@ -6408,6 +6858,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 77200	108	Френа	Frena	IT
 77207	108	Цафферана-Этнеа	Zafferana Etnea	IT
 77236	108	Кропани Катанзаро	Cropani	IT
+78170	184	Ханты-Мансийск	Khanty-mansiysk	RU
 77238	108	Спезанно-делла-Сила Козенца	Spezzano Della Sila	IT
 77269	108	Веролавеккия Брешиа	Verolavecchia	IT
 76820	75	Ольна	Aulnat	FR
@@ -6524,7 +6975,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 78003	184	Пластун	Plastun	RU
 78004	184	Приморск	Primorsk	RU
 78125	184	Кратово	Kratovo	RU
-78170	184	Ханты-Мансийск	Khanty-mansiysk	RU
 78229	184	Долинск	Dolinsk	RU
 78230	184	Томари	Tomari	RU
 78239	184	Медведа	Medveda	RU
@@ -6879,6 +7329,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 81251	108	Вербания Вербано-Кузьо-Оссола	Pallanza	IT
 81508	108	Баньяра-Калабра	Bagnara Calabra	IT
 81515	108	Сецце Латина	Sezze	IT
+82554	75	Вивонн	Vivonne	FR
 81523	108	Фивиццано Масса-Каррара	Fivizzano	IT
 81597	108	Ночера-Теринезе Катанзаро	Nocera Tirinese	IT
 81429	75	Обжа	Objat	FR
@@ -6997,7 +7448,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 82843	108	Кассано-Спинола Алессандрия	Cassano Spinola	IT
 82884	108	Петрозино Трапани	Petrosino	IT
 83255	108	Фара-Новарезе	Fara Novarese	IT
-82554	75	Вивонн	Vivonne	FR
 82582	75	Блель	Blesle	FR
 82759	75	Бульяк	Bouliac	FR
 82797	75	Соспель	Sospel	FR
@@ -8427,6 +8877,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 97023	178	Рекарей	Recarei	PT
 96903	122	Денисовка	Denisovka	KZ
 97250	122	Тимур	Timur	KZ
+98748	57	Кузай	Kusey	DE
 96756	108	Каваллино-Трепорти Венеция	Treporti	IT
 96834	75	Нузийи	Nouzilly	FR
 96845	75	Аспаран	Hasparren	FR
@@ -8546,7 +8997,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 98579	57	Хайдльфинг	Haidlfing	DE
 98581	57	Хамих	Hamich	DE
 98592	57	Фалькенхайн	Falkenhain	DE
-98748	57	Кузай	Kusey	DE
 98750	57	Зельбах	Selbach	DE
 98764	57	Лаубегаст	Laubegast	DE
 98765	57	Биркигт	Birkigt	DE
@@ -14460,6 +14910,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 170974	14	Лас Гарсас	Las Garzas	AR
 170975	14	Альдеа Хакоби	Aldea Jacobi	AR
 170976	14	Масия	Maciá	AR
+171663	57	Штрельн	Strelln	DE
 170977	14	Вилья дель Росарио	Villa Del Rosario	AR
 170978	14	Мальвинас	Malvinas	AR
 170979	14	Колония Ла Брава	Colonia La Brava	AR
@@ -14575,7 +15026,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 171759	68	Эскирос	Esquíroz	ES
 171583	147	Плимут	Plymouth	MS
 171657	57	Фризенрат	Friesenrath	DE
-171663	57	Штрельн	Strelln	DE
 171664	57	Дурбах	Durbach	DE
 171665	57	Зойкендорф	Seukendorf	DE
 171680	57	З	Wellerode	DE
@@ -14812,6 +15262,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 173407	57	Замблебен	Sambleben	DE
 173408	57	Хорнбург	Hornburg	DE
 173410	57	Нойкамперфен	Neukamperfehn	DE
+173899	223	Зения	Zenia	US
 173420	57	Штрасслах	Straßlach-dingharting	DE
 173122	39	Бейфилд	Bayfield	CA
 173516	39	Хилсборо	Hillsborough	CA
@@ -14928,7 +15379,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 173896	223	Колумбус	Columbus	US
 173897	223	Плаш	Plush	US
 173898	223	Джанкшен Сити	Junction City	US
-173899	223	Зения	Zenia	US
 173900	223	Паскента	Paskenta	US
 173901	223	Хантли	Huntley	US
 173902	223	Сикамор	Sycamore	US
@@ -16084,6 +16534,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 182820	75	Мули-ан-Медок	Moulis-en-médoc	FR
 183182	237	Лачарак	Lacarak	RS
 182967	37	Любань	Lyuban	BY
+184359	184	Клинцы	Klintsy	RU
 183185	37	Белоозерск	Beloozersk	BY
 183176	220	Лазурное	Lazurne	UA
 183178	220	Кореиз	Koreiz	UA
@@ -16199,7 +16650,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 184108	57	Нойклостер	Neukloster	DE
 184109	57	В	Woez	DE
 184110	57	Замс	Sahms	DE
-184359	184	Клинцы	Klintsy	RU
 184334	178	Алижо	Alijó	PT
 184335	178	Фигейра	Figueira	PT
 184336	75	Лаирак	Layrac	FR
@@ -17348,6 +17798,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 191507	75	Мориа	Moriat	FR
 191545	75	Сен-Сир-дю-Ронсере	Saint-cyr-du-ronceray	FR
 191705	75	Марсак-Сюр-Л'Иль	Marsac-sur-l'isle	FR
+192508	14	Тио Пухио	Tío Pujio	AR
 191713	75	Монтиньи-ле-Бретон	Montigny-le-chartif	FR
 191746	75	Комон-Сюр-Гарон	Caumont-sur-garonne	FR
 191748	75	Ле Мениль-Руселен	Le Mesnil-rouxelin	FR
@@ -17462,7 +17913,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 192346	14	Карродилья	Carrodilla	AR
 192348	14	Долавон	Dolavón	AR
 192355	14	Белья Виста	Bella Vista	AR
-192508	14	Тио Пухио	Tío Pujio	AR
 192511	14	Такураль	Tacural	AR
 192512	14	Хунин де Лос Андес	Junín De Los Andes	AR
 192513	14	Вилья Тринидад	Villa Trinidad	AR
@@ -20000,6 +20450,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 208088	21	Гиббонс	Gibbons	BB
 208106	21	Клермонт	Clermont	BB
 208091	90	Сантьяго Атитлан	Santiago Atitlán	GT
+209593	57	Нойбург	Farpen	DE
 208105	96	Пуэрто-Лемпира	Puerto Lempira	HN
 208303	139	Демир-Хисар	Demir Hisar	MK
 208152	7	Фолмут	Falmouth	AG
@@ -20116,6 +20567,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 208576	57	Хундзанген	Hundsangen	DE
 208577	57	Дракенбург	Drakenburg	DE
 208578	57	Хойерсен	Heuerßen	DE
+211799	14	Опен Доор	Open Door	AR
 208579	57	Зилленштеде	Sillenstede	DE
 208580	57	Валенау	Wahlenau	DE
 208581	57	Маккенродт	Mackenrodt	DE
@@ -20230,7 +20682,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 209586	57	Брохтербек	Brochterbeck	DE
 209587	57	Хельфезик	Helvesiek	DE
 209589	57	Нойбуков	Neubukow	DE
-209593	57	Нойбург	Farpen	DE
 209595	57	Рабен-Штейнфельд	Raben Steinfeld	DE
 209596	57	Фитлюббе	Vietlübbe	DE
 209598	57	Г	Göldenitz	DE
@@ -20573,7 +21024,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 211777	32	Сан-Жозе-ду-Седру	São José Do Cedro	BR
 211784	14	Альпачири	Alpachiri	AR
 211789	14	Канальс	Canals	AR
-211799	14	Опен Доор	Open Door	AR
 211800	14	Майпу	Maipú	AR
 211801	14	Санта Лусия	Santa Lucía	AR
 211813	14	Хамес Крайк	James Craik	AR
@@ -21933,6 +22383,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 219566	223	Вудворт	Woodworth	US
 219569	223	Брантвуд	Brantwood	US
 219570	223	Уиллоу Лейк	Willow Lake	US
+221587	17	Хокс Нест	Hawks Nest	AU
 219574	223	Алекнеджик	Aleknagik	US
 219576	223	Лидор	Leadore	US
 219577	223	Уоррентон	Warrenton	US
@@ -22268,7 +22719,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 221580	17	Данун	Dunoon	AU
 221583	17	Лавертон	Laverton	AU
 221586	17	Могригай	Mogriguy	AU
-221587	17	Хокс Нест	Hawks Nest	AU
 221594	17	Мидлтон	Middleton	AU
 221595	17	Олдина	Oldina	AU
 221596	17	Аппер Лург	Upper Lurg	AU
@@ -24785,6 +25235,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 239150	68	Баракальдо	Baracaldo	ES
 238890	31	Сакаба	Sacaba	BO
 238911	57	Фольратсруэ	Vollrathsruhe	DE
+239294	75	Бира	Biras	FR
 238916	57	Фалькенберг	Falkenberg	DE
 238930	57	Басберг	Basberg	DE
 238931	57	Г	Gönnebek	DE
@@ -24898,7 +25349,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 239279	75	Мов-Сюр-Юин	Mauves-sur-huisne	FR
 239291	75	Сен-Жени	Saint-geniès	FR
 239292	75	Калонж	Calonges	FR
-239294	75	Бира	Biras	FR
 239295	75	Кур-де-Пиль	Cours-de-pile	FR
 239304	75	Пувре	Pouvrai	FR
 239307	75	Шуэн	Chouain	FR
@@ -25805,6 +26255,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 245527	32	Санта-Крус-да-Консейсан	Santa Cruz Da Conceição	BR
 245698	22	Навабгандж	Nawabganj	BD
 245479	114	Баттамбанг	Battambang	KH
+246281	184	Норск	Norsk	RU
 245547	14	Хенераль Даниэль Серри	General Daniel Cerri	AR
 245553	14	Кармен-де-Патагонес	Carmen De Patagones	AR
 245559	14	Мокорета	Mocoretá	AR
@@ -25915,7 +26366,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 246233	184	Назарово	Nazarovo	RU
 246247	184	Ржавки	Rzhavki	RU
 246265	184	Челюскинцев	Chelyuskintsev	RU
-246281	184	Норск	Norsk	RU
 246284	184	Поронайск	Poronaysk	RU
 246302	184	Костромская	Kostromskaya	RU
 246331	184	Рудаки	Rudaki	RU
@@ -26927,6 +27377,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 254636	106	Ленгеруд	Langarud	IR
 254523	57	Грубшютц	Grubschütz	DE
 254524	57	Линдхардт	Lindhardt	DE
+255062	152	Молоакан	Moloacán	MX
 254526	57	Нидерфинов	Niederfinow	DE
 254528	57	Альт-Цахун	Alt Zachun	DE
 254599	57	Эшенрид	Eschenried	DE
@@ -27040,7 +27491,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 255057	152	Тельчак-Пуэрто	Telchac Puerto	MX
 255060	152	Куэцала дель Прогресо	Cuetzala Del Progreso	MX
 255061	152	Коатлан дель Рио	Coatlán Del Río	MX
-255062	152	Молоакан	Moloacán	MX
 255187	152	Пеньямильер	Peñamiller	MX
 255189	152	Пиуамо	Pihuamo	MX
 255191	152	Танкоко	Tancoco	MX
@@ -27955,6 +28405,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 261997	75	Верну-Сюр-Бренн	Vernou	FR
 261999	75	Сен-Феликс-де-Фонкод	Saint-félix-de-foncaude	FR
 262049	75	Мюнвиль-Сюр-Мер	Muneville-sur-mer	FR
+264327	\N	Эндрас	Andreas	IM
 262050	75	Бургеноль	Bourguenolles	FR
 262073	75	Ле Васт	Le Vast	FR
 262076	75	Арф	Arpheuilles-saint-priest	FR
@@ -28181,7 +28632,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 263771	17	Гленкуорри	Glenquarry	AU
 263963	\N	Альбекк	Albècq	GG
 264326	\N	Моолд	Maughold	IM
-264327	\N	Эндрас	Andreas	IM
 264474	19	Джульфа	Culfa	AZ
 264329	131	Урспельт	Urspelt	LU
 264446	64	Лайакюла	Laiaküla	EE
@@ -32712,6 +33162,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 309129	184	Колбино	Kolbino	RU
 309134	184	Услонь	Uslon	RU
 309137	184	Платнировская	Platnirovskaya	RU
+309402	49	Уцзяцюй	Wujiaqu	CN
 308681	178	Сан-Лоренсу-ду-Дору	São Lourenço Do Douro	PT
 308682	178	Арентин	Arentim	PT
 308720	178	Сепелуш	Cepelos	PT
@@ -32821,7 +33272,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 309362	75	Арже	Arget	FR
 309149	103	Майнпури	Mainpuri	IN
 309399	49	Хуасянь	Huaxian	CN
-309402	49	Уцзяцюй	Wujiaqu	CN
 309326	17	Кейп Бриджуотер	Cape Bridgewater	AU
 309332	17	Эмита	Emita	AU
 309333	17	Элленборо	Ellenborough	AU
@@ -32934,6 +33384,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 311085	14	Ириондо	Iriondo	AR
 311086	14	Гаруапе	Garuhapé	AR
 310661	68	Сантибаньес дель Тораль	Santibáñez Del Toral	ES
+311149	184	Антипаюта	Antipayuta	RU
 310662	68	Кастельянос-де-Вильикера	Castellanos De Villiquera	ES
 310738	68	Ласпаулес	Laspaúles	ES
 310663	57	Лауфензельден	Laufenselden	DE
@@ -33047,7 +33498,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 311470	77	Лланфрайнч	Llanfrynach	GB
 311127	184	Магнитка	Magnitka	RU
 311134	184	Куртамыш	Kurtamysh	RU
-311149	184	Антипаюта	Antipayuta	RU
 311438	184	Калинин	Khutor Kalinin	RU
 311452	184	Новомышастовская	Novomyshastovskaya	RU
 311491	184	Култаево	Kultayevo	RU
@@ -33160,6 +33610,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 312571	173	Гуджранвала	Gurangwala	PK
 313007	173	Сайду Шариф	Saidu Sharif	PK
 312594	14	Павон Арриба	Pavón Arriba	AR
+313526	178	Лореда	Loureda	PT
 312612	14	Каса Гранде	Casa Grande	AR
 312472	68	Ла-Колилья	La Colilla	ES
 312473	68	Арнойс	Arnois	ES
@@ -33272,7 +33723,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 313438	184	Калтук	Kaltuk	RU
 313022	178	Алдейя-ду-Соту	Aldeia Do Souto	PT
 313142	178	Ковелаш	Covelas	PT
-313526	178	Лореда	Loureda	PT
 313594	178	Риу-Калду	Rio Caldo	PT
 313361	122	Маловодное	Malovodnoe	KZ
 313378	122	Жагабулак	Zhagabulak	KZ
@@ -33721,6 +34171,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 317027	108	Монтополи-ди-Сабина	Montopoli In Sabina	IT
 316999	75	Энвиль	Hainneville	FR
 317000	75	Монготье	Montgothier	FR
+318510	57	Концен	Konzen	DE
 317014	75	Сент-Этьен-Сюр-Блель	Saint-Étienne-sur-blesle	FR
 317379	75	Годисон	Godisson	FR
 317040	17	Эллиотт	Elliott	AU
@@ -33835,7 +34286,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 318442	57	Мерхоог	Mehrhoog	DE
 318474	57	Балов	Balow	DE
 318476	57	Флитцинг	Flitzing	DE
-318510	57	Концен	Konzen	DE
 318615	152	Хенераль Тревиньо	General Treviño	MX
 318805	39	Карнеги	Carnegie	CA
 318848	39	Кэмпердаун	Camperdown	CA
@@ -34872,6 +35322,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 85039	97	Забок	Zabok	HR
 85220	97	Белишце	Belisce	HR
 85520	97	Нови	Novi	HR
+187020	50	Анолайма	Anolaima	CO
 85821	97	Велика-Горица	Velika Gorica	HR
 85927	97	Вргорац	Vrgorac	HR
 86167	97	Врбовец	Vrbovec	HR
@@ -35100,6 +35551,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 132233	216	Чейз Виллидж	Chase Village	TT
 155241	216	Такаригуа	Tacarigua	TT
 156485	216	Сипария	Siparia	TT
+187021	50	Качира	Cáchira	CO
 156711	216	Петит Валли	Petit Valley	TT
 156712	216	Кантаро	Cantaro	TT
 170881	216	Файзабад	Fyzabad	TT
@@ -35311,6 +35763,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 230458	90	Кесальтепеке	Quezaltepeque	GT
 234254	90	Санто-Доминго-Теуантепек	Santo Domingo Suchitepéquez	GT
 247977	90	Кубулько	Cubulco	GT
+255091	50	Сиснерос	Cisneros	CO
 255083	90	Ла Демокрасия	La Democracia	GT
 258022	90	Рио Хондо	Río Hondo	GT
 275819	90	Монхас	Monjas	GT
@@ -35543,8 +35996,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 186637	50	Гомес Плата	Gómez Plata	CO
 186662	50	Кайседония	Caicedonia	CO
 187019	50	Альварадо	Alvarado	CO
-187020	50	Анолайма	Anolaima	CO
-187021	50	Качира	Cáchira	CO
 187022	50	Эль Пиньон	El Piñón	CO
 187023	50	Миранда	Miranda	CO
 187041	50	Каукасия	Caucasia	CO
@@ -35660,7 +36111,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 253261	50	Буэсако	Buesaco	CO
 255089	50	Конкордия	Concordia	CO
 255090	50	Сан Хуан Де Ураба	San Juan De Urabá	CO
-255091	50	Сиснерос	Cisneros	CO
 255094	50	Астреа	Astrea	CO
 256542	50	Кукунуба	Cucunubá	CO
 256574	50	Эль Пасо	El Paso	CO
@@ -36135,6 +36585,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 160252	64	Выхма	Võhma	EE
 160253	64	Синди	Sindi	EE
 167123	64	Ярва-Яани	Järva-jaani	EE
+149895	183	Бабадаг	Babadag	RO
 200725	64	Лавассааре	Lavassaare	EE
 222646	64	Мыза Лауласмаа	Laulasmaa	EE
 264677	64	Пюхалепа	Pühalepa	EE
@@ -36253,6 +36704,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 51579	193	Словени-Градец	Slovenj Gradec	SI
 51593	193	Ново-Место	Novo Mesto	SI
 51630	193	Веленье	Velenje	SI
+146332	183	Меджидия	Medgidia	RO
 51667	193	Шкофья-Лока	Skofja Loka	SI
 51678	193	Нова-Горица	Nova Gorica	SI
 54595	193	Кршко	Krsko	SI
@@ -36475,8 +36927,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 73609	183	Одорхею-Секуйеск	Odorheiu	RO
 96209	183	Фетешти	Fetesti	RO
 146329	183	Тыргу-Окна	Târgu Ocna	RO
-146332	183	Меджидия	Medgidia	RO
-149895	183	Бабадаг	Babadag	RO
 149903	183	Бая-де-Арамэ	Baia De Arama	RO
 149913	183	Дорохой	Dorohoi	RO
 149926	183	Петрила	Petrila	RO
@@ -38122,6 +38572,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 72505	44	Рюссен	Russin	CH
 72506	44	Хиндельбанк	Hindelbank	CH
 72560	44	Кюснахт	Küsnacht	CH
+81084	44	Дюдинген	Düdingen	CH
 72601	44	Адельбоден	Adelboden	CH
 72668	44	Фелланден	Fällanden	CH
 72670	44	Уцвиль	Uzwil	CH
@@ -38239,8 +38690,8 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 80248	44	Кацис	Cazis	CH
 80339	44	Циммервальд	Zimmerwald	CH
 80931	44	Вильн	Villeneuve	CH
-81084	44	Дюдинген	Düdingen	CH
 81493	44	Инвиль	Inwil	CH
+210580	44	Мадисвиль	Madiswil	CH
 81494	44	Могельсберг	Mogelsberg	CH
 81721	44	Мон-Сюр-Роль	Mont-sur-rolle	CH
 81746	44	Айх	Eich	CH
@@ -38358,6 +38809,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 187786	44	Брецвиль	Bretzwil	CH
 187793	44	Траксельвальд	Trachselwald	CH
 187797	44	Эрд	Erde	CH
+39933	32	Шапеко	Chapecó	BR
 187798	44	Мюмлисвиль-Рамисвиль	Mümliswil	CH
 187799	44	Саас-Фее	Saas-fee	CH
 188006	44	Сагонь	Sagogn	CH
@@ -38476,7 +38928,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 210577	44	Рорбах	Rohrbach	CH
 210578	44	Баннвиль	Bannwil	CH
 210579	44	Мельхнау	Melchnau	CH
-210580	44	Мадисвиль	Madiswil	CH
 212873	44	Клайндитвиль	Kleindietwil	CH
 212874	44	Альмендинген	Allmendingen	CH
 212982	44	Иннерткирхен	Innertkirchen	CH
@@ -38708,7 +39159,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 26163	32	Кампинас	Campinas	BR
 33463	32	Бразилиа	Brasília	BR
 33493	32	Пату-Бранку	Pato Branco	BR
-39933	32	Шапеко	Chapecó	BR
 41410	32	Флорианополис	Florianópolis	BR
 44791	32	Паулу-Афонсу	Paulo Afonso	BR
 47974	32	Жуан-Песоа	João Pessoa	BR
@@ -39045,6 +39495,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 48719	32	Тирадентис	Tiradentes	BR
 48720	32	Бенедиту-Нову	Benedito Novo	BR
 48721	32	Вотупоранга	Votuporanga	BR
+48870	32	Камбориу	Camboriú	BR
 48722	32	Сан-Жозе-ду-Риу-Прету	José Bonifácio	BR
 48723	32	Машаду	Machado	BR
 48724	32	Оризонти	Horizonte	BR
@@ -39158,7 +39609,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 48866	32	Помероди	Pomerode	BR
 48868	32	Саудадис	Saudades	BR
 48869	32	Понти-Серрада	Ponte Serrada	BR
-48870	32	Камбориу	Camboriú	BR
 48871	32	Брасу-ду-Норти	Braço Do Norte	BR
 48872	32	Триунфу	Triunfo	BR
 48873	32	Варжинья	Varginha	BR
@@ -40344,6 +40794,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 234512	32	Сан-Мигел-ди-Тайпу	São Miguel De Taipu	BR
 234513	32	Кампус-Боржис	Campos Borges	BR
 234516	32	Колмея	Colméia	BR
+290749	32	Итупева	Itupeva	BR
 234517	32	Нова-Олимпия	Nova Olímpia	BR
 237832	32	Галилея	Galiléia	BR
 237836	32	Лауру-Мюллер	Lauro Müller	BR
@@ -40555,6 +41006,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 255068	32	Аваи	Avaí	BR
 255069	32	Сертанежа	Sertaneja	BR
 255070	32	Сан-Педру-дус-Феррус	São Pedro Dos Ferros	BR
+320976	32	Жоанезия	Joanésia	BR
 255072	32	Католе-ду-Роша	Catolé Do Rocha	BR
 255073	32	Алвинополис	Alvinópolis	BR
 255174	32	Мелейру	Meleiro	BR
@@ -40763,6 +41215,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 275890	32	Симонезия	Simonésia	BR
 275891	32	Трези-Тилиас	Treze Tílias	BR
 275897	32	Редентора	Redentora	BR
+287940	32	Глоринья	Glorinha	BR
 275899	32	Санта-Роза-ду-Токантинс	Santa Rosa Do Tocantins	BR
 279502	32	Габриел-Монтейру	Gabriel Monteiro	BR
 279503	32	Варзеа-ду-Посу	Várzea Do Poço	BR
@@ -40869,9 +41322,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 287937	32	Палминополис	Palminópolis	BR
 287938	32	Тупаренди	Tuparendi	BR
 287939	32	Луис-Гомис	Luís Gomes	BR
-287940	32	Глоринья	Glorinha	BR
 290747	32	Позу-Нову	Pouso Novo	BR
-290749	32	Итупева	Itupeva	BR
 292517	32	Фелисиу-дус-Сантус	Felício Dos Santos	BR
 292522	32	Диогу-ди-Васконселус	Diogo De Vasconcelos	BR
 292525	32	Бенедитинус	Beneditinos	BR
@@ -41080,7 +41531,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 320971	32	Раншу-Алегри	Rancho Alegre	BR
 320972	32	Берилу	Berilo	BR
 320975	32	Уруока	Uruoca	BR
-320976	32	Жоанезия	Joanésia	BR
 320988	32	Паулу-Афонсу	Afonso Bezerra	BR
 320989	32	Портел	Portel	BR
 320990	32	Авелинополис	Avelinópolis	BR
@@ -42110,6 +42560,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 202469	14	Рекрео	Recreo	AR
 202470	14	Ункильо	Unquillo	AR
 222969	14	Команданте Луис Пьедрабуэна	Piedra Buena	AR
+140082	68	Понтс	Ponts	ES
 242013	14	Алехандро Корн	Alejandro Korn	AR
 242014	14	Санкти Спириту	Sancti Spíritu	AR
 242030	14	Эль Майтен	El Maitén	AR
@@ -42331,7 +42782,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 140075	68	Барранко	Barranco	ES
 140078	68	Камбадос	Cambados	ES
 140079	68	Велес-Бланко	Vélez Blanco	ES
-140082	68	Понтс	Ponts	ES
 140083	68	Бусот	Busot	ES
 140087	68	Икод-де-лос-Винос	Icod De Los Vinos	ES
 140088	68	Тиас	Tías	ES
@@ -42439,6 +42889,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 141636	68	Майрена-дель-Алькор	Mairena Del Alcor	ES
 141640	68	Пиносо	Pinoso	ES
 141642	68	Монтнегре	Montnegre	ES
+149385	68	Дуркаль	Dúrcal	ES
 141643	68	Кастель-Пладжа-де-Аро	Playa De Aro	ES
 141649	68	Эскуча	Escucha	ES
 141652	68	Алькосебре	Alcocebre	ES
@@ -42656,7 +43107,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 149273	68	Лейро	Leiro	ES
 149275	68	Чаучина	Chauchina	ES
 149383	68	Кесада	Quesada	ES
-149385	68	Дуркаль	Dúrcal	ES
 149386	68	Маус	Maus	ES
 149393	68	Аркос-де-Халон	Arcos De Jalón	ES
 149395	68	Муньос	Muñoz	ES
@@ -43394,6 +43844,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 233165	68	Антимио де Арриба	Antimio De Arriba	ES
 233168	68	Сан-Карлос-Де-Ла-Рапита	Sant Carlos De La Ràpita	ES
 233169	68	Маоньо	Maoño	ES
+50069	57	Эшвайлер	Eschweiler	DE
 233174	68	Сан-Клементе	San Clemente	ES
 233175	68	Бесерриль-де-Кампос	Becerril De Campos	ES
 233176	68	Кабралес	Cabrales	ES
@@ -43500,6 +43951,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 244181	68	Лос Посикос	Los Pocicos	ES
 244560	68	Сан Мигель де Арас	San Miguel De Aras	ES
 244561	68	Поль	Pol	ES
+257392	68	Кирога	Quiroga	ES
 244646	68	Марео де Абахо	Mareo De Abajo	ES
 244647	68	Эслес	Esles	ES
 244694	68	Фильель	Filiel	ES
@@ -43602,7 +44054,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 257388	68	Ланга-де-Дуэро	Langa De Duero	ES
 257389	68	Конкабелья	Concabella	ES
 257391	68	Сос-дель-Рей-Католико	Sos Del Rey Católico	ES
-257392	68	Кирога	Quiroga	ES
 257396	68	Фуэнтес Нуэвас	Fuentesnuevas	ES
 257397	68	Романильос де Мединасели	Romanillos De Medinaceli	ES
 257408	68	Момпия	Mompía	ES
@@ -43703,6 +44154,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 270547	68	Руморосо	Rumoroso	ES
 270680	68	Карбахоса де Армунья	Carbajosa De Armuña	ES
 270686	68	Масарьегос	Mazariegos	ES
+51259	57	Ладенбург	Ladenburg	DE
 270720	68	Каньете ла Реаль	Cañete La Real	ES
 272037	68	Алар-дель-Рей	Alar Del Rey	ES
 272038	68	Баньюгес	Bañugues	ES
@@ -43808,6 +44260,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 294612	68	Робледо	Robledo De La Guzpeña	ES
 294656	68	Уэрга де Фрайлес	Huerga De Frailes	ES
 294662	68	Мескитилья	Mezquitilla	ES
+51260	57	Венге	Wenge	DE
 294663	68	Эскаработе	Escarabote	ES
 294666	68	Беранга	Beranga	ES
 294723	68	Пуэбла де Сан Хулиан	Puebla De San Julián	ES
@@ -44027,7 +44480,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 50056	57	Графенау	Grafenau	DE
 50062	57	Фридрихсдорф	Friedrichsdorf	DE
 50067	57	Зульцбах	Sulzbach	DE
-50069	57	Эшвайлер	Eschweiler	DE
 50070	57	Хайльбронн	Heilbronn	DE
 50096	57	Ландсхут	Landshut	DE
 50108	57	Бургхаун	Burghaun	DE
@@ -44257,8 +44709,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 51253	57	Клингенберг-Ам-Майн	Klingenberg	DE
 51254	57	Марклеберг	Markkleeberg	DE
 51255	57	Мильтенберг	Miltenberg	DE
-51259	57	Ладенбург	Ladenburg	DE
-51260	57	Венге	Wenge	DE
 51285	57	Квелле	Quelle	DE
 51286	57	Верхайм	Wehrheim	DE
 51294	57	Гаймерсхайм	Gaimersheim	DE
@@ -44841,6 +45291,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 57081	57	З	Sömmerda	DE
 57093	57	Виссен	Wissen	DE
 57094	57	Барнсторф	Barnstorf	DE
+58111	57	Айленбург	Eilenburg	DE
 57103	57	Боденвердер	Bodenwerder	DE
 57164	57	Аслар	Aßlar	DE
 57170	57	Эммендинген	Emmendingen	DE
@@ -44958,7 +45409,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 58104	57	Эмлихгайм	Emlichheim	DE
 58105	57	Дидорф	Diedorf	DE
 58109	57	Родер	Roder	DE
-58111	57	Айленбург	Eilenburg	DE
 58112	57	Баутцен	Bautzen	DE
 58129	57	Мелле	Melle	DE
 58160	57	Файтсх	Veitshöchheim	DE
@@ -46222,6 +46672,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 77466	57	Рансбах-Баумбах	Ransbach-baumbach	DE
 77477	57	Вадерсло	Wadersloh	DE
 77482	57	Эбернхан	Ebernhahn	DE
+82133	57	Дексхайм	Dexheim	DE
 77498	57	Хайлигенштедтен	Heiligenstedten	DE
 77519	57	Пфорцен	Pforzen	DE
 77521	57	Бойрен	Beuren	DE
@@ -46573,7 +47024,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 82105	57	Г	Görgen	DE
 82111	57	Монцинген	Monzingen	DE
 82112	57	Мансфельд	Mansfeld	DE
-82133	57	Дексхайм	Dexheim	DE
 82134	57	Гиттельде	Gittelde	DE
 82140	57	Вайлерсвист	Weilerswist	DE
 82141	57	Гнарренбург	Gnarrenburg	DE
@@ -47742,6 +48192,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 102662	57	Харспельт	Harspelt	DE
 102683	57	Нидервайс	Niederweis	DE
 102720	57	Римке	Riemke	DE
+126162	57	Мюнхберг	Münchberg	DE
 102731	57	Цашендорф	Zaschendorf	DE
 102738	57	Порстендорф	Porstendorf	DE
 102747	57	Оффенау	Offenau	DE
@@ -47857,7 +48308,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 126069	57	Оберхаузен-Райнхаузен	Oberhausen-rheinhausen	DE
 126159	57	Лидеринг	Liedering	DE
 126160	57	Пюрген	Pürgen	DE
-126162	57	Мюнхберг	Münchberg	DE
 126164	57	Хайлигкройцштайнах	Heiligkreuzsteinach	DE
 126165	57	Плюдерхаузен	Plüderhausen	DE
 126166	57	Д	Dörverden	DE
@@ -48642,6 +49092,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 161242	57	П	Pöllnricht	DE
 161243	57	Эггенталь	Eggenthal	DE
 161245	57	Одерберг	Oderberg	DE
+161458	57	Ирльбах	Irlbach	DE
 161246	57	Лаккенбах	Lackenbach	DE
 161249	57	Трухтлахинг	Truchtlaching	DE
 161250	57	Эрхартинг	Erharting	DE
@@ -48755,7 +49206,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 161455	57	Бадерсфельд	Badersfeld	DE
 161456	57	Оберштауфенбах	Oberstaufenbach	DE
 161457	57	Больстерланг	Bolsterlang	DE
-161458	57	Ирльбах	Irlbach	DE
 161465	57	Шварцен	Schwarzen	DE
 161466	57	Бренсбах	Brensbach	DE
 161467	57	Х	Höver	DE
@@ -49207,6 +49657,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 172369	57	Хаструп	Hastrup	DE
 172370	57	Вангельнштедт	Wangelnstedt	DE
 172371	57	Калефельд	Kalefeld	DE
+179010	57	Бауербах	Bauerbach	DE
 172372	57	Шталльбрюггерфельд	Stallbrüggerfeld	DE
 172373	57	Ваххольц	Wachholz	DE
 172374	57	Оберзимтен	Obersimten	DE
@@ -49429,7 +49880,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 179005	57	Крам	Kraam	DE
 179007	57	Зенхайм	Senheim	DE
 179008	57	Дутвайлер	Duttweiler	DE
-179010	57	Бауербах	Bauerbach	DE
 179011	57	Беринген	Behringen	DE
 179012	57	Кумбах	Cumbach	DE
 179014	57	Тр	Tröstau	DE
@@ -51818,6 +52268,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 218473	57	Бардорф	Bahrdorf	DE
 218476	57	Юхзен	Jüchsen	DE
 218477	57	Л	Lödla	DE
+220621	57	Хазель	Hasel	DE
 218478	57	Хойкевальде	Heukewalde	DE
 218479	57	Р	Rödigen	DE
 218481	57	Цемпин	Zempin	DE
@@ -51933,7 +52384,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 220618	57	Б	Börnecke	DE
 220619	57	Бертков	Bertkow	DE
 220620	57	Дольнштайн	Dollnstein	DE
-220621	57	Хазель	Hasel	DE
 220622	57	Мунцинген	Munzingen	DE
 220626	57	Филанк	Vielank	DE
 220629	57	Гельбензанде	Gelbensande	DE
@@ -52389,6 +52839,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 226208	57	Оттенх	Ottenhöfen Im Schwarzwald	DE
 226209	57	Кляйн Немеро	Klein Nemerow	DE
 226212	57	Хельмхоф	Helmhof	DE
+237697	57	Мансдорф	Mannsdorf	DE
 226251	57	Шмахтенхаген	Schmachtenhagen	DE
 226252	57	Бливенсторф	Blievenstorf	DE
 226253	57	Болльштедт	Bollstedt	DE
@@ -52840,7 +53291,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 237074	57	Бодерсвайер	Bodersweier	DE
 237075	57	Бюккен	Bücken	DE
 237095	57	Далькендорф	Dalkendorf	DE
-237697	57	Мансдорф	Mannsdorf	DE
 237698	57	Плючайд	Plütscheid	DE
 237792	57	Берка-фор-дем-Хайних	Berka	DE
 237793	57	Флиссем	Fließem	DE
@@ -53180,6 +53630,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 243883	57	Ратшток	Rathstock	DE
 243884	57	Вертхайм	Vockenrot	DE
 243885	57	Филипсройт	Philippsreut	DE
+254387	57	Аушковиц	Auschkowitz	DE
 243886	57	Раттенбах	Rattenbach	DE
 244111	57	Плайн	Plein	DE
 244126	57	Швайхельн-Бермбек	Schweicheln	DE
@@ -53293,6 +53744,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 246210	57	Хазельрайн	Haselrain	DE
 246214	57	Санкт-Йоханн	Sankt Johann	DE
 246221	57	Бадель	Badel	DE
+272605	57	Бремпт	Brempt	DE
 246225	57	Кляйн-Герау	Klein-gerau	DE
 246238	57	З	Sönnebüll	DE
 246278	57	Зитценберг	Sitzenberg	DE
@@ -53635,7 +54087,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 254382	57	Штарнберг	Perchting	DE
 254384	57	Мойшайд	Moischeid	DE
 254386	57	Лимбург-на-Лане	Lindenholzhausen	DE
-254387	57	Аушковиц	Auschkowitz	DE
 254389	57	Штекленберг	Stecklenberg	DE
 254390	57	Гюнтерсберге	Güntersberge	DE
 254391	57	Шляйбниц	Schleibnitz	DE
@@ -54205,6 +54656,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 266114	57	Альтхаген	Althagen	DE
 266116	57	Боббин	Bobbin	DE
 266117	57	Оберкройцберг	Oberkreuzberg	DE
+278462	57	Дюнн	Dhünn	DE
 266118	57	Лаймерштадт	Laimerstadt	DE
 266120	57	Госсенберг	Gossenberg	DE
 266121	57	Леттенройт	Lettenreuth	DE
@@ -54435,7 +54887,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 272597	57	Канкелау	Kankelau	DE
 272602	57	Хеншлебен	Henschleben	DE
 272604	57	Дреба	Dreba	DE
-272605	57	Бремпт	Brempt	DE
 272609	57	Вессельбуренер-Дайхгаузен	Wesselburener Deichhausen	DE
 272610	57	Нусдорф	Nußdorf	DE
 272611	57	Айзингерсдорф	Eisingersdorf	DE
@@ -54550,7 +55001,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 275512	57	Баркхорст	Barkhorst	DE
 275860	57	Прецелле	Prezelle	DE
 278420	57	Оль	Ohl	DE
-278462	57	Дюнн	Dhünn	DE
 278474	57	Вайдманслуст	Waidmannslust	DE
 278521	57	Нирендорф	Nierendorf	DE
 278675	57	Эсдорф	Oesdorf	DE
@@ -54886,6 +55336,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 291833	57	Оберахорн	Oberahorn	DE
 291835	57	Эбенхайм	Ebenheim	DE
 291836	57	Унтервальдберунген	Unterwaldbehrungen	DE
+294858	57	Зойпан	Seupahn	DE
 291837	57	Аргенштайн	Argenstein	DE
 291839	57	Пиенценау	Pienzenau	DE
 291840	57	Бюлиц	Bülitz	DE
@@ -54998,7 +55449,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 294770	57	Бюнгельсхаузен	Büngelshausen	DE
 294809	57	Грамментин	Grammentin	DE
 294839	57	Китцеберг	Kitzeberg	DE
-294858	57	Зойпан	Seupahn	DE
 294889	57	Кирхроде	Kirchrode	DE
 294899	57	Клайнх	Kleinhöhenrain	DE
 294900	57	Комптендорф	Komptendorf	DE
@@ -58135,6 +58585,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 153027	39	Пуант-Лебель	Pointe-lebel	CA
 153029	39	Люсвиль	Luceville	CA
 153030	39	Козапскаль	Causapscal	CA
+158774	39	Юнтендон	Huntingdon	CA
 153031	39	Форествиль	Forestville	CA
 153032	39	Доске	Dosquet	CA
 153034	39	Сент-Маргерит	Sainte-marguerite	CA
@@ -58248,7 +58699,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 158771	39	Бертье-Сюр-Мер	Berthier-sur-mer	CA
 158772	39	Стонеам	Stoneham	CA
 158773	39	Лак-Бушет	Lac-bouchette	CA
-158774	39	Юнтендон	Huntingdon	CA
 158775	39	Шандле	Chandler	CA
 158813	39	Кемней	Kemnay	CA
 158814	39	Делорейн	Deloraine	CA
@@ -58825,6 +59275,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 742	223	Морристаун	Morristown	US
 743	223	Вашингтон	Washington	US
 745	223	Стейтен Айленд	Staten Island	US
+903	223	Эдентон	Edenton	US
 746	223	Норт Уэльс	North Wales	US
 748	223	Уотерфорд	Waterford	US
 749	223	Окмос	Okemos	US
@@ -58942,7 +59393,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 898	223	Палм-Спрингс	Palm Springs	US
 901	223	Джэксонвилл	Jacksonville	US
 902	223	Саутерн Пайнс	Southern Pines	US
-903	223	Эдентон	Edenton	US
 905	223	Аллайанс	Alliance	US
 906	223	Элизабеттаун	Elizabethtown	US
 907	223	Фейетвилл	Fayetteville	US
@@ -62437,6 +62887,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 6645	223	Халф Мун Бэй	Half Moon Bay	US
 6647	223	Эйвон	Avon	US
 6648	223	Уильямспорт	Williamsport	US
+7206	223	Джеветт	Jewett	US
 6650	223	Сейнт Бонифасиус	Saint Bonifacius	US
 6652	223	Уабассо	Wabasso	US
 6653	223	Гранд-Форкс	Grand Forks	US
@@ -62791,7 +63242,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 7203	223	Плимут	Plymouth	US
 7204	223	Пиккерингтон	Pickerington	US
 7205	223	Саннивейл	Sunnyvale	US
-7206	223	Джеветт	Jewett	US
 7207	223	Дейнгерфилд	Daingerfield	US
 7209	223	Ланкастер	Lancaster	US
 7211	223	Бонэм	Bonham	US
@@ -64078,6 +64528,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 9348	223	Маршалл	Marshall	US
 9350	223	Хановер	Hanover	US
 9352	223	Банкер Хилл	Bunker Hill	US
+9561	223	Тапман	Tupman	US
 9353	223	Каннон-Фолс	Cannon Falls	US
 9354	223	Меномони	Menomonie	US
 9355	223	Лейквилл	Lakeville	US
@@ -64196,7 +64647,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 9550	223	Арлингтон	Arlington	US
 9551	223	Мерриета	Murrieta	US
 9556	223	Палос Вердес Пенинсула	Palos Verdes Peninsula	US
-9561	223	Тапман	Tupman	US
 9562	223	Хатто	Hutto	US
 9563	223	Панорама Сити	Panorama City	US
 9566	223	Уиндбер	Windber	US
@@ -68317,6 +68767,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 29443	223	Карутерсвилл	Caruthersville	US
 29445	223	Сенат	Senath	US
 29446	223	Кэмпбелл	Campbell	US
+29658	223	Трс Пинос	Tres Pinos	US
 29449	223	Сейнт Франсис	Saint Francis	US
 29450	223	Сплендора	Splendora	US
 29452	223	Сентер	Center	US
@@ -68431,7 +68882,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 29650	223	Коллинсвилл	Collinsville	US
 29655	223	Оксвасс	Auxvasse	US
 29656	223	Кросби	Crosby	US
-29658	223	Трс Пинос	Tres Pinos	US
 29661	223	Уинтроп	Winthrop	US
 29662	223	Грин	Greene	US
 29663	223	Френч Лик	French Lick	US
@@ -69612,6 +70062,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 35434	223	Диллард	Dillard	US
 35440	223	Игл Лейк	Eagle Lake	US
 35441	223	Пайн Хилл	Pine Hill	US
+35939	223	Кенвуд	Kenwood	US
 35443	223	Сомервилл	Somerville	US
 35445	223	Кросс Ривер	Cross River	US
 35455	223	Холландейл	Hollandale	US
@@ -69731,7 +70182,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 35925	223	Вустер	Worcester	US
 35928	223	Сейлем	Salem	US
 35932	223	Уоллес	Wallace	US
-35939	223	Кенвуд	Kenwood	US
 35940	223	Спрингвилл	Springville	US
 35941	223	Коло	Colo	US
 35944	223	Монротон	Monroeton	US
@@ -75075,6 +75525,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 127483	223	Парадайс	Paradise	US
 127490	223	Ордервилл	Orderville	US
 127493	223	Чисаго-Сити	Chisago City	US
+128006	223	Сеймур	Seymour	US
 127497	223	Валлеситос	Vallecitos	US
 127501	223	Итака	Ithaca	US
 127502	223	Хани Крик	Honey Creek	US
@@ -75310,7 +75761,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 128003	223	Мансфилд	Mansfield	US
 128004	223	Долтон Сити	Dalton City	US
 128005	223	Истон	Easton	US
-128006	223	Сеймур	Seymour	US
 128007	223	Самнер	Sumner	US
 128011	223	Монро Сентер	Monroe Center	US
 128012	223	Харрис	Harris	US
@@ -76509,6 +76959,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 131100	223	Миннеола	Minneola	US
 131102	223	Франклинтаун	Franklintown	US
 131103	223	Мейс	Mays	US
+131371	223	Сьюард	Seward	US
 131105	223	Мария Стейн	Maria Stein	US
 131106	223	Ла Рю	La Rue	US
 131110	223	Ков Сити	Cove City	US
@@ -76631,7 +77082,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 131367	223	Нотак	Noatak	US
 131368	223	Ноорвик	Noorvik	US
 131369	223	Диринг	Deering	US
-131371	223	Сьюард	Seward	US
 131372	223	Амстон	Amston	US
 131373	223	Милдейл	Milldale	US
 131378	223	Вест Финли	West Finley	US
@@ -81077,6 +81527,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 160498	223	Данте	Dante	US
 160499	223	Тимбервилл	Timberville	US
 160501	223	Уолш	Walsh	US
+160793	223	Канаан	Canaan	US
 160502	223	Голден Гейт	Golden Gate	US
 160503	223	Уолнат Хилл	Walnut Hill	US
 160505	223	Юрика	Eureka	US
@@ -81201,7 +81652,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 160784	223	Кабалло	Caballo	US
 160789	223	Фолс	Falls	US
 160791	223	Джэксон	Jackson	US
-160793	223	Канаан	Canaan	US
 160796	223	Брозли	Broseley	US
 160797	223	Милл Спринг	Mill Spring	US
 160798	223	Фагус	Fagus	US
@@ -82887,6 +83337,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 181645	223	Ковингтон	Covington	US
 181647	223	Уолпак Сентер	Wallpack Center	US
 181656	223	Хокингпорт	Hockingport	US
+189755	223	Гамильтон	Hamilton	US
 181660	223	Кресент Милс	Crescent Mills	US
 181699	223	Элмора	Elmora	US
 181701	223	Маханой Плейн	Mahanoy Plane	US
@@ -83005,7 +83456,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 189600	223	Кэттскилл Бэй	Kattskill Bay	US
 189604	223	Портер	Porter	US
 189749	223	Эко	Echo	US
-189755	223	Гамильтон	Hamilton	US
 189759	223	Деповилл	Depauville	US
 189763	223	Файн	Fine	US
 189766	223	Луисбург	Louisburg	US
@@ -84288,6 +84738,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 150719	75	Ла Тафанель	La Taphanel	FR
 150720	75	Этрусса	Étroussat	FR
 150732	75	Гоо	Goos	FR
+167834	75	Буко	Boucau	FR
 150733	75	Сен-Венсан-де-Тирос	Saint-vincent-de-tyrosse	FR
 150736	75	Ган	Gans	FR
 150737	75	Ла Сальвета	La Salvetat	FR
@@ -84400,7 +84851,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 167831	75	Эско	Escos	FR
 167832	75	Жатксу	Jatxou	FR
 167833	75	Сар	Sare	FR
-167834	75	Буко	Boucau	FR
 167836	75	Балиро	Baliros	FR
 167837	75	Лиманду	Limendous	FR
 167838	75	Андоэн	Andoins	FR
@@ -84508,6 +84958,7 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 190844	75	Трели	Trelly	FR
 190845	75	Эстри	Estry	FR
 190846	75	Кресрон	Cresserons	FR
+266450	75	Вуекур	Vouécourt	FR
 190847	75	Ла-Ублоньер	La Houblonnière	FR
 190848	75	Норре-ан-Ож	Norrey	FR
 190875	75	Кандрес	Candresse	FR
@@ -84611,7 +85062,6 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 266421	75	Вома	Vaumas	FR
 266426	75	Садийак	Sadillac	FR
 266428	75	Сен-Брис-де-Ландель	Saint-brice-de-landelles	FR
-266450	75	Вуекур	Vouécourt	FR
 266468	75	Сент-Этьен-де-Вик	Saint-Étienne-de-vicq	FR
 273581	75	Ла Феррьер-Окс-Этан	La Ferrière-aux-Étangs	FR
 273593	75	Сент-Илер-Сюр-Ер	Saint-hilaire-sur-erre	FR
@@ -87863,4 +88313,259 @@ COPY geo_region (id, country_id, name_ru, name_en, code) FROM stdin;
 \.
 
 
+--
+-- Data for Name: permission; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY permission (id, perm_type_id, entity_id, name, description, type) FROM stdin;
+1	1	\N	admin	полный доступ	\N
+\.
+
+
+--
+-- Data for Name: permission2group; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY permission2group (perm_id, group_id) FROM stdin;
+1	1
+\.
+
+
+--
+-- Data for Name: permission_type; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY permission_type (id, name) FROM stdin;
+1	static
+\.
+
+
+--
+-- Data for Name: var; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY var (id, av_stats_max_id) FROM stdin;
+t	0
+\.
+
+
+--
+-- Name: acv_banner_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY acv_banner
+    ADD CONSTRAINT acv_banner_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: acv_video_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY acv_video
+    ADD CONSTRAINT acv_video_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: acv_video_shown_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY acv_video_shown
+    ADD CONSTRAINT acv_video_shown_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: banner_place_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY banner_place
+    ADD CONSTRAINT banner_place_name_key UNIQUE (name);
+
+
+--
+-- Name: banner_place_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY banner_place
+    ADD CONSTRAINT banner_place_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: config_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY config
+    ADD CONSTRAINT config_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: customer_email_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY customer
+    ADD CONSTRAINT customer_email_key UNIQUE (email);
+
+
+--
+-- Name: customer_group_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY customer_group
+    ADD CONSTRAINT customer_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: customer_login_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY customer
+    ADD CONSTRAINT customer_login_key UNIQUE (login);
+
+
+--
+-- Name: customer_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY customer
+    ADD CONSTRAINT customer_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: geo_region_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY geo_region
+    ADD CONSTRAINT geo_region_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permission_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permission_type_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY permission_type
+    ADD CONSTRAINT permission_type_name_key UNIQUE (name);
+
+
+--
+-- Name: permission_type_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY permission_type
+    ADD CONSTRAINT permission_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: var_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY var
+    ADD CONSTRAINT var_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: acv_banner_banner_place_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_banner
+    ADD CONSTRAINT acv_banner_banner_place_id_fkey FOREIGN KEY (banner_place_id) REFERENCES banner_place(id);
+
+
+--
+-- Name: acv_banner_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_banner
+    ADD CONSTRAINT acv_banner_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer(id);
+
+
+--
+-- Name: acv_video2cat_acv_video_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_video2cat
+    ADD CONSTRAINT acv_video2cat_acv_video_id_fkey FOREIGN KEY (acv_video_id) REFERENCES acv_video(id);
+
+
+--
+-- Name: acv_video2geo_region_acv_video_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_video2geo_region
+    ADD CONSTRAINT acv_video2geo_region_acv_video_id_fkey FOREIGN KEY (acv_video_id) REFERENCES acv_video(id);
+
+
+--
+-- Name: acv_video2geo_region_geo_region_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_video2geo_region
+    ADD CONSTRAINT acv_video2geo_region_geo_region_id_fkey FOREIGN KEY (geo_region_id) REFERENCES geo_region(id);
+
+
+--
+-- Name: acv_video_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_video
+    ADD CONSTRAINT acv_video_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer(id);
+
+
+--
+-- Name: acv_video_shown_acv_video_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY acv_video_shown
+    ADD CONSTRAINT acv_video_shown_acv_video_id_fkey FOREIGN KEY (acv_video_id) REFERENCES acv_video(id);
+
+
+--
+-- Name: customer2group_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY customer2group
+    ADD CONSTRAINT customer2group_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer(id);
+
+
+--
+-- Name: customer2group_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY customer2group
+    ADD CONSTRAINT customer2group_group_id_fkey FOREIGN KEY (group_id) REFERENCES customer_group(id);
+
+
+--
+-- Name: permission2group_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY permission2group
+    ADD CONSTRAINT permission2group_group_id_fkey FOREIGN KEY (group_id) REFERENCES customer_group(id);
+
+
+--
+-- Name: permission2group_perm_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY permission2group
+    ADD CONSTRAINT permission2group_perm_id_fkey FOREIGN KEY (perm_id) REFERENCES permission(id);
+
+
+--
+-- Name: permission_perm_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY permission
+    ADD CONSTRAINT permission_perm_type_id_fkey FOREIGN KEY (perm_type_id) REFERENCES permission_type(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
 

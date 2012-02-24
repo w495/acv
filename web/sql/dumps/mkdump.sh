@@ -10,7 +10,7 @@
 ##
 ##
 
-default_db_name=adv_system
+default_db_name=fk
 
 ##
 ## main() ->
@@ -23,4 +23,5 @@ default_db_name=adv_system
         db_name=$1
     fi
     echo "Используем $db_name в качестве базы данных."
-    pg_dump $db_name > dump-$db_name-`date "+%Y-%m-%d_%H-%M-%S-%N"`.sql
+    pg_dump $db_name --no-privileges --no-owner --no-reconnect \
+        > dump-$db_name-`date "+%Y-%m-%d_%H-%M-%S-%N"`.sql

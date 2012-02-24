@@ -26,6 +26,7 @@ default_db_name=fk
 scheme_file_name=./scheme.sql
 proc_file_name=./proc.sql
 insert_file_name=./insert.sql
+geo_file_name=./geo.sql
 log_file_name=./log.log
 
 
@@ -52,20 +53,29 @@ p_createdb() {
 				echo "Процедуры были созданы. Сейчас вставим данные ..."
 				echo "==============[DATA]==============" >> $log_file_name
 				if psql -d $db_name < $insert_file_name &>> $log_file_name
-				then
-					echo "Данные были вставлены."
-					echo "Проверка log."
-					if cat $log_file_name | grep -A2 -n -T -i "ERROR:"
-					then
-						echo "Хинт: cтрочки выше говорят об ошибках."
-					else
-						echo "Все кончилось хорошо."
-					fi
-				else
-					echo "Данные НЕ были вставлены. Смотрите почему:"
-					echo "----------[tail log:]---------------------"
-					tail $log_file_name
-				fi
+                then
+                    echo "Данные были вставлены. Сейчас вставим регионы  ..."
+                    echo "==============[DATA]==============" >> $log_file_name
+                    if psql -d $db_name < $geo_file_name &>> $log_file_name
+                    then
+                        echo "Данные были вставлены."
+                        echo "Проверка log."
+                        if cat $log_file_name | grep -A2 -n -T -i "ERROR:"
+                        then
+                            echo "Хинт: cтрочки выше говорят об ошибках."
+                        else
+                            echo "Все кончилось хорошо."
+                        fi
+                    else
+                        echo "Регионы  НЕ были вставлены. Смотрите почему:"
+                        echo "----------[tail log:]---------------------"
+                        tail $log_file_name
+                    fi
+                else
+                    echo "Данные НЕ были вставлены. Смотрите почему:"
+                    echo "----------[tail log:]---------------------"
+                    tail $log_file_name
+                fi
 			else
 				echo "Процедуры НЕ были созданы. Смотрите почему:"
 				echo "----------[tail log:]---------------------"
