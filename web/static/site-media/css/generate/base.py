@@ -559,10 +559,26 @@ class Base(generate.gen_css.Gen_css):
         res = ""
         res = """.s-footer{
             clear: both;
+            height: 75px;
         }
         """
-        res += ".s-footer{" \
-            + generate.util.lgt('#0192d5', '#02618d', '#cfcfcf') \
-            + "}"
-            
+        if(Use.css3_grad):
+            res += ".s-footer{%s}"%(
+                generate.util.lgt('#0192d5', '#02618d', '#02618d')
+            )
+        if(Use.bgi_grad):
+            res += ".s-footer{%s}"%(
+                "background: #02618d url(%s);"%(
+                    generate.util.tobase64("css-images/s-footer.png")
+                )
+            )
+
+        res += """.b-footer{
+            padding-top: 20px;
+            text-align: center;
+            color: white;
+        }
+        """
+
+
         return res;

@@ -227,7 +227,14 @@
     <!--
         Подол страницы
     -->
-    <xsl:text>© ζAVρ λαβ</xsl:text>
+    <div class="b-footer">
+        <p>
+            <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
+        </p>
+        <p>
+            <xsl:text>Все права защищены.</xsl:text>
+        </p>
+    </div>
 </xsl:template>
 
 <xsl:template name="foot-scripts">
