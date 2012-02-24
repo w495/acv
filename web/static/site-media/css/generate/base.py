@@ -99,11 +99,15 @@ class Base(generate.gen_css.Gen_css):
         
     def body(self):
         res = """body{
-            text-align:center;
             font-family:Cuprum,Georgia,Serif;
         }"""
-        res = "body{%s%s}"%(
-            generate.util.lgt('#ffffff', '#cccccc', '#e4e6e3'),
+
+        #if(Use.css3_grad):
+        #res += "body{%s}"%(
+            #generate.util.lgt('#ffffff', '#ced0cd', '#e4e6e3'),
+        #)
+        #if(Use.bgi_grad):
+        res += "body{%s}"%(
             "background: #e4e6e3 url(%s) repeat-x;"%(
                 generate.util.tobase64("css-images/body.png"),
             )
@@ -132,7 +136,7 @@ class Base(generate.gen_css.Gen_css):
 
     def s_header(self):
         def _b_thehead():
-            res = """.b-thehead{0/login
+            res = """.b-thehead{
                 display: block;
                 height: 81px;
             }"""
