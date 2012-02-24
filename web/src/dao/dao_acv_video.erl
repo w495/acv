@@ -40,6 +40,9 @@
 ]).
 
 
+-compile(export_all).
+
+
 
 -include("common.hrl").
 
@@ -85,6 +88,25 @@
 -spec update_acv_video(Acv_video::acv_video()) -> [proplist()];
     ({acv_video(), [Geo_region_list::integer()],
                         [Cat_id_list::integer()]}) -> integer().
+
+
+getAcvVideoById(Id) ->
+    Q1 = "select * from acv_video where id = $1;",
+    Q2 = "select cat_id from acv_video2cat where acv_video_id = $1;",
+    {ok, R1} = dao:simple(Q1, [Id]),
+    R2 = dao:with_connection_fk(fun(Con) ->
+        {ok, _, Vals} = pgsql:equery(Con, Q2, [Id]),
+        [utils:to_list(X) || {X} <- Vals]
+    end),
+    Q3 = list_to_binary(?FMT("select mark.name, mark.seo_alias from mark where id in (~s);", [string:join(R2,", ")])),
+    {ok, R3} = mysql_dao:simple(Q3),
+
+    Q4 = "select geo_region.name_ru, geo_region.code "
+            "from geo_region join acv_video2geo_region on geo_region.id = acv_video2geo_region.geo_region_id "
+            "where acv_video2geo_region.acv_video_id = $1;",
+    {ok, R4} = dao:simple(Q4, [Id]),
+    {ok, R1, R3, R4}.
+
 
 %%% @doc
 %%% Возвращает список всех acv_video для всех покупателей

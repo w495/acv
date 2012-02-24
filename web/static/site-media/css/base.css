@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 /* auto gen Wed Feb 22 22:01:46 2012 */
 @font-face{font-family:'Cuprum';font-style:normal;font-weight:normal;src:local('Cuprum'),url('http://themes.googleusercontent.com/static/fonts/cuprum/v3/wHBEZCjwNI3HN2fD1RQJgw.woff') format('woff');}
 @font-face{font-family:'PT Sans Narrow';font-style:normal;font-weight:normal;src:local('PT Sans Narrow'),local('PTSans-Narrow'),url('http://themes.googleusercontent.com/static/fonts/ptsansnarrow/v2/UyYrYy3ltEffJV9QueSi4S4mX3cpNo8MnLri8k21-rs.woff') format('woff');}
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font-family:'PT Sans Narrow','Cuprum',sans-serif;vertical-align:baseline;}
+=======
+/* auto gen Wed Feb 22 15:39:35 2012 */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
+>>>>>>> a5557a32449b569a6589b8663bb451e14c461a4a
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}
 body{line-height:1;}
 ol,ul{list-style:none;}
