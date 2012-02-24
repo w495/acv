@@ -86,15 +86,27 @@ class Base(generate.gen_css.Gen_css):
 
     def common_modifiers(self):
         res = ""
-        res += """.hidden{display:none;}"""
-        res += """.visible{display:block;}"""
-        res += """.m-l{
+        res += """.m-hidden{display:none;}"""
+        res += """.m-visible{display:block;}"""
+        
+        res += """.m-link{
             cursor:pointer;
         }"""
-        res += """.m-l:hover{
+        res += """.m-link:hover{
             cursor:pointer;
         }"""
 
+        res += """.m-button{
+            display:inline-block;
+            cursor:pointer;
+            text-decoration:none;
+        }"""
+
+        res += """.m-button:hover{
+            cursor:pointer;
+            text-decoration:none;
+        }"""
+        
         return res
         
     def body(self):
@@ -135,11 +147,15 @@ class Base(generate.gen_css.Gen_css):
         """%(d(Metrics))
 
     def s_header(self):
+        b_thehead_h = 81;
+        b_thehead_caption_h = 17;
+
         def _b_thehead():
             res = """.b-thehead{
                 display: block;
-                height: 81px;
-            }"""
+                height: %spx;
+            }"""%(b_thehead_h);
+
             if(Use.bgi_grad):
                 res += ".b-thehead{%s}"%(
                     "background: #cccccc url(%s);"%(
@@ -157,8 +173,10 @@ class Base(generate.gen_css.Gen_css):
             res += """.b-thehead-caption {
                     display: block;
                     text-align: right;
+                    height: %spx;
                 }
-            """
+            """%(b_thehead_caption_h);
+            
             res += """.b-thehead-caption {
                     background-color: black;
                     color: white;
@@ -170,6 +188,7 @@ class Base(generate.gen_css.Gen_css):
                     left:20px;
                 }
             """
+            
             res += """.b-thehead-caption {
                     padding-right: 1em;
                     color: white;
@@ -245,6 +264,12 @@ class Base(generate.gen_css.Gen_css):
             return res;
             
         res = "";
+        res = """.s-header{
+            height: %spx;
+            overflow: hidden;
+        }
+        """%(b_thehead_h + b_thehead_caption_h);
+        
         res += _b_thehead()
         res += _b_thehead_caption()
         return res;
@@ -260,6 +285,7 @@ class Base(generate.gen_css.Gen_css):
         """%(d(Metrics))
         
         res += """.b-roller{
+                padding-top: 15px;
                 height: 240px;
             }
         """
@@ -300,7 +326,36 @@ class Base(generate.gen_css.Gen_css):
             color: white;
         }
         """
+
+        res +=""".b-rf-act{
+            
+        }
+        """
         
+        res +=""".b-rfa-bat{
+            text-align:center;
+            color: white;
+            margin-top: 10px;
+            padding-top: 7px;
+            
+            height:  26px;
+            width: 202px;
+
+            background-color: #098fc1;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -khtml-border-radius: 5px;
+            border-radius: 5px;
+        }
+        """
+
+        if(Use.bgi_grad):
+            res += ".b-rfa-bat{%s}"%(
+                "background: url(%s) no-repeat;"%(
+                    generate.util.tobase64("css-images/b-rfa-bat.png")
+                )
+            )
+
         res += """.b-roller-nav{
             text-align: center;
             clear: both;
@@ -309,7 +364,7 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.b-rn-ul{
             margin: auto;
-            width: 200px;
+            width: 90px;
         }
         """
         
@@ -318,6 +373,8 @@ class Base(generate.gen_css.Gen_css):
         }
         """
 
+        # display: inline-block;
+        
         res += """.e-rn-but{
             margin: 0px 5px 10px 0px;
             width: 20px;
@@ -328,25 +385,43 @@ class Base(generate.gen_css.Gen_css):
             -khtml-border-radius: 20px;
             border-radius: 20px;
             background-color: white;
-            border: inset 2px #cccccc;
             outline: none;
         }
         """
 
-        res += """.e-rn-but:hover{
-            background-color: #cccccc;
-        }
-        """
-        res += """.e-rn-but:active{
-            background-color: #c0c0c0;
-        }
-        """
-        
-        res += """.e-rn-but.cur{
-            background-color: #cccccc;
-        }
-        
-        """
+        if(Use.bgi_grad):
+            res += ".e-rn-but{%s}"%(
+                "background: url(%s) no-repeat;"%(
+                    generate.util.tobase64("css-images/e-rn-but.png")
+                )
+            )
+            res += ".e-rn-but:hover, .e-rn-but:active, .e-rn-but.cur{%s}"%(
+                "background: url(%s) no-repeat;"%(
+                    generate.util.tobase64("css-images/e-rn-but.cur.png")
+                )
+            )
+        if(Use.css3_grad):
+            res += """.e-rn-but{
+                border: inset 1px #cccccc;
+            }
+            """
+            res += """.e-rn-but:hover{
+                background-color: #cccccc;
+            }
+            """
+            res += """.e-rn-but:active{
+                background-color: #c0c0c0;
+            }
+            """
+
+            res += """.e-rn-but.cur{
+                background-color: #cccccc;
+            }
+            """
+
+
+                        
+
         res +=""".b-rf-ul{
             margin: 0px 0px 0px 15px;
             list-style: outside url(%s);
@@ -371,7 +446,7 @@ class Base(generate.gen_css.Gen_css):
             float: right;
             position: relative;
             right:  100px;
-            top:    -10px;
+            top:    -3px;
             width:  400px;
             height: 300px;
         }
@@ -388,11 +463,11 @@ class Base(generate.gen_css.Gen_css):
             """
             if(Use.css3_grad):
                 res += ".b-news-header{%s}"%(
-                    generate.util.lgt('#0792e7', '#0ab6e6', '#0ab6e6')
+                    generate.util.lgt('#0796ea', '#09b8e6', '#0796ea')
                 )
             if(Use.bgi_grad):
                 res += ".b-news-header{%s}"%(
-                    "background: #0ab6e6 url(%s);"%(
+                    "background: #0796ea url(%s);"%(
                         generate.util.tobase64("css-images/b-news-header.png")
                     )
                 )
@@ -443,7 +518,8 @@ class Base(generate.gen_css.Gen_css):
             res =  ""
             res += """.b-news{
                 clear: both;
-                height:368px;
+                padding: 20px 0 0 0;
+                height: 348px;
             }
             """
 
@@ -461,13 +537,43 @@ class Base(generate.gen_css.Gen_css):
             res += """.s-news-list{
                 margin-left: 60px;
             }
-
-            .s-news-all{
+            """
+            
+            res += """.s-news-all{
                 display: block;
                 float:right;
-                width: 100px;
+                width: 160px;
             }
             """
+
+            res +=""".b-na-bat{
+                text-align:center;
+                color: white;
+                margin-top: 10px;
+                padding-top: 10px;
+
+                height:  28px;
+                width: 139px;
+
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                -khtml-border-radius: 5px;
+                border-radius: 5px;
+            }
+            """
+
+            if(Use.css3_grad):
+                res += ".b-na-bat{%s%s}"%(
+                    "border: solid 1px #166436;",
+                    generate.util.lgt('#26963f', '#176636', '#176636')
+                )
+
+            if(Use.bgi_grad):
+                res += ".b-na-bat{%s}"%(
+                    "background: url(%s) no-repeat;"%(
+                        generate.util.tobase64("css-images/b-na-bat.png")
+                    )
+                )
 
             res += """.s-news-list-item{
                 padding: 4px;
@@ -510,7 +616,7 @@ class Base(generate.gen_css.Gen_css):
         res += _b_news()
 
         return res;
-        
+
 
     def s_about(self):
         res = ""

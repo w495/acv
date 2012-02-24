@@ -28,6 +28,7 @@ stop() ->
     supervisor:delete_child(web_sup, ?MODULE).
 
 serve_static_inner(P, T, Req, ExtraHeaders) ->
+    ?D("~nserve_static_inner -> ~p,~n", [P]),
     try
         {Tmp, <<".js">>} = split_binary(list_to_binary(T), length(T) - 3),
         Fname = binary_to_list(Tmp) ++ ".gz.js",
@@ -40,9 +41,11 @@ serve_static_inner(P, T, Req, ExtraHeaders) ->
     end.
 
 serve_static(P, T, Req) ->
+    ?D("~nserve_static -> ~p,~n", [P]),
     serve_static_inner(P, T, Req, []).
 
 serve_static(P, T, Req, ExtraHeaders) ->
+    ?D("~nserve_static -> ~p,~n", [P]),
     serve_static_inner(P, T, Req, ExtraHeaders).
 
 start_controller(Module, Action, Req) ->
