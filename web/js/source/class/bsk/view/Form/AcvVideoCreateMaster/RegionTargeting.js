@@ -39,8 +39,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 
         regionListOptions: {
             url:            "/get-all-geo-regions",
-            labelFieldName: "name",
-            descrFieldName: "alias"
+            labelFieldName: "name_en",
+            descrFieldName: "name_ru"
         },
         
         inp: {},
@@ -56,16 +56,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
             this.composite  = new qx.ui.container.Composite(layout);
-            
-            
+
+                
             this.inp.List = new bsk.view.
-                SortedSelListTreeContainer(
+                SortedSelListTreeDoubleContainer(
                     this.regionListOptions.url,
                     this.regionListOptions.labelFieldName,
                     this.regionListOptions.descrFieldName,
                     this.Options
                 );
-                
+
             var vertical_offset = -1;
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0});
@@ -92,16 +92,21 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         /**
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
+        /**
+            Применив некоторые преобразования <<загружает>> данные на сервер
+        **/
         saveData : function(e) {
-            var formIsValid = this.validateForm();
-            var list = this.inp.List.getSelectedId();
-            console.log("geo_region_list ---<")
-            console.log(this.inp.List.getSelectedId());
+            var list = this.inp.List.ltree.getSelectedId();
+
+            console.log("cat_list ---<")
+            console.log(this.inp.List.ltree.getSelectedId());
             console.log(">---")
+
             if(this.validateForm()) {
-                this.uReq.setParameter("geo_region_list", list, true);
+                this.uReq.setParameter("geo_list", list, true);
             }
-            return formIsValid;
+
+            return true;
         }
     }
 });

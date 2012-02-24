@@ -613,8 +613,8 @@ make_brackets_string_(Id, Id_list)->
 -include_lib("eunit/include/eunit.hrl").
 
 test()->
-    test_eunit_1(),
-    test_eunit_2(),
+    %test_eunit_1(),
+    %test_eunit_2(),
 
     ok.
 
