@@ -27,9 +27,9 @@ qx.Class.define("bsk.view.Form.GenericForm",
         reqMap              : undefined,
 
         buildForm : function(formDescription) {
+            this.formFieldDescr = {};
             if(formDescription.fields == undefined)
                 return;
-            this.formFieldDescr = {};
             for(var i=0; i<formDescription.fields.length; i++) {
                 var E = formDescription.fields[i];
                 this.formFieldDescr[E.name] = E;
@@ -44,7 +44,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
                         FField.setEnabled(false);
                         //FField.setVisibility("hidden");
                         break;
-                    case "text-field": 
+                    case "text-field":
                         FField = new qx.ui.form.TextField();
                         if(E.input.regexp != undefined)
                             FField.setFilter(E.input.regexp);
@@ -57,14 +57,14 @@ qx.Class.define("bsk.view.Form.GenericForm",
                     case "check-box":
                         FField = new qx.ui.form.CheckBox();
                         break;
-                    
+
                     case "date-field-pd":
                         FField = new qx.ui.form.DateField();
                         var date = new Date();
                         date.setDate(date.getDate() + 1);
                         FField.setValue(date);
                         break;
-                    
+
                     case "date-field-md":
                         FField = new qx.ui.form.DateField();
                         var date = new Date();
@@ -114,7 +114,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
                         alert(E.input.type + " - неизвестный тип поля формы");
                         continue;
                 }
-                
+
                 FField.bsk_special = E;
                 if(E.input.value!=undefined){
                     FField.setValue(E.input.value);
@@ -128,7 +128,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
                             break;
                         case "range":
                             FValidation = qx.util.Validate.range(E.validation.min, E.validation.max);
-                            break; 
+                            break;
                         case "string-range":
                             FValidation = bsk.view.Form.AbstractForm.checkStringLength(E.validation.min, E.validation.max, FField);
                             //FValidation = qx.util.Validate.range(E.validation.type.min, E.validation.type.max);
@@ -155,7 +155,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
                 this.form.addButton(cancelButton);
                 cancelButton.addListener("execute", this._onCancelClick, this);
                 console.log("formDescription = ", formDescription);
-                
+
                 if(formDescription.disableCancel == true){
                     cancelButton.setEnabled(false);
                 }
@@ -180,7 +180,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
                 this.controller.placeForm(new bsk.view.MegaRenderer(this.form));
             else
                 this.controller.placeForm(new qx.ui.form.renderer.Double(this.form));
-            
+
             this.fController = new qx.data.controller.Form(null, this.form);
             this.formModel = this.fController.createModel();
 
@@ -247,11 +247,11 @@ qx.Class.define("bsk.view.Form.GenericForm",
                     this._showValidationResult();
                     return false;
                 }
-                    
+
                 console.log("this.formModel = ", this.formModel)
                 console.log("this.formFieldDescr = ", this.formFieldDescr)
-                
-                
+
+
                 params = this.controller.getExtraParams(params); // доп параметры запроса - пейджер и сортировка
                 var fFields = this.form.getItems();
                 // доп параметры запроса - пейджер и сортировка
@@ -272,7 +272,7 @@ qx.Class.define("bsk.view.Form.GenericForm",
             for(var key in fFields) {
                 if(fFields[key].getValid() == false) {
                     switch(fFields[key].getInvalidMessage()) {
-                        case "This field is required" : 
+                        case "This field is required" :
                             fFields[key].setInvalidMessage("Это поле должно быть заполнено");
                             break;
                     }

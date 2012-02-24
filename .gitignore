@@ -22,3 +22,5 @@ static/data/*
 web/static/data/adv/*
 web/static/data/game/*
 web/static/data/docs/*
+
+web/static/site-media/css/base.css

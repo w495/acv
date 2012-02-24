@@ -33,6 +33,11 @@ qx.Class.define("bsk.Application",
         
         main : function()
         {
+            if(typeof(console) === 'undefined') {
+                var console = {};
+                console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
+            }
+
             // Call super class
             this.base(arguments);
             
@@ -46,6 +51,7 @@ qx.Class.define("bsk.Application",
             }
             this.history = [];
             this.screenMap = {};
+            this.curMenu = null;
             var themeName = qx.core.Setting.get("qx.theme");
             var t = eval(themeName);
             this.appearance = t.meta.appearance.appearances;
@@ -92,17 +98,18 @@ qx.Class.define("bsk.Application",
                 actionRow : this.ActionRow,
                 filterVal : this.FilterVal
             };
-            if(this.curMenu != undefined)
+            if(this.curMenu != undefined && this.curMenu != null && this.cur_controller != undefined) {
                 this.screenMap[this.curMenu.model] = cScreen;
+            }
 
             this.curMenu = curMenu;
+
             if(curMenu.model != undefined) {
-                if(this.screenMap[curMenu.model] == undefined) {
+                if(this.screenMap[curMenu.model] == undefined || this.screenMap[curMenu.model].controller == undefined) {
                     this.history = [];
                     this.cur_controller = undefined;
                     this.ActionRow = undefined;
                     this.FilterVal = undefined;
-
                     this.loadActionModel(curMenu.model);
                     this.show_global_pb();
                 }
@@ -131,11 +138,15 @@ qx.Class.define("bsk.Application",
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
             var result = response.getContent();
-            if (bsk.util.errors.process(this, result)==false)
+
+
+            if (bsk.util.errors.process(this, result)==false) {
                 return false;
+            }
             var cont = null;
-            if(this.cur_controller != undefined)
+            if(this.cur_controller != undefined) {
                 this.history.push(this.cur_controller);
+            }
             switch(result.type) {
                 case "table" :
                     cont = new bsk.view.Controller.TabController(this, this.ActionRow, this.FilterVal, result);

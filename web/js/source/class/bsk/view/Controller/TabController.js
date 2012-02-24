@@ -29,7 +29,6 @@ qx.Class.define("bsk.view.Controller.TabController",
                     this, this.tabModel.toolbar);
                 this.add(this.toolbar);
         }
-                
         this.add(this.gBox, {flex : 1});
         this.buildTable(this.tabModel, FilterVal);
         
@@ -157,9 +156,9 @@ qx.Class.define("bsk.view.Controller.TabController",
             //      --- измеяемая часть конфигурационных параметров.
             // В обычном случае она не опеределена.
 
-            console.log("this.filterForm.formFieldDescr", this.filterForm.formFieldDescr)
+ //         console.log("this.filterForm.formFieldDescr", this.filterForm.formFieldDescr)
             this.filterForm.formFieldDescr = this.tabModel.vardata;
-            console.log("this.filterForm.formFieldDescr", this.filterForm.formFieldDescr)
+//            console.log("this.filterForm.formFieldDescr", this.filterForm.formFieldDescr)
             this.tab = new bsk.view.GenericTable(this, tabDescription);
             
             // console.log("tabDescription = ", tabDescription);
