@@ -20,6 +20,7 @@ class Base(generate.gen_css.Gen_css):
         string += self.s_header()
         string += self.s_roller()
         string += self.s_news()
+        string += self.s_about()
         string += self.s_footer()
         return string
 
@@ -29,16 +30,18 @@ class Base(generate.gen_css.Gen_css):
             font-family: 'Cuprum';
             font-style: normal;
             font-weight: normal;
-            src: local('Cuprum'), url('http://themes.googleusercontent.com/static/fonts/cuprum/v3/wHBEZCjwNI3HN2fD1RQJgw.woff') format('woff');
+            src: local('Cuprum'), url('css-fonts/cuprum.woff') format('woff');
         }
         """
+        # src: local('Cuprum'), url('http://themes.googleusercontent.com/static/fonts/cuprum/v3/wHBEZCjwNI3HN2fD1RQJgw.woff') format('woff');
         res += """@font-face{
             font-family: 'PT Sans Narrow';
             font-style: normal;
             font-weight: normal;
-            src: local('PT Sans Narrow'), local('PTSans-Narrow'), url('http://themes.googleusercontent.com/static/fonts/ptsansnarrow/v2/UyYrYy3ltEffJV9QueSi4S4mX3cpNo8MnLri8k21-rs.woff') format('woff');
+            src: local('PT Sans Narrow'), local('PTSans-Narrow'), url('css-fonts/psn.woff') format('woff');
         }
         """
+        # src: local('PT Sans Narrow'), local('PTSans-Narrow'), url('http://themes.googleusercontent.com/static/fonts/ptsansnarrow/v2/UyYrYy3ltEffJV9QueSi4S4mX3cpNo8MnLri8k21-rs.woff')
         return res
 
     def reset(self): # outline: solid 1px red;
@@ -99,8 +102,13 @@ class Base(generate.gen_css.Gen_css):
             text-align:center;
             font-family:Cuprum,Georgia,Serif;
         }"""
-        res = "body{%s}"%(
-            generate.util.lgt('#ffffff', '#cccccc', '#ffffff'))
+        res = "body{%s%s}"%(
+            generate.util.lgt('#ffffff', '#cccccc', '#e4e6e3'),
+            "background: #e4e6e3 url(%s) repeat-x;"%(
+                generate.util.tobase64("css-images/body.png"),
+            )
+        )
+
         return res
 
     def s_main(self):
@@ -230,14 +238,8 @@ class Base(generate.gen_css.Gen_css):
                     border: none;
                 }
             """
-
-
-            res += """.s-about{
-                    height: 200px;
-                }
-            """
-            return res
-
+            return res;
+            
         res = "";
         res += _b_thehead()
         res += _b_thehead_caption()
@@ -346,7 +348,7 @@ class Base(generate.gen_css.Gen_css):
             list-style: outside url(%s);
         }
         """%(
-            generate.util.tobase64("css-images/b-rf-li.png")
+            generate.util.tobase64("css-images/b-rf-ul.png")
         )
 
         res +=""".e-rf-ul{
@@ -507,7 +509,46 @@ class Base(generate.gen_css.Gen_css):
         
 
     def s_about(self):
+        res = ""
+        
+        res += """.s-about{
+                height: 303px;
+                background-color: white;
+                padding-left: 22px;
+            }
+        """
 
+        res += """.b-a{
+            }
+        """
+
+        res += """.b-ah{
+                font-size: 20pt;
+                color: #0191d3;
+            }
+        """
+
+        res += """.b-ac{
+            }
+        """
+
+        res += """.b-ac-p{
+            }
+        """
+
+        res +=""".b-ac-ul{
+            margin: 0px 0px 0px 15px;
+            list-style: outside url(%s);
+        }
+        """%(
+            generate.util.tobase64("css-images/b-ac-ul.png")
+        )
+
+
+        res += """.e-ac-ul{
+            }
+        """
+        
         return res;
 
     def s_footer(self):
