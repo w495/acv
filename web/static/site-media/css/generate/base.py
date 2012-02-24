@@ -124,13 +124,13 @@ class Base(generate.gen_css.Gen_css):
 
     def s_header(self):
         def _b_thehead():
-            res = """.b-thehead{
+            res = """.b-thehead{0/login
                 display: block;
                 height: 81px;
             }"""
             if(Use.bgi_grad):
                 res += ".b-thehead{%s}"%(
-                    "background-image: url(%s);"%(
+                    "background: #cccccc url(%s);"%(
                         generate.util.tobase64("css-images/b-thehead.gif")
                     )
                 )
@@ -196,11 +196,10 @@ class Base(generate.gen_css.Gen_css):
                     }
                 """
             if(Use.bgi_corners):
-                res += ".s-sfm-input{%s%s%s}"%(
-                    "background-repeat:no-repeat; background-image: url(%s);"%(
+                res += ".s-sfm-input{%s%s}"%(
+                    "background: url(%s) no-repeat;"%(
                         generate.util.tobase64("css-images/s-sfm-input.png"),
                     ),
-                    "background-repeat:no-repeat;",
                     "border:none;width:160px;height:28px;"
                 )
 
@@ -270,7 +269,7 @@ class Base(generate.gen_css.Gen_css):
             )
         if(Use.bgi_grad):
             res += ".s-roller{%s}"%(
-                "background-image: url(%s);"%(
+                "background: #05254b url(%s);"%(
                     generate.util.tobase64("css-images/s-roller.jpg")
                 )
             )
@@ -333,7 +332,12 @@ class Base(generate.gen_css.Gen_css):
         }
         """
         res += """.e-rn-but:active{
-            background-color: red;
+            background-color: #c0c0c0;
+        }
+        """
+        
+        res += """.e-rn-but.cur{
+            background-color: #cccccc;
         }
         
         """
@@ -382,7 +386,7 @@ class Base(generate.gen_css.Gen_css):
                 )
             if(Use.bgi_grad):
                 res += ".b-news-header{%s}"%(
-                    "background-image: url(%s);"%(
+                    "background: #0ab6e6 url(%s);"%(
                         generate.util.tobase64("css-images/b-news-header.png")
                     )
                 )
@@ -413,8 +417,7 @@ class Base(generate.gen_css.Gen_css):
                 font-size: 14px;
                 padding: 8px 10px 10px 33px;
                 margin-top: %s;
-                background-image: url(%s);
-                background-repeat: no-repeat;
+                background: url(%s) no-repeat;
             }
             """%(top_offset, generate.util.tobase64("css-images/doc.png"))
             res += """.b-news-doc:before{content:"— ";}"""
@@ -444,7 +447,7 @@ class Base(generate.gen_css.Gen_css):
                 )
             if(Use.bgi_grad):
                 res += ".b-news{%s}"%(
-                    "background-image: url(%s);"%(
+                    "background: #a7a7a7 url(%s);"%(
                         generate.util.tobase64("css-images/b-news.png")
                     )
                 )

@@ -69,7 +69,7 @@
         <div class="b-roller-nav">
             <ul class="b-rn-ul">
                 <li class="e-rn-ul">
-                    <a class="e-rn-but current" href="#pre-roll">
+                    <a class="e-rn-but cur" href="#pre-roll">
                         <xsl:text><![CDATA[ ]]></xsl:text>
                     </a>
                 </li>
