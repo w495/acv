@@ -21,15 +21,18 @@
         {name : "name", alias : "Название", type : "string", sortable : true},
         {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
         {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true},
-        {name : "shown", alias : "Показан", type : "string", sortable : true},
-        {name : "clicks", alias : "Клики", type : "string", sortable : true}
+        {name : "delta_shown", alias : "Показы за период", type : "string", sortable : true},
+        {name : "shown", alias : "Всего показов", type : "string", sortable : true},
+        {name : "delta_clicks", alias : "Клики за период", type : "string", sortable : true},
+        {name : "clicks", alias : "Всего кликов", type : "string", sortable : true}
     ],
 
+/*
     filter : {
         submit_url : "/get-acv-video-stats"
     },
-    
-    /*
+    */
+
         filter : {
             fields : [
                 {name : "fromdate", alias : "с даты", input : {type : "date-field-md"}},
@@ -40,7 +43,7 @@
             
             disableCancel : true
         },
-    */
+    
     
     index_name : ["id"],
     sort : "id",

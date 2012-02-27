@@ -133,18 +133,14 @@ get_all_acv_video_stats({Fromdate, Todate}) ->
                     " or (datestop < $2  and datestop > $2)  "
                     " or (datestart > $1 and datestop < $2));",
     {ok, R1} = dao:simple(Query, [Fromdate, Todate]),
-    collect_stats_by_acv(R1, Fromdate, Todate).
+    {ok, collect_stats_by_acv(R1, Fromdate, Todate)}.
 
 collect_stats_by_acv(Acvs, Fromdate, Todate) ->
-    Ret = lists:map(fun(V) ->
+    lists:map(fun(V) ->
         Idx = proplists:get_value("id", V),
         {Video_shows, Video_clicks} = dao_stat:get_acv_video_stat(Fromdate, Todate, Idx),
         [{"delta_shown", Video_shows}, {"delta_clicks", Video_clicks} | V]
-    end, Acvs),
-
-    io:format("~p~n", [Ret]).
-
-
+    end, Acvs).   
 
 
 %%% @doc
@@ -173,7 +169,7 @@ get_acv_video_stats({Customer_id, {Fromdate, Todate}}) ->
                     " or (datestop < $2  and datestop > $2)  "
                     " or (datestart > $1 and datestop < $2));",
     {ok, R1} = dao:simple(Query, [Fromdate, Todate, Customer_id]),
-    collect_stats_by_acv(R1, Fromdate, Todate).
+    {ok, collect_stats_by_acv(R1, Fromdate, Todate)}.
 
 %%% @doc
 %%% Возвращает данное acv_video
