@@ -127,12 +127,18 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             /* События виджетов для сопровождающей картикни  */
             this.refButton.addListener('changeFileName',function(e){
                 if('' != e.getData()) {
-                    bsk.view.Form.Upload.UploadFakeStatusBar.on();
-                    
-                    _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
                     _this.inp.Ref.setValue(_this.refButton.getFileName());
-                    _this.refForm.send();    
+                    if(bsk.view.Form.AbstractForm.customFormChkVideoFileName(_this.inp.Ref)){
+                        bsk.view.Form.Upload.UploadFakeStatusBar.on();
+                        _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
+                        _this.refForm.send();
+                    }else{
+                        // _this.inp.Ref.setValid(false);
+                        //_this.inp.Ref.setInvalidMessage("Должна быть позднее даты начала");
+                        return false;
+                    }
                 }
+                return true;
             });
             this.refForm.addListener('completed',function(e) {
                 var response = _this.refForm.getIframeTextContent();
@@ -219,6 +225,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
             flag &= bsk.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);
             flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Ref);
+            flag &= bsk.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
             
             return flag;
         },
