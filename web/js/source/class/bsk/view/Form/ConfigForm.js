@@ -39,8 +39,9 @@ qx.Class.define("bsk.view.Form.ConfigForm",
             this.base(arguments);
 
             this.inp.Id = new qx.ui.form.TextField();
-            this.inp.Acv_video_loadnext = new qx.ui.form.TextField();
-            
+            this.inp.Acv_video_loadnext
+                = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
+
             var layout = new qx.ui.layout.Grid(12, 6);
             var cnt = new qx.ui.container.Composite(layout);
 
@@ -56,9 +57,11 @@ qx.Class.define("bsk.view.Form.ConfigForm",
             var vertical_offset = 0;
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
 
-            cnt.add(new qx.ui.basic.Label().set({value: "Acv_video_loadnext" + RFM,  rich : true}),
+            cnt.add(new qx.ui.basic.Label()
+                    .set({value: "Acv_video_loadnext" + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
-            cnt.add(this.inp.Acv_video_loadnext,      {row:vertical_offset , column:1});
+            cnt.add(this.inp.Acv_video_loadnext,
+                    {row:vertical_offset , column:1});
             
             this.addbuttonRow(cnt, ++vertical_offset);
 
