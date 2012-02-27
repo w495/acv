@@ -8,6 +8,7 @@
 -export([
     get_config/1,
     update_config/1,
+    update_config_/1,
     test/0,
     test/1
 ]).
@@ -30,7 +31,7 @@ get_config(Config_id) ->
         " where config.id = $1;",
     dao:simple(Query, [convert:to_integer(Config_id)]).
 
-update_config({null, Acv_video_loadnext}) ->
+update_config_({null, Acv_video_loadnext}) ->
     Query =
         "insert into config (acv_video_loadnext) "
         "values ($1)"
@@ -40,10 +41,17 @@ update_config({null, Acv_video_loadnext}) ->
         Error -> Error
     end;
 
+update_config_({Id, Acv_video_loadnext}) ->
+    update_config({0, Acv_video_loadnext}).
+
+update_config({null, Acv_video_loadnext}) ->
+    update_config({0, Acv_video_loadnext});
+
 update_config({Id, Acv_video_loadnext}) ->
     Query =
         "update config set acv_video_loadnext = $2 where id=$1;",
-    dao:simple(Query, [convert:to_integer(Id), convert:to_integer(Acv_video_loadnext)]).
+    dao:simple(Query, [convert:to_integer(Id),
+        convert:to_integer(Acv_video_loadnext)]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
