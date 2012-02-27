@@ -29,7 +29,6 @@
 </xsl:template>
 
 <xsl:template name="s-roller">
-    <xsl:text>&nbsp;</xsl:text>
     <div class="b-roller">
         <ul class="b-roller-frames">
             <li class="s-roller-frame">
@@ -43,7 +42,7 @@
                     </xsl:with-param>
                 </xsl:call-template>
             </li>
-            <li class="s-roller-frame hidden">
+            <li class="s-roller-frame m-hidden">
                 <xsl:call-template name="s-roller-frame">
                     <xsl:with-param name="Name" select="'mid-roll'"/>
                     <xsl:with-param name="Head" select="'Видеореклама2'"/>
@@ -54,7 +53,7 @@
                     </xsl:with-param>
                 </xsl:call-template>
             </li>
-            <li class="s-roller-frame hidden">
+            <li class="s-roller-frame m-hidden">
                 <xsl:call-template name="s-roller-frame">
                     <xsl:with-param name="Name" select="'post-roll'"/>
                     <xsl:with-param name="Head" select="'Видеореклама3'"/>
@@ -107,6 +106,14 @@
         <div class="b-rf-content" >
             <xsl:copy-of select="$Content" />
         </div>
+        <div class="b-rf-act" >
+            <xsl:call-template name="u-button">
+                <xsl:with-param name="Href"  select="'/'"/>
+                <xsl:with-param name="Class" select="'b-rfa-bat'"/>
+                <xsl:with-param name="Title" select="'разместить рекламу'"/>
+                <xsl:with-param name="Text"  select="'Разместить рекламу'"/>
+            </xsl:call-template>
+        </div>
     </div>
     <div class="b-rf-picture">
         <img class="b-rfp" src="{$Pic_url}" alt="{$Head}:{$Subhead}" title="{$Head}:{$Subhead}"/>
@@ -149,7 +156,12 @@
             <xsl:call-template name="s-news-list" />
         </ul>
         <div class="s-news-all">
-            <xsl:text>Посмотреть все</xsl:text>
+            <xsl:call-template name="u-button">
+                <xsl:with-param name="Href"  select="'/'"/>
+                <xsl:with-param name="Class" select="'b-na-bat'"/>
+                <xsl:with-param name="Title" select="'посмотреть все новости'"/>
+                <xsl:with-param name="Text"  select="'Посмотреть все'"/>
+            </xsl:call-template>
         </div>
     </div>
 </xsl:template>
@@ -236,6 +248,31 @@
     <script src="/j/jm.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
     <script src="/j/sl.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
 </xsl:template>
+
+<!--
+    ###########################################################################
+    ### 
+    ###########################################################################
+-->
+
+<!--
+    TODO: Вынести в util
+-->
+<xsl:template name="u-button">
+    <xsl:param name="Href" select="'Href'"/>
+    <xsl:param name="Class" select="'but'"/>
+    <xsl:param name="Title" select="'title'"/>
+    <xsl:param name="Text" select="'text'"/>
+    <a class="{$Class} m-button" href="{$Href}" title="{$Title}">
+        <xsl:value-of select="$Text" />
+    </a>
+    <!-- Alt:
+        <form>
+            <input type="button" />
+        </form>
+    -->
+</xsl:template>
+
 
 </xsl:stylesheet>
 
