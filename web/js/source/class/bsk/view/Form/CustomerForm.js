@@ -71,13 +71,13 @@ qx.Class.define("bsk.view.Form.CustomerForm",
 
             this.inp.Id           = new qx.ui.form.TextField();
             this.inp.Login        = new qx.ui.form.TextField()
-                .set({placeholder: "login"});
+                .set({placeholder: "login", required:true});
             this.inp.Password1    = new qx.ui.form.PasswordField()
-                .set({placeholder: "pass"});
+                .set({placeholder: "pass", required:true});
             this.inp.Password2    = new qx.ui.form.PasswordField()
-                .set({placeholder: "pass"});
+                .set({placeholder: "pass", required:true});
             this.inp.Email        = new qx.ui.form.TextField()
-                .set({placeholder: "abc@def.gh"});
+                .set({placeholder: "abc@def.gh", required:true});
             this.inp.City         = new qx.ui.form.TextField()
                 .set({placeholder: "Город"});
             this.inp.Organization = new qx.ui.form.TextField()
@@ -91,7 +91,8 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             this.inp.Patronimic   = new qx.ui.form.TextField()
                 .set({placeholder: "Отчество"});
                 
-            this.inp.Pic_url      = new qx.ui.form.TextField();
+            this.inp.Pic_url      = new qx.ui.form.TextField()
+                .set({placeholder: "файл", readOnly:true});
             
             this.groupList = new bsk.view.SelListTree(this,
                 this.groupListOptions.url,
@@ -191,11 +192,18 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             /* События виджетов для сопровождающей картикни  */
             this.picButton.addListener('changeFileName',function(e){
                 if('' != e.getData()) {
-                    bsk.view.Form.Upload.UploadFakeStatusBar.on();
-                    _this.picForm.setParameter("prev", _this.inp.Pic_url.getValue());
                     _this.inp.Pic_url.setValue(_this.picButton.getFileName());
-                    _this.picForm.send();    
+                    
+                    _this.inp.Ref.setValue(_this.refButton.getFileName());
+                    if(bsk.view.Form.AbstractForm.customFormChkImgFileName(_this.inp.Ref)){
+                        bsk.view.Form.Upload.UploadFakeStatusBar.on();
+                        _this.picForm.setParameter("prev", _this.inp.Pic_url.getValue());
+                        _this.picForm.send();
+                    }else{
+                        return false;
+                    }
                 }
+                return true;
             });
             
             this.picForm.addListener('completed',function(e) {
@@ -248,11 +256,17 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Lastname);
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
 
+            for(var fieldName in this.inp){
+               if(("Password1" == fieldName)
+                  || ("Password2" == fieldName)
+                  || ("Email" == fieldName) )
+                    continue;
+                flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp[fieldName]);
+            }
+            
+            flag &= bsk.view.Form.AbstractForm.customFormChkImgFileName(this.inp.Pic_url);
             flag &= bsk.view.Form.AbstractForm.customFormChkEmail(this.inp.Email);
-            /**
-                TODO  Проверка введенного E-mail.
-            **/
-
+            
             return flag;
         },
 
@@ -279,6 +293,9 @@ qx.Class.define("bsk.view.Form.CustomerForm",
                     continue;
                 var item = fieldName.toLowerCase();
                 this.inp[fieldName].setValue(data.value[item])
+                if("null" == data.value[item]){
+                    this.inp[fieldName].setValue("")
+                }
                 console.log("item = ", item);
             }
 
@@ -286,7 +303,7 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             this.inp.Password2.setValue("");
             this.groupList.setChecked(data.groups);
             
-            var _id = data.value["id"];                    
+            var _id = data.value["id"];
             this.picForm.setParameter("id", _id);
         }
     }

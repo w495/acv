@@ -91,11 +91,13 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         _OnAdd : function(){
             var selected = this.ltree.getSelected();
             this.rtree.addItems(selected);
+            this.ltree.remItems(selected);
         },
         
         _OnDel : function(e){
             var selected = this.rtree.getSelected();
             this.rtree.remItems(selected);
+            this.ltree.addItems(selected);
         },
         
         _OnChange : function(e){

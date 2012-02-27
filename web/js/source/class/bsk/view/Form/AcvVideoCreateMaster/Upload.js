@@ -143,7 +143,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.refForm.addListener('completed',function(e) {
                 var response = _this.refForm.getIframeTextContent();
                 bsk.view.Form.Upload.UploadFakeStatusBar.off();
-                _this.inp.Ref.setValue(response);
+                // _this.inp.Ref.setValue(response);
             });
         },
         
@@ -220,11 +220,9 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
-            flag &= bsk.view.Form.AbstractForm.customFormCheckRequired(this.inp.Ref);
-            
+            flag &= bsk.view.Form.AbstractForm.customFormChkLength(5, 50, this.inp.Ref);
             flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
-            flag &= bsk.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);
-            flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Ref);
+            flag &= bsk.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);;
             flag &= bsk.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
             
             return flag;
