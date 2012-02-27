@@ -40,19 +40,7 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             this.flashBar.setWidth(640);
             this.flashBar.setHeight(480);
 
-            this.flashPlayer = new qx.ui.embed.Flash("resource/bsk/flash/gddflvplayer.swf").set({
-//                scale: "noscale",
-                width: 640,
-                height: 480,
-                variables : {
-//                    vdo: "video.mp4",
-//                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
-                    autoplay : "false"
-                }
-            });
-
-            this.flashBar.add(this.flashPlayer);//, {flex: 1});
-           
+          
             // -------------------------------------------------------------
             this.controller.placeForm(cnt);
 
@@ -154,6 +142,20 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             txt += "\n";
 
             this.taSummary.setValue(txt);
+            this.flashPlayer = new qx.ui.embed.Flash("resource/bsk/flash/gddflvplayer.swf").set({
+//                scale: "noscale",
+                width: 640,
+                height: 480,
+                variables : {
+                    vdo: "/" + clip.ref,
+//                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
+                    autoplay : "false"
+                }
+            });
+
+            this.flashBar.add(this.flashPlayer);//, {flex: 1});
+ 
+//            this.flashPlayer.setVariables({vdo: "/static/data/acv-video/common/5831108/adv02.mp4"});
         },
        
         addListeners: function() {
