@@ -362,12 +362,9 @@ update_acv_video(Req) ->
         {"name",        [string]},
         {"datestart",   [datetimeUnixtime]},
         {"datestop",    [datetimeUnixtime]},
-
         {"url",         [string]},
         {"ref",         [string]},
-
         {"wish",        [integer]},
-
         {"postroll",    [boolean]},
         {"preroll",     [boolean]},
         {"midroll",     [boolean]},
@@ -380,21 +377,15 @@ update_acv_video(Req) ->
         {"duration",    [integer, nullable]},
         {"link_title",  [string, nullable]},
         {"alt_title",   [string, nullable]},
-
         {"comment",           [string, nullable]},
-
         {"rerun_hours",       [integer, nullable]},
         {"rerun_minutes",     [integer, nullable]}
     ]),
 
-    Info_1 = erlang:list_to_tuple([null] ++ erlang:tuple_to_list(Info_0) ++ [Customer_id]),
+    Info_1 = utils:append_to_tuple(Info_0, {[null], [Customer_id]}),
 
-    ?D("~n---------------------~nInfo_1 = ~p~n", [Info_1]),
-    ?D("~n---------------------~nGeo_region_list = ~p~n", [Geo_region_list]),
-    ?D("~n---------------------~nCat_list = ~p~n", [Cat_list]),
-
-
-    Res = dao:dao_call(dao_acv_video, update_acv_video, {Info_1, Geo_region_list, Cat_list}, values),
+    Res = dao:dao_call(dao_acv_video, update_acv_video,
+        {Info_1, Geo_region_list, Cat_list}, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 start_acv_video(Req) ->
@@ -456,7 +447,7 @@ full_delete_acv_video(Req) ->
 
 getAcvVideoById(Req) ->
     Data = Req:parse_qs(),
-    Id = utils:to_integer(proplists:get_value("id", Data)),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
     case dao_acv_video:getAcvVideoById(Id) of
         {ok, ACV, CatList, GeoList} ->
             Res1 = db2json:encode(ACV),
@@ -467,62 +458,49 @@ getAcvVideoById(Req) ->
     end,
     {"application/json", [], [Res]}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% КОНФИГУРАЦИЯ СИСТЕМЫ
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%
+%%% Возвращает конфигурацию системы,
+%%%
+get_config(Req) ->
+    authorization:auth_required(Req, "admin"),
 
-get_adv_coms_vid(_Req) ->
-    Res = dao:dao_call(dao_adv_com, get_acv_video, [], values),
-    {"application/json", [], [mochijson2:encode(Res)]}.
-
-get_adv_com_vid(Req) ->
+    % Оставлено для совместимости
     Data = Req:parse_qs(),
-    Id = utils:to_integer(proplists:get_value("id", Data)),
-    Res = dao:dao_call(dao_adv_com, getAdvComVid, Id),
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+    Res = dao:dao_call(dao_config, get_config, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-update_adv_com_vid(Req) ->
+%%%
+%%% Изменяет конфигурацию системы,
+%%%
+update_config(Req) ->
+    authorization:auth_required(Req, "admin"),
     Data = Req:parse_post(),
+
     Info = norm:extr(Data, [
-        {"id", [nullable, integer]},
-        {"name", [string]},
-        {"ref", [string]},
-        {"datestart", [datetimeUnixtime]},
-        {"datestop", [datetimeUnixtime]},
-        {"pic_url", [string]}
+        {"id",          [nullable, integer]},   % Оставлено для совместимости
+        {"acv_video_loadnext",        [integer]}%,
     ]),
-    Res = dao:dao_call(dao_adv_com, updateAdvComVid, Info),
+
+    Res = dao:dao_call(dao_config, update_config, Info, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-
-
-
--define(HTTPC, httpc).
 
 test()->
     % erlang 13 ->
     %   http:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
     % erlang 15 ->
     %   httpc:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
-
     %?HTTPC:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []),
 
     ok.
 
 test(speed) ->
-    Times_1 = 1000000,
-    Tuple = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-
-    %%%%
-    %%%% l2t(t2l(t)++l) лучше
-    %%%%
-    tests:print_speed("a(t) 1",
-        fun() ->
-            erlang:append_element(Tuple , a)
-        end, Times_1 ),
-    tests:print_speed("l2t(t2l(t)++l) 1",
-        fun() ->
-            erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [a])
-        end, Times_1 ),
 
     ok.
-
-

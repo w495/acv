@@ -17,6 +17,11 @@
             {   name : "права",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/bsk/descr/permissions-tab.json"
+            },
+            
+            {   name : "настройки",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/bsk/descr/config-form.json"
             }
         ]
     },

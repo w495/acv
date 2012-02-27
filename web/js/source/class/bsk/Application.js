@@ -157,6 +157,10 @@ qx.Class.define("bsk.Application",
                 case "form" :
                     cont = new bsk.view.Controller.FormController(this, this.ActionRow, result, "");
                     break;
+                case "inline-form" :
+                    var tmpActionRow = {id:0,isInline:true}
+                    cont = new bsk.view.Controller.FormController(this, tmpActionRow, result, "");
+                    break;
             }
             if(cont!= null) {
                 this.right_cont.removeAll();

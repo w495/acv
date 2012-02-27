@@ -14,16 +14,22 @@ insert into permission_type (name)
 insert into permission (name, description, perm_type_id)
 	values
 		('admin', 'полный доступ',
-			(select id from permission_type where name='static'));
+			(select id from permission_type where name='static')),)
+        ('sysmsg', 'право получать системные сообщения',
+            (select id from permission_type where name='static'));
 
 insert into customer_group (name, description)
 	values
-		('admin', 	'администраторы');
+		('admin', 	 'администраторы'),
+        ('sysmsg',   'получатели системных сообщений');
 
 insert into permission2group (perm_id, group_id)
 	values
 		( (select id from permission where name='admin'),
-			(select id from customer_group where name='admin'));
+			(select id from customer_group where name='admin')),
+        ( (select id from permission where name='sysmsg'),
+            (select id from customer_group where name='sysmsg'));
+
 
 insert into customer (firstname, lastname, patronimic, login, password_hash)
 	values ('fadmin', 'ladmin', 'padmin',
@@ -31,7 +37,7 @@ insert into customer (firstname, lastname, patronimic, login, password_hash)
 
     --//
     --     admin -> 21232F297A57A5A743894A0E4A801FC3
-    --// новыйпароль tgv_region
+    --// новыйпароль
     --     yjdsqgfhjkm -> C7BCC36975D86BB977D99A7DFB8EBDA0
     --//
     --     c7bcc36975d86bb977d99a7dfb8ebda0 -> D28847DA5504EE1365C159BC8FA18198
