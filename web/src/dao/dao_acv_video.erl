@@ -126,17 +126,26 @@ get_all_acv_videos(_) ->
 %%% @doc
 %%% Возвращает список всех acv_video для всех покупателей
 %%% 
-get_all_acv_video_stats(_) ->
-    Query =
-        "select "
-            " acv_video.id, "
-            " acv_video.name, "
-            " acv_video.datestart, "
-            " acv_video.datestop, "
-            " acv_video.shown, "
-            " acv_video.clicks "
-        " from acv_video where deleted = false;",
-    dao:simple(Query).
+get_all_acv_video_stats({Fromdate, Todate}) ->
+    Query = "select acv_video.id, acv_video.name, acv_video.datestart, acv_video.datestop, acv_video.shown, acv_video.clicks "
+                "from acv_video where deleted = false and "
+                    "((datestart < $1 and datestop > $1)  "
+                    " or (datestop < $2  and datestop > $2)  "
+                    " or (datestart > $1 and datestop < $2));",
+    {ok, R1} = dao:simple(Query, [Fromdate, Todate]),
+    collect_stats_by_acv(R1, Fromdate, Todate).
+
+collect_stats_by_acv(Acvs, Fromdate, Todate) ->
+    Ret = lists:map(fun(V) ->
+        Idx = proplists:get_value("id", V),
+        {Video_shows, Video_clicks} = dao_stat:get_acv_video_stat(Fromdate, Todate, Idx),
+        [{"delta_shown", Video_shows}, {"delta_clicks", Video_clicks} | V]
+    end, Acvs),
+
+    io:format("~p~n", [Ret]).
+
+
+
 
 %%% @doc
 %%% Возвращает список всех acv_video для данного покупателя
@@ -157,18 +166,14 @@ get_acv_videos(Customer_id) ->
 %%% @doc
 %%% Возвращает список всех acv_video для данного покупателя
 %%%
-get_acv_video_stats(Customer_id) ->
-    Query =
-        "select "
-            " acv_video.id, "
-            " acv_video.name, "
-            " acv_video.datestart, "
-            " acv_video.datestop, "
-            " acv_video.shown, "
-            " acv_video.clicks "
-        " from acv_video "
-            " where customer_id = $1 and deleted = false;",
-    dao:simple(Query, [(Customer_id)]).
+get_acv_video_stats({Customer_id, {Fromdate, Todate}}) ->
+    Query = "select acv_video.id, acv_video.name, acv_video.datestart, acv_video.datestop, acv_video.shown, acv_video.clicks "
+                "from acv_video where customer_id = $3 and deleted = false and "
+                    "((datestart < $1 and datestop > $1)  "
+                    " or (datestop < $2  and datestop > $2)  "
+                    " or (datestart > $1 and datestop < $2));",
+    {ok, R1} = dao:simple(Query, [Fromdate, Todate, Customer_id]),
+    collect_stats_by_acv(R1, Fromdate, Todate).
 
 %%% @doc
 %%% Возвращает данное acv_video

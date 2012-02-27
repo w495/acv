@@ -225,7 +225,12 @@ get_acv_videos(Req) ->
 %%%
 get_all_acv_video_stats(Req) ->
     authorization:auth_required(Req, "admin"),
-    Res = dao:dao_call(dao_acv_video, get_all_acv_video_stats, [], values),
+    Data = Req:parse_qs(),
+    Info = norm:extr(Data , [
+        {"fromdate", [datetimeUnixtime]},
+        {"todate",   [datetimeUnixtime]}
+    ]),
+    Res = dao:dao_call(dao_acv_video, get_all_acv_video_stats, Info, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
@@ -233,8 +238,14 @@ get_all_acv_video_stats(Req) ->
 %%%
 get_acv_video_stats(Req) ->
     Customer_id = authorization:get_customer_id(Req),
-    Res = dao:dao_call(dao_acv_video, get_acv_video_stats, Customer_id, values),
+    Data = Req:parse_qs(),
+    Info = norm:extr(Data , [
+        {"fromdate", [datetimeUnixtime]},
+        {"todate",   [datetimeUnixtime]}
+    ]),
+    Res = dao:dao_call(dao_acv_video, get_acv_video_stats, {Customer_id, Info}, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
+
 
 %%%
 %%% Возвращает список статистики для конкретной рекламной компании

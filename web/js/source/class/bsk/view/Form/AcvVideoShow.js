@@ -46,7 +46,7 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
                 height: 480,
                 variables : {
 //                    vdo: "video.mp4",
-                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
+//                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
                     autoplay : "false"
                 }
             });
