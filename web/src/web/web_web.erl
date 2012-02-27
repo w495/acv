@@ -241,10 +241,16 @@ simple_map_controllers(Path) ->
         "/adv" ->
             {adv_manager, get_adv};
 
-    % advertising company video
-        %"/get-adv-coms-vid" -> {inside, get_adv_coms_vid};
 
-            "/get_acv_video_by_id" -> {inside, getAcvVideoById};
+
+    % Конфигарация системы
+
+        "/get-config" -> {inside, get_config};
+        "/update-config" -> {inside, update_config};
+
+    % advertising company video
+
+        "/get_acv_video_by_id" -> {inside, getAcvVideoById};
 
 
         %%% Вся статисттика всех покупателей
@@ -317,6 +323,8 @@ simple_map_controllers(Path) ->
         "/get-all-cats"  -> {inside, get_all_cats};
         "/get-adv-com-vid" -> {inside, get_adv_com_vid};
         "/update-adv-com-vid" -> {inside, update_adv_com_vid};
+
+
     % advertising company
         "/get-banner-places" -> {inside, get_banner_places};
         "/get-adv-coms" -> {inside, get_adv_coms};

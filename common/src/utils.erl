@@ -4,7 +4,7 @@
 %% --------------------------------------------------------------------
 -module(utils).
 
--export([safety_call/2,safety_call/3,utime/0,udelta/2,make_ets/1,myFmt/3,drop_ets/1,
+-export([append_to_tuple/2, safety_call/2,safety_call/3,utime/0,udelta/2,make_ets/1,myFmt/3,drop_ets/1,
          getAppParam/2, parse_args/1, pick/3, s2i/2, get_param/3,
          swap/2, to_atom/1, to_int/1, to_list/1, whereis_phone/1,
          ugs/0, to_integer/1, make_ets/2, recover_if_needed/0, to_float/1,
@@ -26,6 +26,14 @@
 
 -compile(export_all).
 %%-include("../include/db.hrl").
+
+%% --------------------------------------------------------------------
+
+append_to_tuple(Tuple, List) ->
+    erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ List);
+
+append_to_tuple(Tuple, {Listb, Liste}) ->
+    erlang:list_to_tuple(Listb, erlang:tuple_to_list(Tuple) ++ Liste).
 
 %% --------------------------------------------------------------------
 safety_call(Info, F) ->
@@ -728,3 +736,25 @@ test(Fun, X) ->
     iterTest(X, Fun),
     Stop = utils:utime(),
     io:format("Test::: ~p~n", [Stop - Start]).
+
+
+
+test(speed) ->
+    Times_1 = 1000000,
+    Tuple = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+
+    %%%%
+    %%%% l2t(t2l(t)++l) лучше
+    %%%%
+    tests:print_speed("a(t) 1",
+        fun() ->
+            erlang:append_element(Tuple , a)
+        end, Times_1 ),
+    tests:print_speed("l2t(t2l(t)++l) 1",
+        fun() ->
+            erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [a])
+        end, Times_1 ),
+
+    ok.
+
+

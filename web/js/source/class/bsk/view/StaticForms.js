@@ -35,6 +35,11 @@ qx.Class.define("bsk.view.StaticForms",
         /// Форма создания и редактирования пользователей
         customerForm : function(biz, Row, formDescr) {
             return new bsk.view.Form.CustomerForm(biz, Row, formDescr);
+        },
+        
+        /// Форма редактирования пара метров
+        configForm : function(biz, Row, formDescr) {
+            return new bsk.view.Form.ConfigForm(biz, Row, formDescr);
         }
     }
 });

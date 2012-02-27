@@ -6,21 +6,44 @@
 
 /**
  * Таблица конфигурации с одной сущностью.
+ * Мы не дедаем table -> (name, value);
+ *  Т.к. value не понятно какого типа.
 **/
 
 create table config(
-    id bool primary key default true,
-    acv_video_loadnext int
+    id int primary key default 0,
+    acv_video_loadnext int /* load next */
 );
+
+
+/* **************************************************************************
+
+    Изначально была идея хранить все в одной таблице,
+    настроек и config и var, но проще иметь 2 разных таблицы
+
+    create sequence seq_config_id;
+    create table config(
+        id int primary key default nextval('seq_config_id'),
+        isvar bool primary key default true,
+        -- type varchar(32) not null,
+        --     -- int, float, char, varchar, и пр
+        name varchar(128) not null unique,
+        value varchar(1024) not null
+    );
+
+************************************************************************** */
 
 /**
  * Таблица переменных значений с одной сущностью.
+ * Мы не дедаем table -> (name, value);
+ *  Т.к. value не понятно какого типа
 **/
 
 create table var(
     id bool primary key default true,
     av_stats_max_id numeric(20)
 );
+
 
 -------------------------------------------------------------------------------
 -- ЛЮДИ 
