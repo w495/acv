@@ -146,9 +146,19 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
         },
         
         /**
+            Сбрасывает невалидность
+        **/
+        _dropInvalid : function() {
+            for(var item in this.inp) {
+                this.inp[item].setValid(true);
+            }
+        },
+        
+        /**
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
+            this._dropInvalid();
             
             return true;
         }

@@ -105,7 +105,41 @@ qx.Class.define("bsk.view.Form.AbstractForm",
             }
             return true;
         },
-
+        
+        customFormChkSymb : function(field) {
+            var strpatt = "` ~ ! @ # $ % ^ & * \\[ \\] () _ + { } \" '";
+            var _strpatt = "[" + strpatt + "]";
+            var value = field.getValue();
+            if (value && (-1 != value.search(new RegExp(_strpatt, "gi")))){
+                field.setValid(false);
+                field.setInvalidMessage("Не должно быть символов "
+                    + strpatt.replace("\\", "") +
+                    " и пробелов ");
+                return false;
+            }
+            return true;
+        },
+        
+        customFormChkUrl : function(field) {
+            var value = field.getValue();
+            if (value && (/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value))){
+                field.setValid(false);
+                field.setInvalidMessage("Не валидный адрес ");
+                return false;
+            }
+            return true;
+        },
+        
+        customFormChkEmail : function(field) {
+            var value = field.getValue();
+            if (value && (/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(value))){
+                field.setValid(false);
+                field.setInvalidMessage("Не валидный адрес ");
+                return false;
+            }
+            return true;
+        },
+        
         customFormPassCheck : function(pass1, pass2) {
             if(pass1.getValue() != pass2.getValue()) {
                 pass1.setValid(false);
@@ -127,6 +161,45 @@ qx.Class.define("bsk.view.Form.AbstractForm",
             return true;
         },
 
+        customFormcheckDate : function(field) {
+            var value = field.getValue();
+            if (value  && ((typeof value !== "object" && (!(value instanceof Date))) && (!(isFinite(value))))) {
+                field.setValid(false);
+                field.setInvalidMessage("Должна быть дата");
+                return false;
+            }
+            return true;
+        },
+        
+        /**
+         * Не позднее чем вчера
+         **/
+        customFormcheckDateNow : function(field){
+            var value = field.getValue();
+            var yesterday = (function(s){s.setHours(s.getHours()-1);return s;})
+                (new Date());
+            alert("~! value = " + value + " : yesterday = " + yesterday + " : " + !((value > yesterday)));
+            alert("++" + (value
+                && (
+                    (typeof value !== "object" && (!(value instanceof Date)) && (!(value > yesterday)))
+                    && (!(isFinite(value)))
+                    )
+                ));
+            
+            if (value
+                && (
+                    (typeof value !== "object"
+                        && (!(value instanceof Date))
+                        && (!(value > yesterday)))
+                    && (!(isFinite(value)))
+                    )
+                ){
+                field.setValid(false);
+                field.setInvalidMessage("Должна корректная быть дата");
+                return false;
+            }
+            return true;
+        },
 
         customFormCheckRequired : function(field) {
             var value = field.getValue();

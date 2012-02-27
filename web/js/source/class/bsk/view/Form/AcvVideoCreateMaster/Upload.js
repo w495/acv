@@ -71,10 +71,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.inp.Alt_title =    new qx.ui.form.TextField()
                 .set({placeholder: "Текст подсказки"});
             
-            this.inp.Ref = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/"});
             this.inp.Url = new qx.ui.form.TextField()
                 .set({placeholder: "http://my-company.com/"});
+                
+            this.inp.Ref = new qx.ui.form.TextField()
+                .set({placeholder: "файл"});
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -210,6 +211,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
         **/
         validateForm : function() {
             var flag = true;
+            
+            flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
+            flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
+            flag &= bsk.view.Form.AbstractForm.customFormCheckRequired(this.inp.Ref);
+            
             return flag;
         },
         
@@ -217,6 +223,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
+            this.base(arguments, e);
+
             var formIsValid = this.validateForm();
             if(formIsValid){
                 var res = {}

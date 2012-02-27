@@ -69,7 +69,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                 .set({placeholder: "Его кроме Вас никто не увидит"});
                 
             var dateStart = new Date();
-            dateStart.setDate(dateStart.getDate() - 1);
+            dateStart.setDate(dateStart.getDate());
             this.inp.DateStart = new qx.ui.form.DateField()
                 .set({value: dateStart});
             var dateStop = new Date();
@@ -130,6 +130,22 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
         **/
         validateForm : function() {
             var flag = true;
+            
+            var id =  this.inp.Id.getValue();
+            if(null == this.inp.Comment.getValue()) {
+                this.inp.Comment.setValue("");
+            }
+            flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Name);
+            flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Name);
+            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStart);
+            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStop);
+            
+            if(this.inp.DateStop.getValue() < this.inp.DateStart.getValue()){
+                this.inp.DateStop.setValid(false);
+                this.inp.DateStop.setInvalidMessage("Должна быть позднее даты начала");
+                flag &= false;
+            }
+
             return flag;
         },
         
@@ -137,6 +153,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
+            this.base(arguments, e);
+            
             var formIsValid = this.validateForm();
             if(formIsValid){
                 var res = {}

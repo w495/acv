@@ -4,7 +4,7 @@ qx.Class.define("bsk.util.errors",
 {
     statics : {
          process : function(own, resp) {
-            if(resp.REDIRECT != undefined) {
+            if(resp.REDIRECT) /*(resp.REDIRECT != undefined)*/{
                 window.location=resp.REDIRECT;
                 return false;
             }
