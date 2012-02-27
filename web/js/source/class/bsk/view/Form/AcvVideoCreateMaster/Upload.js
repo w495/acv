@@ -67,15 +67,15 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             
             this.inp.Duration =    new qx.ui.form.Spinner(1, 1, 134217728);
             this.inp.Link_title =   new qx.ui.form.TextField()
-                .set({placeholder: "Текст ссылки"});
+                .set({placeholder: "Текст ссылки", required:true});
             this.inp.Alt_title =    new qx.ui.form.TextField()
-                .set({placeholder: "Текст подсказки"});
+                .set({placeholder: "Текст подсказки", required:true});
             
             this.inp.Url = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/"});
+                .set({placeholder: "http://my-company.com/", required:true});
                 
             this.inp.Ref = new qx.ui.form.TextField()
-                .set({placeholder: "файл"});
+                .set({placeholder: "файл", readOnly:true, required:true});
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -215,6 +215,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
             flag &= bsk.view.Form.AbstractForm.customFormCheckRequired(this.inp.Ref);
+            
+            flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
+            flag &= bsk.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);
+            flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Ref);
             
             return flag;
         },

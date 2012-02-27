@@ -248,6 +248,7 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Lastname);
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
 
+            flag &= bsk.view.Form.AbstractForm.customFormChkEmail(this.inp.Email);
             /**
                 TODO  Проверка введенного E-mail.
             **/

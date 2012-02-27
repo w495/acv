@@ -29,11 +29,13 @@
 
 %% --------------------------------------------------------------------
 
-append_to_tuple(Tuple, List) ->
-    erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ List);
-
 append_to_tuple(Tuple, {Listb, Liste}) ->
-    erlang:list_to_tuple(Listb, erlang:tuple_to_list(Tuple) ++ Liste).
+    erlang:list_to_tuple(Listb ++ erlang:tuple_to_list(Tuple) ++ Liste);
+
+append_to_tuple(Tuple, List) ->
+    erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ List).
+
+
 
 %% --------------------------------------------------------------------
 safety_call(Info, F) ->

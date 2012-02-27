@@ -11,6 +11,11 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
         this.IsModerator = false;
     },
 
+    statics : {
+        DATE_PAST_OFFSET : 1,
+        DATE_FUTURE_OFFSET : 1,
+        DATE_DELTA : 1
+    },
     members : {
         
         /* Upload request берется из конструктора */
@@ -64,21 +69,24 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
 
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Name = new qx.ui.form.TextField() 
-                .set({placeholder: "Название рекламной кaмпании"});
+                .set({placeholder: "Название рекламной кaмпании",
+                     required:true});
             this.inp.Comment = new qx.ui.form.TextField() 
-                .set({placeholder: "Его кроме Вас никто не увидит"});
+                .set({placeholder: "Его кроме Вас никто не увидит",
+                     required:true});
                 
             var dateStart = new Date();
-            dateStart.setDate(dateStart.getDate());
+            dateStart.setDate(dateStart.getDate()
+                - bsk.view.Form.AcvVideoCreateMaster.Common.DATE_PAST_OFFSET);
             this.inp.DateStart = new qx.ui.form.DateField()
-                .set({value: dateStart});
+                .set({value: dateStart,
+                     required:true});
             var dateStop = new Date();
-            dateStop.setDate(dateStop.getDate() + 1);
+            dateStop.setDate(dateStop.getDate()
+                + bsk.view.Form.AcvVideoCreateMaster.Common.DATE_FUTURE_OFFSET);
             this.inp.DateStop = new qx.ui.form.DateField()
-                .set({value: dateStop});
-            this.inp.Active  = new qx.ui.form.CheckBox("Активна")
-                .set({value: false});
-                
+                .set({value: dateStop,
+                     required:true});
             var pageName = new qx.ui.basic.Label()
                 .set({
                     value: "Общая информация",  font: "bold",
@@ -137,9 +145,12 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             }
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Name);
             flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp.Name);
-            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStart);
-            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStop);
-            
+            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStart,
+                bsk.view.Form.AcvVideoCreateMaster.Common.DATE_PAST_OFFSET
+                + bsk.view.Form.AcvVideoCreateMaster.Common.DATE_DELTA);
+            flag &= bsk.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStop,
+                0);
+                        
             if(this.inp.DateStop.getValue() < this.inp.DateStart.getValue()){
                 this.inp.DateStop.setValid(false);
                 this.inp.DateStop.setInvalidMessage("Должна быть позднее даты начала");
