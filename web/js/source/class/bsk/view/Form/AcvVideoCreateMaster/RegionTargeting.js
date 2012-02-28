@@ -38,7 +38,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         },
 
         regionListOptions: {
-            url:            "/get-contries",
+            url:            "/get-contries-sng",
             labelFieldName: "id",
             descrFieldName: "name_ru"
         },
@@ -59,7 +59,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 
                 
             this.inp.List = new bsk.view.
-                SortedSelListTreeDoubleContainer(
+                SelListTreeDirs(
+                    this,
                     this.regionListOptions.url,
                     this.regionListOptions.labelFieldName,
                     this.regionListOptions.descrFieldName,
@@ -96,7 +97,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.ltree.getSelectedId();
+            var list = this.inp.List.getSelectedId();
 
             console.log("cat_list ---<")
             console.log(this.inp.List.ltree.getSelectedId());

@@ -9,6 +9,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
     construct : function(uReq, Row, Options) {
         this.base(arguments, uReq, Row, Options);
         this.IsModerator = false;
+        this.setUserData("id", "bsk.view.Form.AcvVideoCreateMaster.Common");
     },
 
     statics : {
@@ -112,6 +113,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStop,   {row:vertical_offset, column:1});
             
+            this.inp.Name.focus();
             return this.composite;
         },
         

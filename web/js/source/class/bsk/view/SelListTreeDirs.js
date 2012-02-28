@@ -30,6 +30,8 @@ qx.Class.define("bsk.view.SelListTreeDirs",
         this.root.setOpen(true);
         this.data = {};
         
+        console.log("this.url", this.url);
+        
         if(this.url)
             this._requestItems(this.url);
         
@@ -72,7 +74,7 @@ qx.Class.define("bsk.view.SelListTreeDirs",
                 req.setParameter(key, this.paramdict[key]);
             }
             req.setParameter("id", id);
-            req.addListener("completed", this._onIncomeItems, this);
+            req.addListener("completed", this._onIncomeItemsGen(id), this);
             req.send();
         },
         
@@ -91,15 +93,19 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             return true;
         },
 
-        _onIncomeItemsDir : function(response, id) {
-            var result = response.getContent();
-            if (false == bsk.util.errors.process(this, result) )
-                return false;
-            this.data = {};
-            this.addItems(result.values);
-            if(this.biz["on_selDataLoaded"])
-                this.biz.on_selDataLoaded(this);
-            return true;
+        _onIncomeItemsGen : function(id) {
+            var this_ = this;
+            return function(response) {
+                var result = response.getContent();
+                console.log(result.values);
+                //if (false == bsk.util.errors.process(this_, result) )
+                //    return false;
+                this_.data = {};
+                this_.addItems(this_.data[id].item, result.values);
+                if(this_.biz["on_selDataLoaded"])
+                    this_.biz.on_selDataLoaded(this_);
+                return true;
+            }
         },
         
         addItems : function(values) {
@@ -111,21 +117,36 @@ qx.Class.define("bsk.view.SelListTreeDirs",
                 var E = values[i];
                 if(this.data[E.id] != undefined)
                     continue;
-                var Item = new qx.ui.tree.TreeFolder();
-                var checkbox = new qx.ui.form.CheckBox();
-                checkbox.setFocusable(false);
-                checkbox.bsk_element = E;
-                checkbox.Item = Item;
-                Item.setIcon(null);
-                Item.addWidget(checkbox);
-                Item.addLabel(""+E[this.labelFieldName]);
-                Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
-                var text = new qx.ui.basic.Label(E[this.descrFieldName]);//alias);
-                text.setWidth(150);
-                Item.addWidget(text);
-                a_root.add(Item);
-                this.data[E.id] = checkbox;
+                
+                var item = this.mkItem(E)
+                var this_ = this;
+                
+                item.addListenerOnce("click", function(){
+                    alert("" + E.id);
+                    this_._requestItemsDir(this_.url, E.id);
+                    this.add(new qx.ui.tree.TreeFolder("sdsd"));
+                }, item);
+                
+                a_root.add(item);
             }
+        },
+        
+        mkItem : function(E) {
+            var item = new qx.ui.tree.TreeFolder();
+            var checkbox = new qx.ui.form.CheckBox();
+            checkbox.setFocusable(false);
+            checkbox.bsk_element = E;
+            checkbox.item = item;
+            item.setIcon(null);
+            item.addWidget(checkbox);
+            item.addLabel("" + E[this.labelFieldName]);
+            item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
+            var text = new qx.ui.basic.Label(E[this.descrFieldName]);//alias);
+            text.setWidth(150);
+            item.addWidget(text);
+            this.data[E.id] = checkbox;
+            
+            return item;
         },
         
         remItem : function(value) {
@@ -134,7 +155,7 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             if(this.data[value.id] == undefined)
                 return false;
             var checkbox = this.data[value.id];
-            this.root.remove(checkbox.Item);
+            this.root.remove(checkbox.item);
             this.data[value.id] = undefined;
             for(var key in this.data) {
                 var E = this.data[key];
@@ -152,7 +173,7 @@ qx.Class.define("bsk.view.SelListTreeDirs",
                 if(this.data[E.id] == undefined)
                     continue;
                 var checkbox = this.data[E.id];
-                this.root.remove(checkbox.Item);
+                this.root.remove(checkbox.item);
                 this.data[E.id] = undefined;
             }
 

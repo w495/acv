@@ -277,6 +277,8 @@ simple_map_controllers(Path) ->
 
             "/get-all-geo-regions" ->  {inside, get_all_geo_regions};
             "/get-contries" ->  {inside, get_contries};
+            "/get-contries-sng" ->  {inside, get_contries_sng};
+
             "/get-cities" ->  {inside, get_cities};
 
 

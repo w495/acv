@@ -71,7 +71,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.inp.Alt_title =    new qx.ui.form.TextField()
                 .set({placeholder: "Текст подсказки", required:true});
             
-            this.inp.Url = new qx.ui.form.TextField()
+            this.inp.Url = new qx.ui.form.TextField("http://ya.ru")
                 .set({placeholder: "http://my-company.com/", required:true});
                 
             this.inp.Ref = new qx.ui.form.TextField()
@@ -114,6 +114,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                 this.composite.add(this._buildPicFormCnt(),   {row:vertical_offset, column:1});
             }
             
+            this.inp.Link_title.focus();
             return this.composite;
         },
         

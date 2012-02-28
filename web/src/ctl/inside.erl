@@ -36,7 +36,7 @@ call_after({Req, Result}) ->
 % ============================================================================
 
 get_permissions(_Req) ->
-    Res = dao:dao_call(dao_customer, get_permissions, [], values),
+    Res = dao:dao_call(dao_customer, get_permissions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 % ============================================================================
@@ -44,7 +44,7 @@ get_permissions(_Req) ->
 % ============================================================================
 
 get_customer_groups(_Req) ->
-    Res = dao:dao_call(dao_customer, get_customer_groups, [], values),
+    Res = dao:dao_call(dao_customer, get_customer_groups, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_customer_group_info(Req) ->
@@ -82,11 +82,11 @@ delete_customer_group(Req) ->
 % ============================================================================
 
 get_customers(_Req) ->
-    Res = dao:dao_call(dao_customer, get_customers, [], values),
+    Res = dao:dao_call(dao_customer, get_customers, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_experts(_Req) ->
-    Res = dao:dao_call(dao_customer, getExperts, [], values),
+    Res = dao:dao_call(dao_customer, getExperts, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_customer_info(Req) ->
@@ -145,7 +145,7 @@ delete_customer(Req) ->
         {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_adv_coms(_Req) ->
-    Res = dao:dao_call(dao_adv_com, getAdvComs, [], values),
+    Res = dao:dao_call(dao_adv_com, getAdvComs, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_adv_com(Req) ->
@@ -172,7 +172,7 @@ delete_adv_com() ->
     test1:est().
 
 get_banner_places(_Req) ->
-    Res = dao:dao_call(dao_adv_com, getBannerPlaces, [], values),
+    Res = dao:dao_call(dao_adv_com, getBannerPlaces, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
@@ -191,40 +191,85 @@ loop(Port, Data, Timeout) ->
 end.
 
 get_encoding(_Req) ->
-    Res = dao:dao_call(dao_src, getEncoding, [], values),
+    Res = dao:dao_call(dao_src, getEncoding, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
+%%% ===========================================================================
+%%% РЕГОИОНЫ
+%%% ===========================================================================
+
 %%%
-%%% Возвращает список всех регионов
+%%% Возвращает список всех регионов (и страны и города)
 %%%
 get_all_geo_regions(Req) ->
-    Res = dao:dao_call(dao_geo_region, get_all_geo_regions, [], values),
+    Res = dao:dao_call(dao_geo_region, get_all_geo_regions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
-%%% Возвращает список всех стран
+%%% Возвращает список всех районов (например СНГ)
+%%%
+get_geo_areas(Req) ->
+    Res = dao:dao_call(dao_geo_region, get_geo_areas, nil, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+
+%%%
+%%% Возвращает список всех стран или стран конкретного района
 %%%
 get_contries(Req) ->
-    Res = dao:dao_call(dao_geo_region, get_contries, [], values),
+    Data = Req:parse_qs(),
+    case proplists:get_value("id", Data) of
+        undefined ->
+            case proplists:get_value("name_en", Data ) of
+            undefined ->
+                Res = dao:dao_call(dao_geo_region, get_contries, nil, values);
+            Name_en ->
+                Res = dao:dao_call(dao_geo_region, get_contries, Name_en, values)
+            end;
+        Some ->
+            Area_id = convert:to_integer(Some),
+            Res = dao:dao_call(dao_geo_region, get_contries, Area_id, values)
+    end,
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
-%%% Возвращает список всех городов конкретной страны
+%%% Возвращает список стран СНГ
+%%%
+get_contries_sng(Req) ->
+    Res = dao:dao_call(dao_geo_region, get_contries, "SNG", values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% Возвращает список всех городов или городов конкретной страны
 %%%
 get_cities(Req) ->
-    Contriy_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
-    Res = dao:dao_call(dao_geo_region, get_cities, Contriy_id, values),
+    Data = Req:parse_qs(),
+    case proplists:get_value("id", Data) of
+        undefined ->
+            case proplists:get_value("name_en", Data ) of
+            undefined ->
+                Res = dao:dao_call(dao_geo_region, get_cities, [], values);
+            Name_en ->
+                Res = dao:dao_call(dao_geo_region, get_cities, Name_en, values)
+            end;
+        Some ->
+            Contriy_id = convert:to_integer(Some),
+            Res = dao:dao_call(dao_geo_region, get_cities, Contriy_id, values)
+    end,
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-%%% ---------------------------------------------------------------------------
+%%%
+%%% ===========================================================================
+%%%
+
 
 %%%
 %%% Возвращает полный список рекламных компаний для ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
 %%%
 get_all_acv_videos(Req) ->
     authorization:auth_required(Req, "admin"),
-    Res = dao:dao_call(dao_acv_video, get_all_acv_videos, [], values),
+    Res = dao:dao_call(dao_acv_video, get_all_acv_videos, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
@@ -311,7 +356,7 @@ get_acv_video_stat_by_film(Req) ->
 %%%
 get_all_acv_banners(Req) ->
     authorization:auth_required(Req, "admin"),
-    Res = dao:dao_call(dao_acv_banner, get_all_acv_banners, [], values),
+    Res = dao:dao_call(dao_acv_banner, get_all_acv_banners, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%----------------------------------------------------------------------------
@@ -322,7 +367,7 @@ get_all_acv_banners(Req) ->
 %%%
 get_all_cats(Req) ->
     Customer_id = authorization:get_customer_id(Req),
-    Res = mysql_dao:dao_call(dao_cat, get_all_cats, [], values),
+    Res = mysql_dao:dao_call(dao_cat, get_all_cats, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
