@@ -7,8 +7,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
     construct : function(uReq, Row, Options) {
-        this.Options = Options;
-        this.base(arguments, uReq, Options);
+        // this.Options = Options;
+        alert("!");
+        this.base(arguments, uReq, Row, Options);
+        alert("!");
     },
 
     members : {

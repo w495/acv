@@ -52,8 +52,10 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster",
         console.log("UsersTargeting");
         this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, Row));
         console.log("RegionTargeting");
-        // this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
-        // console.log("CategoryTargeting");
+        
+        alert("!");
+        this.__list.push(new bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
+        console.log("CategoryTargeting");
         
         this.__step = 0;
         this.__length = this.__list.length;

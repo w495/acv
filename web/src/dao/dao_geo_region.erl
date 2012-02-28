@@ -8,6 +8,8 @@
 -export([
     get_all_geo_regions/1,
     get_geo_region/1,
+    get_contries/1,
+    get_cities/1,
     update_geo_region/1,
     delete_geo_region/1,
     test/0,
@@ -42,6 +44,25 @@ get_geo_region(Geo_region_id) ->
         "where geo_region.id = $1;",
     dao:simple(Query, [convert:to_integer(Geo_region_id)]).
 
+get_contries(_) ->
+    Query =
+        "select "
+            " geo_region.id, "
+            " geo_region.name_en, "
+            " geo_region.name_ru "
+        " from geo_region where country_id is null; ",
+    dao:simple(Query).
+
+get_cities(Country_id) ->
+    Query =
+        "select "
+            " geo_region.id, "
+            " geo_region.name_en, "
+            " geo_region.name_ru "
+        " from geo_region where country_id = $1; ",
+    dao:simple(Query, [Country_id]).
+
+
 update_geo_region({null, Alias, Name}) ->
 
     Query =
@@ -60,6 +81,10 @@ update_geo_region({Id, Alias, Name}) ->
         "update geo_region set name_en = $2, name_ru = $3 where id=$1;",
 
     dao:simple(Query, [convert:to_integer(Id), Alias, Name]).
+
+
+
+
 
 delete_geo_region(Id) ->
     Query_geo_region =

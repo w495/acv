@@ -38,8 +38,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         },
 
         regionListOptions: {
-            url:            "/get-all-geo-regions",
-            labelFieldName: "name_en",
+            url:            "/get-contries",
+            labelFieldName: "id",
             descrFieldName: "name_ru"
         },
         

@@ -143,7 +143,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.refForm.addListener('completed',function(e) {
                 var response = _this.refForm.getIframeTextContent();
                 bsk.view.Form.Upload.UploadFakeStatusBar.off();
-                // _this.inp.Ref.setValue(response);
+                _this.inp.Ref.setValue(response);
             });
         },
         

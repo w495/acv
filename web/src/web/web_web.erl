@@ -252,7 +252,6 @@ simple_map_controllers(Path) ->
 
         "/get_acv_video_by_id" -> {inside, getAcvVideoById};
 
-
         %%% Вся статисттика всех покупателей
             "/get-all-acv-video-stats" -> {inside, get_all_acv_video_stats};
 
@@ -274,9 +273,12 @@ simple_map_controllers(Path) ->
         %%% Все рекламные компании всех покупателей
             "/get-all-acv-videos"        ->  {inside, get_all_acv_videos};
 
+        %%% Регионы
 
-        "/get-all-geo-regions"       ->  {inside, get_all_geo_regions};
-        "/get-all-acv-banners"       ->  {inside, get_all_acv_banners};
+            "/get-all-geo-regions" ->  {inside, get_all_geo_regions};
+            "/get-contries" ->  {inside, get_contries};
+            "/get-cities" ->  {inside, get_cities};
+
 
         "/get-acv-videos"   -> {inside, get_acv_videos};
 
@@ -291,25 +293,16 @@ simple_map_controllers(Path) ->
         "/get-acv-video/category-targeting"
             -> {inside, get_acv_video_category_targeting};
 
-
         "/disactivate-acv-video"
             -> {inside, disactivate_acv_video};
-
         "/activate-acv-video"
             -> {inside, activate_acv_video};
-
-
         "/start-acv-video"
             -> {inside, start_acv_video};
-
         "/stop-acv-video"
             -> {inside, stop_acv_video};
-
-
-
         "/delete-acv-video"
             -> {inside, delete_acv_video};
-
         "/full-delete-acv-video"
             -> {inside, full_delete_acv_video};
 
@@ -321,16 +314,7 @@ simple_map_controllers(Path) ->
 
 
         "/get-all-cats"  -> {inside, get_all_cats};
-        "/get-adv-com-vid" -> {inside, get_adv_com_vid};
-        "/update-adv-com-vid" -> {inside, update_adv_com_vid};
 
-
-    % advertising company
-        "/get-banner-places" -> {inside, get_banner_places};
-        "/get-adv-coms" -> {inside, get_adv_coms};
-        "/get-adv-com" -> {inside, get_adv_com};
-        "/update-adv-com/upload-image" -> {web_file, upload_adv_com_image};
-        "/update-adv-com" -> {inside, update_adv_com};
 
     % customer-groups *
         "/get-customer-groups" ->       {inside, get_customer_groups};
@@ -341,13 +325,10 @@ simple_map_controllers(Path) ->
     % customers *
         "/get-customers" ->         {inside, get_customers};
         "/get-experts" ->           {inside, get_experts};
-
         "/get-customer-info" ->
             {inside, get_customer_info};
-
         "/update-customer" ->
             {inside, update_customer};
-
         "/update-customer/upload-image" ->
                 {web_file, upload_customer_image};
 

@@ -196,10 +196,25 @@ get_encoding(_Req) ->
 
 
 %%%
-%%% Возвращает ...
+%%% Возвращает список всех регионов
 %%%
 get_all_geo_regions(Req) ->
     Res = dao:dao_call(dao_geo_region, get_all_geo_regions, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% Возвращает список всех стран
+%%%
+get_contries(Req) ->
+    Res = dao:dao_call(dao_geo_region, get_contries, [], values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% Возвращает список всех городов конкретной страны
+%%%
+get_cities(Req) ->
+    Contriy_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    Res = dao:dao_call(dao_geo_region, get_cities, Contriy_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%% ---------------------------------------------------------------------------
