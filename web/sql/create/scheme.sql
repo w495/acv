@@ -181,6 +181,17 @@ create table acv_video (
 );
 
 /**
+ * Район, наприер СНГ
+**/
+create sequence seq_geo_area_id;
+create table geo_area (
+    id int primary key default nextval('seq_geo_area_id'),
+    name_ru character varying(100),
+    name_en character varying(100)
+);
+
+
+/**
  * Регион
 **/
 create table geo_region (
@@ -188,20 +199,13 @@ create table geo_region (
     country_id integer,
     name_ru character varying(100),
     name_en character varying(100),
-    code character varying(2)
+    code character varying(2),
+    geo_area_id int references geo_area(id)
 );
 
 
-/**
- * Район, наприер СНГ
-**/
-create sequence seq_geo_area_id;
-create table geo_area (
-    id int primary key default nextval('seq_geo_area_id'),
-    name_ru character varying(100),
-    name_en character varying(100),
-    code character varying(2)
-);
+
+
 
 /**
  * Что какому пользователю показали и когда
@@ -256,13 +260,5 @@ create table acv_video2cat (
 );
 
 
-/**
- * Многие ко многим для acv_video x geo_region
-**/
---create sequence seq_acv_video_2_geo_region;
-create table geo_region2geo_area (
-    -- id int primary key default nextval('seq_acv_video_2_geo_region'),
-    geo_region_id int references acv_video(id),
-    geo_area_id int references geo_region(id)
-);
+
 

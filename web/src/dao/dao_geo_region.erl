@@ -50,7 +50,9 @@ get_contries(_) ->
             " geo_region.id, "
             " geo_region.name_en, "
             " geo_region.name_ru "
-        " from geo_region where country_id is null; ",
+        " from geo_region "
+            " where country_id is null "
+                " and name_en != ''; ",
     dao:simple(Query).
 
 get_cities(Country_id) ->

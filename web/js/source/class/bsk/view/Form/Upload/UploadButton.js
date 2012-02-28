@@ -250,7 +250,28 @@ qx.Class.define("bsk.view.Form.Upload.UploadButton",
             type : 'file',
             accept : this.__accept,
             name : ''
-        }); 
+        });
+            
+        control.addListener("click", function(e){
+            alert("click");
+        },this);
+        
+        
+        this.addListener("focus", function(e){
+            control.focus();
+            //this.reset();
+        }, this);
+        
+        this.addListener("focusout", function(e){
+            this.reset();
+        }, this);
+        
+        /*
+        this.addListener("execute", function(e) {
+            this.press()
+        }, this);
+        */
+        
         control.addListener("change", function(e){
             var controlDom = control.getDomElement();
             this.__valueInputOnChange = true;            
@@ -264,6 +285,7 @@ qx.Class.define("bsk.view.Form.Upload.UploadButton",
             var value = e.getData();
             this.setFileName(value);
             this.fireDataEvent('changeFileName',value);
+            this.reset();
         },this);
 
        return control;

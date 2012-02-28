@@ -7,10 +7,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
     extend : bsk.view.Form.AcvVideoCreateMaster.BasePage,
     
     construct : function(uReq, Row, Options) {
-        // this.Options = Options;
-        alert("!");
+        this.Options = Options;
         this.base(arguments, uReq, Row, Options);
-        alert("!");
     },
 
     members : {
@@ -65,7 +63,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
-
+            
             this.inp.List = new bsk.view.
                 SortedSelListTreeDoubleContainer(
                     this.categoryListOptions.url,
