@@ -104,44 +104,49 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             }
         },
         
+
         addItems : function(values) {
-            return this.addItemsDir(this.root, values);
+            return this.addItemsDir(this.root, values, this.addItemsLst);
         },
         
-        addItemsDir : function(a_root, values) {
+        addItemsDir : function(a_root, values, additemslst) {
             console.log("addItemsDir : function(a_root, values)");
-            
-            for(var i=0; i<values.length; i++) {
+            for(var i in values) {
                 if(this.data[values[i].id] != undefined)
                     continue;
-                
                 var item = this.mkItem(values[i])
-                item._holder = this;
-                
-                item.addListenerOnce("click", function(){
-                    console.log("click(item = ", item, " this.element = ", this.element, ")");
-                    this._holder._requestItemsDir("/get-cities", this.element.id);
-                }, item);
-                
-                
-                item.checkbox.addListener("execute", function(){
-                    if(this.item.getParent()){
-                        console.log("this.item.getParent() = ", this.item.getParent())
-                        if(this.item.getParent().checkbox){
-                            console.log("this.item.getParent().checkbox = ", this.item.getParent().checkbox)
-                            this.item.getParent().checkbox.setValue(false);
-                        }
-                    }
-                    var children = this.item.getChildren();
-                    for(var kc in children){
-                        var child = children[kc]
-                        console.log("child = ", child);
-                        child.checkbox.setValue(false);
-                    }
-                }, item.checkbox);
-                
+                if(additemslst)
+                    (additemslst(this, item));
                 a_root.add(item);
+                /*
+                    var radd  = a_root.add
+                    radd.apply(radd,[item]);
+                    radd.apply(this,[item]);
+                */
             }
+        },
+        
+        addItemsLst: function(holder, item) {
+            item._holder = holder;
+            item.addListenerOnce("click", function(){
+                console.log("click(item = ", item, " this.element = ", this.element, ")");
+                this._holder._requestItemsDir("/get-cities", this.element.id);
+            }, item);
+            item.checkbox.addListener("execute", function(){
+                if(this.item.getParent()){
+                    console.log("this.item.getParent() = ", this.item.getParent())
+                    if(this.item.getParent().checkbox){
+                        console.log("this.item.getParent().checkbox = ", this.item.getParent().checkbox)
+                        this.item.getParent().checkbox.setValue(false);
+                    }
+                }
+                var children = this.item.getChildren();
+                for(var kc in children){
+                    var child = children[kc]
+                    console.log("child = ", child);
+                    child.checkbox.setValue(false);
+                }
+            }, item.checkbox);
         },
         
         mkItem : function(element) {
@@ -153,12 +158,10 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             item.setIcon(null);
             item.addWidget(checkbox);
             item.addLabel("" + element[this.labelFieldName]);
-            
             //item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
             //var text = new qx.ui.basic.Label(element[this.descrFieldName]);//alias);
             //text.setWidth(150);
             //item.addWidget(text);
-            
             this.data[element.id] = checkbox;
             item.element = element;
             item.checkbox = checkbox;

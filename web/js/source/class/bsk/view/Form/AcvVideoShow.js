@@ -22,8 +22,6 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
     
     members : {
        
-       
-       
         d: function(){console.log(arguments);},
         
         buildForm : function(){
@@ -44,7 +42,7 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             // -------------------------------------------------------------
             this.controller.placeForm(cnt);
 
-            var req = new qx.io.remote.Request("/get_acv_video_by_id", "GET", "application/json");
+            var req = new qx.io.remote.Request("/get-acv-video", "GET", "application/json");
             req.setParameter("id", this.row.id);
 
             req.addListener("completed", this._onAcvIncome, this);
@@ -130,6 +128,9 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
                 txt += geoList[i].name + " (" + geoList[i].code + ")\n";
 
             txt += "\nТаргетирование по жанрам: ";
+            if(!catList)
+                catList = [];
+                
             if(catList.length == 0)
                 txt += "все жанры\n";
             else

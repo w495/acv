@@ -515,11 +515,10 @@ full_delete_acv_video(Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
-
-getAcvVideoById(Req) ->
+get_acv_video(Req) ->
     Data = Req:parse_qs(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
-    case dao_acv_video:getAcvVideoById(Id) of
+    case dao_acv_video:get_acv_video(Id) of
         {ok, ACV, CatList, GeoList} ->
             Res1 = db2json:encode(ACV),
             Res2 = db2json:encode(CatList, "values"),

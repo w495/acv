@@ -250,7 +250,7 @@ simple_map_controllers(Path) ->
 
     % advertising company video
 
-        "/get_acv_video_by_id" -> {inside, getAcvVideoById};
+        "/get-acv-video" -> {inside, get_acv_video};
 
         %%% Вся статисттика всех покупателей
             "/get-all-acv-video-stats" -> {inside, get_all_acv_video_stats};

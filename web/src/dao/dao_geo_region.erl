@@ -58,7 +58,8 @@ get_contries(Id) when erlang:is_integer(Id)->
         " from geo_region "
             " where country_id is null "
                 " and geo_region.geo_area_id = $1 "
-                " and name_en != ''; ",
+                " and name_en != ''"
+        " order by name_ru desc;",
     dao:simple(Query, [Id]);
 
 get_contries(Name_en) when erlang:is_list(Name_en)->
@@ -72,7 +73,8 @@ get_contries(Name_en) when erlang:is_list(Name_en)->
                 " geo_area.name_en = $1 "
                 " and geo_region.country_id is null "
                 " and geo_region.geo_area_id = geo_area.id "
-                " and geo_region.name_en != '' ; ",
+                " and geo_region.name_en != '' "
+        " order by name_ru desc;",
     dao:simple(Query, [Name_en]);
 
 get_contries(_) ->
@@ -83,7 +85,8 @@ get_contries(_) ->
             " geo_region.name_ru "
         " from geo_region "
             " where country_id is null "
-                " and name_en != ''; ",
+                " and name_en != ''"
+        " order by name_ru desc;",
     dao:simple(Query).
 
 %%%
@@ -98,7 +101,8 @@ get_cities(Country_id) when erlang:is_integer(Country_id)->
             " geo_region.name_ru "
         " from geo_region "
             " where "
-                " country_id = $1 limit 10; ",
+                " country_id = $1 "
+        " order by name_ru desc;",
     dao:simple(Query, [Country_id]);
 
 get_cities(Name_en) when erlang:is_integer(Name_en)->
@@ -110,7 +114,8 @@ get_cities(Name_en) when erlang:is_integer(Name_en)->
         " from geo_region as city ",
             " join geo_region as country on "
                 " country.name_en = $1 "
-                " city.country_id = country.id limit 10; ",
+                " city.country_id = country.id "
+        " order by name_ru desc;",
     dao:simple(Query, [Name_en]);
 
 get_cities(_) ->
@@ -121,7 +126,8 @@ get_cities(_) ->
             " geo_region.name_ru "
         " from geo_region "
             " where "
-                " geo_region.country_id is not null limit 10;",
+                " geo_region.country_id is not null"
+        " order by name_ru desc;",
     dao:simple(Query).
 
 %%%
