@@ -106,17 +106,19 @@ qx.Class.define("bsk.view.SelListTreeDirs",
         
 
         addItems : function(values) {
-            return this.addItemsDir(this.root, values, this.addItemsLst);
+            return this.addItemsDir(this.root, values, true);
         },
         
-        addItemsDir : function(a_root, values, additemslst) {
+        addItemsDir : function(a_root, values, useadditemslst) {
             console.log("addItemsDir : function(a_root, values)");
             for(var i in values) {
                 if(this.data[values[i].id] != undefined)
                     continue;
                 var item = this.mkItem(values[i])
-                if(additemslst)
-                    (additemslst(this, item));
+                
+                //if(useadditemslst)
+                this.addItemsLst(item);
+                    
                 a_root.add(item);
                 /*
                     var radd  = a_root.add
@@ -126,8 +128,8 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             }
         },
         
-        addItemsLst: function(holder, item) {
-            item._holder = holder;
+        addItemsLst: function(item) {
+            item._holder = this;
             item.addListenerOnce("click", function(){
                 console.log("click(item = ", item, " this.element = ", this.element, ")");
                 this._holder._requestItemsDir("/get-cities", this.element.id);
