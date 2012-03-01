@@ -39,7 +39,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
 
         regionListOptions: {
             url:            "/get-contries-sng",
-            labelFieldName: "id",
+            labelFieldName: "name_ru",
             descrFieldName: "name_ru"
         },
         
@@ -98,10 +98,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
         **/
         saveData : function(e) {
             var list = this.inp.List.getSelectedId();
-
-            console.log("cat_list ---<")
-            console.log(this.inp.List.ltree.getSelectedId());
-            console.log(">---")
 
             if(this.validateForm()) {
                 this.uReq.setParameter("geo_list", list, true);

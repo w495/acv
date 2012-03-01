@@ -98,7 +98,7 @@ get_cities(Country_id) when erlang:is_integer(Country_id)->
             " geo_region.name_ru "
         " from geo_region "
             " where "
-                " country_id = $1; ",
+                " country_id = $1 limit 10; ",
     dao:simple(Query, [Country_id]);
 
 get_cities(Name_en) when erlang:is_integer(Name_en)->
@@ -110,7 +110,7 @@ get_cities(Name_en) when erlang:is_integer(Name_en)->
         " from geo_region as city ",
             " join geo_region as country on "
                 " country.name_en = $1 "
-                " city.country_id = country.id; ",
+                " city.country_id = country.id limit 10; ",
     dao:simple(Query, [Name_en]);
 
 get_cities(_) ->
@@ -121,7 +121,7 @@ get_cities(_) ->
             " geo_region.name_ru "
         " from geo_region "
             " where "
-                " geo_region.country_id is not null ",
+                " geo_region.country_id is not null limit 10;",
     dao:simple(Query).
 
 %%%

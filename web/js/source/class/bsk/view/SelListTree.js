@@ -83,30 +83,30 @@ qx.Class.define("bsk.view.SelListTree",
 
         addItems : function(values) {
             for(var i=0; i<values.length; i++) {
-                var E = values[i];
-                if(this.data[E.id] != undefined)
+                var element = values[i];
+                if(this.data[element.id] != undefined)
                     continue;
                 var Item = new qx.ui.tree.TreeFile();
                 var checkbox = new qx.ui.form.CheckBox();
                 checkbox.setFocusable(false);
-                checkbox.bsk_element = E;
+                checkbox.bsk_element = element;
                 checkbox.Item = Item;
                 Item.setIcon(null);
                 Item.addWidget(checkbox);
-                Item.addLabel(""+E[this.labelFieldName]);
+                Item.addLabel(""+element[this.labelFieldName]);
                 Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
-                var text = new qx.ui.basic.Label(E[this.descrFieldName]);//alias);
+                var text = new qx.ui.basic.Label(element[this.descrFieldName]);//alias);
                 text.setWidth(150);
                 Item.addWidget(text);
                 this.root.add(Item);
-                this.data[E.id] = checkbox;
+                this.data[element.id] = checkbox;
             }
         },
         
         remItem : function(value) {
             var newData = {};
 
-            var E = value;
+            var element = value;
             if(this.data[value.id] == undefined)
                 return false;
             
@@ -116,9 +116,9 @@ qx.Class.define("bsk.view.SelListTree",
 
 
             for(var key in this.data) {
-                var E = this.data[key];
-                if(E != undefined) 
-                    newData[key] = E;
+                var element = this.data[key];
+                if(element != undefined) 
+                    newData[key] = element;
             }
             this.data = newData;
             return true;
@@ -127,18 +127,18 @@ qx.Class.define("bsk.view.SelListTree",
         remItems : function(values) {
             var newData = {};
             for(var i=0; i<values.length; i++) {
-                var E = values[i];
-                if(this.data[E.id] == undefined)
+                var element = values[i];
+                if(this.data[element.id] == undefined)
                     continue;
-                var checkbox = this.data[E.id];
+                var checkbox = this.data[element.id];
                 this.root.remove(checkbox.Item);
-                this.data[E.id] = undefined;
+                this.data[element.id] = undefined;
             }
 
             for(var key in this.data) {
-                var E = this.data[key];
-                if(E != undefined) 
-                    newData[key] = E;
+                var element = this.data[key];
+                if(element != undefined) 
+                    newData[key] = element;
             }
             this.data = newData;
         },
