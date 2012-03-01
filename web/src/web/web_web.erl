@@ -289,11 +289,11 @@ simple_map_controllers(Path) ->
         "/get-acv-video/show"     -> {inside, get_acv_video_show};
 
         "/get-acv-video/users-targeting"
-            -> {inside, get_acv_video_users_targeting};
+            -> {inside, get_acv_video_users};
         "/get-acv-video/region-targeting"
-            -> {inside, get_acv_video_region_targeting};
+            -> {inside, get_acv_video_geos};
         "/get-acv-video/category-targeting"
-            -> {inside, get_acv_video_category_targeting};
+            -> {inside, get_acv_video_cats};
 
         "/disactivate-acv-video"
             -> {inside, disactivate_acv_video};

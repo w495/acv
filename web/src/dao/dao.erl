@@ -66,6 +66,14 @@ dao_value(Module, Function, Param) ->
     end,
     Res.
 
+%%%
+%%% Возвращает несколько результатов
+%%%
+dao_values(Module, Function, Param) ->
+    mochijson2:encode(
+        dao:dao_call(Module, Function,Param, values)
+    ).
+
 dao_call(Module, Function, Param) ->
     case Module:Function(Param) of
         {ok, Vals} -> Res = db2json:encode(Vals);

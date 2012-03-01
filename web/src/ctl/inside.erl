@@ -393,19 +393,19 @@ get_acv_video_show(Req) ->
     Res = dao:dao_value(dao_acv_video, get_acv_video_show, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_users_targeting(Req) ->
+get_acv_video_users(Req) ->
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
-    Res = dao:dao_value(dao_acv_video, get_acv_video_users_targeting, Acv_video_id),
+    Res = dao:dao_value(dao_acv_video, get_acv_video_users, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_region_targeting(Req) ->
+get_acv_video_geos(Req) ->
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
-    Res = dao:dao_value(dao_acv_video, get_acv_video_region_targeting, Acv_video_id),
+    Res = dao:dao_values(dao_acv_video, get_acv_video_geos, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_category_targeting(Req) ->
+get_acv_video_cats(Req) ->
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
-    Res = dao:dao_value(dao_acv_video, get_acv_video_category_targeting, Acv_video_id),
+    Res = dao:dao_values(dao_acv_video, get_acv_video_cats, Acv_video_id),
     {"application/json", [], [Res]}.
 
 %%%
