@@ -235,7 +235,6 @@ qx.Class.define("bsk.view.SortedSelListTree",
         },
         
         getAllId : function() {
-            alert("getAllId : function() {");
             var ret = [];
             for(var key in this.data) {
                 var cb = this.data[key];

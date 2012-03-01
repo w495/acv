@@ -8,7 +8,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
     
     construct : function(uReq, Row, Options) {
         this.Options = Options;
-        this.base(arguments, uReq, Options);
+        this.base(arguments, uReq, Row, Options);
     },
 
     members : {
@@ -43,8 +43,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             descrFieldName: "name_ru"
         },
         
-        inp: {},
-        
         buildForm : function(){
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             var pageName = new qx.ui.basic.Label()
@@ -57,7 +55,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             layout.setColumnAlign(0, "right", "top");
             this.composite  = new qx.ui.container.Composite(layout);
 
-                
             this.inp.List = new bsk.view.
                 SelListTreeDirs(
                     this,
@@ -75,11 +72,16 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             return this.composite;
         },
         
+        
         /**
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-
+            var list = [];
+            for(var geo in data.values){
+                list.push(geo.id);
+            }
+            this.groupList.setChecked(list);
         },
         
         /**
@@ -90,19 +92,15 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             return flag;
         },
         
-        /**
-            Применив некоторые преобразования <<загружает>> данные на сервер
-        **/
+
         /**
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
             var list = this.inp.List.getSelectedId();
-
             if(this.validateForm()) {
                 this.uReq.setParameter("geo_list", list, true);
             }
-
             return true;
         }
     }

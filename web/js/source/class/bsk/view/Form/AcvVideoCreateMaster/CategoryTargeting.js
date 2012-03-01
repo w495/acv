@@ -42,14 +42,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
         getComposite : function(){
             return this.composite;
         },
-
-        /**
-         * Поля формы.
-         * Вообще, учитывая, богатсво форм они могут не понадобиться.
-        **/
-        inp : {
-            
-        },
         
         buildForm : function(){
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
@@ -82,19 +74,20 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             return this.composite;
         },
         
-        _onLoadFormDataCompl : function(response) {
-            var result = response.getContent();
-            if (false == bsk.util.errors.process(this, result))
-                return false;
-            this.fillForm(result);
-            return true;
-        },
         
         /**
             Заполняет форму полученными данными.
         **/
         fillForm : function(data) {
-
+            var list = [];
+            console.log("data = ", data);
+            console.log("data.values = ", data.values);
+            for(var cat in data.values){
+                console.log("cat = ", cat);
+                list.push(data.values[cat].cat_id);
+            }
+            console.log("list = ", list);
+            this.inp.List.setChecked(list);
         },
         
         /**
@@ -109,12 +102,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.ltree.getSelectedId();
-            
-            console.log("cat_list ---<")
-            console.log(this.inp.List.ltree.getSelectedId());
-            console.log(">---")
-            
+            var list = this.inp.List.getSelectedId();
+  
             if(this.validateForm()) {
                 this.uReq.setParameter("cat_list", list, true);
             }

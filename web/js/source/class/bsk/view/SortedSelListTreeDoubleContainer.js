@@ -90,6 +90,7 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         
         _OnAdd : function(){
             var selected = this.ltree.getSelected();
+            console.log("selected --> ", selected);
             this.rtree.addItems(selected);
             this.ltree.remItems(selected);
         },
@@ -108,8 +109,15 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
             }, this, bsk.Config.SORTEDSELLISTTREE_TIMEOUT);
         },
         
+        setChecked : function(list){
+            console.log("list --> ", list);
+            this.ltree.setChecked(list);
+            console.log("list --> ", list);
+            this._OnAdd();
+        },
+        
         getSelectedId : function() {
-            this.rtree.getAllId();
+            return this.rtree.getAllId();
         }
     }
 });

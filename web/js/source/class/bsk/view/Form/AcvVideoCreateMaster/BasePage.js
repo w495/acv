@@ -11,10 +11,15 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
     construct : function(uReq, Row, Options) {
         this.uReq = uReq;
         this.buildForm();
-        if(Row != undefined && Row["id"] != undefined)
+        
+        if(!Row)
+            console.log("##", Row, "$$", this.drc.url );
+            
+        if(Row && Row["id"]){
+            // console.log("this.drc.url ----> loadFormData ----> ", this.drc.url);
             this.loadFormData(Row["id"], "id");
+        }
         this.addListeners();
-        //this.disableAll();
         
         if(Options){
             if(Options.disabled)
@@ -22,7 +27,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
                 this.disableAll();
             }
         }
-
         
     },
 
@@ -75,6 +79,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.BasePage",
             Получает данные с сервера.
         **/
         loadFormData : function(id, paramName) {
+            console.log("this.drc.url ---->", this.drc.url);
             this.dReq = new qx.io.remote.Request
                 (this.drc.url, this.drc.method, this.drc.mimetype);
             this.dReq.setTimeout(60000);
