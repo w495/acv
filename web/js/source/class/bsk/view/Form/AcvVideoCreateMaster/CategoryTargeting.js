@@ -55,7 +55,6 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
-            //this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH_M);
             
             this.inp.List = new bsk.view.
                 SortedSelListTreeDoubleContainer(

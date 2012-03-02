@@ -55,6 +55,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
             layout.setColumnAlign(0, "right", "top");
             this.composite  = new qx.ui.container.Composite(layout);
             this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH_M);
+            
+            
             this.inp.List = new bsk.view.
                 SelListTreeDirs(
                     this,
@@ -63,6 +65,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.RegionTargeting",
                     this.regionListOptions.descrFieldName,
                     this.Options
                 );
+
+            this.inp.List.setHeight(bsk.Config.SELLISTTREE_HEIGHT);
 
             var vertical_offset = -1;
             this.composite.add(pageName,

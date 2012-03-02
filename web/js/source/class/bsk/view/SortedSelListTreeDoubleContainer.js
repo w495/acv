@@ -44,8 +44,8 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         this.ltree.setWidth(200);
         this.rtree.setWidth(200);
         
-        this.ltree.setHeight(400);
-        this.rtree.setHeight(400);
+        this.ltree.setHeight(bsk.Config.SELLISTTREE_HEIGHT);
+        this.rtree.setHeight(bsk.Config.SELLISTTREE_HEIGHT);
         
         var layout = new qx.ui.layout.Grid(2, 2);
         layout.setColumnFlex(0, 1);
