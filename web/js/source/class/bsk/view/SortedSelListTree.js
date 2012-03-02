@@ -166,10 +166,11 @@ qx.Class.define("bsk.view.SortedSelListTree",
                 Item.setIcon(null);
                 Item.addWidget(checkbox);
                 Item.addLabel(""+E[this.labelFieldName]);
-                Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
-                var text = new qx.ui.basic.Label(E[this.descrFieldName]);
-                text.setWidth(150);
-                Item.addWidget(text);
+                // Item.addWidget(new qx.ui.core.Spacer(), {flex: 1});
+                // var text = new qx.ui.basic.Label(E[this.descrFieldName]);
+                // text.setWidth(150);
+                // Item.addWidget(text);
+                
                 this.root.add(Item);
                 this.data[E.id] = checkbox;
                 this.shadow_data[E.id] = checkbox;

@@ -67,12 +67,14 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
+            this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH);
+            
 
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Name = new qx.ui.form.TextField() 
                 .set({placeholder: "Название рекламной кaмпании",
                      required:true});
-            this.inp.Comment = new qx.ui.form.TextField() 
+            this.inp.Comment = new qx.ui.form.TextArea() 
                 .set({placeholder: "Его кроме Вас никто не увидит",
                      required:true});
                 

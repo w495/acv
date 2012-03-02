@@ -72,6 +72,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
+            this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH_M);
             
             var pageName = new qx.ui.basic.Label()
                 .set({

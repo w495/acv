@@ -41,8 +41,11 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
             .SortedSelListTree(this, undefined, labelFieldName,
                 descrFieldName, paramdict);
          
-        this.ltree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
-        this.rtree.setWidth(bsk.Config.SELLISTTREE_WIDTH);
+        this.ltree.setWidth(200);
+        this.rtree.setWidth(200);
+        
+        this.ltree.setHeight(400);
+        this.rtree.setHeight(400);
         
         var layout = new qx.ui.layout.Grid(2, 2);
         layout.setColumnFlex(0, 1);
@@ -55,9 +58,9 @@ qx.Class.define("bsk.view.SortedSelListTreeDoubleContainer",
         this.add(this.tfield, {row:vertical_offset, column:0});
         var blayout = new qx.ui.layout.HBox()
             .set({
-                spacing: Math.floor(bsk.Config.SELLISTTREE_WIDTH / 4),
+                // spacing: Math.floor(bsk.Config.SELLISTTREE_WIDTH / 4),
                 alignY: "middle",
-                alignX: "center"
+                alignX: "left" // left center
             });
             
         var composite = new qx.ui.container.Composite(blayout);

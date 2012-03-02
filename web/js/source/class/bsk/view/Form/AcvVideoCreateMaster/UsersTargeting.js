@@ -67,6 +67,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
+            this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH_M);
             
             this.boxGender = this.makeBoxGender();
             this.boxAge = this.makeBoxAge();

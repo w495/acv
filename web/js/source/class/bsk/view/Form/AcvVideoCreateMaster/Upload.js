@@ -64,6 +64,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
+            this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH);
             
             this.inp.Duration =    new qx.ui.form.Spinner(1, 1, 134217728);
             this.inp.Link_title =   new qx.ui.form.TextField()
