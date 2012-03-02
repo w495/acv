@@ -183,6 +183,14 @@ qx.Class.define("bsk.view.GenericTableModel",
                             case "checkbox":
                                 //rowVal = "<span style=\"color:red\">" + rowVal + "</span>";   
                                 break;
+                            case "<enum>":
+                                if(desc.dict){
+                                    var old_rowVal = rowVal
+                                    rowVal = desc.dict[old_rowVal];
+                                    if(!rowVal)
+                                        rowVal = desc.dict['default'] + " (" + old_rowVal + ")";
+                                }
+                                break;
                             case "enum":
                                 if(desc.dict){
                                     var old_rowVal = rowVal

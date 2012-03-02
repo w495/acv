@@ -119,6 +119,8 @@ get_all_acv_videos(_) ->
         "select "
             " acv_video.id, "
             " acv_video.name, "
+            " acv_video.active, "
+            " acv_video.stoped, "
             " acv_video.comment, "
             " acv_video.datestart, "
             " acv_video.datestop "
