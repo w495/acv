@@ -227,14 +227,12 @@
     <!--
         Подол страницы
     -->
-    <div class="b-footer">
-        <p>
-            <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
-        </p>
-        <p>
-            <xsl:text>Все права защищены.</xsl:text>
-        </p>
-    </div>
+    <p>
+        <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
+    </p>
+    <p>
+        <xsl:text>Все права защищены.</xsl:text>
+    </p>
 </xsl:template>
 
 <xsl:template name="foot-scripts">

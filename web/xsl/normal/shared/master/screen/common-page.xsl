@@ -10,13 +10,48 @@
 
 <xsl:import href="base.xsl"/>
 
-<xsl:template name="s-main-1">
-    <xsl:call-template name="s-main-2" />
+<xsl:template name="s-title-base">
+    <xsl:text>обычная</xsl:text>
 </xsl:template>
 
-<xsl:template name="s-main-2">
-    <xsl:text>шаблон</xsl:text>
+<xsl:template name="s-main-base">
+    <xsl:call-template name="s-main-common"/>
+</xsl:template>
+
+<xsl:template name="foot-scripts-base">
+    <!--
+        Скрипты добавляемые внизу страницы.
+        Рекомендовано это использовать, если сами скрипты не меняют
+        начальный вид страницы или ее DOM (до загрузки)
+    -->
+    <script src="/j/jm.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
+    <script src="/j/sl.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
+</xsl:template>
+
+<!--
+    ###########################################################################
+    ###
+    ###########################################################################
+-->
+
+<!--
+    TODO: Вынести в util
+-->
+<xsl:template name="u-button">
+    <xsl:param name="Href" select="'Href'"/>
+    <xsl:param name="Class" select="'but'"/>
+    <xsl:param name="Title" select="'title'"/>
+    <xsl:param name="Text" select="'text'"/>
+    <a class="{$Class} m-button" href="{$Href}" title="{$Title}">
+        <xsl:value-of select="$Text" />
+    </a>
+    <!-- Alt:
+        <form>
+            <input type="button" />
+        </form>
+    -->
 </xsl:template>
 
 
 </xsl:stylesheet>
+

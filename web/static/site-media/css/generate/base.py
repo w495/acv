@@ -17,6 +17,7 @@ class Base(generate.gen_css.Gen_css):
         string += self.common_modifiers()
         string += self.body()
         string += self.s_main()
+        string += self.s_signup()
         string += self.s_header()
         string += self.s_roller()
         string += self.s_news()
@@ -132,7 +133,7 @@ class Base(generate.gen_css.Gen_css):
             .s-main{
             }
             .s-main{
-                background-color: #cccccc;
+                background-color: white;
             }
             .s-header, .s-main, .s-footer{
                 display: block;
@@ -146,6 +147,14 @@ class Base(generate.gen_css.Gen_css):
             }
         """%(d(Metrics))
 
+    def s_signup(self):
+        return  """
+            .s-signup{
+                padding-left: 22px;
+                background-color: white;
+            }
+        """
+        
     def s_header(self):
         b_thehead_h = 81;
         b_thehead_caption_h = 17;
@@ -669,7 +678,10 @@ class Base(generate.gen_css.Gen_css):
         res = ""
         res = """.s-footer{
             clear: both;
-            height: 75px;
+            height: 55px;
+            padding-top: 20px;
+            text-align: center;
+            color: white;
         }
         """
         if(Use.css3_grad):
@@ -683,12 +695,6 @@ class Base(generate.gen_css.Gen_css):
                 )
             )
 
-        res += """.b-footer{
-            padding-top: 20px;
-            text-align: center;
-            color: white;
-        }
-        """
 
 
         return res;

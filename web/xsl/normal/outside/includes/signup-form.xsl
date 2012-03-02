@@ -5,7 +5,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:include href="../../shared/utils/u-ift.xsl" />
-    
+
 <xsl:template name="signup-form">
     <xsl:param name="Action" select="'/Users/Registration/'" />
     <xsl:param name="Method" select="'POST'"/>
