@@ -11,7 +11,6 @@ qx.Class.define("bsk.view.Form.ConfigForm",
 
     construct : function(controller, Row) {
         this.base(arguments, controller, Row);
-        this.addListeners();
     },
 
     members : {
@@ -40,7 +39,7 @@ qx.Class.define("bsk.view.Form.ConfigForm",
 
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Acv_video_loadnext
-                = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
+                = new qx.ui.form.Spinner(0, 100, 1152921504606846976);
 
             var layout = new qx.ui.layout.Grid(12, 6);
             var cnt = new qx.ui.container.Composite(layout);
@@ -64,49 +63,9 @@ qx.Class.define("bsk.view.Form.ConfigForm",
                     {row:vertical_offset , column:1});
             
             this.addbuttonRow(cnt, ++vertical_offset);
-
             this.controller.placeForm(cnt);
-        },
-        
-        /**
-            Обработчики событий,
-                которые не удалось вынести внутрь
-                    отдельных виджетов.
-        **/
-        addListeners: function() {            
-            var _this = this;
-
-        },
-        
-        
-        /**
-            Проверяет коректность данных
-        **/
-        validateForm : function() {
-
-            var flag = true;
-
-            /**
-                TODO  Проверка введенного E-mail.
-            **/
-
-            return flag;
-        },
-
-        /**
-            Формирует данные для сервера
-        **/
-        _uploadData : function(e) {
-            this.base(arguments, e);
-        },
-
-        /**
-            Заполняет форму
-        **/
-        fillForm : function(data) {
-            this.base(arguments, data);
-
         }
+
     }
 });
 

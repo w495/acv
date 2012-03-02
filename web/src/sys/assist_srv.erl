@@ -22,7 +22,10 @@
 %% Defines
 %% ----------------------------------------------------------------------------
 
--define(ASSIST_SRV_TIMEOUT, 300000). %% 5*60*1000
+%-define(ASSIST_SRV_TIMEOUT, 300000). %% 5*60*1000
+
+-define(ASSIST_SRV_TIMEOUT, 5000). %% 5*60*1000
+
 
 %% ----------------------------------------------------------------------------
 %% External exports
@@ -56,7 +59,7 @@ init([]) ->
     process_flag(trap_exit, true),
     captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
     captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),
-    {ok, ?ASSIST_SRV_TIMEOUT}.
+    {ok, [], ?ASSIST_SRV_TIMEOUT}.
 
 %% --------------------------------------------------------------------
 %% Function: handle_call/3
@@ -99,6 +102,7 @@ handle_info(timeout, State) ->
     dao_acv_video:delete_acv_video_shown_expired(),
 
     dao_stat:fetch_stat_by_id(),%%% Сбор статистики.
+
     {noreply, State, ?ASSIST_SRV_TIMEOUT};
 
 handle_info(Info, State) ->
