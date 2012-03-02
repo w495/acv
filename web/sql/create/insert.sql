@@ -58,7 +58,7 @@ insert into customer2group (customer_id, group_id)
 insert into geo_area (name_ru, name_en) values ('СНГ', 'SNG');
 
 
-
+insert into config (acv_video_loadnext) values (10);
 
 
 

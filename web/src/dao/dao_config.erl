@@ -6,6 +6,7 @@
 -module(dao_config).
 
 -export([
+    config/1,
     get_config/1,
     update_config/1,
     update_config_/1,
@@ -22,7 +23,11 @@
 %%%         name_ru
 %%%
 
-get_config(Config_id) ->
+config(Name) ->
+    {ok, [Vars]} = get_config(0),
+    proplists:get_value(Name, Vars).
+
+get_config(Config_id) when erlang:is_integer(Config_id) ->
     Query =
         "select "
             " config.id, "

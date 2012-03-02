@@ -289,11 +289,13 @@ make_acv_xml_item([Creative|Tail], {Acc_str, Acc_duration})->
 %%%
 make_acv_xml_naive(List) ->
     ?XML_TOP ++
-    "<block duration=\"120\" loadnext=\"600\">" ++
-   lists:concat([
-        creative_string(Item)
-        || Item <- List
-    ]) ++
+    "<block duration=\"120\" loadnext=\""
+        ++ dao_config:config("acv_video_loadnext")
+        ++ "\">" ++
+        lists:concat([
+            creative_string(Item)
+            || Item <- List
+        ]) ++
     "</block>".
 
 %%%
