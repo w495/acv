@@ -13,7 +13,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Common",
     },
 
     statics : {
-        DATE_PAST_OFFSET : 1,
+        DATE_PAST_OFFSET : 0,
         DATE_FUTURE_OFFSET : 1,
         DATE_DELTA : 1
     },

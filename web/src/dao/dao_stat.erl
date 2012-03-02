@@ -107,6 +107,8 @@ fetch_stat_by_time(null) ->
     {_day, _} = erlang:localtime(),
     fetch_stat_by_time({_day, {0,0,0}});
 
+
+
 fetch_stat_by_time(all) ->
     fetch_stat_by_time({{1970,01, 1}, {0,0,0}});
 
