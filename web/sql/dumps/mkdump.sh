@@ -13,7 +13,7 @@
 default_db_name="fk"
 default_tb_name="customer"
 
-options="--no-privileges --no-owner --no-reconnect --data-only" # --inserts
+options="--no-privileges --no-owner --no-reconnect " # --data-only --inserts
 
 
 ##
