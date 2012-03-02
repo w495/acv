@@ -82,5 +82,5 @@
     sort : "id",
     ascending : false,
 
-    dblclick_action : "resource/bsk/descr/acv-video-show.json"
+    dblclick_action : "resource/bsk/descr/acv-video-show-mod.json"
 }
