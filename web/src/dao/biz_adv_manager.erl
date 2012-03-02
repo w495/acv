@@ -92,7 +92,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
             "where "
                 " acv_video.deleted = false and "
                 " acv_video.active = true and "
-                " acv_video.stoped = true and "
+                " acv_video.stoped = false and "
                 " acv_video.datestart < (select NOW()) and "
                 " acv_video.datestop > (select NOW()) and "
                 " acv_video.wish > acv_video.shown and "
