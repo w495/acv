@@ -57,7 +57,8 @@
     columns : [
         {name : "id",       alias : "#", type : "float", sortable : true, width:"5%"},
         {name : "name",     alias : "Название", type : "string", sortable : true},
-        {name : "comment",  alias : "Комментарий", type : "string", sortable : true},
+        {name : "shown",    alias : "Показов", type : "string", sortable : true},
+        {name : "clicks",   alias : "Кликов", type : "string", sortable : true},
         
         {name : "active",   alias : "Разрешена",      type : "enum", 
             dict: {  "true":    "Разрешена",
