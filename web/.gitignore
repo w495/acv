@@ -17,9 +17,10 @@
 app.config
 app_dev.config
 
-ebin/*
-cbin/*
-priv/db/*
+*ebin/*
+*cbin/*
+*priv/db/*
+*priv/session-db/*
 
 js*/source/script/*
 js*/cache/*
@@ -30,4 +31,4 @@ static/data/adv/*
 static/data/game/*
 static/data/docs/*
 static/data/*
-priv/session-db/*
+

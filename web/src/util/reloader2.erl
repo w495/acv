@@ -1,4 +1,4 @@
--module(reloader).
+-module(reloader2).
 
 -export([reload_code/0]).
 

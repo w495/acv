@@ -11,10 +11,10 @@ export ERL_MAX_ETS_TABLES
 
 LOCALLBINPATH=`find ./ebin -type d -printf '%h/%f '`
 OTHERBINPATH="./deps/*/ebin"
-BINPATH=${LOCALLBINPATH}${OTHERBINPATH}
+BINPATH=${OTHERBINPATH}" "${LOCALLBINPATH}
 
 erl \
-    -pa $BINPATH \
+    -pz $BINPATH \
     -detached \
     -boot start_sasl \
     -config ${CONFIG} \

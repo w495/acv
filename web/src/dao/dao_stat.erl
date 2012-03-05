@@ -133,19 +133,26 @@ fetch_stat_by_time(From_id) ->
     ?D("Stats to DB:~p~n", [To_db]),
     to_db(To_db).
 
+% fetch_stat_by_id() ->
+%     dao:with_transaction_fk(fun(Con) ->
+%         Cid = compute_stat_max_id(),
+%         Gid = get_max_id(Con),
+%         case Cid > Gid of
+%             true ->
+%                 fetch_stat_by_id(Gid);
+%                 put_max_id(Con, Cid),
+%             _ ->
+%                 % а зачем?
+%                 fetch_stat_by_id(Gid)
+%         end
+%     end).
+
 fetch_stat_by_id() ->
     dao:with_transaction_fk(fun(Con) ->
-        Cid = compute_stat_max_id(),
-        Gid = get_max_id(Con),
-        case Cid > Gid of
-            true ->
-                put_max_id(Con, Cid),
-                fetch_stat_by_id(Cid);
-            _ ->
-                % а зачем?
-                fetch_stat_by_id(Gid)
-        end
+        fetch_stat_by_id(get_max_id(Con)),
+        put_max_id(Con, compute_stat_max_id())
     end).
+
 
 fetch_stat_by_id(null) ->
     fetch_stat_by_id(0);
