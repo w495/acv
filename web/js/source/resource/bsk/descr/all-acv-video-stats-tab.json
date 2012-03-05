@@ -21,9 +21,9 @@
         {name : "datestart", alias : "Дата начала", type : "erl_datetime", sortable : true},
         {name : "datestop", alias : "Дата конца", type : "erl_datetime", sortable : true},
         {name : "delta_shown", alias : "Показы за период", type : "string", sortable : true},
-        {name : "shown", alias : "Всего показов", type : "string", sortable : true},
+        {name : "shown", alias : "Всего показов", type : "float", sortable : true},
         {name : "delta_clicks", alias : "Клики за период", type : "string", sortable : true},
-        {name : "clicks", alias : "Всего кликов", type : "string", sortable : true}
+        {name : "clicks", alias : "Всего кликов", type : "float", sortable : true}
     ],
 /*
     filter : {
