@@ -122,6 +122,8 @@ get_all_acv_videos(_) ->
             " acv_video.active, "
             " acv_video.stoped, "
             " acv_video.comment, "
+            " acv_video.shown, "
+            " acv_video.clicks, "
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video where deleted = false;",
@@ -157,6 +159,8 @@ get_acv_videos(Customer_id) ->
             " acv_video.id, "
             " acv_video.name, "
             " acv_video.comment, "
+            " acv_video.shown, "
+            " acv_video.clicks, "
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video "
