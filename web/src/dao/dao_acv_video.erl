@@ -134,9 +134,9 @@ get_all_acv_videos(_) ->
 get_all_acv_video_stats({Fromdate, Todate}) ->
     Query = "select acv_video.id, acv_video.name, acv_video.datestart, acv_video.datestop, acv_video.shown, acv_video.clicks "
                 "from acv_video where deleted = false and "
-                    "((datestart < $1 and datestop > $1)  "
-                    " or (datestart < $2  and datestop > $2)  "
-                    " or (datestart > $1 and datestop < $2));",
+                    "((datestart <= $1 and datestop >= $1)  "
+                    " or (datestart <= $2  and datestop >= $2)  "
+                    " or (datestart >= $1 and datestop <= $2));",
     {ok, R1} = dao:simple(Query, [Fromdate, Todate]),
     {ok, collect_stats_by_acv(R1, Fromdate, Todate)}.
 
@@ -170,9 +170,9 @@ get_acv_videos(Customer_id) ->
 get_acv_video_stats({Customer_id, {Fromdate, Todate}}) ->
     Query = "select acv_video.id, acv_video.name, acv_video.datestart, acv_video.datestop, acv_video.shown, acv_video.clicks "
                 "from acv_video where customer_id = $3 and deleted = false and "
-                    "((datestart < $1 and datestop > $1)  "
-                    " or (datestart < $2  and datestop > $2)  "
-                    " or (datestart > $1 and datestop < $2));",
+                    "((datestart <= $1 and datestop >= $1)  "
+                    " or (datestart <= $2  and datestop >= $2)  "
+                    " or (datestart >= $1 and datestop <= $2));",
     {ok, R1} = dao:simple(Query, [Fromdate, Todate, Customer_id]),
     {ok, collect_stats_by_acv(R1, Fromdate, Todate)}.
 

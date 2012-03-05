@@ -466,9 +466,9 @@ get_acv_video_stat_by_film({From_datetime, To_datetime, Acv_Id, Video_url}) ->
 %%%
 get_acv_video_stat_by_film(From_datetime, To_datetime, Acv_Id, Video_url) ->
     Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
-        " where ((datestart < $1 and datestop > $1)  "
-            " or (datestart < $2  and datestop > $2)  "
-            " or (datestart > $1 and datestop < $2)) "
+        " where ((datestart <= $1 and datestop >= $1)  "
+            " or (datestart <= $2  and datestop >= $2)  "
+            " or (datestart >= $1 and datestop <= $2)) "
             " and video_url = $3;",
     dao:simple(Q, [From_datetime, To_datetime, Video_url]).
 
@@ -478,9 +478,9 @@ get_acv_video_stat_by_film(From_datetime, To_datetime, Acv_Id, Video_url) ->
 %%%
 get_acv_video_stat(From_datetime, To_datetime, Acv_Id) ->
     Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
-        " where (datestart < $1 and datestop > $1) "
-            " or (datestart < $2  and datestop > $2) "
-            " or (datestart > $1 and datestop < $2);",
+        " where (datestart <= $1 and datestop >= $1) "
+            " or (datestart <= $2  and datestop >= $2) "
+            " or (datestart >= $1 and datestop <= $2);",
     {ok, Vals} = dao:simple(Q, [From_datetime, To_datetime]),
 
     Video_shows = length(Vals),
@@ -499,9 +499,9 @@ get_acv_video_stat_by_films({From_datetime, To_datetime, Acv_Id}) ->
 %%%
 get_acv_video_stat_by_films(From_datetime, To_datetime, Acv_Id) ->
     Q = "select * from acv_video_stat_" ++ utils:to_list(Acv_Id) ++
-        " where (datestart < $1 and datestop > $1) "
-            " or (datestart < $2  and datestop > $2) "
-            " or (datestart > $1 and datestop < $2);",
+        " where (datestart <= $1 and datestop >= $1) "
+            " or (datestart <= $2  and datestop >= $2) "
+            " or (datestart >= $1 and datestop <= $2);",
     {ok, Vals} = dao:simple(Q, [From_datetime, To_datetime]),
     All_videos_proplist =
         [{proplists:get_value("video_url", X), X} || X <- Vals],
