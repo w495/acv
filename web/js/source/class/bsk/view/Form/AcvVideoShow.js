@@ -117,9 +117,10 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
         fillForm : function(result) {
 
             var clip = result.value;
-            this.inp.Id.setValue(clip.id);
-            this.inp.Active.setValue(RegExp("^true$").test(clip.active));
-            
+            if(this.isModerator){
+                this.inp.Id.setValue(clip.id);
+                this.inp.Active.setValue(RegExp("^true$").test(clip.active));
+            }
             console.log("clip = ", clip);
             
             var catList = result.cats.values;
