@@ -117,6 +117,8 @@ get_acv_video(Id) ->
 get_all_acv_videos(_) ->
     Query =
         "select "
+            " customer.login, "
+            " customer.organization, "
             " acv_video.id, "
             " acv_video.name, "
             " acv_video.active, "
@@ -126,9 +128,11 @@ get_all_acv_videos(_) ->
             " acv_video.clicks, "
             " acv_video.datestart, "
             " acv_video.datestop "
-        " from acv_video where deleted = false;",
+        " from acv_video "
+            " join customer on "
+                " acv_video.customer_id = customer.id "
+                " and acv_video.deleted = false;",
     dao:simple(Query).
-
 
 %%% @doc
 %%% Возвращает список всех acv_video для всех покупателей
@@ -161,10 +165,13 @@ get_acv_videos(Customer_id) ->
             " acv_video.comment, "
             " acv_video.shown, "
             " acv_video.clicks, "
+            " acv_video.active, "
+            " acv_video.stoped, "
             " acv_video.datestart, "
             " acv_video.datestop "
         " from acv_video "
-            " where customer_id = $1 and deleted = false;",
+            " where customer_id = $1 "
+                " and deleted = false;",
     dao:simple(Query, [(Customer_id)]).
 
 

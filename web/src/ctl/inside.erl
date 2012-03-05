@@ -457,6 +457,10 @@ update_acv_video(Req) ->
 
     Res = dao:dao_call(dao_acv_video, update_acv_video,
         {Info_1, Geo_region_list, Cat_list}, values),
+
+    % Кидаем событие о создании кампании
+    gen_event:notify(?ACVVID_EVENT, Data),
+
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 start_acv_video(Req) ->

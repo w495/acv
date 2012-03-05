@@ -22,9 +22,8 @@
 %% Defines
 %% ----------------------------------------------------------------------------
 
-%-define(ASSIST_SRV_TIMEOUT, 300000). %% 5*60*1000
-
--define(ASSIST_SRV_TIMEOUT, 5000). %% 5*60*1000
+-define(ASSIST_SRV_TIMEOUT, 300000). %% 5*60*1000
+%-define(ASSIST_SRV_TIMEOUT, 5000). %% 5*60*1000
 
 
 %% ----------------------------------------------------------------------------
@@ -57,9 +56,13 @@ start_link()->
 init([]) ->
     ?INFO(?FMT("ASSIST STARTING...~n~n~n", [])),
     process_flag(trap_exit, true),
+
+
     captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
     captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),
     {ok, [], ?ASSIST_SRV_TIMEOUT}.
+
+
 
 %% --------------------------------------------------------------------
 %% Function: handle_call/3

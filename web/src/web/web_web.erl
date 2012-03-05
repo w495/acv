@@ -223,7 +223,10 @@ serve_request(Path, Req) ->
         _   ->
                 try simple_map_controllers(Path) of
                     {Module, Action} ->
-                        save_start_controller(Module, Action, Req)
+                        save_start_controller(Module, Action, Req);
+                    {Module, Action, Param} ->
+                        ?D("Param = ~p", [Param]),
+                        save_start_controller(Module, Action, Req, Param)
                 catch
                     _:_ ->
                     ?INFO(?FMT("~p:~p 404 ~p REQUEST (~p) ERROR! Controller NOT FOUND~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
@@ -240,8 +243,6 @@ simple_map_controllers(Path) ->
     % adv request
         "/adv" ->
             {adv_manager, get_adv};
-
-
 
     % Конфигарация системы
 
@@ -354,7 +355,14 @@ simple_map_controllers(Path) ->
 
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
-        "/captcha.png" ->           {outside, captcha};
+        "/captcha.png" ->       {outside, captcha};
+
+    %%
+    %% Тестирование почты
+    %%
+
+        "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
+        "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
     %%
     %% Основа админки
     %%

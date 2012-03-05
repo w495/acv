@@ -39,6 +39,7 @@ upgrade() ->
 %% @doc supervisor callback.
 init([]) ->
 
+
     Assist_srv = {
         assist_srv,
         {assist_srv, start_link, []},
@@ -53,7 +54,12 @@ init([]) ->
         [clog]
     },
 
-    
+
+    Evman_sup = {
+        evman_sup,
+        {evman_sup, start_link, []},
+        permanent, 5000, supervisor, [evman_sup]},
+
     PgConPool = {   %%% соединение с локальной базой данных
         pgConPoolFK,
         {pgConPool, start_link, [
@@ -147,6 +153,7 @@ init([]) ->
 
     Processes = [
         CLog,           % Логирование
+        Evman_sup,
         Assist_srv,      % Авторизация
         PgConPool,      % Связь с локальной базой
         Xslt_processor

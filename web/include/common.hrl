@@ -29,3 +29,12 @@
 -define( CFG_PROCS, [{gen_server, m_pinger},
                      {gen_event, error_logger}]
        ).
+
+
+% -----------------------------------------------------------------------------
+%% EVENTS
+% -----------------------------------------------------------------------------
+
+-define(SIGNUP_EVENT, signup_event).
+-define(ACVVID_EVENT, acvvid_event).
+-define(ACVBAN_EVENT, acvban_event).

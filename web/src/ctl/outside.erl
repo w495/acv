@@ -29,6 +29,9 @@
 -define(CATCHA_COOKIE, "captcha_codehex").
 
 
+
+
+
 %% 
 %% возврщает головную страницу
 %%
@@ -133,6 +136,7 @@ signup(Req, State) ->
 signup_post(Req) ->
     signup_post(Req, {normal}).
 
+
 signup_post(Req, State) ->
     Data = Req:parse_post(),
     Pass        = proplists:get_value("password",     Data, ""),
@@ -170,6 +174,10 @@ signup_post(Req, State) ->
                     case Res  of
                         {ok, User_id} ->
                             Login = proplists:get_value("login", Data, ""),
+
+                            % Кидаем событие о создании пользователя
+                            gen_event:notify(?SIGNUP_EVENT, Data),
+
                             signin_post(Login, Pass, {normal});
                         _ ->
                             signup(Req)
