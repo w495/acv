@@ -18,7 +18,10 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
     
     members : {
         urc : {  // upload request config
-            url: "/update-video-state",
+            url: {
+                accept: "/activate-acv-video",
+                reject: "/disactivate-acv-video"
+            },
             method: "POST",
             mimetype: "application/json"
         },
@@ -50,8 +53,9 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
                 .set({width:500, height:300, readOnly: true});
             lholder.add(this.taSummary, {flex : 1});
             if(this.isModerator){
+                this.inp.Id = new qx.ui.form.TextField();
                 this.inp.Active = new qx.ui.form.CheckBox("Разрешена");
-                lholder.add(Preroll);
+                lholder.add(this.inp.Active);
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
@@ -87,15 +91,34 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             Формирует данные для сервера
         **/
         _uploadData : function(e) {
-            this.base(arguments, e);
+            this._dropInvalid();
+            var res = {}
+            for(var fieldName in this.inp){
+                item = fieldName.toLowerCase()
+                res[item] = this.inp[fieldName].getValue();
+            }  
+            var url = this.urc.url.reject;
+            if(this.inp.Active.getValue())
+                url = this.urc.url.accept
+            if(this.validateForm()) {
+                this.uReq = new qx.io.remote.Request
+                    (url, this.urc.method, this.urc.mimetype);
+                this.uReq.setTimeout(60000);
+                for(var item in res){
+                    this.uReq.setParameter(item, res[item], true);
+                }
+            }
         },
-
+        
         /**
             Заполняет форму
         **/
 
         fillForm : function(result) {
+
             var clip = result.value;
+            this.inp.Id.setValue(clip.id);
+            this.inp.Active.setValue(RegExp("^true$").test(clip.active));
             
             console.log("clip = ", clip);
             
