@@ -113,10 +113,10 @@ fetch_stat_by_time(all) ->
     fetch_stat_by_time({{1970,01, 1}, {0,0,0}});
 
 fetch_stat_by_time(From_id) ->
-    case mysql:get_prepared(fetch_stat_by_time) of
+    case mysql:get_prepared(mysqlStat, fetch_stat_by_time) of
         {error, _ } ->
             Q = <<"select * from AVStats where time > ? order by time desc;">>,
-            mysql:prepare(fetch_stat_by_time, Q);
+            mysql:prepare(mysqlStat, fetch_stat_by_time, Q);
         _ -> ok
     end,
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
@@ -158,10 +158,10 @@ fetch_stat_by_id(null) ->
     fetch_stat_by_id(0);
 
 fetch_stat_by_id(From_id) ->
-    case mysql:get_prepared(fetch_stat_by_id) of
+    case mysql:get_prepared(mysqlStat, fetch_stat_by_id) of
         {error, _ } ->
             Q = <<"select * from AVStats where id > ? order by time desc;">>,
-            mysql:prepare(fetch_stat_by_id, Q);
+            mysql:prepare(mysqlStat, fetch_stat_by_id, Q);
         _ -> ok
     end,
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
@@ -179,10 +179,10 @@ fetch_stat_by_id(From_id) ->
     to_db(To_db).
 
 compute_stat_max_id() ->
-    case mysql:get_prepared(get_stat_max_id) of
+    case mysql:get_prepared(mysqlStat, get_stat_max_id) of
         {error, _ } ->
             Q = <<"select max(id) as max_id from AVStats;">>,
-            mysql:prepare(get_stat_max_id, Q);
+            mysql:prepare(mysqlStat, get_stat_max_id, Q);
         _ -> ok
     end,
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
@@ -627,10 +627,10 @@ test(speed)->
     %%%
     tests:print_speed("+",
         fun() -> % лучше
-            case mysql:get_prepared('get_stat_max_id_get_prepared') of
+            case mysql:get_prepared(mysqlStat, 'get_stat_max_id_get_prepared') of
                 {error, _ } ->
                     Q = <<"select max(id) as max_id from AVStats;">>,
-                    mysql:prepare('get_stat_max_id_get_prepared', Q);
+                    mysql:prepare(mysqlStat, 'get_stat_max_id_get_prepared', Q);
                 _ -> ok
             end,
             {data,{mysql_result, Cols, Vals, _X31, _X32}}
@@ -641,7 +641,7 @@ test(speed)->
     tests:print_speed("-",
         fun() ->
             Q = <<"select max(id) as max_id from AVStats;">>,
-            mysql:prepare('get_stat_max_id_prepare', Q),
+            mysql:prepare(mysqlStat, 'get_stat_max_id_prepare', Q),
             {data,{mysql_result, Cols, Vals, _X31, _X32}}
                 = mysql:execute(mysqlStat, 'get_stat_max_id_prepare', []),
             [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
