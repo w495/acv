@@ -58,7 +58,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.UsersTargeting",
             var RFM = bsk.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Таргетирование пользователей",  font: "bold",
+                    value: "Таргетирование по зрителям",  font: "bold",
                     alignX: "left", rich : true
                 });
                 

@@ -92,7 +92,8 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             this.composite.add(pageName,
                 {row:++vertical_offset, column:0, colSpan:2});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Желаемое количество",  rich : true}),
+             
+            this.composite.add(new qx.ui.basic.Label().set({value: "Количество показов ",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Wish,   {row:vertical_offset, column:1});
             
@@ -137,7 +138,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Show",
             this.inp.Rerun_hours = new qx.ui.form.Spinner(0, 1, 24);
             this.inp.Rerun_minutes = new qx.ui.form.Spinner(0, 1, 60);
             var vertical_offset = 0;
-            var boxRerun  = new qx.ui.groupbox.CheckGroupBox("Повтор ролика");
+            var boxRerun  = new qx.ui.groupbox.CheckGroupBox("Задержка повторного показа определенному зрителю ");
             //var boxRerun = new qx.ui.groupbox.GroupBox("Повтор ролика");
             var layout = new qx.ui.layout.Grid(1, 5)
             layout.setColumnFlex(1, 1);

@@ -71,24 +71,39 @@ qx.Class.define("bsk.Application",
         },
         
         _createLayout : function() {
+            var USEMENUBAR = true;
+            var USEHEADER = true;
+            
             var dockLayout = new qx.ui.layout.Dock();
             dockLayout.setSeparatorY("separator-vertical");
             var dockLayoutComposite = new qx.ui.container.Composite(dockLayout);
             this.getRoot().add(dockLayoutComposite, {edge:0});
-
-            this._pane = new qx.ui.splitpane.Pane();
-            dockLayoutComposite.add(this._pane);
-
-            this.left_cont = new qx.ui.container.Composite(new qx.ui.layout.VBox(12));
-            this.left_cont.set({width:200});
-
-            this.right_cont = new qx.ui.container.Composite(new qx.ui.layout.HBox());
-
-            this._pane.add(this.left_cont, 0);
-            this._pane.add(this.right_cont, 1);
-
-            this.navTree = new bsk.view.NavTree(this);
-            this.left_cont.add(this.navTree, {flex:1});
+            this.tcont = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+            if(!USEMENUBAR){
+                this._pane = new qx.ui.splitpane.Pane();
+                this.tcont.add(this._pane, {flex: 1});
+            }
+            if(USEMENUBAR){
+                this.navBar = new bsk.view.NavBar(this);
+                this.tcont.add(this.navBar);
+            }
+            dockLayoutComposite.add(this.tcont);
+            if(!USEMENUBAR){
+                this.left_cont = new qx.ui.container.Composite(new qx.ui.layout.VBox(12));
+                this.left_cont.set({width:200});
+            }
+            //this.right_cont = new qx.ui.container.Composite(new qx.ui.layout.HBox());
+            var windowManager = new qx.ui.window.Manager();
+            this.right_cont = new qx.ui.window.Desktop(windowManager);
+            if(!USEMENUBAR){
+                this._pane.add(this.left_cont, 0);
+                this._pane.add(this.right_cont, 1);
+                this.navTree = new bsk.view.NavTree(this);
+                this.left_cont.add(this.navTree, {flex:1});
+            }
+            if(USEMENUBAR){
+                this.tcont.add(this.right_cont, {flex: 1});
+            }
         },
 
         onMenuChange : function(curMenu) {
@@ -110,7 +125,7 @@ qx.Class.define("bsk.Application",
                     this.cur_controller = undefined;
                     this.ActionRow = undefined;
                     this.FilterVal = undefined;
-                    this.loadActionModel(curMenu.model);
+                    this.loadActionModel(this.curMenu.model);
                     this.show_global_pb();
                 }
                 else {
@@ -120,8 +135,10 @@ qx.Class.define("bsk.Application",
                     this.ActionRow = screen.actionRow;
                     this.FilterVal = screen.filterVal;
 
-                    this.right_cont.removeAll();
-                    this.right_cont.add(this.cur_controller, {flex:1});
+                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    //this.right_cont.removeAll();
+                    this._makeWindow(this.cur_controller)
+                    //this.right_cont.add(this.cur_controller, {flex:1});
                 }
             }
             else {
@@ -134,11 +151,11 @@ qx.Class.define("bsk.Application",
             req.addListener("completed", this._onIncomeActionModel, this);
             req.send();
         },
-
+         
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
             var result = response.getContent();
-
+            console.log("response = ", response);
 
             if (bsk.util.errors.process(this, result)==false) {
                 return false;
@@ -164,15 +181,62 @@ qx.Class.define("bsk.Application",
             }
             if(cont!= null) {
                 this.right_cont.removeAll();
-                this.right_cont.add(cont,{flex:1});
-                this.cur_controller = cont;
-            }
+                
+                console.log("<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>");
+                this._makeWindow(cont)
+                console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+            }   
             else {
                 this.history.pop();
             }
             return true;
         },
 
+        _makeWindow : function(cont) {
+                var win = new qx.ui.window.Window(
+                    bsk.util.utils.capitalize(this.curMenu.name),
+                    this.curMenu.icon).set({
+                        allowMaximize: false,
+                        allowMinimize: false,
+                        showMinimize: false,
+                        showStatusbar: false,
+                        movable: false,
+                        resizable: false,
+                        showClose: false,
+                        showMaximize: false
+                    });
+                win.setLayout(new qx.ui.layout.HBox());
+                win.setShowStatusbar(true);
+                
+                win.setStatus("++");
+                
+                console.log("--->", this.curMenu.name);
+                
+                this.cur_controller = cont;
+                var windows = this.right_cont.getWindows();
+                
+                /*
+                for(var i = 0; i != windows.length; ++i){
+                    var window = windows[i];
+                    if ((window == win) || (window.getCaption() == win.getCaption())){
+                        console.log("===>", window.getCaption(), " -- ", win.getCaption());
+                        window.removeAll();
+                        window.add(this.cur_controller, {flex: 1});
+                        window.open();
+                        return window;
+                    }
+                }
+                */
+                
+
+                console.log("xxxx>");
+                win.add(this.cur_controller, {flex: 1});
+                this.right_cont.add(win, {left: 10, top: 10});
+                win.open();
+                win.maximize();
+                return win;
+        },
+        
         onEditClick : function() { // toolbar
             this.ActionRow = undefined;
             this.FilterVal = undefined;
@@ -186,14 +250,23 @@ qx.Class.define("bsk.Application",
             this.loadActionModel(ActionUrl);
         },
 
+        getActiveWindow : function() {
+            console.log("this.right_cont = ", this.right_cont);
+            return this.right_cont.getActiveWindow();
+        },
+    
         back : function() {
-            this.right_cont.removeAll();
+            //this.right_cont.removeAll();
             var cont = this.history.pop();
             
             if(!cont)
                 cont = this.cur_controller;
-
-            this.right_cont.add(cont,{flex:1});
+            //!!!!!
+            console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+            
+            this.getActiveWindow().removeAll();
+            this.getActiveWindow().add(cont);
+            
             cont.refresh();
             this.cur_controller = cont;
         },
