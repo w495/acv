@@ -81,6 +81,41 @@ init([]) ->
     ?D("---------------------------------------~n", []),
     ?D("---------------------------------------~n", []),
 
+ %   mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
+ %       config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
+
+ %   mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
+ %       config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
+
+    MysqlVK = {
+        mysqlVK,
+        {mysql, start_link, [
+            mySqlConPool, 
+            config:get(vk_db_host, "localhost"), 
+            config:get(vk_db_user, "root"),
+            config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")
+        ]},
+        permanent,
+        1000,
+        worker,
+        [mysql]
+    },
+
+    MysqlStat = {
+        mysqlStat,
+        {mysql, start_link, [
+            mysqlStat, 
+            config:get(stat_db_host, "localhost"), 
+            config:get(stat_db_user, "root"),
+            config:get(stat_db_password, "1111"), 
+            config:get(stat_db_name, "vk")
+        ]},
+        permanent,
+        1000,
+        worker,
+        [mysql]
+    },
+
     %%% mysql_con_pool:start_link(config:get(vk_db_user, "w-495"),config:get(vk_db_password, "1111"),config:get(vk_db_name, "vk"),config:get(fk_db_host, "localhost"))
 
     MySqlConPool = { %%% соединение с внешней базой данных
@@ -118,27 +153,21 @@ init([]) ->
 %    Emysql = {
 %    },
 
-    mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
-        config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
+%    mysql:connect(mySqlConPool,
+%        config:get(vk_db_host, "localhost"),
+%        undefined,
+%        config:get(vk_db_user, "root"),
+%        config:get(vk_db_password, "1111"),
+%        config:get(vk_db_name, "vk"),
+%        true),
 
-    mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
-        config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
-
-    mysql:connect(mySqlConPool,
-        config:get(vk_db_host, "localhost"),
-        undefined,
-        config:get(vk_db_user, "root"),
-        config:get(vk_db_password, "1111"),
-        config:get(vk_db_name, "vk"),
-        true),
-
-    mysql:connect(mysqlStat,
-        config:get(stat_db_host, "localhost"),
-        undefined,
-        config:get(stat_db_user, "root"),
-        config:get(stat_db_password, "1111"),
-        config:get(stat_db_name, "vk"),
-        true),
+%    mysql:connect(mysqlStat,
+%        config:get(stat_db_host, "localhost"),
+%        undefined,
+%        config:get(stat_db_user, "root"),
+%        config:get(stat_db_password, "1111"),
+%        config:get(stat_db_name, "vk"),
+%        true),
 
     dao_stat:mk_ets(),
 
@@ -156,7 +185,9 @@ init([]) ->
         Evman_sup,
         Assist_srv,      % Авторизация
         PgConPool,      % Связь с локальной базой
-        Xslt_processor
+        Xslt_processor,
+        MysqlVK,
+        MysqlStat
         %,MySqlConPool   % Связь с tvzavr vk
         %,MySqlConPoolStat
     ],
