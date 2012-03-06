@@ -66,13 +66,13 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
             this.composite  = new qx.ui.container.Composite (layout);
             this.composite.setWidth(bsk.Config.MASTER_FORM_WIDTH);
             
-            this.inp.Duration =    new qx.ui.form.Spinner(1, 1, 134217728);
+            this.inp.Duration =    new qx.ui.form.Spinner(1, 134217728, 134217728*2);
             this.inp.Link_title =   new qx.ui.form.TextField()
                 .set({placeholder: "Текст ссылки", required:true});
             this.inp.Alt_title =    new qx.ui.form.TextField()
                 .set({placeholder: "Текст подсказки", required:true});
             
-            this.inp.Url = new qx.ui.form.TextField("http://ya.ru")
+            this.inp.Url = new qx.ui.form.TextField()
                 .set({placeholder: "http://my-company.com/", required:true});
                 
             this.inp.Ref = new qx.ui.form.TextField()
@@ -92,18 +92,14 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.Upload",
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Alt_title,   {row:vertical_offset, column:1});
             */
-
-            this.composite.add(new qx.ui.basic.Label().set({value: "Link_title",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Link_title,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Продолжительность",  rich : true}),
-                    {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.Duration,   {row:vertical_offset, column:1});
-            
-            this.composite.add(new qx.ui.basic.Label().set({value: "Урл",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Ссылка по клику",  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Url,   {row:vertical_offset, column:1});
+            
+            this.composite.add(new qx.ui.basic.Label().set({value: "Текст ссылки",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            this.composite.add(this.inp.Link_title,   {row:vertical_offset, column:1});
             
             if((this.Options) && (this.Options.disabled)){
                 this.composite.add(new qx.ui.basic.Label().set({value: "Ссылка",  rich : true}),

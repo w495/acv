@@ -150,8 +150,8 @@ init([]) ->
         [mySqlConPoolStat]
     },
 
-%    Emysql = {
-%    },
+   Emysql = {
+   },
 
 %    mysql:connect(mySqlConPool,
 %        config:get(vk_db_host, "localhost"),

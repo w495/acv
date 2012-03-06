@@ -58,15 +58,9 @@ qx.Class.define("bsk.view.ToolBar",
         this.base(arguments, new qx.ui.layout.Dock());
         
         this.cnt = new qx.ui.container.Composite(new qx.ui.layout.HBox(12));
-        this.add(this.cnt, {edge: "west"});
-
-        if(model != undefined && (model[0] == undefined || model[0] != "woexit")) {
-            this.cntRight = new qx.ui.container.Composite(new qx.ui.layout.HBox(12));
-            this.add(this.cntRight, {edge: "east"});
-            this.logOutBtn = new qx.ui.toolbar.Button("Выход", "icon/32/actions/system-log-out.png");
-            this.cntRight.add(this.logOutBtn, {flex:0});
-            this.logOutBtn.addListener("execute", this._onLogOutBtnClick, this);
-        }
+        this.toolbar = new qx.ui.toolbar.ToolBar();
+          
+        this.add(this.cnt);
 
         this.buildToolbar(model);
     },
@@ -74,6 +68,9 @@ qx.Class.define("bsk.view.ToolBar",
     members : {
 
         buildToolbar : function(model) {
+
+            var toolbarpart = new qx.ui.toolbar.Part();
+            
             for(var k in model) {
                 var E = model[k];
                 if(E.type != undefined){
@@ -81,7 +78,7 @@ qx.Class.define("bsk.view.ToolBar",
                         case "button" :
                             var btn = new qx.ui.toolbar.Button(E.name, E.icon||"icon/32/actions/list-add.png");
                             btn.setAlignY("top");
-                            this.cnt.add(btn, { flex : 0});
+                            this.toolbar.add(btn, { flex : 0});
                             btn.e_action = E.action;
                             btn.e_specparam = E.specParam;
                             btn.e_descr = E;
@@ -90,6 +87,7 @@ qx.Class.define("bsk.view.ToolBar",
                                 var t = e.getTarget();
                                 own._onBtnClick(t.e_action, t.e_specparam, t.e_descr);
                             })
+                            this.cnt.add(this.toolbar, {flex: 1});
                             break;
                         case "back" :
                             var sz = 32;

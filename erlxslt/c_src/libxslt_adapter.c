@@ -9,16 +9,17 @@
 #include <libxml/tree.h>
 #include <libxslt/xsltInternals.h>
 #include <libxslt/transform.h>
+#include <libxslt/xsltutils.h>
+
 
 #define VERSION                         "0.62"
 #define CMD_VERSION                     'v'
 #define CMD_APPLY_XSL                   'a'
 
-/*
+/**
     Сейчас USE_GLOBAL не определена
     #define USE_GLOBAL 1
-*/
-
+**/
 
 #define PACKET_SIZE 4
 #define LEN(buf) (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]
@@ -28,9 +29,9 @@
 typedef std::map<std::string, xsltStylesheetPtr> template_map_t;
 typedef std::pair<std::string, xsltStylesheetPtr> template_pair_t;
 
-/*
+/**
     TODO:   Вынести в хедер определения типов и функций и другие хедеры
-*/
+**/
 
 int read_exact(unsigned char *buf, int len);
 int write_exact(const unsigned char *buf, int len);
@@ -67,22 +68,22 @@ int main(int argc, char **argv, char **env) {
                 break;
 
             default:
-                fprintf(stderr, "unknown command %c in sablotron_adapter\n",
+                fprintf(stderr, "unknown command %c in adapter\n",
                         *buffer);
                 exit(1);
         }
     }
 }
 
-/*
+/**
     \fn apply_xsl
-*/
+**/
 void apply_xsl(template_map_t* global_template_map) {
     int ecode = 0;
     unsigned char *xslfile       = read_alloc_cmd(1);
     char *input_xml_str = (char *)read_alloc_cmd(1);
     xsltStylesheetPtr xsl = NULL;
-    /*
+    /*!
         Если нам нужна высокая эффективность, то мы кешируем шаблоны.
         Но если нам нужно удобство разработки мы этого не делаем.
     */
@@ -104,7 +105,16 @@ void apply_xsl(template_map_t* global_template_map) {
     xmlDocPtr result = xsltApplyStylesheet(xsl, doc, NULL);
     int resSize;
     xmlChar *resBuff;
-    xmlDocDumpMemory(result, &resBuff, &resSize);
+    
+    /*!
+        xsltSaveResultToString(&resBuff, &resSize, result, xsl);
+            vs
+        xmlDocDumpMemory(result, &resBuff, &resSize);
+        Первый вариант правильнее, т.к. он учитывает
+            параментры вывода xsl:output
+    */
+    xsltSaveResultToString(&resBuff, &resSize, result, xsl);
+   
     write_int(ecode);
     if (ecode) {
         fprintf(stderr, "unknown error\n");
@@ -118,9 +128,9 @@ void apply_xsl(template_map_t* global_template_map) {
     xmlFreeDoc(doc);
 }
 
-/*
+/**
     \fn read_exact
-*/
+**/
 int read_exact(unsigned char *buf, int len) {
     int i, got = 0;
     do {
@@ -131,9 +141,9 @@ int read_exact(unsigned char *buf, int len) {
     return len;
 }
 
-/*
+/**
     \fn write_exact
-*/
+**/
 int write_exact(const unsigned char *buf, int len) {
     int i, wrote = 0;
     do {
@@ -144,19 +154,19 @@ int write_exact(const unsigned char *buf, int len) {
     return len;
 }
 
-/*
+/**
     \fn read_cmd
-*/
+**/
 int read_cmd(unsigned char *buf) {
     if (read_exact(buf, PACKET_SIZE) != PACKET_SIZE)
         return -1;
     return read_exact(buf, LEN(buf));
 }
 
-/*
+/**
     \fn read_alloc_cmd
         as_string == 1 ==> reserva 1 byte mas y devuelve ASCIIZ
-*/
+**/
 unsigned char *read_alloc_cmd(int as_string) {
     unsigned char size[PACKET_SIZE];
     unsigned char *buf;
@@ -176,9 +186,9 @@ unsigned char *read_alloc_cmd(int as_string) {
     }
 }
 
-/*
+/**
     \fn write_cmd
-*/
+**/
 int write_cmd(const unsigned char *buf, int len) {
     unsigned char str[PACKET_SIZE];
     PUT_INT(len, str);
@@ -187,9 +197,9 @@ int write_cmd(const unsigned char *buf, int len) {
     return write_exact(buf, len);
 }
 
-/*
+/**
     \fn write_int
-*/
+**/
 void write_int(int x) {
     unsigned char r[PACKET_SIZE];
     PUT_INT(x,r);

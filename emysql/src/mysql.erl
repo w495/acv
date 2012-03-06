@@ -31,7 +31,7 @@
 %%% (These functions also have non-linking coutnerparts.)
 %%%
 %%% PoolId is a connection pool identifier. If you want to have more
-%%% than one connection to a server (or a set of MySQL replicas),
+%% than one connection to a server (or a set of MySQL replicas),
 %%% add more with
 %%%
 %%%   connect(PoolId, Host, Port, User, Password, Database, Reconnect)
@@ -70,6 +70,7 @@
 -module(mysql).
 -behaviour(gen_server).
 
+-define(FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
 
 %% @type mysql_result() = term()
 %% @type query_result = {data, mysql_result()} | {updated, mysql_result()} |
@@ -95,14 +96,14 @@
 	 fetch/2,
 	 fetch/3,
 	 
-	 prepare/2,
+	 prepare/3,
 	 execute/1,
 	 execute/2,
 	 execute/3,
 	 execute/4,
-	 unprepare/1,
-	 get_prepared/1,
+	 unprepare/2,
 	 get_prepared/2,
+	 get_prepared/3,
 
 	 transaction/2,
 	 transaction/3,
@@ -248,11 +249,11 @@ start(PoolId, Host, Port, User, Password, Database, LogFun, Encoding) ->
 
 start1(PoolId, Host, Port, User, Password, Database, LogFun, Encoding,
        StartFunc) ->
-    crypto:start(),
+%   crypto:start(),
+    Name = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
     gen_server:StartFunc(
-      {local, ?SERVER}, ?MODULE,
+      {local, Name}, ?MODULE,
       [PoolId, Host, Port, User, Password, Database, LogFun, Encoding], []).
-
 
 %% @equiv connect(PoolId, Host, Port, User, Password, Database, Encoding,
 %%	   Reconnect, true)
@@ -275,15 +276,16 @@ connect(PoolId, Host, Port, User, Password, Database, Encoding, Reconnect,
 	     true ->
 		  fun mysql_conn:start/8
 	  end,
-
-   {ok, LogFun} = gen_server:call(?SERVER, get_logfun),
+    Name = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
+   {ok, LogFun} = gen_server:call(Name, get_logfun),
     case Fun(Host, Port1, User, Password, Database, LogFun,
 	     Encoding, PoolId) of
 	{ok, ConnPid} ->
 	    Conn = new_conn(PoolId, ConnPid, Reconnect, Host, Port1, User,
 			    Password, Database, Encoding),
+        Name = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
 	    case gen_server:call(
-		   ?SERVER, {add_conn, Conn}) of
+		   Name, {add_conn, Conn}) of
 		ok ->
 
 		    {ok, ConnPid};
@@ -338,7 +340,7 @@ fetch(PoolId, Query) ->
 fetch(PoolId, Query, Timeout) -> 
     case get(?STATE_VAR) of
 	undefined ->
-	    call_server({fetch, PoolId, Query}, Timeout);
+	    call_server(PoolId, {fetch, PoolId, Query}, Timeout);
 	State ->
 	    mysql_conn:fetch_local(State, Query)
     end.
@@ -353,8 +355,9 @@ fetch(PoolId, Query, Timeout) ->
 %%   prepare it again with the newest version.
 %%
 %% @spec prepare(Name::atom(), Query::iolist()) -> ok
-prepare(Name, Query) ->
-    gen_server:cast(?SERVER, {prepare, Name, Query}).
+prepare(PoolId, Name, Query) ->
+    SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
+    gen_server:cast(SName, {prepare, Name, Query}).
 
 %% @doc Unregister a statement that has previously been register with
 %%   the dispatcher. All calls to execute() with the given statement
@@ -362,8 +365,10 @@ prepare(Name, Query) ->
 %%   been prepared, nothing happens.
 %%
 %% @spec unprepare(Name::atom()) -> ok
-unprepare(Name) ->
-    gen_server:cast(?SERVER, {unprepare, Name}).
+
+unprepare(PoolId, Name) ->
+    SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
+    gen_server:cast(SName, {unprepare, Name}).
 
 %% @doc Get the prepared statement with the given name.
 %%
@@ -378,10 +383,11 @@ unprepare(Name) ->
 %%
 %% @spec get_prepared(Name::atom(), Version::integer()) ->
 %%   {ok, latest} | {ok, Statement::binary()} | {error, Err}
-get_prepared(Name) ->
-    get_prepared(Name, undefined).
-get_prepared(Name, Version) ->
-    gen_server:call(?SERVER, {get_prepared, Name, Version}).
+get_prepared(PoolId, Name) ->
+    get_prepared(PoolId, Name, undefined).
+get_prepared(PoolId, Name, Version) ->
+    SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
+    gen_server:call(SName, {get_prepared, Name, Version}).
 
 
 %% @doc Execute a query inside a transaction.
@@ -418,7 +424,7 @@ execute(PoolId, Name, Params) when is_list(Params) ->
 execute(PoolId, Name, Params, Timeout) ->
     case get(?STATE_VAR) of
 	undefined ->
-	    call_server({execute, PoolId, Name, Params}, Timeout);
+	    call_server(PoolId, {execute, PoolId, Name, Params}, Timeout);
 	State ->
 	      case mysql_conn:execute_local(State, Name, Params) of
 		  {ok, Res, NewState} ->
@@ -450,7 +456,7 @@ transaction(PoolId, Fun) ->
 transaction(PoolId, Fun, Timeout) ->
     case get(?STATE_VAR) of
 	undefined ->
-	    call_server({transaction, PoolId, Fun}, Timeout);
+	    call_server(PoolId, {transaction, PoolId, Fun}, Timeout);
 	State ->
 	    case mysql_conn:get_pool_id(State) of
 		PoolId ->
@@ -461,7 +467,7 @@ transaction(PoolId, Fun, Timeout) ->
 			Other -> {atomic, Other}
 		    end;
 		_Other ->
-		    call_server({transaction, PoolId, Fun}, Timeout)
+		    call_server(PoolId, {transaction, PoolId, Fun}, Timeout)
 	    end
     end.
 
@@ -650,11 +656,12 @@ with_next_conn(PoolId, State, Fun) ->
 	    {reply, {error, {no_connection_in_pool, PoolId}}, State}
     end.
 
-call_server(Msg, Timeout) ->
+call_server(PoolId, Msg, Timeout) ->
+    SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
     if Timeout == undefined ->
-	    gen_server:call(?SERVER, Msg);
+	    gen_server:call(SName, Msg);
        true ->
-	    gen_server:call(?SERVER, Msg, Timeout)
+	    gen_server:call(SName, Msg, Timeout)
     end.
 
 add_conn(Conn, State) ->

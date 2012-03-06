@@ -1,50 +1,20 @@
-/* ************************************************************************
-#asset(qx/icon/Tango/16/apps/office-project.png)
-#asset(qx/icon/Tango/16/apps/office-calendar.png)
-#asset(qx/icon/Tango/16/apps/office-chart.png)
-#asset(qx/icon/Tango/16/apps/utilities-calculator.png)
-#asset(qx/icon/Tango/16/apps/utilities-dictionary.png)
-#asset(qx/icon/Tango/16/apps/utilities-statistics.png)
-#asset(qx/icon/Tango/16/categories/system.png)
-************************************************************************ */
 
 qx.Class.define("bsk.view.NavTree",
 {
     extend : qx.ui.tree.Tree,
  
+   include : [bsk.view.NavMixin],
+   
     construct : function(root) {
-        this.biz = root;
         this.base(arguments);
         this.setHideRoot(true);
         this.setOpenMode("click");
-//        this.setFont(new qx.bom.Font(16));
-        this.addListener("changeSelection", this._onMenuSelect, this);
-
-        this._buildMenuTree();
+        
+        this.init(root);
     },
 
     members : {
 
-        _onMenuSelect : function(e) {
-            var I = this.getSelection()[0];
-            var L = I.getLabel();
-            if(this.menu[L] != undefined)
-                this.biz.onMenuChange(this.menu[L]);//this.menu[L].tab, this.menu[L].control);
-        },
-
-        _buildMenuTree : function() {
-            var req = new qx.io.remote.Request('resource/bsk/descr/menu.json', "GET", "application/json");
-            //var req = new qx.io.remote.Request('/js/source/resource/bsk/descr/menu.json', "GET", "application/json");
-            req.addListener("completed", this._onGetMenuResource, this);
-            req.send();
-        },
-
-        _onGetMenuResource : function(response) {
-            var result = response.getContent();
-            if (bsk.util.errors.process(this, result)==false) return false;
-            this.buildMenu(result);
-        },
-        
         buildMenu : function(menu) {
             var root = new qx.ui.tree.TreeFolder("root");
             root.setOpen(true);
