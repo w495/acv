@@ -45,17 +45,23 @@ qx.Class.define("bsk.Application",
             qx.io.remote.RequestQueue.getInstance().setDefaultTimeout(60000*5);
 
             // Enable logging in debug variant
-            if(qx.core.Variant.isSet("qx.debug", "on")) {
-                qx.log.appender.Native;
-                qx.log.appender.Console;
-            }
+            /*
+                if(qx.core.Variant.isSet("qx.debug", "on")) {
+                    qx.log.appender.Native;
+                    qx.log.appender.Console;
+                }
+            */
+            
             this.history = [];
             this.screenMap = {};
             this.curMenu = null;
-            var themeName = qx.core.Setting.get("qx.theme");
-            var t = eval(themeName);
-            this.appearance = t.meta.appearance.appearances;
-            this.color = t.meta.color.colors;
+            
+            // var themeName = qx.core.Setting.get("qx.theme");
+            
+            // var t = eval(themeName);
+            // this.appearance = t.meta.appearance.appearances;
+            
+            // this.color = t.meta.color.colors;
             
             document.title = this.title;
             

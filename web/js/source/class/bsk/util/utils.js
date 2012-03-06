@@ -25,7 +25,7 @@ qx.Class.define("bsk.util.utils",
                 return '';
             var c = null;
             try {
-                c = qx.util.Json.parse(str);
+                //c = qx.util.Json.parse(str);
             }
             catch(er) {
                 var V = str.match("POINT\\((.*)\\)");
