@@ -118,27 +118,27 @@ init([]) ->
 %    Emysql = {
 %    },
 
-    mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
-        config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
-
-    mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
-        config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
-
-    mysql:connect(mySqlConPool,
-        config:get(vk_db_host, "localhost"),
-        undefined,
-        config:get(vk_db_user, "root"),
-        config:get(vk_db_password, "1111"),
-        config:get(vk_db_name, "vk"),
-        true),
-
-    mysql:connect(mysqlStat,
-        config:get(stat_db_host, "localhost"),
-        undefined,
-        config:get(stat_db_user, "root"),
-        config:get(stat_db_password, "1111"),
-        config:get(stat_db_name, "vk"),
-        true),
+%     mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
+%         config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
+% 
+%     mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
+%         config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
+% 
+%     mysql:connect(mySqlConPool,
+%         config:get(vk_db_host, "localhost"),
+%         undefined,
+%         config:get(vk_db_user, "root"),
+%         config:get(vk_db_password, "1111"),
+%         config:get(vk_db_name, "vk"),
+%         true),
+% 
+%     mysql:connect(mysqlStat,
+%         config:get(stat_db_host, "localhost"),
+%         undefined,
+%         config:get(stat_db_user, "root"),
+%         config:get(stat_db_password, "1111"),
+%         config:get(stat_db_name, "vk"),
+%         true),
 
     dao_stat:mk_ets(),
 

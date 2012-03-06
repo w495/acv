@@ -29,8 +29,8 @@
 
 <xsl:output
     omit-xml-declaration="no"
-    method="html"
-    indent="yes"
+    method="xml"
+    indent="no"
     encoding="utf-8"
 />
 
@@ -50,10 +50,11 @@
         Описание страницы
     -->
     <xsl:call-template name="html5header-min" />
+    <xsl:text>&#xa;<!-- \n, чтобы файл не был в 1 строку --></xsl:text>
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" >
         <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
             <xsl:call-template name="s-head" />
-            <xsl:text>&#xa;<!-- \n, чтобы файл не был в 1 строку --></xsl:text>
+            <xsl:text>&#xa;</xsl:text>
         </head>
         <body xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
             <xsl:text>&#xa;</xsl:text>
