@@ -97,9 +97,7 @@ qx.Class.define("bsk.view.SelListTreeDirs",
             var this_ = this;
             return function(response) {
                 var result = response.getContent();
-                
                 this_.addItemsDir(this_.data[id].item, result.values);
-                
                 return true;
             }
         },

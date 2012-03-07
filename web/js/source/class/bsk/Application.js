@@ -159,16 +159,23 @@ qx.Class.define("bsk.Application",
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
             
-            console.log("response = ",response);
-            console.log("response.getContent = ",response.getContent());
+            console.log("1");
+            
+            console.log("response = ", response);
+            //console.log("response.getContent() = ", response.getContent());
             
             var result = bsk.util.utils.parseStaticJsonRsp(response);
 
             console.log(result);
             
+            console.log("1.2");
+            
             if (bsk.util.errors.process(this, result)==false) {
                 return false;
             }
+            
+            console.log("2");
+            
             var cont = null;
             if(this.cur_controller != undefined) {
                 this.history.push(this.cur_controller);
@@ -190,7 +197,7 @@ qx.Class.define("bsk.Application",
             }
             if(cont!= null) {
                 this.right_cont.removeAll();
-                
+                console.log("3");
                 console.log("<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>");
                 this._makeWindow(cont)
                 console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");

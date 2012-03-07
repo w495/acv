@@ -49,6 +49,7 @@ qx.Class.define("bsk.util.utils",
          */
         parseStaticJsonRsp: function(response) {
             var result = response.getContent();
+            console.log("result ---> ", result);
             return eval("(" + result + ")");
         },
         
