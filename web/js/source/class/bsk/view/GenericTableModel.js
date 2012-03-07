@@ -184,16 +184,12 @@ qx.Class.define("bsk.view.GenericTableModel",
                                 //rowVal = "<span style=\"color:red\">" + rowVal + "</span>";   
                                 break;
                             case "enum":
-                                console.log("<enum>:", desc);
                                 if(desc.dict){
-                                    console.log("<dict>");
                                     var old_rowVal = rowVal
                                     rowVal = desc.dict[old_rowVal];
                                     if(!rowVal)
                                         rowVal = desc.dict['default'] + " (" + old_rowVal + ")";
-                                    console.log("</dict>");
                                 }
-                                console.log("</enum>");
                                 break;
                             default:
                                 break;

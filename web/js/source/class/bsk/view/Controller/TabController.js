@@ -62,7 +62,6 @@ qx.Class.define("bsk.view.Controller.TabController",
             Производит сложное действие над строкой.
         **/
         _tabRow:  function(actionUrl){
-                        
             var id = this.tab.getSelectionModel().getSelectedRanges()[0];
             console.log("id = ", id);
             if (id == undefined)
@@ -71,7 +70,6 @@ qx.Class.define("bsk.view.Controller.TabController",
             var rowId = d[id.minIndex];
             console.log("this.tab.model.data[rowId] = ", this.tab.model.data[rowId]);
             this.biz.onAction(this.tab.model.data[rowId], this.filterForm.getValues(), actionUrl);
-            this.refresh();
             return true;
         },
 
@@ -92,7 +90,7 @@ qx.Class.define("bsk.view.Controller.TabController",
             
         **/
         _tabChangeStateAction: function(actionUrl){
-            this.refresh();
+            
         },
 
         /**
@@ -105,7 +103,6 @@ qx.Class.define("bsk.view.Controller.TabController",
                 vardata = this.tabModel.vardata;
             vardata.isNew = true;
             this.biz.onAction(vardata, this.filterForm.getValues(), actionUrl);
-            this.refresh();
         },
 
         _onIncomeActionTabRowAction : function(response) {

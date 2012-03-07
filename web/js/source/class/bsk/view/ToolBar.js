@@ -109,7 +109,6 @@ qx.Class.define("bsk.view.ToolBar",
         },
 
         _onBtnClick : function(action, specParam, descr) {
-       //     action();
             this.cntl.onToolbarBtn(action, specParam, descr);
         },
 

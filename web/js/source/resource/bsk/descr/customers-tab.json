@@ -24,8 +24,8 @@
             "confirmMsg" : "Уверены ли вы в том что хотите удалить пользователя?"}
     ],
     "columns" : [
-        {"name" : "login", "alias" : "Логин", "type" : "string", "sortable" : true},
         {"name" : "id", "alias" : "#", "type" : "float", "sortable" : true, "width" :"5%"},
+        {"name" : "login", "alias" : "Логин", "type" : "string", "sortable" : true},
         {"name" : "firstname", "alias" : "Имя", "type" : "string", "sortable" : true},
         {"name" : "patronimic", "alias" : "Отчество", "type" : "string", "sortable" : true},
         {"name" : "lastname", "alias" : "Фамилия", "type" : "string", "sortable" : true}
