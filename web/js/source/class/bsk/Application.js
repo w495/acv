@@ -153,16 +153,19 @@ qx.Class.define("bsk.Application",
         },
 
         loadActionModel : function(ActionUrl) {
-            var req = new qx.io.remote.Request(ActionUrl, "GET", "application/json");
-            req.addListener("completed", this._onIncomeActionModel, this);
-            req.send();
+            bsk.util.utils.getStaticJson(ActionUrl, this._onIncomeActionModel, this);
         },
          
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
-            var result = response.getContent();
-            console.log("response = ", response);
+            
+            console.log("response = ",response);
+            console.log("response.getContent = ",response.getContent());
+            
+            var result = bsk.util.utils.parseStaticJsonRsp(response);
 
+            console.log(result);
+            
             if (bsk.util.errors.process(this, result)==false) {
                 return false;
             }

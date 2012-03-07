@@ -1,9 +1,6 @@
 {
     type : "table",
-
-
     toolbar : [
-        
         {type : "button",
             name : "Обновить",
             action : "/get-all-acv-video-stats",
@@ -34,13 +31,10 @@
         {name : "patronimic", alias : "Отчество", type : "string", sortable : true},
         {name : "lastname", alias : "Фамилия", type : "string", sortable : true}
     ],
-
     filter : {
         submit_url : "/get-customers"
     },
-
     sort : "id",
     ascending : false,
-
     dblclick_action : "resource/bsk/descr/customer-form.json"
 }

@@ -17,9 +17,50 @@ qx.Class.define("bsk.util.utils",
                 }
             catch(err) {
             }
-            return speed;                                                                               
+            return speed;
         },
-
+        
+        /**
+         *
+         * @param url --- строка
+         * @param callback ---
+         * @param return --- object
+         */
+        getStaticJson: function(url, callback, owner) {
+            var req = new qx.io.remote.Request(url, "GET", "text/plain");
+            req.addListener("completed", callback, owner);
+            req.send();
+        },
+        
+        /**
+         *
+         * @param url --- строка
+         * @param callback ---
+         * @param return --- object
+         */
+        postStaticJson: function(url, callback) {
+            
+        },
+        
+        /**
+         *
+         * @param result --- строка возврата
+         * @param return --- object
+         */
+        parseStaticJsonRsp: function(response) {
+            var result = response.getContent();
+            return eval("(" + result + ")");
+        },
+        
+        /**
+         *
+         * @param result --- строка возврата
+         * @param return --- object
+         */
+        parseJson: function(result) {
+            return eval("(" + result + ")");
+        },
+        
         parseCoord : function(str) {
             if(!str || str == "")
                 return '';
