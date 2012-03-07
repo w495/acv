@@ -494,13 +494,14 @@ rollback(State, Err) ->
     {aborted, {Err, {rollback_result, Res}}}.
 
 do_execute(State, Name, Params, ExpectedVersion) ->
+    PoolId = get_pool_id(State),
     Res = case gb_trees:lookup(Name, State#state.prepares) of
 	      {value, Version} when Version == ExpectedVersion ->
 		  {ok, latest};
 	      {value, Version} ->
-		  mysql:get_prepared(Name, Version);
+		  mysql:get_prepared(PoolId, Name, Version);
 	      none ->
-		  mysql:get_prepared(Name)
+		  mysql:get_prepared(PoolId, Name)
 	  end,
     case Res of
 	{ok, latest} ->
@@ -632,9 +633,9 @@ greeting(Packet, LogFun) ->
     {normalize_version(Version, LogFun), Salt, Salt2, Caps}.
 
 %% part of greeting/2
-asciz(Data) when binary(Data) ->
+asciz(Data) when is_binary(Data) ->
     mysql:asciz_binary(Data, []);
-asciz(Data) when list(Data) ->
+asciz(Data) when is_list(Data) ->
     {String, [0 | Rest]} = lists:splitwith(fun (C) ->
 						   C /= 0
 					   end, Data),

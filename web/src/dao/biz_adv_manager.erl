@@ -72,7 +72,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 " where mark_type.name=\"Categories\" and clip.url=?;">>,
 
     %TODO реюзать prepare
-    mysql:prepare(get_clip_categories, Query),
+    mysql:prepare(mySqlConPool, get_clip_categories, Query),
     {data,{mysql_result, _Cols, Vals, _X31, _X32}} =
         mysql:execute(mySqlConPool, get_clip_categories,
             [list_to_binary(Resourse)]),
@@ -140,7 +140,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
     end ++ " acv_video2geo_region.geo_region_id is NULL) ",
 
     Customer_query = <<"select * from customer where uuid=?;">>,
-    mysql:prepare(get_customer, Customer_query),
+    mysql:prepare(mySqlConPool, get_customer, Customer_query),
     {data,{mysql_result, Customer_cols, Customer_vals, _X31, _X32}} =
         mysql:execute(mySqlConPool, get_customer, [User_id]),
     Customer_list = mysql_dao:make_proplist(Customer_cols, Customer_vals),
