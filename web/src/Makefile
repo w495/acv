@@ -1,6 +1,7 @@
 include ../support/include.mk
 
 all: ${EBIN_DIRS} $(EBIN_FILES) loginTMPL
+
 debug:
 	$(MAKE) DEBUG=-DDEBUG
 

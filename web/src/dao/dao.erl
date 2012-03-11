@@ -23,7 +23,7 @@
 
 
 make_error_json({unexpected, E}) ->
-    ?DEBUG_INFO("Unexpected error: ~p~n", [E]),
+    ?I("Unexpected error: ~p~n", [E]),
     {struct, [{<<"ERROR">>,
         {struct,
             [{<<"type">>, <<"unexpected">>},
