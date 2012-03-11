@@ -194,7 +194,6 @@ qx.Class.define("bsk.view.Form.CustomerForm",
                 if('' != e.getData()) {
                     _this.inp.Pic_url.setValue(_this.picButton.getFileName());
                     
-                    _this.inp.Ref.setValue(_this.refButton.getFileName());
                     if(bsk.view.Form.AbstractForm.customFormChkImgFileName(_this.inp.Ref)){
                         bsk.view.Form.Upload.UploadFakeStatusBar.on();
                         _this.picForm.setParameter("prev", _this.inp.Pic_url.getValue());
@@ -257,10 +256,14 @@ qx.Class.define("bsk.view.Form.CustomerForm",
             flag &= bsk.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
 
             for(var fieldName in this.inp){
-               if(("Password1" == fieldName)
-                  || ("Password2" == fieldName)
-                  || ("Email" == fieldName) )
-                    continue;
+                if(  ("Password1" == fieldName)
+                    || ("Password2" == fieldName)
+                    || ("Email" == fieldName)
+                    || ("Pic_url" == fieldName)
+                ){continue;}
+                console.log("fieldName = ", fieldName);
+                console.log("this.inp[fieldName] = ", this.inp[fieldName]);
+                
                 flag &= bsk.view.Form.AbstractForm.customFormChkSymb(this.inp[fieldName]);
             }
             

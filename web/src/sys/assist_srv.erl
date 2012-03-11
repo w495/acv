@@ -57,6 +57,7 @@ init([]) ->
     ?INFO(?FMT("ASSIST STARTING...~n~n~n", [])),
     process_flag(trap_exit, true),
 
+    dao_stat:mk_ets(),
 
     captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
     captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),

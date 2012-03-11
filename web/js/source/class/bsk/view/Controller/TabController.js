@@ -182,6 +182,7 @@ qx.Class.define("bsk.view.Controller.TabController",
                 pCnt.add(this.pager, {edge:"east"});
             }
             this.filterForm._onSubmitClick(); // загружаем подефолту данные
+            this.refresh();
             console.log('this.tab', this.tab);
         },
 
@@ -211,7 +212,7 @@ qx.Class.define("bsk.view.Controller.TabController",
         },
 
         onPageChange : function() {
-            this.filterForm._onSubmitClick(); 
+            this.refresh();
         },
 
         bindVardata: function(data) {

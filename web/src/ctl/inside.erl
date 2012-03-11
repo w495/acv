@@ -459,7 +459,7 @@ update_acv_video(Req) ->
         {Info_1, Geo_region_list, Cat_list}, values),
 
     % Кидаем событие о создании кампании
-    gen_event:notify(?ACVVID_EVENT, Data),
+    % gen_event:notify(?ACVVID_EVENT, Data),
 
     {"application/json", [], [mochijson2:encode(Res)]}.
 

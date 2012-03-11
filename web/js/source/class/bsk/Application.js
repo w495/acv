@@ -73,7 +73,7 @@ qx.Class.define("bsk.Application",
          * @see qx.application.AbstractGui
          */
         close : function() {
-            return "Вы хотите покинуть эту страницу";
+            return "Вы уверены, что хотите покинуть страницу?";
         },
         
         _createLayout : function() {

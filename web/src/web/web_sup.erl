@@ -9,7 +9,11 @@
 %% supervisor callbacks
 -export([init/1]).
 
+
 -include("common.hrl").
+
+-define(WEB_SUP_TIMEOUT,    5000).
+-define(WEB_SUP_DB_TIMEOUT, 1000).
 
 %% @spec start_link() -> ServerRet
 %% @doc API for starting the supervisor.
@@ -20,47 +24,49 @@ start_link() ->
 %% @doc Add processes if necessary.
 upgrade() ->
     {ok, {_, Specs}} = init([]),
-
     Old = sets:from_list(
             [Name || {Name, _, _, _} <- supervisor:which_children(?MODULE)]),
     New = sets:from_list([Name || {Name, _, _, _, _, _} <- Specs]),
     Kill = sets:subtract(Old, New),
-
     sets:fold(fun (Id, ok) ->
-                      supervisor:terminate_child(?MODULE, Id),
-                      supervisor:delete_child(?MODULE, Id),
-                      ok
-              end, ok, Kill),
-
+        supervisor:terminate_child(?MODULE, Id),
+        supervisor:delete_child(?MODULE, Id),
+        ok
+    end, ok, Kill),
     [supervisor:start_child(?MODULE, Spec) || Spec <- Specs],
     ok.
 
 %% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
 init([]) ->
-
-
     Assist_srv = {
         assist_srv,
         {assist_srv, start_link, []},
-        permanent, 5000, worker, [assist_srv]},
-
+        permanent,
+        ?WEB_SUP_TIMEOUT,
+        worker,
+        [assist_srv]
+    },
+    %%% Логирование
     CLog = {
         clog,
         {clog, start_link, []},
         permanent,
-        1000,
+        ?WEB_SUP_TIMEOUT,
         worker,
         [clog]
     },
-
-
+    %%% События (отсылка почты)
     Evman_sup = {
         evman_sup,
         {evman_sup, start_link, []},
-        permanent, 5000, supervisor, [evman_sup]},
-
-    PgConPool = {   %%% соединение с локальной базой данных
+        permanent,
+        ?WEB_SUP_TIMEOUT,
+        supervisor,
+        [evman_sup]
+    },
+    %%% Соединение с локальной базой данных
+    PgConPool = {   
         pgConPoolFK,
         {pgConPool, start_link, [
             config:get(fk_db_user, "w-495"),
@@ -69,38 +75,26 @@ init([]) ->
             config:get(fk_db_host, "localhost")
         ]},
         permanent,
-        1000,
+        ?WEB_SUP_DB_TIMEOUT,
         worker,
         [pgConPool]
     },
-    %%% pgConPool:start_link(config:get(fk_db_user, "w-495"),config:get(fk_db_password, "eiir"),config:get(fk_db_name, "fk"),config:get(fk_db_host, "localhost"))
-
-    ?D("---------------------------------------~n", []),
-    ?D("---------------------------------------~n", []),
-    ?D("PgConPool = ~p~n", [PgConPool]),
-    ?D("---------------------------------------~n", []),
-    ?D("---------------------------------------~n", []),
-
- %   mysql:start_link(mySqlConPool, config:get(vk_db_host, "localhost"), config:get(vk_db_user, "root"),
- %       config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")),
-
- %   mysql:start_link(mysqlStat, config:get(stat_db_host, "localhost"), config:get(stat_db_user, "root"),
- %       config:get(stat_db_password, "1111"), config:get(stat_db_name, "vk")),
-
-    MysqlVK = {
+    %%% Соединение с внешней базой данных
+    MysqlVK = { 
         mysqlVK,
         {mysql, start_link, [
             mySqlConPool, 
             config:get(vk_db_host, "localhost"), 
             config:get(vk_db_user, "root"),
-            config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk")
+            config:get(vk_db_password, "1111"),
+            config:get(vk_db_name, "vk")
         ]},
         permanent,
-        1000,
+        ?WEB_SUP_DB_TIMEOUT,
         worker,
         [mysql]
     },
-
+    %%% Соединение с внешней базой данных статистики
     MysqlStat = {
         mysqlStat,
         {mysql, start_link, [
@@ -111,85 +105,27 @@ init([]) ->
             config:get(stat_db_name, "vk")
         ]},
         permanent,
-        1000,
+        ?WEB_SUP_DB_TIMEOUT,
         worker,
         [mysql]
     },
-
-    %%% mysql_con_pool:start_link(config:get(vk_db_user, "w-495"),config:get(vk_db_password, "1111"),config:get(vk_db_name, "vk"),config:get(fk_db_host, "localhost"))
-
-    MySqlConPool = { %%% соединение с внешней базой данных
-        mySqlConPoolFK,
-        {mysql_con_pool, start_link, [
-            mySqlConPool,
-            config:get(vk_db_host, "localhost"),
-            config:get(vk_db_user, "root"),
-            config:get(vk_db_password, "1111"),
-            config:get(vk_db_name, "vk"),
-            10 % количество соединений
-        ]},
-        permanent,
-        1000,
-        worker,
-        [mySqlConPool]
-    },
-
-    MySqlConPoolStat = { %%% соединение с внешней базой данных статистики
-        mySqlConPoolStat,
-        {mysql_con_pool, start_link, [
-            mysqlStat,
-            config:get(stat_db_host, "192.168.2.102"),
-            config:get(stat_db_user, "cff"),
-            config:get(stat_db_password, "k9an612e"),
-            config:get(stat_db_name, "AVSrv"),
-            10 % количество соединений
-        ]},
-        permanent,
-        1000,
-        worker,
-        [mySqlConPoolStat]
-    },
-
-   Emysql = {
-   },
-
-%    mysql:connect(mySqlConPool,
-%        config:get(vk_db_host, "localhost"),
-%        undefined,
-%        config:get(vk_db_user, "root"),
-%        config:get(vk_db_password, "1111"),
-%        config:get(vk_db_name, "vk"),
-%        true),
-
-%    mysql:connect(mysqlStat,
-%        config:get(stat_db_host, "localhost"),
-%        undefined,
-%        config:get(stat_db_user, "root"),
-%        config:get(stat_db_password, "1111"),
-%        config:get(stat_db_name, "vk"),
-%        true),
-
-    dao_stat:mk_ets(),
-
-    Xslt_processor = { %%% преодбразователь
+    %%% Шаблонизатор
+    Xslt_processor = { 
         xslt_sup,
         {xslt_sup, start_link, []},
         permanent,
-        1000,
+        ?WEB_SUP_TIMEOUT,
         supervisor,
         [xslt]
     },
-
     Processes = [
-        CLog,           % Логирование
-        Evman_sup,
-        Assist_srv,      % Авторизация
-        PgConPool,      % Связь с локальной базой
-        Xslt_processor,
-        MysqlVK,
-        MysqlStat
-        %,MySqlConPool   % Связь с tvzavr vk
-        %,MySqlConPoolStat
+        CLog,            % Логирование
+        Evman_sup,       % Сервер событий
+        PgConPool,       % Связь с локальной базой
+        Xslt_processor,  % Шаблонизатор
+        MysqlVK,         % Связь с tvzavr vk
+        MysqlStat,       % Связь с tvzavr AVstat
+        Assist_srv       % Вспомогательный сервер
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 
