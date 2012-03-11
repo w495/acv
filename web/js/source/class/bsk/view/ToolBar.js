@@ -12,7 +12,6 @@
 #asset(qx/icon/Tango/32/actions/edit-redo.png)
 #asset(qx/icon/Tango/32/actions/edit-copy.png)
 
-
 #asset(qx/icon/Tango/32/actions/document-new.png)
 #asset(qx/icon/Tango/32/actions/view-refresh.png)
 
@@ -25,6 +24,8 @@
 
 #asset(qx/icon/Tango/22/actions/go-previous.png)
 #asset(qx/icon/Tango/22/actions/system-log-out.png)
+
+
 #asset(qx/icon/Tango/22/actions/list-add.png)
 #asset(qx/icon/Tango/22/actions/zoom-in.png)
 #asset(qx/icon/Tango/22/apps/office-chart.png)
@@ -33,6 +34,10 @@
 
 #asset(qx/icon/Tango/16/actions/go-previous.png)
 #asset(qx/icon/Tango/16/actions/system-log-out.png)
+#asset(qx/icon/Tango/16/actions/document-new.png)
+#asset(qx/icon/Tango/16/actions/document-open.png)
+#asset(qx/icon/Tango/16/actions/document-save.png)
+
 #asset(qx/icon/Tango/16/actions/list-add.png)
 #asset(qx/icon/Tango/16/actions/list-remove.png)
 #asset(qx/icon/Tango/16/actions/zoom-in.png)

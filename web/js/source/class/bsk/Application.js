@@ -19,7 +19,8 @@
  */
 qx.Class.define("bsk.Application",
 {
-  extend : qx.application.Standalone,
+  //extend : qx.application.Standalone,
+  extend : qx.application.Inline,
   
   /*
   *****************************************************************************
@@ -33,11 +34,12 @@ qx.Class.define("bsk.Application",
         
         main : function()
         {
+            /*
             if(typeof(console) === 'undefined') {
                 var console = {};
                 console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
             }
-
+            */
             // Call super class
             this.base(arguments);
             
@@ -64,8 +66,9 @@ qx.Class.define("bsk.Application",
             // this.color = t.meta.color.colors;
             
             document.title = this.title;
-            
+
             this._createLayout();
+           
         },
         
         /**
@@ -80,20 +83,24 @@ qx.Class.define("bsk.Application",
             var USEMENUBAR = true;
             var USEHEADER = true;
             
-            var dockLayout = new qx.ui.layout.Dock();
-            dockLayout.setSeparatorY("separator-vertical");
+            //var dockLayout = new qx.ui.layout.Dock();
+            var dockLayout = new qx.ui.layout.VBox();
+            //dockLayout.setSeparatorY("separator-vertical");
             var dockLayoutComposite = new qx.ui.container.Composite(dockLayout);
-            this.getRoot().add(dockLayoutComposite, {edge:0});
+           
+            
             this.tcont = new qx.ui.container.Composite(new qx.ui.layout.VBox());
             if(!USEMENUBAR){
                 this._pane = new qx.ui.splitpane.Pane();
                 this.tcont.add(this._pane, {flex: 1});
             }
             if(USEMENUBAR){
-                this.navBar = new bsk.view.NavBar(this);
+                this.navBar = new bsk.view.NavBar(this).set({
+                    width: 1000
+                });
                 this.tcont.add(this.navBar);
             }
-            dockLayoutComposite.add(this.tcont);
+            
             if(!USEMENUBAR){
                 this.left_cont = new qx.ui.container.Composite(new qx.ui.layout.VBox(12));
                 this.left_cont.set({width:200});
@@ -101,6 +108,7 @@ qx.Class.define("bsk.Application",
             //this.right_cont = new qx.ui.container.Composite(new qx.ui.layout.HBox());
             var windowManager = new qx.ui.window.Manager();
             this.right_cont = new qx.ui.window.Desktop(windowManager);
+                
             if(!USEMENUBAR){
                 this._pane.add(this.left_cont, 0);
                 this._pane.add(this.right_cont, 1);
@@ -110,8 +118,77 @@ qx.Class.define("bsk.Application",
             if(USEMENUBAR){
                 this.tcont.add(this.right_cont, {flex: 1});
             }
-        },
 
+            this._createInitialView();
+
+            var isle = new qx.ui.root.Inline(document.getElementById("isle____eiiwtowrwetetwtwtewte"))
+                .set({
+                //decorator: "main",
+                padding: 0,
+                width: 1000,
+                height: 1000,
+                textColor: "black",
+                backgroundColor: "white"
+            });
+            dockLayoutComposite.add(this.tcont);
+            isle.add(dockLayoutComposite);
+            //this.getRoot().add(dockLayoutComposite, {edge:0});
+        },
+        
+        _createInitialView : function() {
+            this.right_cont.removeAll();
+            this._createTopView();
+        },
+        
+        _createTopView : function() {
+            var igl = new qx.ui.layout.Grid(2, 1);
+            //igl.setColumnFlex(0, 1);
+            igl.setColumnAlign(0, "center", "middle");
+            
+            var initCont = new qx.ui.container.Composite(igl)
+                .set({
+                    alignX: "center",
+                    alignY: "middle",
+                    allowGrowX: true,
+                    allowGrowY: true
+                });
+            var labeltext =
+                "<div>" +
+                "Добро пожаловать в&nbsp;рекламный центр TVZavr!<br/>" +
+                "Здесь вы сможете размещать рекламу " + 
+                "в&nbsp;фильмах портала tvzavr " +
+                "и&nbsp;получать статистику по&nbsp;рекламным кампаниям. " +
+                "Для&nbsp;начала работы ознакомьтесь с&nbsp;видео-инструкцией." +
+                "</div>";
+                
+            var label = new qx.ui.basic.Label().set({
+                value: labeltext,
+                alignX: "center",
+                textAlign: "center",
+                alignY: "middle",
+                rich : true,
+                width: 640,
+                marginBottom: 20
+              });
+            var flashPlayer = new qx.ui.embed.Flash("resource/bsk/flash/gddflvplayer.swf").set({
+                width: 640,
+                height: 480,
+                alignX: "center",
+                alignY: "middle",
+                variables : {
+                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
+                    autoplay : "false"
+                }
+            });
+            initCont.add(label,     {row:1, column:0});
+            initCont.add(flashPlayer , {row:2, column:0});
+            this.right_cont.add(initCont,{
+                left:"33%",
+                top:"10%",
+                width:"33%"
+            });
+        },
+        
         onMenuChange : function(curMenu) {
             var cScreen = {
                 history  : this.history,
@@ -222,9 +299,8 @@ qx.Class.define("bsk.Application",
                         showMaximize: false
                     });
                 win.setLayout(new qx.ui.layout.HBox());
-                win.setShowStatusbar(true);
                 
-                win.setStatus("++");
+                win.setHeight(1000);
                 
                 console.log("--->", this.curMenu.name);
                 

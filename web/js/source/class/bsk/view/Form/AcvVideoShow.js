@@ -50,7 +50,7 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             var mholder = new qx.ui.container.Composite(new qx.ui.layout.HBox());
             var lholder = new qx.ui.container.Composite(new qx.ui.layout.VBox());
             this.taSummary = new qx.ui.form.TextArea()
-                .set({width:500, height:300, readOnly: true});
+                .set({width:400, height:300, readOnly: true});
             lholder.add(this.taSummary, {flex : 1});
             if(this.isModerator){
                 this.inp.Id = new qx.ui.form.TextField();
@@ -59,7 +59,7 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
-                .set({width:640, height:480});
+                .set({width:448, height:336});
             mholder.add(this.flashBar);
             var vertical_offset = 0;
             cnt.add(mholder,       {row:vertical_offset , column:1});
@@ -198,8 +198,8 @@ qx.Class.define("bsk.view.Form.AcvVideoShow",
             this.taSummary.setValue(txt);
             this.flashPlayer = new qx.ui.embed.Flash("resource/bsk/flash/gddflvplayer.swf").set({
 //                scale: "noscale",
-                width: 640,
-                height: 480,
+                width: 448,
+                height: 336,
                 variables : {
                     vdo: "/" + clip.ref,
 //                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",

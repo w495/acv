@@ -24,6 +24,22 @@ qx.Class.define("bsk.view.GenericTable",
         this.addListener("cellDblclick", this._onCellDblClick, this);
 
         this.tcm = this.getTableColumnModel();
+        this.resizeBehavior = this.tcm.getBehavior();
+        
+            for(var i=0; i<this.tabModel.columns.length; i++) {
+                var I = this.tabModel.columns[i];
+                switch(I.type) {
+                    case "float":
+                        console.log("I = ", I);
+                        //this.resizeBehavior.setWidth(i, "50%");
+                        this.resizeBehavior.setMaxWidth(i, 100);
+                        //this.resizeBehavior.setMaxWidth(i, 320);
+                        break;
+                    default:
+                        this.resizeBehavior.setMaxWidth(i, 100);
+                        break;
+                }
+            }
         //tcm.setDataCellRenderer(1, new qx.ui.table.cellrenderer.Boolean());
         // Tooltip
         this.tooltipTimer = new qx.event.Timer(1000);

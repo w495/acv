@@ -10,6 +10,12 @@ qx.Class.define("bsk.Config",
 
     statics : {
 
+        WINDOW_WIDTH       : window.innerWidth,
+        WINDOW_HEIGHT      : window.innerHeight,
+
+        WINDOW_WIDTH_HALF       : Math.floor(window.innerWidth/2),
+        WINDOW_HEIGHT_HALF      : Math.floor(window.innerHeight/2),
+        
         DOC_FORM_HEIGHT     : 250,
         DOC_FORM_WIDTH      : Math.floor(window.innerWidth * 0.7) ,
 

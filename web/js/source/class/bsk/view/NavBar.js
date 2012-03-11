@@ -49,6 +49,7 @@ qx.Class.define("bsk.view.NavBar",
             var newButton = new qx.ui.toolbar.Button("New", "icon/16/actions/document-new.png", this.__newCommand);
             var openButton = new qx.ui.toolbar.Button("Open", "icon/16/actions/document-open.png", this.__openCommand);
             var saveButton = new qx.ui.toolbar.Button("Save", "icon/16/actions/document-save.png", this.__saveCommand);
+            
             backButton.addListener("execute", this.debugButton);
             forwardButton.addListener("execute", this.debugButton);
             newButton.addListener("execute", this.debugButton);
