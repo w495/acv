@@ -25,14 +25,13 @@ qx.Class.define("bsk.view.NavBar",
             this.toolbar.setWidth(600);
             this.add(this.toolbar);
         
-            
-            this.basicPart = this.makeBasicPart();
+            // this.basicPart = this.makeBasicPart();
             
             this.menuPart = this.makeMenuPart(menuModel);
             
             //this.helpPart = new qx.ui.toolbar.Part();
             
-            this.toolbar.add(this.basicPart);
+            // this.toolbar.add(this.basicPart);
             this.toolbar.add(this.menuPart);
             this.toolbar.addSpacer();
             

@@ -8,7 +8,8 @@
 
 call_before(Req) ->
     try authorization:auth_required(Req)
-        catch throw:auth_required -> throw({redirect, "/login", []})
+        catch throw:auth_required ->
+            throw({redirect, "/", []})
     end.
 
 index(_Req) ->

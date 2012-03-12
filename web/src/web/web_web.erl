@@ -181,10 +181,13 @@ serve_request(?RIA_MENU_URL, Req) ->
     end;
 
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/index.html", Req) ->
-    serve_request("INDEX", Req); % перенаправление в динамический мэппинг для проверки авторизации
+    % перенаправление в динамический мэппинг для проверки авторизации
+    serve_request("INDEX", Req); 
 
 serve_request("/" ++ ?QOOXDOO_BUILD ++"/resource/" ++ T, Req) ->
-    ?D("~n-->resource-->www~n", []),
+    serve_static(?RIA_HOME ++ "/resource/", T, Req);
+
+serve_request("/resource/" ++ T, Req) ->
     serve_static(?RIA_HOME ++ "/resource/", T, Req);
 
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/" ++ T, Req) ->
@@ -192,7 +195,6 @@ serve_request("/" ++ ?QOOXDOO_BUILD ++ "/" ++ T, Req) ->
 
 serve_request("/deps/qooxdoo/" ++ T, Req) ->
     serve_static("deps/qooxdoo/", T, Req);
-
 
 
 serve_request(?STATIC_FAVICON_URL, Req) ->
