@@ -18,7 +18,6 @@ qx.Class.define("bsk.view.NavBar",
         
         toolbar: null,
         
-
         buildMenu : function(menuModel) {
             this.getMenuBar();
             
@@ -26,14 +25,13 @@ qx.Class.define("bsk.view.NavBar",
             this.toolbar.setWidth(600);
             this.add(this.toolbar);
         
-            
-            this.basicPart = this.makeBasicPart();
+            // this.basicPart = this.makeBasicPart();
             
             this.menuPart = this.makeMenuPart(menuModel);
             
             //this.helpPart = new qx.ui.toolbar.Part();
             
-            this.toolbar.add(this.basicPart);
+            // this.toolbar.add(this.basicPart);
             this.toolbar.add(this.menuPart);
             this.toolbar.addSpacer();
             
@@ -50,6 +48,7 @@ qx.Class.define("bsk.view.NavBar",
             var newButton = new qx.ui.toolbar.Button("New", "icon/16/actions/document-new.png", this.__newCommand);
             var openButton = new qx.ui.toolbar.Button("Open", "icon/16/actions/document-open.png", this.__openCommand);
             var saveButton = new qx.ui.toolbar.Button("Save", "icon/16/actions/document-save.png", this.__saveCommand);
+            
             backButton.addListener("execute", this.debugButton);
             forwardButton.addListener("execute", this.debugButton);
             newButton.addListener("execute", this.debugButton);
@@ -70,7 +69,6 @@ qx.Class.define("bsk.view.NavBar",
             var menuPart = new qx.ui.toolbar.Part();
             this.menu = {};
             console.log("menuModel = ", menuModel);
-            return menuPart;
         
             for(var key = 0; key != menuModel.length; ++key){
                 var item = menuModel[key];

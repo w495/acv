@@ -11,6 +11,21 @@
     <xsl:call-template name="s-title-base" />
 </xsl:template>
 
+<xsl:template name="link-css-root">
+    <xsl:call-template name="link-css-base" />
+</xsl:template>
+
+<xsl:template name="link-css-base">
+</xsl:template>
+
+<xsl:template name="head-scripts-root">
+    <xsl:call-template name="head-scripts-base" />
+</xsl:template>
+
+<xsl:template name="head-scripts-base">
+
+</xsl:template>
+
 
 <xsl:template name="s-main-root">
     <!--
@@ -26,10 +41,11 @@
         Рекомендовано это использовать, если сами скрипты не меняют
         начальный вид страницы или ее DOM (до загрузки)
     -->
-    <script src="/j/jm.js">
-        <xsl:text><![CDATA[ ]]></xsl:text>
-    </script>
     <xsl:call-template name="foot-scripts-base" />
+</xsl:template>
+
+<xsl:template name="foot-scripts-base">
+
 </xsl:template>
 
 

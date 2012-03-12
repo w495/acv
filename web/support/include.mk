@@ -46,7 +46,7 @@ MODULES = $(ERL_SOURCES:%.erl=%)
 ERLC_FLAGS := -W $(INCLUDE_DIRS:../%=-I ../%) 
 #$(DEPS_EBIN_DIRS:%=-pa %) $(SRC_DIRS_WOPREFIX:%=-pa ./%)
 ifeq ($(DEBUG), -DDEBUG)
-  ERLC_FLAGS += -Ddebug +debug_info
+  ERLC_FLAGS += -Ddebug -Dext_debug +debug_info
 endif
 
 

@@ -8,32 +8,39 @@
 
 -define(VK_STREAMER_DEFAULT, "http://192.168.2.156:7000").
 
-
-
--define( INFO(P),  flog:info(P) ).
--define( ERROR(P), flog:error(P) ).
-%-define( DEBUG(P), flog:debug(P) ).
-
--define( DEBUG(P), io:format(P,[]) ).
-
--define( I(F, P),   ?INFO(?FMT(F,P)) ).
--define( E(F, P),   ?ERROR(?FMT(F,P)) ).
-%-define( D(F, P),   ?DEBUG(?FMT(F,P)) ).
--define( D(F, P),   io:format(F,P) ).
-
-%-define( DEBUG_INFO(F, P),  ?DEBUG(?FMT(F,P)) ).
-
--define( DEBUG_INFO(F, P),  io:format(F,P) ).
-
-
 -define( CFG_PROCS, [{gen_server, m_pinger},
                      {gen_event, error_logger}]
        ).
 
 
-% -----------------------------------------------------------------------------
-%% EVENTS
-% -----------------------------------------------------------------------------
+%%% ---------------------------------------------------------------------------
+%%% LOGING
+%%% ---------------------------------------------------------------------------
+
+-define( INFO(P),  flog:info(P) ).
+-define( ERROR(P), flog:error(P) ).
+
+-define( I(F, P),   ?INFO(?FMT(F,P)) ).
+-define( E(F, P),   ?ERROR(?FMT(F,P)) ).
+
+-ifdef(debug).
+    -ifdef(ext_debug).
+        -define( DEBUG(P), io:format(P,[]) ).
+        -define( D(F, P),   io:format(F,P) ).
+    -else.
+        -define( DEBUG(P), flog:debug(P) ).
+        -define( D(F, P),  ?DEBUG(?FMT(F,P)) ).
+    -endif.
+-else.
+    -define( DEBUG(P), true).
+    -define( D(F, P),  true).
+-endif.
+
+
+
+%%% ---------------------------------------------------------------------------
+%%% EVENTS
+%%% ---------------------------------------------------------------------------
 
 -define(SIGNUP_EVENT, signup_event).
 -define(ACVVID_EVENT, acvvid_event).

@@ -33,13 +33,12 @@ qx.Mixin.define("bsk.view.NavMixin",
         },
 
         __buildMenu : function() {
-            var req = new qx.io.remote.Request('resource/bsk/descr/menu.json', "GET", "application/json");
-            req.addListener("completed", this.__onGetMenuResource, this);
-            req.send();
+            bsk.util.utils.getStaticJson('resource/bsk/descr/menu.json', this.__onGetMenuResource, this);
         },
 
         __onGetMenuResource : function(response) {
-            var result = response.getContent();
+            //qx.util.Json.parse
+            var result = bsk.util.utils.parseStaticJsonRsp(response);
             if (bsk.util.errors.process(this, result)==false)
                 return false;
             this.buildMenu(result);

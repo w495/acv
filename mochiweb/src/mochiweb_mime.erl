@@ -12,6 +12,8 @@
 %%      type such as "text/html". Will return the atom undefined if no good
 %%      guess is available.
 
+from_extension(".json") ->
+    "application/json";
 from_extension(".stl") ->
     "application/SLA";
 from_extension(".stp") ->

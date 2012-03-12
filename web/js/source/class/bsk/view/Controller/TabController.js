@@ -48,7 +48,7 @@ qx.Class.define("bsk.view.Controller.TabController",
             var d = this.tab.model.getData();
             var rowId = d[id.minIndex];
             var ROW = this.tab.model.data[rowId];
-            var req = new qx.io.remote.Request(actionUrl, "POST", "application/json");
+            var req = new qx.io.remote.Request(actionUrl, "POST", "text/plain");
             for(var key in ROW) {
                 var val = ROW[key];
                 req.setParameter(key, val, true);
@@ -62,7 +62,6 @@ qx.Class.define("bsk.view.Controller.TabController",
             Производит сложное действие над строкой.
         **/
         _tabRow:  function(actionUrl){
-                        
             var id = this.tab.getSelectionModel().getSelectedRanges()[0];
             console.log("id = ", id);
             if (id == undefined)
@@ -71,7 +70,6 @@ qx.Class.define("bsk.view.Controller.TabController",
             var rowId = d[id.minIndex];
             console.log("this.tab.model.data[rowId] = ", this.tab.model.data[rowId]);
             this.biz.onAction(this.tab.model.data[rowId], this.filterForm.getValues(), actionUrl);
-            this.refresh();
             return true;
         },
 
@@ -92,7 +90,7 @@ qx.Class.define("bsk.view.Controller.TabController",
             
         **/
         _tabChangeStateAction: function(actionUrl){
-            this.refresh();
+            
         },
 
         /**
@@ -105,11 +103,12 @@ qx.Class.define("bsk.view.Controller.TabController",
                 vardata = this.tabModel.vardata;
             vardata.isNew = true;
             this.biz.onAction(vardata, this.filterForm.getValues(), actionUrl);
-            this.refresh();
         },
 
         _onIncomeActionTabRowAction : function(response) {
-            var result = response.getContent();
+            //var result = response.getContent();
+            var result = eval(response.getContent());
+            console.log("result = ", result);
             if (false == bsk.util.errors.process(this, result))
                 return false;
             this.refresh();
@@ -183,6 +182,7 @@ qx.Class.define("bsk.view.Controller.TabController",
                 pCnt.add(this.pager, {edge:"east"});
             }
             this.filterForm._onSubmitClick(); // загружаем подефолту данные
+            this.refresh();
             console.log('this.tab', this.tab);
         },
 
@@ -212,7 +212,7 @@ qx.Class.define("bsk.view.Controller.TabController",
         },
 
         onPageChange : function() {
-            this.filterForm._onSubmitClick(); 
+            this.refresh();
         },
 
         bindVardata: function(data) {

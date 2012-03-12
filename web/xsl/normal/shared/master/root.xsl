@@ -126,10 +126,10 @@
         Стили страницы - нулевой уровень
     -->
     <link rel="stylesheet" type="text/css" media="all" href="/c/base.css" />
-    <xsl:call-template name="link-css-1" />
+    <xsl:call-template name="link-css-root" />
 </xsl:template>
 
-<xsl:template name="link-css-1">
+<xsl:template name="link-css-root">
     <!--
         Стили страницы - первый уровень
     -->
@@ -144,6 +144,13 @@
         Для обычного использования НЕ РЕКОМЕНДОВАНЫ.
     -->
     <script src="/j/mm.js" type="text/javascript" >
+        <xsl:text><![CDATA[ ]]></xsl:text>
+    </script>
+    <xsl:call-template name="head-scripts-root" />
+</xsl:template>
+
+<xsl:template name="head-scripts-root">
+    <script src="/j/ria.js" type="text/javascript" >
         <xsl:text><![CDATA[ ]]></xsl:text>
     </script>
 </xsl:template>

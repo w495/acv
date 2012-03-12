@@ -15,6 +15,7 @@
     signup/1,
     signup_post/1,
     captcha/1,
+    pers/1,
     test/0,
     test/1
 ]).
@@ -190,6 +191,28 @@ signup_post(Req, State) ->
             ?D("captcha:check > false~n", []),
             signup(Req)
     end.
+
+%%
+%% Возврщает страницу пользователя
+%%
+pers(Req) ->
+    try
+        authorization:auth_required(Req)
+    catch
+        throw:auth_required -> throw({redirect, "/", []})
+    end,
+
+    Xsl_path = "xsl/normal/outside/pers.xsl",
+    Meta = [
+            {"current-path",        Req:get(path)}
+    ],
+    Xml  = xml:encode_data(
+        [
+            {"meta",    Meta}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
 
 captcha(Req) ->
     {CodeHex, BinPng} = captcha:new(),

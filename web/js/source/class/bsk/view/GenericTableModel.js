@@ -58,6 +58,7 @@ qx.Class.define("bsk.view.GenericTableModel",
             var colNames = [];
             var colAlias = [];
             this.columnsDesc = {};
+      
             for(var i=0; i<tabDescription.columns.length; i++) {
                 var I = tabDescription.columns[i];
                 I.columnIndex = i;
@@ -71,6 +72,9 @@ qx.Class.define("bsk.view.GenericTableModel",
                 }
             }
             this.setColumns(colAlias, colNames);
+            
+            //var tcm = this.tab.getTableColumnModel();
+            //var resizeBehavior = tcm.getBehavior();
         },
 
         mySort: function(row1, row2, sortby, ascending){
@@ -182,14 +186,6 @@ qx.Class.define("bsk.view.GenericTableModel",
                                 break;
                             case "checkbox":
                                 //rowVal = "<span style=\"color:red\">" + rowVal + "</span>";   
-                                break;
-                            case "<enum>":
-                                if(desc.dict){
-                                    var old_rowVal = rowVal
-                                    rowVal = desc.dict[old_rowVal];
-                                    if(!rowVal)
-                                        rowVal = desc.dict['default'] + " (" + old_rowVal + ")";
-                                }
                                 break;
                             case "enum":
                                 if(desc.dict){

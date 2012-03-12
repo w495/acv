@@ -57,7 +57,7 @@ qx.Class.define("bsk.view.Form.AcvVideoCreateMaster.CategoryTargeting",
             this.composite  = new qx.ui.container.Composite (layout);
             
             this.inp.List = new bsk.view.
-                SortedSelListTreeDoubleContainer(
+                Sltdac(
                     this.categoryListOptions.url,
                     this.categoryListOptions.labelFieldName,
                     this.categoryListOptions.descrFieldName,

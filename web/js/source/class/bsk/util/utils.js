@@ -17,9 +17,51 @@ qx.Class.define("bsk.util.utils",
                 }
             catch(err) {
             }
-            return speed;                                                                               
+            return speed;
         },
-
+        
+        /**
+         *
+         * @param url --- строка
+         * @param callback ---
+         * @param return --- object
+         */
+        getStaticJson: function(url, callback, owner) {
+            var req = new qx.io.remote.Request(url, "GET", "text/plain");
+            req.addListener("completed", callback, owner);
+            req.send();
+        },
+        
+        /**
+         *
+         * @param url --- строка
+         * @param callback ---
+         * @param return --- object
+         */
+        postStaticJson: function(url, callback) {
+            
+        },
+        
+        /**
+         *
+         * @param result --- строка возврата
+         * @param return --- object
+         */
+        parseStaticJsonRsp: function(response) {
+            var result = response.getContent();
+            console.log("result ---> ", result);
+            return eval("(" + result + ")");
+        },
+        
+        /**
+         *
+         * @param result --- строка возврата
+         * @param return --- object
+         */
+        parseJson: function(result) {
+            return eval("(" + result + ")");
+        },
+        
         parseCoord : function(str) {
             if(!str || str == "")
                 return '';
@@ -365,6 +407,43 @@ qx.Class.define("bsk.util.utils",
             }
 
             return string;
+        },
+        
+        getElementsByClass : function (cname,node,tag) {
+            var classElements = new Array();
+            if ( node == null )
+                node = document;
+            if ( tag == null )
+                tag = '*';
+            var els = node.getElementsByTagName(tag);
+            var elsLen = els.length;
+            var pattern = new RegExp("(^|\\s)"+cname+"(\\s|$)");
+            var i = null;
+            var j = null;
+            for (i = 0, j = 0; i < elsLen; i++) {
+                if ( pattern.test(els[i].className) ) {
+                    classElements[j] = els[i];
+                    j++;
+                }
+            }
+            return classElements;
+        },
+        
+        getElementByClass: function (cname,node,tag) {
+            if(document.getElementsByClassName) {
+                var all = document.getElementsByClassName(cname);
+                if(all.length){
+                    return all[0];
+                }
+            }
+            else {
+                var all = bsk.util.utils.getElementsByClass(cname,node,tag);
+                if(all.length){
+                    return all[0];
+                }
+            }
+            return null;
         }
+        
     }
 });

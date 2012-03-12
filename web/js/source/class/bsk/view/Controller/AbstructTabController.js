@@ -54,12 +54,15 @@ qx.Class.define("bsk.view.Controller.AbstructTabController",
             alert("Ошибка (" + etype + ") выполнения команды: " + emsg);
         },
 
-        onToolbarBtn : function(actionUrl, specParam) {
+        onToolbarBtn : function(actionUrl, specParam, descr) {
             switch(specParam){
                 case "tab-row-action":
                     // Нажали кнопки для единовременного действия над строкой.
                     // Например, удаления.
-                    this._tabRowAction(actionUrl);
+                    if((!descr.confirmMsg)
+                       || (descr.confirmMsg && confirm(descr.confirmMsg)) ){
+                        this._tabRowAction(actionUrl);
+                    }
                     break;
                 case "tab-row":
                     // Нажали кнопки для сложного действия над строкой.
@@ -78,6 +81,7 @@ qx.Class.define("bsk.view.Controller.AbstructTabController",
                     // Нажали любую иную кнопку
                     this._tabDefault(actionUrl);
             }
+            this.refresh();
         },
 
 

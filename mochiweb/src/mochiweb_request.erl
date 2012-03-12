@@ -11,6 +11,8 @@
 
 -define(QUIP, "Any of you quaids got a smint?").
 
+-define(SERVER_NAME, "zAVr-lab-server").
+
 -export([get_header_value/1, get_primary_header_value/1, get/1, dump/0]).
 -export([send/1, recv/1, recv/2, recv_body/0, recv_body/1, stream_body/3]).
 -export([start_response/1, start_response_length/1, start_raw_response/1]).
@@ -619,7 +621,7 @@ maybe_serve_file(File, ExtraHeaders) ->
     end.
 
 server_headers() ->
-    [{"Server", "MochiWeb/1.0 (" ++ ?QUIP ++ ")"},
+    [{"Server", ?SERVER_NAME},
      {"Date", httpd_util:rfc1123_date()}].
 
 make_code(X) when is_integer(X) ->
