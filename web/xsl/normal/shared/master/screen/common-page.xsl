@@ -19,13 +19,7 @@
 </xsl:template>
 
 <xsl:template name="foot-scripts-base">
-    <!--
-        Скрипты добавляемые внизу страницы.
-        Рекомендовано это использовать, если сами скрипты не меняют
-        начальный вид страницы или ее DOM (до загрузки)
-    -->
-    <script src="/j/jm.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
-    <script src="/j/sl.js"><xsl:text><![CDATA[ ]]></xsl:text></script>
+
 </xsl:template>
 
 <!--

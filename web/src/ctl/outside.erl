@@ -15,6 +15,7 @@
     signup/1,
     signup_post/1,
     captcha/1,
+    pers/1,
     test/0,
     test/1
 ]).
@@ -192,16 +193,16 @@ signup_post(Req, State) ->
     end.
 
 %%
-%% возврщает головную страницу
+%% Возврщает страницу пользователя
 %%
-personal(Req) ->
+pers(Req) ->
     try
         authorization:auth_required(Req)
     catch
         throw:auth_required -> throw({redirect, "/", []})
     end,
 
-    Xsl_path = "xsl/normal/outside/personal.xsl",
+    Xsl_path = "xsl/normal/outside/pers.xsl",
     Meta = [
             {"current-path",        Req:get(path)}
     ],

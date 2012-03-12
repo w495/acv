@@ -30,7 +30,7 @@ qx.Class.define("bsk.Application",
 
     members :
     {
-        title : "Реклама tvzavr",
+        title : "Система рекламы tvzavr: кабинет рекламодателя",
         
         main : function()
         {
@@ -121,14 +121,14 @@ qx.Class.define("bsk.Application",
 
             this._createInitialView();
 
-            var isle = new qx.ui.root.Inline(document.getElementById("isle____eiiwtowrwetetwtwtewte"))
+            var isle = new qx.ui.root.Inline(document.getElementById("ria"))
                 .set({
-                //decorator: "main",
+                decorator: "main",
                 padding: 0,
                 width: 1000,
-                height: 1000,
+                height: 700,
                 textColor: "black",
-                backgroundColor: "white"
+                backgroundColor: "#cccccc"
             });
             dockLayoutComposite.add(this.tcont);
             isle.add(dockLayoutComposite);
@@ -136,6 +136,10 @@ qx.Class.define("bsk.Application",
         },
         
         _createInitialView : function() {
+            this.right_cont.removeAll();
+        },
+        
+        _createInitialView_old : function() {
             this.right_cont.removeAll();
             this._createTopView();
         },
