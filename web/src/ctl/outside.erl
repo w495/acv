@@ -191,6 +191,28 @@ signup_post(Req, State) ->
             signup(Req)
     end.
 
+%%
+%% возврщает головную страницу
+%%
+personal(Req) ->
+    try
+        authorization:auth_required(Req)
+    catch
+        throw:auth_required -> throw({redirect, "/", []})
+    end,
+
+    Xsl_path = "xsl/normal/outside/personal.xsl",
+    Meta = [
+            {"current-path",        Req:get(path)}
+    ],
+    Xml  = xml:encode_data(
+        [
+            {"meta",    Meta}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
 captcha(Req) ->
     {CodeHex, BinPng} = captcha:new(),
     throw({cookize, "image/png", mochiweb_cookies:cookie(?CATCHA_COOKIE, CodeHex, ?F_COOKIEOPTIONS), BinPng}).

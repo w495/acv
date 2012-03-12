@@ -180,6 +180,9 @@ serve_request(?RIA_MENU_URL, Req) ->
             serve_static(?RIA_HOME, ?RIA_MENU_ADMIN_PATH, Req)
     end;
 
+%%%
+%%% <???> 3
+%%%
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/index.html", Req) ->
     % перенаправление в динамический мэппинг для проверки авторизации
     serve_request("INDEX", Req); 
