@@ -10,8 +10,10 @@
 -include("web.hrl").
 -include("common.hrl").
 
-
 -compile(export_all).
+
+-define(LOGOUT, "/").
+
 
 auth_required(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
@@ -163,9 +165,10 @@ do_login(Req) ->
             innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
     end.
 
+
 do_logout(Req) ->
     auth_biz:logout(Req:get_cookie_value(?AUTHCOOKIE)),
-    throw({js_redirect, "/login", []}).
+    throw({js_redirect, ?LOGOUT, []}).
 
 checkNumb([H|_T]) when H < 48; H > 57 ->
     throw(bad_consist);

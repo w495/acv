@@ -128,7 +128,7 @@ processControllerException(throw, not_found, Req) ->
 
 processControllerException(throw, auth_required, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
-    V = {struct, [{<<"REDIRECT">>, <<"/login">>}]},
+    V = {struct, [{<<"REDIRECT">>, <<"/">>}]},
     DataOut = mochijson2:encode(V),
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
 
@@ -353,6 +353,8 @@ simple_map_controllers(Path) ->
 
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};
+
+        "/personal" ->          {outside, personal};
 
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
