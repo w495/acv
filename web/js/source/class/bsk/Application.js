@@ -304,7 +304,7 @@ qx.Class.define("bsk.Application",
                     });
                 win.setLayout(new qx.ui.layout.HBox());
                 
-                win.setHeight(1000);
+                win.setHeight(600);
                 
                 console.log("--->", this.curMenu.name);
                 

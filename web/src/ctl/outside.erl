@@ -102,7 +102,7 @@ signin_post(Login, Password, State) ->
     ?D("Password = ~p~n", [Password]),
     try
         Val = auth_biz:login(Login, Password),
-        throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
+        throw({ok, {redirect, "/pers",
             [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
     catch
         throw:{ok, Ret} -> throw(Ret);
