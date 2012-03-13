@@ -49,9 +49,15 @@ msret(Vals) ->
 
 simple(Query) ->
     mysql:prepare(mySqlConPool, simple_2, Query),
-    {data,{mysql_result, Cols, Vals, _, _}} =
-        mysql:execute(mySqlConPool, simple_2, []),
-    msret(mysql_dao:make_proplist(Cols, Vals, [])).
+    case mysql:execute(mySqlConPool, simple_2, []) of
+        {data,{mysql_result, Cols, Vals, _, _}} -> 
+%%            mysql:cast_server(mySqlConPool, 'DOWN', undefined),
+            msret(mysql_dao:make_proplist(Cols, Vals, []));
+        {error, Reason} -> 
+            io:format("mysql error: ~p~n", [Reason]),
+%%            mysql:cast_server(mySqlConPool, 'DOWN', undefined),
+            throw({error, Reason})
+    end.
 
 simple(Query, Params) ->
     mysql:prepare(mySqlConPool, simple_2, Query),

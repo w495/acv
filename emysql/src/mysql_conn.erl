@@ -219,7 +219,10 @@ execute(Pid, Name, Version, Params, From) ->
     execute(Pid, Name, Version, Params, From, ?DEFAULT_STANDALONE_TIMEOUT).
 
 execute(Pid, Name, Version, Params, From, Timeout) ->
-    send_msg(Pid, {execute, Name, Version, Params, From}, From, Timeout).
+    io:format("~p:execute start, run send_msg~n",[?MODULE]),
+    EXECUTE = send_msg(Pid, {execute, Name, Version, Params, From}, From, Timeout),
+    io:format("~p:execute send_msg return:~p~n", [?MODULE, EXECUTE]),
+    EXECUTE.
 
 transaction(Pid, Fun, From) ->
     transaction(Pid, Fun, From, ?DEFAULT_STANDALONE_TIMEOUT).
@@ -284,6 +287,7 @@ do_fetch(Pid, Queries, From, Timeout) ->
     send_msg(Pid, {fetch, Queries, From}, From, Timeout).
 
 send_msg(Pid, Msg, From, Timeout) ->
+    io:format("~p:send_msg start~n", [?MODULE]),
     Self = self(),
     Pid ! Msg,
     case From of
@@ -291,11 +295,13 @@ send_msg(Pid, Msg, From, Timeout) ->
 	    %% We are not using a mysql_dispatcher, await the response
 	    receive
 		{fetch_result, Pid, Result} ->
+            io:format("~p:send_msg fetch_result ~n", [?MODULE]),
 		    Result
 	    after Timeout ->
 		    {error, "message timed out"}
 	    end;
 	_ ->
+        io:format("~p:send_msg dont wait answer, return with OK~n", [?MODULE]),
 	    %% From is gen_server From,
 	    %% Pid will do gen_server:reply() when it has an answer
 	    ok
@@ -376,49 +382,59 @@ loop(State) ->
     RecvPid = State#state.recv_pid,
     LogFun = State#state.log_fun,
     receive
-	{fetch, Queries, From} ->
-	    send_reply(From, do_queries(State, Queries)),
-	    loop(State);
-	{transaction, Fun, From} ->
-	    put(?STATE_VAR, State),
+        {fetch, Queries, From} ->
+            send_reply(From, do_queries(State, Queries)),
+            loop(State);
+        {transaction, Fun, From} ->
+            put(?STATE_VAR, State),
 
-	    Res = do_transaction(State, Fun),
+            Res = do_transaction(State, Fun),
 
-	    %% The transaction may have changed the state of this process
-	    %% if it has executed prepared statements. This would happen in
-	    %% mysql:execute.
-	    State1 = get(?STATE_VAR),
+            %% The transaction may have changed the state of this process
+            %% if it has executed prepared statements. This would happen in
+            %% mysql:execute.
+            State1 = get(?STATE_VAR),
 
-	    send_reply(From, Res),
-	    loop(State1);
-	{execute, Name, Version, Params, From} ->
-	    State1 =
-		case do_execute(State, Name, Params, Version) of
-		    {error, _} = Err ->
-			send_reply(From, Err),
-			State;
-		    {ok, Result, NewState} ->
-			send_reply(From, Result),
-			NewState
-		end,
-	    loop(State1);
-	{mysql_recv, RecvPid, data, Packet, Num} ->
-	    ?Log2(LogFun, error,
-		 "received data when not expecting any -- "
-		 "ignoring it: {~p, ~p}", [Num, Packet]),
-	    loop(State);
-        Unknown ->
-	    ?Log2(LogFun, error,
-		  "received unknown signal, exiting: ~p", [Unknown]),
-	    error
-    end.
+            send_reply(From, Res),
+            loop(State1);
+        {execute, Name, Version, Params, From} ->
+            io:format("~p:loop execute received (~p)... ~n", [?MODULE, self()]),
+            TmpRV = [70,97,105,108,101,100,32,115,101,110,100,105,110,103,32,100,97, 116,97,32,111,110,32,115,111,99,107,101,116,32,58,32,"closed"],
+            %State1 =
+            case do_execute(State, Name, Params, Version) of
+                {error, _} = Err ->
+                    io:format("~p:loop do_execute error: ~p~n",[?MODULE, Err]),
+                    send_reply(From, Err);
+%                    loop(State);
+                {ok, {error, _}, _} = RERR ->
+                    io:format("~p:loop do_execute error by: ~p~n",[?MODULE, RERR]);
+                {ok, Result, NewState}=REX ->
+                    io:format("~p:loop do_execute ok: ~p~n", [?MODULE, REX]),
+                    send_reply(From, Result),
+                loop(NewState)
+
+            end;
+            %loop(State1);
+        {mysql_recv, RecvPid, data, Packet, Num} ->
+            ?Log2(LogFun, error,
+             "received data when not expecting any -- "
+             "ignoring it: {~p, ~p}", [Num, Packet]),
+            loop(State);
+            Unknown ->
+            ?Log2(LogFun, error,
+              "received unknown signal, exiting: ~p", [Unknown]),
+            error
+    end,
+    io:format("~p:loop done.~n", [?MODULE]).
 
 %% GenSrvFrom is either a gen_server:call/3 From term(),
 %% or a pid if no gen_server was used to make the query
 send_reply(GenSrvFrom, Res) when is_pid(GenSrvFrom) ->
     %% The query was not sent using gen_server mechanisms       
+    io:format("~p:send_reply|1 start~n",[?MODULE]),
     GenSrvFrom ! {fetch_result, self(), Res};
 send_reply(GenSrvFrom, Res) ->
+    io:format("~p:send_reply|2 start~n",[?MODULE]),
     gen_server:reply(GenSrvFrom, Res).
 
 do_query(State, Query) ->

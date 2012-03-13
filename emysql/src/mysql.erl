@@ -102,6 +102,7 @@
 	 execute/3,
 	 execute/4,
 	 unprepare/2,
+     cast_server/3,
 	 get_prepared/2,
 	 get_prepared/3,
 
@@ -268,8 +269,7 @@ connect(PoolId, Host, Port, User, Password, Database, Encoding, Reconnect) ->
 %%    User::string(), Password::string(), Database::string(),
 %%    Encoding::string(), Reconnect::bool(), LinkConnection::bool()) ->
 %%      {ok, ConnPid} | {error, Reason}
-connect(PoolId, Host, Port, User, Password, Database, Encoding, Reconnect,
-       LinkConnection) ->
+connect(PoolId, Host, Port, User, Password, Database, Encoding, Reconnect, LinkConnection) ->
     Port1 = if Port == undefined -> ?PORT; true -> Port end,
     Fun = if LinkConnection ->
 		  fun mysql_conn:start_link/8;
@@ -311,7 +311,7 @@ new_conn(PoolId, ConnPid, Reconnect, Host, Port, User, Password, Database,
 		  database = Database,
 		  encoding = Encoding
 		 };
-	false ->                        
+	false ->
 	    #conn{pool_id = PoolId,
 		  pid = ConnPid,
 		  reconnect = false}
@@ -337,7 +337,7 @@ fetch(Query) ->
 fetch(PoolId, Query) ->
     fetch(PoolId, Query, undefined).
 
-fetch(PoolId, Query, Timeout) -> 
+fetch(PoolId, Query, Timeout) ->
     case get(?STATE_VAR) of
 	undefined ->
 	    call_server(PoolId, {fetch, PoolId, Query}, Timeout);
@@ -422,12 +422,15 @@ execute(PoolId, Name, Params) when is_list(Params) ->
     execute(PoolId, Name, Params, undefined).
 
 execute(PoolId, Name, Params, Timeout) ->
+    io:format("~p:execute/4 ?STATE_VAR: ~p~n", [?MODULE, get(?STATE_VAR)]),
     case get(?STATE_VAR) of
-	undefined ->
-	    call_server(PoolId, {execute, PoolId, Name, Params}, Timeout);
-	State ->
-	      case mysql_conn:execute_local(State, Name, Params) of
-		  {ok, Res, NewState} ->
+        undefined ->
+	        RRR = call_server(PoolId, {execute, PoolId, Name, Params}, Timeout),
+            io:format("~p:execute/4 call_server result:~p~n", [?MODULE, RRR]),
+            RRR;
+	    State ->
+	        case mysql_conn:execute_local(State, Name, Params) of
+		    {ok, Res, NewState} ->
 		      put(?STATE_VAR, NewState),
 		      Res;
 		  Err ->
@@ -534,18 +537,17 @@ handle_call({get_prepared, Name, Version}, _From, State) ->
     end;
 
 handle_call({execute, PoolId, Name, Params}, From, State) ->
-    with_next_conn(
-      PoolId, State,
-      fun(Conn, State1) ->
-	      case gb_trees:lookup(Name, State1#state.prepares) of
-		  none ->
-		      {reply, {error, {no_such_statement, Name}}, State1};
-		  {value, {_Stmt, Version}} ->
-		      mysql_conn:execute(Conn#conn.pid, Name,
-					 Version, Params, From),
-		      {noreply, State1}
-	      end
-      end);
+    with_next_conn(PoolId, State, fun(Conn, State1) ->
+        io:format("~p:handle_call({execute with_next_conn start...~n", [?MODULE]),
+        case gb_trees:lookup(Name, State1#state.prepares) of
+		    none ->
+		        {reply, {error, {no_such_statement, Name}}, State1};
+            {value, {_Stmt, Version}} ->
+		     RRes = mysql_conn:execute(Conn#conn.pid, Name, Version, Params, From),
+             io:format("~p:handle_call({execute mysql_conn:execute reuslt: ~p~n", [?MODULE, RRes]),
+		        {noreply, State1}
+	    end
+    end);
 
 handle_call({transaction, PoolId, Fun}, From, State) ->
     with_next_conn(
@@ -656,6 +658,16 @@ with_next_conn(PoolId, State, Fun) ->
 	    {reply, {error, {no_connection_in_pool, PoolId}}, State}
     end.
 
+cast_server(PoolId, Msg, Timeout) ->
+    SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
+    if Timeout == undefined ->
+	    gen_server:cast(SName, Msg);
+       true ->
+	    gen_server:cast(SName, Msg, Timeout)
+    end.
+
+
+
 call_server(PoolId, Msg, Timeout) ->
     SName = utils:to_atom(?FMT("~p-~p", [atom_to_list(?SERVER), atom_to_list(PoolId)])),
     if Timeout == undefined ->
@@ -736,7 +748,7 @@ get_next_conn(PoolId, State) ->
 	    [Conn | Conns] = lists:reverse(Used),
 	    {ok, Conn,
 	     State#state{conn_pools =
-			 gb_trees:enter(PoolId, {Conns, [Conn]}, ConnPools)}};
+			gb_trees:enter(PoolId, {Conns, [Conn]}, ConnPools)}};
 	{value, {[Conn|Unused], Used}} ->
 	    {ok, Conn, State#state{
 			 conn_pools =
