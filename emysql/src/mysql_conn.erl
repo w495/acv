@@ -382,49 +382,50 @@ loop(State) ->
     RecvPid = State#state.recv_pid,
     LogFun = State#state.log_fun,
     receive
-	{fetch, Queries, From} ->
-	    send_reply(From, do_queries(State, Queries)),
-	    loop(State);
-	{transaction, Fun, From} ->
-	    put(?STATE_VAR, State),
+        {fetch, Queries, From} ->
+            send_reply(From, do_queries(State, Queries)),
+            loop(State);
+        {transaction, Fun, From} ->
+            put(?STATE_VAR, State),
 
-	    Res = do_transaction(State, Fun),
+            Res = do_transaction(State, Fun),
 
-	    %% The transaction may have changed the state of this process
-	    %% if it has executed prepared statements. This would happen in
-	    %% mysql:execute.
-	    State1 = get(?STATE_VAR),
+            %% The transaction may have changed the state of this process
+            %% if it has executed prepared statements. This would happen in
+            %% mysql:execute.
+            State1 = get(?STATE_VAR),
 
-	    send_reply(From, Res),
-	    loop(State1);
-	{execute, Name, Version, Params, From} ->
-        io:format("~p:loop execute received (~p)... ~n", [?MODULE, self()]),
-        TmpRV = [70,97,105,108,101,100,32,115,101,110,100,105,110,103,32,100,97, 116,97,32,111,110,32,115,111,99,107,101,116,32,58,32,"closed"],
-	    %State1 =
-		case do_execute(State, Name, Params, Version) of
-		    {error, TmpRV} ->
-                io:format("~p:loop do_execute error by TmpRV~n",[?MODULE]);
-		    {error, _} = Err ->
-                io:format("~p:loop do_execute error: ~p~n",[?MODULE, Err]),
-			send_reply(From, Err),
-			loop(State);
-		    {ok, Result, NewState} ->
-            io:format("~p:loop execute ok~n", [?MODULE]),
-			send_reply(From, Result),
-			loop(NewState)
+            send_reply(From, Res),
+            loop(State1);
+        {execute, Name, Version, Params, From} ->
+            io:format("~p:loop execute received (~p)... ~n", [?MODULE, self()]),
+            TmpRV = [70,97,105,108,101,100,32,115,101,110,100,105,110,103,32,100,97, 116,97,32,111,110,32,115,111,99,107,101,116,32,58,32,"closed"],
+            %State1 =
+            case do_execute(State, Name, Params, Version) of
+                {error, _} = Err ->
+                    io:format("~p:loop do_execute error: ~p~n",[?MODULE, Err]),
+                    send_reply(From, Err);
+%                    loop(State);
+                {ok, {error, _}, _} = RERR ->
+                    io:format("~p:loop do_execute error by: ~p~n",[?MODULE, RERR]);
+                {ok, Result, NewState}=REX ->
+                    io:format("~p:loop do_execute ok: ~p~n", [?MODULE, REX]),
+                    send_reply(From, Result),
+                loop(NewState)
 
-		end;
-	    %loop(State1);
-	{mysql_recv, RecvPid, data, Packet, Num} ->
-	    ?Log2(LogFun, error,
-		 "received data when not expecting any -- "
-		 "ignoring it: {~p, ~p}", [Num, Packet]),
-	    loop(State);
-        Unknown ->
-	    ?Log2(LogFun, error,
-		  "received unknown signal, exiting: ~p", [Unknown]),
-	    error
-    end.
+            end;
+            %loop(State1);
+        {mysql_recv, RecvPid, data, Packet, Num} ->
+            ?Log2(LogFun, error,
+             "received data when not expecting any -- "
+             "ignoring it: {~p, ~p}", [Num, Packet]),
+            loop(State);
+            Unknown ->
+            ?Log2(LogFun, error,
+              "received unknown signal, exiting: ~p", [Unknown]),
+            error
+    end,
+    io:format("~p:loop done.~n", [?MODULE]).
 
 %% GenSrvFrom is either a gen_server:call/3 From term(),
 %% or a pid if no gen_server was used to make the query
