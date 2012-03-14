@@ -15,14 +15,24 @@
     <style type="text/css">
         <xsl:text>
         <![CDATA[
-        .ria-cnt{
+        .ria-cnt-cnt{
             width: 1000px;
             height: 700px;
             position: relative;
             background-color: #d7d7d7;
         }
 
+        .ria-cnt{
+            width: 1000px;
+            height: 700px;
+            top: 0px;
+            left: 0px;
+            position: absolute;
+            background-color: #d7d7d7;
+        }
+
         #ria{
+            position: absolute;
             width: 1000px;
             height: 700px;
         }
@@ -37,6 +47,14 @@
 </xsl:template>
 
 <xsl:template name="head-scripts-pers">
+    <script type="text/javascript">
+        <xsl:text>
+        <![CDATA[
+            qxsettings = new Object();
+            qxsettings["qx.enableApplicationLayout"] = false;
+        ]]>
+        </xsl:text>
+   </script>
     <script src="/j/ria.js" type="text/javascript" >
         <xsl:text><![CDATA[ ]]></xsl:text>
     </script>
@@ -49,10 +67,7 @@
 </xsl:template>
 
 <xsl:template name="s-pers">
-    <div class="ria-cnt">
-        <div id="ria">
-            <xsl:text><![CDATA[ ]]></xsl:text>
-        </div>
+    <div class="ria-cnt-cnt">
         <div id="global_progress_bar">
             <div  id="upload_progress_back">&nbsp;</div>
             <div class="inner-box file-uppload-box">
@@ -66,6 +81,11 @@
                 <img src="resource/bsk/img/ff-pb.gif" class="file-uppload-image" />
                 <span><xsl:text>&nbsp;Загрузка файла</xsl:text></span>
             </div>
+        </div>
+    </div>
+    <div class="ria-cnt">
+        <div id="ria">
+            <xsl:text><![CDATA[ ]]></xsl:text>
         </div>
     </div>
 </xsl:template>

@@ -29,7 +29,7 @@ qx.Class.define("bsk.view.GenericTable",
         console.log("thisthis --------- >>>>", this);
         
         this.setStatusBarVisible(false); // убрать rows в гридах
-        this.setColumnVisibilityButtonVisible(true);
+        this.setColumnVisibilityButtonVisible(false);
 
         this.addListener("cellClick", this._onCellClick, this);
         this.addListener("cellDblclick", this._onCellDblClick, this);

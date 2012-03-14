@@ -30,11 +30,10 @@ qx.Class.define("bsk.Application",
 
     statics: {
         APP_WIDTH  : 1000,
-        APP_HEIGHT : 400,
+        APP_HEIGHT : 700,
         MENU_HEIGHT : 30,
         workarea_height : function(){
-            return
-                bsk.Application.APP_HEIGHT - bsk.Application.MENU_HEIGHT - 1;
+            return bsk.Application.APP_HEIGHT - bsk.Application.MENU_HEIGHT - 1;
         }
     },
     
@@ -70,13 +69,12 @@ qx.Class.define("bsk.Application",
             qx.locale.Manager.getInstance().setLocale("ru");
             qx.io.remote.RequestQueue.getInstance().setDefaultTimeout(60000*5);
 
-            // Enable logging in debug variant
-            /*
-                if(qx.core.Variant.isSet("qx.debug", "on")) {
-                    qx.log.appender.Native;
-                    qx.log.appender.Console;
-                }
-            */
+            if (qx.core.Environment.get("qx.debug"))
+            {
+              qx.log.appender.Native;
+              qx.log.appender.Console;
+            }
+
             
             this.history = [];
             this.screenMap = {};
@@ -107,37 +105,56 @@ qx.Class.define("bsk.Application",
             
             var dockLayout = new qx.ui.layout.VBox();
             var dockLayoutComposite = new qx.ui.container.Composite(dockLayout);
-            this.tcont = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+            this.tcont = new qx.ui.container.Composite(new qx.ui.layout.Dock());
             this.navBar = new bsk.view.NavBar(this).set({
                 width: bsk.Application.APP_WIDTH,
                 height: bsk.Application.MENU_HEIGHT
             });
-            this.tcont.add(this.navBar);
+            this.tcont.add(this.navBar, {edge:"north"});
+
+            
+            
+            
             
             //this.right_cont = new qx.ui.container.Composite(new qx.ui.layout.HBox());
             var windowManager = new qx.ui.window.Manager();
-            this.right_cont = new qx.ui.window.Desktop(windowManager);
+            this.right_cont = new qx.ui.window.Desktop(windowManager).set({
+                focusable: false
+            });
                 
-            this.tcont.add(this.right_cont, {flex: 1});
+            this.tcont.add(this.right_cont, {edge:"center"});
 
             this._createInitialView();
 
-            var isle = new qx.ui.root.Inline(document.getElementById("ria"))
+            var isle = new qx.ui.root.Inline(document.getElementById("ria"), true, true)
                 .set({
                 padding: 0,
                 width: bsk.Application.APP_WIDTH,
-                height: bsk.Application.APP_HEIGHT,
+                minHeight: bsk.Application.APP_HEIGHT,
                 textColor: "black",
                 backgroundColor: "#d7d7d7"
             });
+
+            this.inp_id = new qx.ui.form.TextField().set({
+                visibility: "hidden",
+                height: 0
+            });
+            dockLayoutComposite.add(this.inp_id);
             dockLayoutComposite.add(this.tcont);
+            dockLayoutComposite.setWidth(bsk.Application.APP_WIDTH);
+            dockLayoutComposite.setHeight(bsk.Application.workarea_height());
             isle.add(dockLayoutComposite);
-            //this.getRoot().add(dockLayoutComposite, {edge:0});
-            
         },
             
         _createInitialView : function() {
             this.right_cont.removeAll();
+            this.navBar
+            var imm = {
+                name:  "Видео",
+                icon:  "icon/16/places/network-workgroup.png",
+                model: "resource/bsk/descr/acv-videos-tab.json"
+            };
+            this.onMenuChange(imm);
         },
         
         _createInitialView_old : function() {
@@ -238,24 +255,10 @@ qx.Class.define("bsk.Application",
          
         _onIncomeActionModel : function(response) {
             this.hide_global_pb();
-            
-            console.log("1");
-            
-            console.log("response = ", response);
-            //console.log("response.getContent() = ", response.getContent());
-            
             var result = bsk.util.utils.parseStaticJsonRsp(response);
-
-            console.log(result);
-            
-            console.log("1.2");
-            
             if (bsk.util.errors.process(this, result)==false) {
                 return false;
             }
-            
-            console.log("2");
-            
             var cont = null;
             if(this.cur_controller != undefined) {
                 this.history.push(this.cur_controller);
@@ -277,10 +280,7 @@ qx.Class.define("bsk.Application",
             }
             if(cont!= null) {
                 this.right_cont.removeAll();
-                console.log("3");
-                console.log("<xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx>");
                 this._makeWindow(cont)
-                console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             }   
             else {
                 this.history.pop();
@@ -290,46 +290,55 @@ qx.Class.define("bsk.Application",
 
         _makeWindow : function(cont) {
                 var win = new qx.ui.window.Window(
-                    bsk.util.utils.capitalize(this.curMenu.name),
-                    this.curMenu.icon).set({
-                        allowMaximize: false,
-                        allowMinimize: false,
-                        showMinimize: false,
-                        showStatusbar: true,
-                        movable: false,
-                        resizable: false,
-                        showClose: false,
-                        showMaximize: false
-                    });
+                    bsk.util.utils.capitalize(
+                    this.curMenu.name),
+                    this.curMenu.icon)
+                        .set({
+                            //focusable: false,
+                            allowMaximize: true,
+                            allowMinimize: false,
+                            showMinimize: false,
+                            showStatusbar: true,
+                            movable: false,
+                            resizable: false,
+                            showClose: false,
+                            showMaximize: false
+                        });
                 win.setLayout(new qx.ui.layout.HBox());
-                
                 win.setWidth(bsk.Application.APP_WIDTH);
                 win.setHeight(bsk.Application.workarea_height());
-                
-                console.log("--->", this.curMenu.name);
-                
                 this.cur_controller = cont;
-                var windows = this.right_cont.getWindows();
-                
-                /*
-                for(var i = 0; i != windows.length; ++i){
-                    var window = windows[i];
-                    if ((window == win) || (window.getCaption() == win.getCaption())){
-                        console.log("===>", window.getCaption(), " -- ", win.getCaption());
-                        window.removeAll();
-                        window.add(this.cur_controller, {flex: 1});
-                        window.open();
-                        return window;
-                    }
-                }
-                */
-                
-
-                console.log("xxxx>");
                 win.add(this.cur_controller, {flex: 1});
-                this.right_cont.add(win, {left: 10, top: 10});
-                win.open();
-                win.maximize();
+                this.right_cont.add(win);
+                try {
+                    win.focus = function(){ }
+                    /*
+                    alert(" " + navigator.appCodeName);
+                    alert(" " + navigator.product);
+                    alert(" " + navigator.appVersion);
+                    alert(" " + navigator.productSub);
+                    
+                    if("Google Inc." == navigator.vendor){
+                        win.addListener("appear",function(){window.scrollTo(0,0);},win);
+                    }
+                    else if("Microsoft Internet Explorer" == navigator.appName){
+                        win._this = this;
+                        win.addListener("appear",function(){
+                            //win._this.inp_id.setVisibility("visible")
+                            //win._this.inp_id.focus();
+                            window.scrollTo(0,0);
+                            setTimeout("window.scrollTo(0,0)",10);
+                            setTimeout("window.scrollTo(0,0)",15);
+                            setTimeout("window.scrollTo(0,0)",20);
+                        },win);
+                    }
+                    */
+                    win.open();
+                    win.maximize();
+                }
+                catch(err){
+                    
+                }
                 return win;
         },
         

@@ -18,6 +18,9 @@ qx.Class.define("bsk.view.NavBar",
         
         toolbar: null,
         
+        focus : function() {
+            this.toolbar.focus()
+        },
         
         buildMenu : function(menuModel) {
             this.getMenuBar();
