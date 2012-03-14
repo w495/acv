@@ -17,14 +17,19 @@
         <![CDATA[
         .ria-cnt{
             width: 1000px;
-            height: 800px;
+            height: 700px;
             position: relative;
-            background-color: #D7D7D7;
+            background-color: #d7d7d7;
         }
 
         #ria{
             width: 1000px;
             height: 700px;
+        }
+
+        #ria *{
+            font-size: 12px;
+            font-family: Tahoma ,sans-serif;
         }
         ]]>
         </xsl:text>

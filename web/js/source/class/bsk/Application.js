@@ -28,6 +28,16 @@ qx.Class.define("bsk.Application",
   *****************************************************************************
   */
 
+    statics: {
+        APP_WIDTH  : 1000,
+        APP_HEIGHT : 400,
+        MENU_HEIGHT : 30,
+        workarea_height : function(){
+            return
+                bsk.Application.APP_HEIGHT - bsk.Application.MENU_HEIGHT - 1;
+        }
+    },
+    
     members :
     {
         title : "Система рекламы tvzavr: кабинет рекламодателя",
@@ -35,11 +45,25 @@ qx.Class.define("bsk.Application",
         main : function()
         {
             /*
-            if(typeof(console) === 'undefined') {
-                var console = {};
-                console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
-            }
+                if(typeof(console) === 'undefined') {
+                    var console = {};
+                    console.log =
+                        console.error =
+                        console.info =
+                        console.debug =
+                        console.warn =
+                        console.trace =
+                        console.dir =
+                        console.dirxml =
+                        console.group =
+                        console.groupEnd =
+                        console.time =
+                        console.timeEnd =
+                        console.assert =
+                        console.profile = function() {};
+                }
             */
+            
             // Call super class
             this.base(arguments);
             
@@ -80,61 +104,38 @@ qx.Class.define("bsk.Application",
         },
         
         _createLayout : function() {
-            var USEMENUBAR = true;
-            var USEHEADER = true;
             
-            //var dockLayout = new qx.ui.layout.Dock();
             var dockLayout = new qx.ui.layout.VBox();
-            //dockLayout.setSeparatorY("separator-vertical");
             var dockLayoutComposite = new qx.ui.container.Composite(dockLayout);
-           
-            
             this.tcont = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-            if(!USEMENUBAR){
-                this._pane = new qx.ui.splitpane.Pane();
-                this.tcont.add(this._pane, {flex: 1});
-            }
-            if(USEMENUBAR){
-                this.navBar = new bsk.view.NavBar(this).set({
-                    width: 1000
-                });
-                this.tcont.add(this.navBar);
-            }
+            this.navBar = new bsk.view.NavBar(this).set({
+                width: bsk.Application.APP_WIDTH,
+                height: bsk.Application.MENU_HEIGHT
+            });
+            this.tcont.add(this.navBar);
             
-            if(!USEMENUBAR){
-                this.left_cont = new qx.ui.container.Composite(new qx.ui.layout.VBox(12));
-                this.left_cont.set({width:200});
-            }
             //this.right_cont = new qx.ui.container.Composite(new qx.ui.layout.HBox());
             var windowManager = new qx.ui.window.Manager();
             this.right_cont = new qx.ui.window.Desktop(windowManager);
                 
-            if(!USEMENUBAR){
-                this._pane.add(this.left_cont, 0);
-                this._pane.add(this.right_cont, 1);
-                this.navTree = new bsk.view.NavTree(this);
-                this.left_cont.add(this.navTree, {flex:1});
-            }
-            if(USEMENUBAR){
-                this.tcont.add(this.right_cont, {flex: 1});
-            }
+            this.tcont.add(this.right_cont, {flex: 1});
 
             this._createInitialView();
 
             var isle = new qx.ui.root.Inline(document.getElementById("ria"))
                 .set({
-                decorator: "main",
                 padding: 0,
-                width: 1000,
-                height: 700,
+                width: bsk.Application.APP_WIDTH,
+                height: bsk.Application.APP_HEIGHT,
                 textColor: "black",
-                backgroundColor: "#cccccc"
+                backgroundColor: "#d7d7d7"
             });
             dockLayoutComposite.add(this.tcont);
             isle.add(dockLayoutComposite);
             //this.getRoot().add(dockLayoutComposite, {edge:0});
+            
         },
-        
+            
         _createInitialView : function() {
             this.right_cont.removeAll();
         },
@@ -221,8 +222,6 @@ qx.Class.define("bsk.Application",
                     this.cur_controller = screen.controller;
                     this.ActionRow = screen.actionRow;
                     this.FilterVal = screen.filterVal;
-
-                    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                     //this.right_cont.removeAll();
                     this._makeWindow(this.cur_controller)
                     //this.right_cont.add(this.cur_controller, {flex:1});
@@ -296,7 +295,7 @@ qx.Class.define("bsk.Application",
                         allowMaximize: false,
                         allowMinimize: false,
                         showMinimize: false,
-                        showStatusbar: false,
+                        showStatusbar: true,
                         movable: false,
                         resizable: false,
                         showClose: false,
@@ -304,7 +303,8 @@ qx.Class.define("bsk.Application",
                     });
                 win.setLayout(new qx.ui.layout.HBox());
                 
-                win.setHeight(600);
+                win.setWidth(bsk.Application.APP_WIDTH);
+                win.setHeight(bsk.Application.workarea_height());
                 
                 console.log("--->", this.curMenu.name);
                 

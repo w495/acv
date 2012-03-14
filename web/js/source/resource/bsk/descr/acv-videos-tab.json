@@ -83,11 +83,11 @@
             "sortable" : true},
         {"name" : "datestart",
             "alias" : "Дата начала",
-            "type" : "erl_datetime",
+            "type" : "erl_date",
             "sortable" : true},
         {"name" : "datestop",
             "alias" : "Дата конца",
-            "type" : "erl_datetime",
+            "type" : "erl_date",
             "sortable" : true}
     ],
 

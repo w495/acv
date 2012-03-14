@@ -166,6 +166,10 @@ qx.Class.define("bsk.view.GenericTableModel",
                                 var dt = bsk.util.utils.getDateLocal(rowVal, 0);
                                 rowVal = bsk.util.utils.formatJsDateTime(dt);
                                 break;
+                            case "erl_date":
+                                var dt = bsk.util.utils.getDateLocal(rowVal, 0);
+                                rowVal = bsk.util.utils.formatJsDate(dt);
+                                break;
                             case "erl_datetime_nullable":
                                 if("" != rowVal){
                                     var dt = bsk.util.utils.getDateLocal(rowVal, 0);
@@ -179,7 +183,7 @@ qx.Class.define("bsk.view.GenericTableModel",
                                 rowVal = bsk.util.utils.formatJsDateTime(dt);
                                 break;
                             case "percent":
-                                rowVal = rowVal *100;
+                                rowVal = rowVal * 100;
                                 if(desc.tofixed)
                                     rowVal = rowVal.toFixed(desc.tofixed);
                                 rowVal += "%";

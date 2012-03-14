@@ -111,6 +111,13 @@ qx.Class.define("bsk.util.utils",
                                   dt.getSeconds());
         },
 
+        formatJsDate : function(dt) {
+            return
+                this.formatDate(dt.getFullYear(),
+                    dt.getMonth() + 1,
+                        dt.getDate());
+        },
+        
         formatJsTime : function(dt) {
             return this.formatTime(dt.getHours(),
                                    dt.getMinutes(),

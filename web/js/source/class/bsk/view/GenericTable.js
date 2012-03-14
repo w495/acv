@@ -14,11 +14,22 @@ qx.Class.define("bsk.view.GenericTable",
             }
         };
 
+        
+    
         this.model = new bsk.view.GenericTableModel(cntl, this, tabDescription);
         this.base(arguments, this.model, custom);
+        // this.base(arguments, this.model);
 
+        /*
+        this.width = 600;
+        this.height = 400;
+        this.decorator = null;
+        */
+        
+        console.log("thisthis --------- >>>>", this);
+        
         this.setStatusBarVisible(false); // убрать rows в гридах
-        this.setColumnVisibilityButtonVisible(false);
+        this.setColumnVisibilityButtonVisible(true);
 
         this.addListener("cellClick", this._onCellClick, this);
         this.addListener("cellDblclick", this._onCellDblClick, this);
@@ -26,6 +37,7 @@ qx.Class.define("bsk.view.GenericTable",
         this.tcm = this.getTableColumnModel();
         this.resizeBehavior = this.tcm.getBehavior();
         
+        /*
             for(var i=0; i<this.tabModel.columns.length; i++) {
                 var I = this.tabModel.columns[i];
                 switch(I.type) {
@@ -40,7 +52,10 @@ qx.Class.define("bsk.view.GenericTable",
                         break;
                 }
             }
-        //tcm.setDataCellRenderer(1, new qx.ui.table.cellrenderer.Boolean());
+         */
+            
+
+        
         // Tooltip
         this.tooltipTimer = new qx.event.Timer(1000);
         this.tooltipTimer.addListener("interval", this._onTooltipTimer, this);
@@ -55,6 +70,10 @@ qx.Class.define("bsk.view.GenericTable",
                 this.tooltip.hide();
             this.tooltipTimer.stop();
         }, this);
+        
+        
+        this.setWidth(900);
+        this.setHeight(200);
     },
 
     members : {
