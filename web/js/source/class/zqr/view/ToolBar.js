@@ -20,8 +20,6 @@
 #asset(qx/icon/Tango/32/actions/dialog-apply.png)
 #asset(qx/icon/Tango/32/actions/dialog-close.png)
 
-
-
 #asset(qx/icon/Tango/22/actions/go-previous.png)
 #asset(qx/icon/Tango/22/actions/system-log-out.png)
 
@@ -44,6 +42,11 @@
 #asset(qx/icon/Tango/16/apps/office-chart.png)
 #asset(qx/icon/Tango/16/apps/preferences-users.png)
 #asset(qx/icon/Tango/16/actions/edit-delete.png)
+
+
+
+
+
 
 ************************************************************************ */
 

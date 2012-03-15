@@ -22,6 +22,7 @@ class Base(generate.gen_css.Gen_css):
         string += self.s_roller()
         string += self.s_news()
         string += self.s_about()
+        string += self.s_pers()
         string += self.s_footer()
         return string
 
@@ -674,6 +675,49 @@ class Base(generate.gen_css.Gen_css):
 
         return res;
 
+
+    def s_pers(self):
+        return """
+        .s-pers{
+            background-color: #cccccc;
+        }
+        .b-fpb{
+            display:none;
+        }
+
+        .b-spb, .b-fpb{
+            top: 45%;
+            left: 45%;
+            position: absolute;
+            text-align: center;
+        }
+        .ria-bg{
+            top: -2px;
+            width: 1000px;
+            height: 700px;
+            position: relative;
+            background-color: #cccccc;
+        }
+        .ria-fg{
+            width: 1000px;
+            height: 700px;
+            top: 0px;
+            left: 0px;
+            position: absolute;
+        }
+
+        #ria{
+            position: absolute;
+            width: 1000px;
+            height: 700px;
+        }
+
+        #ria *{
+            font-size: 12px;
+            font-family: Tahoma ,sans-serif;
+        }
+        """
+        
     def s_footer(self):
         res = ""
         res = """.s-footer{

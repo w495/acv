@@ -11,11 +11,14 @@
 <xsl:import href="base.xsl"/>
 
 <xsl:template name="s-title-base">
-    <xsl:text>обычная</xsl:text>
+    <xsl:text>личный кабинет рекламодателя</xsl:text>
 </xsl:template>
 
 <xsl:template name="link-css-base">
     <xsl:call-template name="link-css-pers"/>
+</xsl:template>
+
+<xsl:template name="link-css-pers">
 </xsl:template>
 
 <xsl:template name="head-scripts-base">

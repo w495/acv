@@ -29,21 +29,24 @@
 
 -define(CATCHA_COOKIE, "captcha_codehex").
 
+%%
+%% Возврщает список вспомогательной информации для страницы
+%%
 
-
-
+meta([Req|_]) ->
+    [
+            {"login",               authorization:auth_getlogin(Req)},
+            {"current-path",        Req:get(path)}
+    ].
 
 %% 
 %% возврщает головную страницу
 %%
 index(Req) ->
     Xsl_path = "xsl/normal/outside/index.xsl",
-    Meta = [
-            {"current-path",        Req:get(path)}
-    ],
     Xml  = xml:encode_data(
         [
-            {"meta",    Meta}             % описание запроса
+            {"meta",    meta([Req])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
@@ -54,12 +57,9 @@ index(Req) ->
 %%
 about(Req) ->
     Xsl_path = "xsl/normal/outside/about.xsl",
-    Meta = [
-            {"current-path",        Req:get(path)}
-    ],
     Xml  = xml:encode_data(
         [
-            {"meta",    Meta}             % описание запроса
+            {"meta",    meta([Req])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
@@ -73,12 +73,9 @@ signin(Req) ->
 
 signin(Req, State) ->
     Xsl_path = "xsl/normal/outside/signin.xsl",
-    Meta = [
-            {"current-path",        Req:get(path)}
-    ],
     Xml  = xml:encode_data(
         [
-            {"meta",    Meta}             % описание запроса
+            {"meta",    meta([Req])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
@@ -120,12 +117,10 @@ signup(Req) ->
 
 signup(Req, State) ->
     Xsl_path = "xsl/normal/outside/signup.xsl",
-    Meta = [
-            {"current-path",        Req:get(path)}
-    ],
+
     Xml  = xml:encode_data(
         [
-            {"meta",    Meta}             % описание запроса
+            {"meta",    meta([Req])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
@@ -193,6 +188,24 @@ signup_post(Req, State) ->
     end.
 
 %%
+%% Возврщает страницу предварающую страницу пользователя
+%%
+pref(Req) ->
+    try
+        authorization:auth_required(Req)
+    catch
+        throw:auth_required -> throw({redirect, "/", []})
+    end,
+    Xsl_path = "xsl/normal/outside/pref.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
 %% Возврщает страницу пользователя
 %%
 pers(Req) ->
@@ -201,18 +214,15 @@ pers(Req) ->
     catch
         throw:auth_required -> throw({redirect, "/", []})
     end,
-
     Xsl_path = "xsl/normal/outside/pers.xsl",
-    Meta = [
-            {"current-path",        Req:get(path)}
-    ],
     Xml  = xml:encode_data(
         [
-            {"meta",    Meta}             % описание запроса
+            {"meta",    meta([Req])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
+
 
 captcha(Req) ->
     {CodeHex, BinPng} = captcha:new(),

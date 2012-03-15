@@ -117,6 +117,7 @@ dmap(Path) ->
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};
 
+        "/pref" ->              {outside, pref};
         "/pers" ->              {outside, pers};
 
         "/signup" ->            {outside, signup};

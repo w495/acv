@@ -23,8 +23,8 @@
     "profiling",
     "source",
     "source-all",
-    "test",
-    "test-source",
+    //"test",
+    //"test-source",
     "translation"
   ],
 

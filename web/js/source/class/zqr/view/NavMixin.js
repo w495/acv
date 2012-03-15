@@ -20,6 +20,7 @@ qx.Mixin.define("zqr.view.NavMixin",
         init : function(root) {
             this.biz = root;
             this.addListener("changeSelection", this._onMenuSelect, this);
+            this.menu = {};
             this.__buildMenu();
         },
     
@@ -27,17 +28,16 @@ qx.Mixin.define("zqr.view.NavMixin",
             var I = this.getSelection()[0];
             var L = I.getLabel();
             if(this.menu[L] != undefined){
-                console.log("this.menu[L] = ", this.menu[L]);
                 this.biz.onMenuChange(this.menu[L]);
             }
         },
 
         __buildMenu : function() {
-            zqr.util.utils.getStaticJson('resource/zqr/descr/menu.json', this.__onGetMenuResource, this);
+            zqr.util.utils.getStaticJson('resource/zqr/descr/menu.json',
+                                         this.__onGetMenuResource, this);
         },
 
         __onGetMenuResource : function(response) {
-            //qx.util.Json.parse
             var result = zqr.util.utils.parseStaticJsonRsp(response);
             if (zqr.util.errors.process(this, result)==false)
                 return false;

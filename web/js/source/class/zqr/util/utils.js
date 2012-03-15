@@ -49,7 +49,6 @@ qx.Class.define("zqr.util.utils",
          */
         parseStaticJsonRsp: function(response) {
             var result = response.getContent();
-            console.log("result ---> ", result);
             return eval("(" + result + ")");
         },
         
@@ -112,8 +111,7 @@ qx.Class.define("zqr.util.utils",
         },
 
         formatJsDate : function(dt) {
-            return
-                this.formatDate(dt.getFullYear(),
+            return this.formatDate(dt.getFullYear(),
                     dt.getMonth() + 1,
                         dt.getDate());
         },
