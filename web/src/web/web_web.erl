@@ -186,49 +186,53 @@ serve_request(?RIA_MENU_URL_, Req) ->
 serve_request(?RIA_MENU_URL, Req) ->
     serve_request(menu, Req);
 
-%%%
-%%% <???> 3
-%%%
-serve_request("/resource/" ++ T, Req) ->
-    %?D("T === ~p~n",    [T]),
-    %?D("r++T === ~p~n",    ["/resource/" ++ T]),
-    %?D("?RIA_HOME ++ T=== ~p~n",    [?RIA_HOME ++ "/resource/" ++ T]),
-    serve_static(?RIA_HOME ++ "/resource/", T, Req);
 
+%%% RIA DEBUG
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/index.html", Req) ->
-    % перенаправление в динамический мэппинг для проверки авторизации
-    serve_request("INDEX", Req); 
-
-serve_request("/" ++ ?QOOXDOO_BUILD ++"/resource/" ++ T, Req) ->
-    serve_static(?RIA_HOME ++ "/resource/", T, Req);
+    serve_request("INDEX", Req);
 
 serve_request("/" ++ ?QOOXDOO_BUILD ++ "/" ++ T, Req) ->
     serve_static(?RIA_HOME, T, Req);
 
-serve_request("/deps/qooxdoo/" ++ T, Req) ->
-    serve_static("deps/qooxdoo/", T, Req);
+%%% RIA PRODUCTION
+serve_request("/resource/" ++ T, Req) ->
+    serve_static(?RIA_HOME ++ "/resource/", T, Req);
 
-serve_request(?STATIC_FAVICON_URL, Req) ->
-    serve_static(?STATIC_FAVICON_PATH, [], Req);
+serve_request(?RIA_DEPS_URL ++ T, Req) ->
+    serve_static(?RIA_DEPS_PATH, T, Req);
 
-serve_request(?STATIC_DATA_URL ++ T, Req) ->
-    serve_static(?STATIC_DATA_PATH, T, Req);
+serve_request(?RIA_BIN_URL ++ T , Req) ->
+    serve_static(?RIA_BIN_PATH, T, Req);
 
-serve_request(?STATIC_MEDIA_URL ++ T, Req) ->
-    serve_static(?STATIC_MEDIA_PATH, T, Req);
-
-serve_request(?STATIC_CSS_URL ++ T, Req) ->
-    serve_static(?STATIC_CSS_PATH, T, Req);
-
+%%% JS
 serve_request(?STATIC_JS_URL ++ "ria.js", Req) ->
-    serve_static("js/build/script/", "bsk.js", Req);
+    serve_static(?RIA_BIN_PATH, "zqr.js", Req);
 
 serve_request(?STATIC_JS_URL ++ T, Req) ->
     serve_static(?STATIC_JS_PATH, T, Req);
 
-
+%%% IMAGES
 serve_request(?STATIC_IMAGES_URL ++ T, Req) ->
     serve_static(?STATIC_IMAGES_PATH, T, Req);
+
+%%% FAVICON
+serve_request(?STATIC_FAVICON_URL, Req) ->
+    serve_static(?STATIC_FAVICON_PATH, [], Req);
+
+%%% CSS
+serve_request(?STATIC_CSS_URL ++ T, Req) ->
+    serve_static(?STATIC_CSS_PATH, T, Req);
+
+%%% DATA
+serve_request(?STATIC_DATA_URL ++ T, Req) ->
+    serve_static(?STATIC_DATA_PATH, T, Req);
+
+%%% MEDIA
+serve_request(?STATIC_MEDIA_URL ++ T, Req) ->
+    serve_static(?STATIC_MEDIA_PATH, T, Req);
+
+
+
 
 
 %% ========================================================================

@@ -1,29 +1,29 @@
 {
   "info" : 
   {
-    "name" : "bsk",
-
-    "summary" : "Custom Application",
+    "name" : "zqr",
+    "summary" : "Zavr Qooxdoo Custom Ria",
     "description" : "This is a skeleton for a custom application with qooxdoo.",
-    
-    "homepage" : "http://some.homepage.url/",
-
+    "homepage" : "https://github.com/zavr/zqr",
     "license" : "SomeLicense",
     "authors" : 
     [
       {
-        "name" : "First Author (uid)",
-        "email" : "first.author@some.domain"
+        "name" : "Ilya w-495 Nikitin",
+        "email" : "w@w-495.ru"
+      },
+      {
+        "name" : "Serge сff Kozhevnikov",
+        "email" : ""
       }
     ],
-
     "version" : "trunk",
-    "qooxdoo-versions": ["1.0"]
+    "qooxdoo-versions": ["1.6"]
   },
   
   "provides" : 
   {
-    "namespace"   : "bsk",
+    "namespace"   : "zqr",
     "encoding"    : "utf-8",
     "class"       : "source/class",
     "resource"    : "source/resource",

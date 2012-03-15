@@ -1,5 +1,9 @@
 
 
+
+-define(RIA_DEPS_URL,  "/deps/qooxdoo/").
+-define(RIA_DEPS_PATH, "deps/qooxdoo/").
+
 -ifdef(debug).
     -define(QOOXDOO_BUILD, "source").
 -else.
@@ -8,6 +12,8 @@
 
 -define(RIA_HOME, "js/" ++ ?QOOXDOO_BUILD).
 
+-define(RIA_BIN_URL, "/script/").
+-define(RIA_BIN_PATH, ?RIA_HOME ++ "/script/").
 
 
 
@@ -20,11 +26,12 @@
 -define(RIA_MENU_COMMON_PATH, "resource/bsk/descr/menu.common.json").
 
 
+
+
+
+
 -define(STATIC_DATA_URL,        "/static/data/").
 -define(STATIC_DATA_PATH,       "static/data/").
-
-
-
 
 
 -define(STATIC_MEDIA_URL,        "/sm/").

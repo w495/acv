@@ -1,8 +1,0 @@
-{
-    type : "inline-form",
-    controller : "configForm",
-        toolbar : [
-            {type : "back"}
-        ]
-
-}
