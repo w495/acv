@@ -386,7 +386,7 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.b-rn-ul{
             margin: auto;
-            width: 90px;
+            width: 80px;
         }
         """
         
