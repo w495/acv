@@ -1,7 +1,5 @@
-/* auto gen Fri Mar 16 13:52:13 2012 */
-@font-face{font-family:'Cuprum';font-style:normal;font-weight:normal;src:local('Cuprum'),url('css-fonts/cuprum.woff') format('woff');}
-@font-face{font-family:'PT Sans Narrow';font-style:normal;font-weight:normal;src:local('PT Sans Narrow'),local('PTSans-Narrow'),url('css-fonts/psn.woff') format('woff');}
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font-family:'PT Sans Narrow','Cuprum',sans-serif;vertical-align:baseline;}
+/* auto gen Fri Mar 16 14:28:40 2012 */
+ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font-family:'Cuprum','PT Sans Narrow',sans-serif;vertical-align:baseline;}
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}
 body{line-height:1;}
 ol,ul{list-style:none;}
@@ -49,7 +47,7 @@ body{background:#e4e6e3 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAA
 .b-roller-nav{text-align:center;clear:both;}
 .b-rn-ul{margin:auto;width:90px;}
 .e-rn-ul{float:left;}
-.e-rn-but{margin:0px 5px 10px 0px;width:22px;height:22px;display:block;-moz-border-radius:20px;-webkit-border-radius:20px;-khtml-border-radius:20px;border-radius:20px;background-color:white;outline:none;}
+.e-rn-but{top:3px;margin:0px 5px 10px 0px;width:20px;height:20px;display:block;-moz-border-radius:20px;-webkit-border-radius:20px;-khtml-border-radius:20px;border-radius:20px;background-color:white;outline:none;}
 .e-rn-but{border:inset 1px #cccccc;}
 .e-rn-but:hover{background-color:#cccccc;}
 .e-rn-but:active{background-color:#c0c0c0;}

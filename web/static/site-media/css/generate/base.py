@@ -12,7 +12,7 @@ class Base(generate.gen_css.Gen_css):
         string = ""
         ### Тут не надо применять мета-классы,
         ###     так как порядок для css имеет значение
-        string += self.font_face()
+        #string += self.font_face()
         string += self.reset()
         string += self.common_modifiers()
         string += self.body()
@@ -61,7 +61,7 @@ class Base(generate.gen_css.Gen_css):
             padding: 0;
             border: 0;
             font-size: 100%;
-            font-family:'PT Sans Narrow','Cuprum',sans-serif;
+            font-family:'Cuprum', 'PT Sans Narrow',sans-serif;
             vertical-align: baseline;
         }
         article, aside, details, figcaption, figure, footer, header,
@@ -202,7 +202,7 @@ class Base(generate.gen_css.Gen_css):
             """%(d(Metrics))
             
             res += """.b-thehead-caption {
-                    padding-right: 1em;
+                    padding-right: 10px;
                     color: white;
                 }
             """
@@ -386,7 +386,7 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.b-rn-ul{
             margin: auto;
-            width: 80px;
+            width: 90px;
         }
         """
         
@@ -398,9 +398,10 @@ class Base(generate.gen_css.Gen_css):
         # display: inline-block;
         
         res += """.e-rn-but{
+            top: 3px;
             margin: 0px 5px 10px 0px;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             display: block;
             -moz-border-radius: 20px;
             -webkit-border-radius: 20px;
@@ -412,7 +413,11 @@ class Base(generate.gen_css.Gen_css):
         """
 
         if(Use.bgi_grad):
-            res += ".e-rn-but{%s}"%(
+            res += """.e-rn-but{
+                    %s
+                    width: 22px;
+                    height: 22px;
+                }"""%(
                 "background: url(%s) no-repeat;"%(
                     generate.util.tobase64("css-images/e-rn-but.png")
                 )
