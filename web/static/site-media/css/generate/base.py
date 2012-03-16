@@ -12,7 +12,7 @@ class Base(generate.gen_css.Gen_css):
         string = ""
         ### Тут не надо применять мета-классы,
         ###     так как порядок для css имеет значение
-        #string += self.font_face()
+        string += self.font_face()
         string += self.reset()
         string += self.common_modifiers()
         string += self.body()
@@ -63,6 +63,7 @@ class Base(generate.gen_css.Gen_css):
             font-size: 100%;
             font-family:'Cuprum', 'PT Sans Narrow',sans-serif;
             vertical-align: baseline;
+            outline: none;
         }
         article, aside, details, figcaption, figure, footer, header,
         hgroup, menu, nav, section{
@@ -149,12 +150,90 @@ class Base(generate.gen_css.Gen_css):
         """%(d(Metrics))
 
     def s_signup(self):
-        return  """
-            .s-signup{
-                padding-left: 22px;
-                background-color: white;
-            }
+        res = ""
+        res += """.s-signup{
+            padding-left: 22px;
+            background-color: white;
+        }
         """
+        res += """.b-csif-c{
+            display: inline-block;
+            overflow: hidden;
+        }
+        """
+        res += """.b-csif{
+            height: 29px;
+            width: 400px;
+            overflow: hidden;
+            position: relative;
+            border: 1px inset #ccc;
+            margin: 10px 0px 10px 0px;
+            -moz-border-radius: 100px;
+            -webkit-border-radius: 100px;
+            -khtml-border-radius: 100px;
+            border-radius: 20px;
+        }
+        """
+
+
+        res += """.e-csif-fl{
+            display: block;
+            float: left;
+            height: 16px;
+            min-width:20px;
+            max-width:400px;
+            font-size: 15px;
+            padding: 7px 10px 7px 10px;
+            -moz-border-radius: 100px 0px 0px 100px;
+            -webkit-border-radius: 100px 0px 0px 100px;
+            -khtml-border-radius: 100px 0px 0px 100px;
+            border-radius: 100px 0px 0px 100px;
+            
+        }
+        """
+
+        if(Use.css3_grad):
+            res += ".b-csif{%s}"%(
+                generate.util.lgt('#f5f5f2', '#cfd1cf', '#cfd1cf')
+            )
+        if(Use.bgi_grad):
+            res += ".b-csif-fl{%s}"%(
+                "background: #0796ea url(%s);"%(
+                    generate.util.tobase64("css-images/b-news-header.png")
+                )
+            )
+        res += """.b-csif{
+            background-position: 10px; 20px;
+        }
+        """
+        
+        res += """.e-csif-fl.m-login{
+            padding-right: 18px;
+        }
+        """
+        res += """.e-csif-fl.m-password-c{
+            padding-right: 15px;
+        }
+        """
+        res += """.e-csif-fi{
+            width: 100px;
+            font-size: 15px;
+            padding: 5px 10px 5px 10px;
+            background-color: white;
+            border: none;
+            outline: none;
+        }
+        """
+        res += """.e-csif-ep{
+            float:right;
+            font-size: 15px;
+            padding: 5px 10px 5px 10px;
+            background-color: white;
+            border: none;
+            outline: none;
+        }
+        """
+        return res;
         
     def s_header(self):
         b_thehead_h = 81;
@@ -285,6 +364,7 @@ class Base(generate.gen_css.Gen_css):
         res = "";
         res = """.s-header{
             height: %spx;
+            border-bottom: solid 4px #0898cd;
             overflow: hidden;
         }
         """%(b_thehead_h + b_thehead_caption_h);
@@ -296,7 +376,6 @@ class Base(generate.gen_css.Gen_css):
     def s_roller(self):
         res = ""
         res += """.s-roller{
-                border-top: solid 4px #0898cd;
                 height: 344px;
                 width: %(gwidth)s;
                 overflow:hidden;
@@ -657,16 +736,15 @@ class Base(generate.gen_css.Gen_css):
         res = ""
         
         res += """.s-about{
-                height: 303px;
                 background-color: white;
-                padding-left: %(header_loffset)s;
+                overflow: hidden;
             }
         """%(d(Metrics))
 
         res += """.b-a{
-            padding-top:20px;
-            }
-        """
+            padding: 20px 23px 20px %(header_loffset)s;
+        }
+        """%(d(Metrics))
 
         res += """.b-ah{
                 font-size: 30px;
@@ -705,6 +783,8 @@ class Base(generate.gen_css.Gen_css):
     def s_pers(self):
         s_pers = """
         .s-pers{
+            position: relative;
+            top: -4zpx;
             background-color: #cccccc;
         }
 

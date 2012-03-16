@@ -24,8 +24,21 @@ new(Opt, Size, Pointsize) ->
     Cmd = io_lib:format(
         "convert -background 'none' -fill '#222222' -size ~p -gravity Center "
         "-wave 5x~p -swirl ~p -font DejaVu-Serif-Book -pointsize ~p label:\"~s\""
-        " -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s",
-            [Size, random:uniform(50)+50, random:uniform(20)+5, Pointsize, Code, File]),
+        % " -draw 'Bezier 10,40 50,35 100,35 150,35 200,50 250,35 300,35' ~s",
+        % " -draw 'Bezier 0,35 100,30 200,20 300,20 400,15 250,10 500,5' ~s",
+        " -draw 'fill '#444444' bezier ~p,~p ~p,~p ~p,~p ~p,~p ~p,~p  ~p,~p ~p,~p ~p,~p ~p,~p' ~s",
+            [Size, random:uniform(50)+50, random:uniform(20)+5,
+            Pointsize, Code,
+            random:uniform(10)+0,      random:uniform(5)+40,
+            random:uniform(10)+25,     random:uniform(5)+35,
+            random:uniform(10)+50,     random:uniform(5)+30,
+            random:uniform(10)+75,     random:uniform(5)+25,
+            random:uniform(10)+100,    random:uniform(5)+20,
+            random:uniform(10)+120,    random:uniform(5)+15,
+            random:uniform(10)+150,    random:uniform(5)+10,
+            random:uniform(10)+175,    random:uniform(5)+5,
+            random:uniform(10)+200,    random:uniform(5)+0,
+            File]),
 
     os:cmd(Cmd),
 

@@ -125,7 +125,9 @@
     <!--
         Стили страницы - нулевой уровень
     -->
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow|Cuprum&#38;subset=latin,cyrillic" />
+    <!--
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow|Cuprum&#38;subset=latin,cyrillic" />
+    -->
     <xsl:text disable-output-escaping="yes"><![CDATA[<!--[if IE]>]]></xsl:text>
         <!-- Для IE используем картинки -->
         <link rel="stylesheet" type="text/css" media="all" href="/c/base.bgi.css" />
