@@ -212,7 +212,7 @@ class Base(generate.gen_css.Gen_css):
                     padding-right: 10px;
                     position: relative;
                     top: -60px;
-                    width: 410px;
+                    width: 420px;
                     height: 30px;
                     vertical-align: middle;
                     padding-left: 10px;
