@@ -15,6 +15,9 @@ class Use:
 
 class Metrics:
     gwidth = "%spx"%(1000)
+    rheight = "%spx"%(700)
+    header_loffset = "%spx"%(23)
+    header_roffset = "%spx"%(23)
 
 class Colors:
     green = "";

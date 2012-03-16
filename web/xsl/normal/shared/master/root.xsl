@@ -125,7 +125,14 @@
     <!--
         Стили страницы - нулевой уровень
     -->
-    <link rel="stylesheet" type="text/css" media="all" href="/c/base.css" />
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!--[if IE]>]]></xsl:text>
+        <!-- Для IE используем картинки -->
+        <link rel="stylesheet" type="text/css" media="all" href="/c/base.bgi.css" />
+    <xsl:text disable-output-escaping="yes"><![CDATA[<![endif]-->]]></xsl:text>
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!--[if !IE]> -->]]></xsl:text>
+        <!-- Для нормальных браузеров используем CSS3 -->
+        <link rel="stylesheet" type="text/css" media="all" href="/c/base.css3.css" />
+    <xsl:text disable-output-escaping="yes"><![CDATA[<!-- <![endif]-->]]></xsl:text>
     <xsl:call-template name="link-css-root" />
 </xsl:template>
 

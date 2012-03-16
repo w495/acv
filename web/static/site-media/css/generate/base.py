@@ -182,6 +182,8 @@ class Base(generate.gen_css.Gen_css):
             res = ""
             res += """.b-thehead-caption {
                     display: block;
+                    font-size: 13px;
+                    line-height: 16px;
                     text-align: right;
                     height: %spx;
                 }
@@ -195,9 +197,9 @@ class Base(generate.gen_css.Gen_css):
             res += """.b-thehead-logo{
                     position: relative;
                     top:10px;
-                    left:20px;
+                    left: %(header_loffset)s;
                 }
-            """
+            """%(d(Metrics))
             
             res += """.b-thehead-caption {
                     padding-right: 1em;
@@ -220,6 +222,8 @@ class Base(generate.gen_css.Gen_css):
             """
             res += """.s-sfm-input{
                     font-size: 12px;
+                    border: 1px inset #ccc;
+                    outline: none;
                     background-color: transparent;
                     padding-left: 10px;
                     margin-left: 10px;
@@ -320,19 +324,27 @@ class Base(generate.gen_css.Gen_css):
             float: left;
             min-width:200px;
             max-width:500px;
-            margin-left: 40px;
+            margin-left: 67px;
         }
         """
 
         res +=""".b-rf-head{
             color: #259a3f;
-            font-size: 48px;
+            font-size: 55px;
             font-weight: normal;
         }
         """
 
+        res +=""".b-rf-caption{
+            color: white;
+            font-size: 35px;
+            line-height: 65px;
+            font-weight: normal;
+        }
+        """
+        
         res +=""".b-rf-content{
-            margin: 10px 0px 0px 0px;
+            margin: 0px 0px 0px 0px;
             color: white;
         }
         """
@@ -347,7 +359,7 @@ class Base(generate.gen_css.Gen_css):
             color: white;
             margin-top: 10px;
             padding-top: 7px;
-            
+            font-size: 18px;
             height:  26px;
             width: 202px;
 
@@ -387,8 +399,8 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.e-rn-but{
             margin: 0px 5px 10px 0px;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: block;
             -moz-border-radius: 20px;
             -webkit-border-radius: 20px;
@@ -429,9 +441,6 @@ class Base(generate.gen_css.Gen_css):
             }
             """
 
-
-                        
-
         res +=""".b-rf-ul{
             margin: 0px 0px 0px 15px;
             list-style: outside url(%s);
@@ -441,14 +450,9 @@ class Base(generate.gen_css.Gen_css):
         )
 
         res +=""".e-rf-ul{
-            margin: 5px 0px 10px 0px;
-        }
-        """
-
-        res +=""".b-rf-caption{
-            color: white;
-            font-size: 36px;
-            font-weight: normal;
+            margin: 0px 0px 10px 0px;
+            font-size: 14px;
+            line-height: 16px;
         }
         """
 
@@ -490,15 +494,15 @@ class Base(generate.gen_css.Gen_css):
                 display: block;
                 width: 600px;
                 font-size: 30px;
+                line-height: 20px;
                 font-variant: normal;
                 font-width: normal;
                 font-weight: normal;
                 color: white;
-                margin-top: 10px;
-                padding: 0px 0px 0px 10px;
                 float:left;
+                margin: 10px 0px 0px %(header_loffset)s;
             }
-            """
+            """%(d(Metrics))
 
         def _b_news_doc():
             res = """.b-news-doc {
@@ -634,9 +638,9 @@ class Base(generate.gen_css.Gen_css):
         res += """.s-about{
                 height: 303px;
                 background-color: white;
-                padding-left: 22px;
+                padding-left: %(header_loffset)s;
             }
-        """
+        """%(d(Metrics))
 
         res += """.b-a{
             padding-top:20px;
@@ -644,13 +648,15 @@ class Base(generate.gen_css.Gen_css):
         """
 
         res += """.b-ah{
-                font-size: 20pt;
+                font-size: 30px;
+                line-height: 20px;
                 color: #0191d3;
             }
         """
 
         res += """.b-ac{
-        
+        font-size: 15px;
+            line-height: 20px;
         }
         """
 
@@ -677,10 +683,11 @@ class Base(generate.gen_css.Gen_css):
 
 
     def s_pers(self):
-        return """
+        s_pers = """
         .s-pers{
             background-color: #cccccc;
         }
+
         .b-fpb{
             display:none;
         }
@@ -691,32 +698,46 @@ class Base(generate.gen_css.Gen_css):
             position: absolute;
             text-align: center;
         }
+        """
+        
+        ria_bg = """
         .ria-bg{
             top: -2px;
-            width: 1000px;
-            height: 700px;
+            width: %(gwidth)s;
+            height: %(rheight)s;
             position: relative;
             background-color: #cccccc;
         }
+        """%(d(Metrics))
+        
+        ria_fg = """
         .ria-fg{
-            width: 1000px;
-            height: 700px;
+            width: %(gwidth)s;
+            height: %(rheight)s;
             top: 0px;
             left: 0px;
             position: absolute;
         }
-
+        """%(d(Metrics))
+        
+        __ria = """
         #ria{
             position: absolute;
-            width: 1000px;
-            height: 700px;
+            width: %(gwidth)s;
+            height: %(rheight)s;
         }
-
+        """%(d(Metrics))
+        
+        __ria_ = """
         #ria *{
             font-size: 12px;
             font-family: Tahoma ,sans-serif;
         }
         """
+        
+        res = s_pers + ria_bg + ria_fg + __ria + __ria_
+        return res
+
         
     def s_footer(self):
         res = ""
