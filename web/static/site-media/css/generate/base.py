@@ -203,7 +203,6 @@ class Base(generate.gen_css.Gen_css):
             
             res += """.b-thehead-caption {
                     padding-right: 10px;
-                    color: white;
                 }
             """
             res += """.s-signin{
@@ -211,13 +210,12 @@ class Base(generate.gen_css.Gen_css):
                     /*background-color: red;*/
                     float: right;
                     text-align:right;
-                    padding-right: 10px;
                     position: relative;
                     top: -60px;
                     width: 420px;
                     height: 30px;
                     vertical-align: middle;
-                    padding-left: 10px;
+                    margin-right: 10px;
                 }
             """
             res += """.s-sfm-input{
@@ -250,7 +248,9 @@ class Base(generate.gen_css.Gen_css):
 
             res += """.s-sfm-lc{
                     padding-top: 5px;
+                    margin-right: 13px;
                     font-size: 12px;
+                    line-height: 16px;
                 }
             """
             res += """.s-sfm-lsignup{
@@ -270,7 +270,12 @@ class Base(generate.gen_css.Gen_css):
                 }
             """
             res += """.s-sfm-but{
-                    font-size: 16px;
+                    padding: 0px 0px 0px 2px;
+                    margin: 0px 0px 0px 0px;
+                    tex-align: left;
+                    width: 14px;
+                    font-size: 12px;
+                    font-family: Georgia, 'Times New Roman', Times, serif;
                     background-color: transparent;
                     border: none;
                 }
@@ -478,6 +483,7 @@ class Base(generate.gen_css.Gen_css):
             res += """.b-news-header{
                 clear: both;
                 height: 50px;
+                overflow: hidden;
             }
             """
             if(Use.css3_grad):
@@ -497,9 +503,8 @@ class Base(generate.gen_css.Gen_css):
         def _e_news_head():
             return """.e-news-head{
                 display: block;
-                width: 600px;
+                width: 800px;
                 font-size: 30px;
-                line-height: 20px;
                 font-variant: normal;
                 font-width: normal;
                 font-weight: normal;
@@ -515,7 +520,8 @@ class Base(generate.gen_css.Gen_css):
                 position: relative;
                 float:right;
                 font-size: 14px;
-                padding: 8px 10px 10px 33px;
+                line-height: 16px;
+                padding: 8px 23px 10px 33px;
                 margin-top: %s;
                 background: url(%s) no-repeat;
             }
@@ -537,8 +543,8 @@ class Base(generate.gen_css.Gen_css):
             res =  ""
             res += """.b-news{
                 clear: both;
-                padding: 20px 0 0 0;
-                height: 348px;
+                height: 368px;
+                overflow: hidden;
             }
             """
 
@@ -559,21 +565,22 @@ class Base(generate.gen_css.Gen_css):
             """
             
             res += """.s-news-all{
+                padding: 10px 0px 0px 0px;
                 display: block;
                 float:right;
+                text-align:right;
                 width: 160px;
+                margin: 0px 23px 0px 0px
             }
             """
 
             res +=""".b-na-bat{
                 text-align:center;
                 color: white;
-                margin-top: 10px;
-                padding-top: 10px;
-
-                height:  28px;
-                width: 139px;
-
+                padding-top: 4px;
+                height:  22px;
+                width: 134px;
+                font-size: 18px;
                 -moz-border-radius: 5px;
                 -webkit-border-radius: 5px;
                 -khtml-border-radius: 5px;
@@ -595,13 +602,21 @@ class Base(generate.gen_css.Gen_css):
                 )
 
             res += """.s-news-list-item{
-                padding: 4px;
-                margin: 4px;
+                padding: 2px;
+                margin: 2px;
                 display: block;
                 float:left;
+                width: 286px
             }
             """
 
+            res += """.b-nlic{
+                margin: 4px 0px 0px 0px;
+                height: 75px;
+                font-size: 18px;
+            }
+            """
+            
             res += """.b-nlil{
                 display: block;
                 color:black;
@@ -610,6 +625,7 @@ class Base(generate.gen_css.Gen_css):
             """
             
             res += """.b-nli{
+                height: 292px;
                 background-color: white;
                 border:  4px solid #cccccc;
                 padding: 4px;
@@ -654,7 +670,6 @@ class Base(generate.gen_css.Gen_css):
 
         res += """.b-ah{
                 font-size: 30px;
-                line-height: 20px;
                 color: #0191d3;
             }
         """
