@@ -11,10 +11,10 @@
 </xsl:template>
 
 <xsl:template name="s-main-common">
-    <h1>
-        <xsl:text>Регистрация рекламодателя</xsl:text>
-    </h1>
     <section class="s-signup">
+        <h3 class="s-signup-h">
+            <xsl:text>Регистрация рекламодателя</xsl:text>
+        </h3>
         <xsl:call-template name="s-signup" />
     </section>
 </xsl:template>
@@ -68,22 +68,18 @@
                 </xsl:attribute>
             </xsl:if>
         </input>
-        <xsl:if test="$Error_type  != ''">
-            <div class="e-csif-fm">
-                <xsl:choose>
-                    <xsl:when test="$Error_type = $Name">
-                        <div class="e-csif-w m-{$Error_type}"
-                            title="{$Error_message}">&nbsp;</div>
-                    </xsl:when>
-                    <xsl:when test="$Error_type != $Name">
-                        <div class="e-csif-r">&nbsp;</div>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <div class="e-csif-r">&nbsp;</div>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </div>
-        </xsl:if>
+        <div class="e-csif-fm">
+            <xsl:choose>
+                <xsl:when test="$Error_type = $Name">
+                    <div class="e-csif-w m-{$Error_type}"
+                        title="{$Error_message}">&nbsp;</div>
+                </xsl:when>
+                <xsl:when test="$Error_type != $Name">
+                    <div class="e-csif-r">&nbsp;</div>
+                </xsl:when>
+                <xsl:otherwise>&nbsp;</xsl:otherwise>
+            </xsl:choose>
+        </div>
     </div>
 </xsl:template>
 

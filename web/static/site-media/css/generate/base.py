@@ -200,6 +200,11 @@ class Base(generate.gen_css.Gen_css):
         }
         """
 
+        res += """s-signup-h{
+            font-size: 30px;
+            color: #01911d3
+        }
+        """
         res += """.s-signup{
             padding-left: 22px;
             background-color: white;
