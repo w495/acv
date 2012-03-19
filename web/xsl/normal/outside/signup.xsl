@@ -11,11 +11,13 @@
 </xsl:template>
 
 <xsl:template name="s-main-common">
-    <section class="s-signup">
-        <h3 class="s-signup-h">
+    <section class="b-signup">
+        <h3 class="b-signup-h">
             <xsl:text>Регистрация рекламодателя</xsl:text>
         </h3>
-        <xsl:call-template name="s-signup" />
+        <div class="s-signup">
+            <xsl:call-template name="s-signup" />
+        </div>
     </section>
 </xsl:template>
 

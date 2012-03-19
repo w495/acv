@@ -200,16 +200,24 @@ class Base(generate.gen_css.Gen_css):
         }
         """
 
-        res += """s-signup-h{
+        res += """.b-signup-h{
             font-size: 30px;
-            color: #01911d3;
+            color: #0191d3;
         }
         """
-        res += """.s-signup{
+        res += """.b-signup{
+            padding-top: 17px;
             padding-left: 22px;
             background-color: white;
         }
         """
+
+        res += """.s-signup{
+            padding-top: 17px;
+            padding-left: 34px;
+        }
+        """
+        
         res += """.b-csif-c{
             display: inline-block;
             overflow: hidden;
