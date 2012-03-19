@@ -36,7 +36,6 @@ serve_static_inner(P, T, Req, ExtraHeaders) ->
         Req:serve_file(Fname, P, [{"content-encoding", "gzip"} | ExtraHeaders])
     catch
         _:_ ->
-            ?D("ExtraHeaders = ~p", [ExtraHeaders]),
             Req:serve_file(T, P, ExtraHeaders)
     end.
 

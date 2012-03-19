@@ -12,8 +12,13 @@
         $(this).addClass(c);
         return false;
     });};
+    $.fn.reca = function(a,n,c){$(this).click(function(){
+        $(this).attr('src', $(this).attr('src')+'?'+Math.random());
+        return false;
+    });};
 })(jQuery);
 /*main*/
 $(function() {
    $(".e-rn-but").swp(".s-roller-frame", 3, "cur");
+   $(".e-captcha").reca();
 });

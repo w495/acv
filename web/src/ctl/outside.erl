@@ -115,6 +115,23 @@ signin_post(Login, Password, State) ->
 signup(Req) ->
     signup(Req, {normal}).
 
+signup(Req, {error, Error, Val}) ->
+    Xsl_path = "xsl/normal/outside/signup.xsl",
+
+    ?D(" Error => ~p", [Error]),
+
+    Xml  = xml:encode_data(
+        [
+            {"val",     Val},
+            {"error",   Error},
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ),
+    ?D("Xml = ~p~n", [Xml]),
+
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]};
+
 signup(Req, State) ->
     Xsl_path = "xsl/normal/outside/signup.xsl",
 
@@ -134,19 +151,25 @@ signup_post(Req) ->
 
 
 signup_post(Req, State) ->
+    ?D("signup_post~n", []),
     Data = Req:parse_post(),
+    ?D("signup_post~n", []),
+
     Pass        = proplists:get_value("password",     Data, ""),
-    Pass_conf   = proplists:get_value("passwordC",    Data, ""),
+    Pass_conf   = proplists:get_value("password-c",    Data, ""),
     Updater_id  = ?UPDATER_ID,
 
     Code_hex = Req:get_cookie_value("captcha_codehex"),
     Code     = proplists:get_value("captcha",    Data, ""),
+
+    ?D("Data = ~p ~n", [Data]),
 
     case captcha:check(Code_hex, Code) of 
         true ->
             ?D("captcha:check > true~n", []),
             case Pass of
                 Pass_conf ->
+                    ?D("pass:check => true~n", []),
                     case Pass of
                         "null" ->
                             Pashash = null;
@@ -156,8 +179,8 @@ signup_post(Req, State) ->
                         _ ->
                             Pashash = null
                     end,
-                    E = norm:extr(Data, [{"id",            [nullable, integer]},
-                                        {"firstname",      [string]},
+                    ?D("pass:check <= true~n", []),
+                    E = norm:extr(Data, [{"firstname",      [string]},
                                         {"lastname",       [string]},
                                         {"patronimic",     [string]},
                                         {"login",          [string]},
@@ -166,25 +189,26 @@ signup_post(Req, State) ->
                                         {"organization",   [nullable, string]},
                                         {"position",       [nullable, string]}]),
 
+                    ?D("E:check > true~n", []),
                     Res = dao_customer:update_customer({E, Pashash, [], Updater_id}),
                     case Res  of
                         {ok, User_id} ->
                             Login = proplists:get_value("login", Data, ""),
-
+                    
                             % Кидаем событие о создании пользователя
-                            gen_event:notify(?SIGNUP_EVENT, Data),
+                            % gen_event:notify(?SIGNUP_EVENT, Data),
 
                             signin_post(Login, Pass, {normal});
-                        _ ->
-                            signup(Req)
+                        {error, Error} ->
+                            signup(Req, {error, Error, Data})
                     end;
                 _ ->
                     ?D("Pass_conf  = [~s]~n", [Pass_conf]),
-                    signup(Req)
+                    signup(Req, {error, password, Data})
             end;
         false ->
             ?D("captcha:check > false~n", []),
-            signup(Req)
+            signup(Req, {error, captcha, Data})
     end.
 
 %%

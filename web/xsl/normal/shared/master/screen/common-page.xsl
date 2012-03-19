@@ -11,7 +11,7 @@
 <xsl:import href="base.xsl"/>
 
 <xsl:template name="s-title-base">
-    <xsl:text>обычная</xsl:text>
+    <xsl:call-template name="s-title-common"/>
 </xsl:template>
 
 <xsl:template name="s-main-base">
@@ -19,7 +19,7 @@
 </xsl:template>
 
 <xsl:template name="foot-scripts-base">
-
+    <xsl:call-template name="foot-scripts-common"/>
 </xsl:template>
 
 <!--
