@@ -31,6 +31,7 @@
 
     full_delete_acv_video/1,
     delete_acv_video_shown_expired/0,
+    stop_old_acv_video/0,
     delete_acv_video_shown_expired/1,
     test_acv_video/0,
     test_eunit_1/0,
@@ -550,6 +551,14 @@ stop_acv_video(Acv_video_id) ->
     dao:simple(Query, [(Acv_video_id)]).
 
 %%% @doc
+%%% Остагнавливает кампанию срок действия которой истек
+%%%
+stop_old_acv_video() ->
+    Query = "update acv_video set acv_video.stoped = true "
+        " where acv_video.datestop < NOW();",
+    dao:simple(Query).
+
+%%% @doc
 %%% Запускает остановленную кампанию.
 %%%
 start_acv_video(Acv_video_id) ->
@@ -569,6 +578,9 @@ activate_acv_video(Acv_video_id) ->
 disactivate_acv_video(Acv_video_id) ->
     Query = "update acv_video set active = false where id=$1;",
     dao:simple(Query, [(Acv_video_id)]).
+
+
+
 
 %%% @doc
 %%% Удаляет устаревшие записи в acv_video_shown
