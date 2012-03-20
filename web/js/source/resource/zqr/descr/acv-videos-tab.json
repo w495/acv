@@ -55,7 +55,7 @@
             "sortable" : true},
             
         {"name" : "active",
-            "alias" : "Разрешена",
+            "alias" : "Статус",
             "type" : "enum",
             "dict"  : {
                 "true":    "Разрешена",
@@ -65,7 +65,7 @@
             "sortable" : true},
 
         {"name" : "stoped",
-            "alias" : "Запущена",
+            "alias" : "Состояние",
             "type" : "enum", 
             "dict": {
                 "true":    "Остановлена",
