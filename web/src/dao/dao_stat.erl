@@ -200,6 +200,23 @@ get_max_id(Con) ->
     {ok,[[{"av_stats_max_id",Max_id}]]}  = S,
     Max_id.
 
+
+getVideoNameByUrl(Video_url) ->
+    case mysql:get_prepared(mySqlConPool, getVideoNameByUrl) of
+        {error, _ } ->
+            Q = <<"select name from clip where url = ?;">>,
+            mysql:prepare(mySqlConPool, getVideoNameByUrl, Q);
+        _ -> ok
+    end,
+    case  mysql:execute(mySqlConPool, getVideoNameByUrl, [Video_url]) of
+        {data,{mysql_result, _Cols, [[Val]], _X31, _X32}} -> 
+            erlang:binary_to_list(Val);
+        Other -> 
+            io:format("ERROR: ~p:GetVideoNameByUrl ~p~n", [Other]),
+            undefined
+    end.
+
+
 compose_stat([R|T]) ->
     Acv_video_url = proplists:get_value("GUID", R), % Acv_video_url
     Usid = proplists:get_value ("user session id", R),
@@ -210,8 +227,12 @@ compose_stat([R|T]) ->
     Video_url = proplists:get_value("URL", R),
     User_id = proplists:get_value("User_id", R),
 
+    VName = getVideoNameByUrl(Video_url),
+    ?D("Video name by usrl: ~p -> ~p~n", [Video_url, VName]),
+
     SFish = #stat{
         video_url=Video_url,
+        video_name = VName,
         peer=Peer,
         server_node=Trans_server_node_name,
         datestart=null,
