@@ -1,8 +1,8 @@
 #!/bin/sh
 
 CMD=$1
-NODENAME="`date +web_ctl_%H_%M_%S_%N`@192.168.2.110"
-NODEMAIN="advsystem@192.168.2.156"
+NODENAME="`date +advsystem_ctl_%H_%M_%S_%N`@localhost"
+NODEMAIN="advsystem@localhost"
 COOKIE=OCFDAZSCILRVUEHEWFWA
 
 ERL_ARGS="+K true +A 128 +P 1000000"
@@ -15,7 +15,7 @@ if [ "$CMD" != "start" ]; then
   erl \
     -noinput \
     -pz $LOCALLBINPATH \
-    -name ${NODENAME} \
+    -sname ${NODENAME} \
     -s ctl \
     -hidden \
     -connect_all false \

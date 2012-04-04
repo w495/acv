@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NODENAME="advsystem@192.168.2.156"
+NODENAME="advsystem@localhost"
 CONFIG=app
 COOKIE=OCFDAZSCILRVUEHEWFWA
 
@@ -18,7 +18,7 @@ erl \
     -detached \
     -boot start_sasl \
     -config ${CONFIG} \
-    -name ${NODENAME} \
+    -sname ${NODENAME} \
     -s web \
     -mnesia dir '"./priv/session-db"' \
     ${ERL_ARGS} \
