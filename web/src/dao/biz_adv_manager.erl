@@ -69,7 +69,7 @@ get_acv({Type, Resourse, User_id}, Peer) when
                 " join clip on clip_mark.clip_id = clip.id "
                 " join mark on clip_mark.mark_id = mark.id "
                 " join mark_type on mark.mark_type_id = mark_type.id "
-                " where mark_type.name=\"Categories\" and clip.url=?;">>,
+                " where mark_type.name=\"Genre\" and clip.url=?;">>,
 
     %TODO реюзать prepare
     mysql:prepare(mySqlConPool, get_clip_categories, Query),
@@ -222,7 +222,15 @@ get_acv({Type, Resourse, User_id}, Peer) when
         true ->
             Selected_clip = []
     end,
-    Result_string = make_acv_xml(Selected_clip),
+    
+    if
+	Selected_clip =:= [] ->
+	    Result_string = "<block duration=\"600\" loadnext=\"300\">"
+			    "<creative category_id=\"16\" skip=\"no\" duration=\"600\" type=\"video\" start=\"0\" partner=\"videonow|doubleclick3\"/>"
+			    "</block>";
+	true ->
+	    Result_string = make_acv_xml(Selected_clip)
+    end,
     ?D("~nType = ~p, Result_string  = ~s~n", [Type, Result_string]),
     Result_string.
 

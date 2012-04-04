@@ -18,12 +18,12 @@
 
 
 -define(RIA_MENU_URL_,
-    "/" ++ ?QOOXDOO_BUILD ++ "/resource/bsk/descr/menu.json").
+    "/" ++ ?QOOXDOO_BUILD ++ "/resource/zqr/descr/menu.json").
 
--define(RIA_MENU_URL, "/resource/bsk/descr/menu.json").
+-define(RIA_MENU_URL, "/resource/zqr/descr/menu.json").
 
--define(RIA_MENU_ADMIN_PATH,  "resource/bsk/descr/menu.admin.json").
--define(RIA_MENU_COMMON_PATH, "resource/bsk/descr/menu.common.json").
+-define(RIA_MENU_ADMIN_PATH,  "resource/zqr/descr/menu.admin.json").
+-define(RIA_MENU_COMMON_PATH, "resource/zqr/descr/menu.common.json").
 
 
 
