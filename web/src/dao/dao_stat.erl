@@ -204,15 +204,15 @@ get_max_id(Con) ->
 getVideoNameByUrl(Video_url) ->
     case mysql:get_prepared(mySqlConPool, getVideoNameByUrl) of
         {error, _ } ->
-            Q = <<"select name from clip where url = ?;">>,
+            Q = <<"select clip.name from clip join clip_types on clip.type_id = clip_types.id where clip.url = ? and (clip_types.name = \"single\" or clip_types.name = \"SetElement\") limit 1;">>,
             mysql:prepare(mySqlConPool, getVideoNameByUrl, Q);
         _ -> ok
     end,
     case  mysql:execute(mySqlConPool, getVideoNameByUrl, [Video_url]) of
         {data,{mysql_result, _Cols, [[Val]], _X31, _X32}} -> 
             erlang:binary_to_list(Val);
-        Other -> 
-            io:format("ERROR: ~p:GetVideoNameByUrl ~p~n", [Other]),
+        Other ->
+            io:format("ERROR: GetVideoNameByUrl ~p~n", [Other]),
             undefined
     end.
 

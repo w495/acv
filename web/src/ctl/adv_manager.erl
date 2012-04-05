@@ -24,9 +24,11 @@ get_adv(Req) ->
 
     In = erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [proplists:get_value("userid", Data, null)]),
 
+    XCountryCode = Req:get_header_value("X-Country-Code"),
+    XCity = Req:get_header_value("X-City"),
     Peer = Req:get(peer),
-    io:format("get_adv ::::::::::::::~p, ~p~n", [In, Peer]),
-    Result = biz_adv_manager:get_acv_ext(In, Peer),
+    io:format("get_adv ::::::::::::::~p, ~p~n", [XCountryCode, XCity]),
+    Result = biz_adv_manager:get_acv_ext(In, {XCountryCode, XCity}),
     
 
 

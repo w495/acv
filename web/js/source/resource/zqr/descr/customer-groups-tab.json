@@ -24,16 +24,18 @@
             confirmMsg : 'Уверены ли вы в том что хотите удалить пользователя?'}
     ],
     columns : [
-        {name : 'login', alias : 'Логин', type : 'string', sortable : true},
+/*        {name : 'login', alias : 'Логин', type : 'string', sortable : true},
         {name : 'id', alias : '#', type : 'float', sortable : true, width:'5%'},
         {name : 'firstname', alias : 'Имя', type : 'string', sortable : true},
         {name : 'patronimic', alias : 'Отчество', type : 'string', sortable : true},
-        {name : 'lastname', alias : 'Фамилия', type : 'string', sortable : true}
+        {name : 'lastname', alias : 'Фамилия', type : 'string', sortable : true}*/
+        {name : 'id', alias : '#', type : 'float', sortable : true, width:'5%'},
+        {name : 'name', alias : 'Имя', type : 'string', sortable : true}
     ],
     filter : {
-        submit_url : '/get-customers'
+        submit_url : '/get-customer-groups'
     },
     sort : 'id',
     ascending : false,
-    dblclick_action : 'resource/zqr/descr/customer-form.json'
+    dblclick_action : 'resource/zqr/descr/customer-group-form.json'
 }

@@ -52,7 +52,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         console.log("UsersTargeting");
         this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, Row));
         console.log("RegionTargeting");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
+	this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
         console.log("CategoryTargeting");
         
         this.__step = 0;

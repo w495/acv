@@ -204,7 +204,7 @@ qx.Class.define("zqr.view.SelListTreeDirs",
             this.data = newData;
         },
 
-        getSelectedId : function() {
+        getCheckedId : function() {
             var ret = [];
             for(var key in this.data) {
                 var cb = this.data[key];

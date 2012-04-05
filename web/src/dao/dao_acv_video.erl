@@ -420,6 +420,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                     " $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, "
                     " $21, $22) "
             " returning acv_video.id;",
+			    io:format("~n~n~n@@@@@@@@@@@@@@@@@@@@#####################################~p~n", [Geo_region_list]),
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
@@ -437,6 +438,8 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                                     (Rerun_minutes),
                                         (Customer_id)])  of
                 {ok, 1, _, [{Id}]} ->
+                			    io:format("~n~n~n#####################################~p~n", [Geo_region_list]),
+
                     case length(Geo_region_list) of
                         0 ->    ok;
                         _ ->

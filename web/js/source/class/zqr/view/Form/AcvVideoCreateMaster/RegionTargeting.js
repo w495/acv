@@ -8,6 +8,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
     
     construct : function(uReq, Row, Options) {
         this.Options = Options;
+        this.inp = {};
         this.base(arguments, uReq, Row, Options);
     },
 
@@ -83,9 +84,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
         fillForm : function(data) {
             var list = [];
             for(var geo in data.values){
-                list.push(geo.id);
+                list.push(data.values[geo].geo_region_id);
             }
-            this.groupList.setChecked(list);
+            this.inp.List.setChecked(list);
         },
         
         /**
@@ -101,7 +102,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.getSelectedId();
+            var list = this.inp.List.getCheckedId();
             if(this.validateForm()) {
                 this.uReq.setParameter("geo_list", list, true);
             }

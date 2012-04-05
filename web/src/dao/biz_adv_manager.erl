@@ -48,14 +48,11 @@ get_acv_ext_by_len({Type, Resourse_ext, User_id}, Peer, Ext_len) ->
 %%% TODO:
 %%%     ПОЧЕМУ НЕ ВСЕ В ОДНОЙ ТРАНЗАКЦИИ?
 %%%
-get_acv({Type, Resourse, User_id}, Peer) when
+get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
     Type =:= "preroll";
         Type =:= "postroll";
             Type =:= "midroll";
                 Type =:= "pauseroll"->
-
-    CountryCode = null,
-    City = null,
 
     ?D("Type = ~p~n",       [Type]),
     ?D("Resourse = ~p~n",   [Resourse]),
@@ -124,20 +121,19 @@ get_acv({Type, Resourse, User_id}, Peer) when
     end,
 
     Q2S3 = Q2S2 ++ " and (" ++ if
-        CountryCode =:= null -> % только те кампании, для которых нет гео-таргетирования
-            "";
-            %" and acv_video2geo_region.geo_region_id is NULL";
-        true, City =:= null -> % только те кампании, у которых поставлена данная страна страна, или нет таргетирования
-            %" and ( "
+        CountryCode =:= undefined -> % только те кампании, для которых нет гео-таргетирования
+%            "";
+            " acv_video2geo_region.geo_region_id is NULL";
+        true, City =:= undefined -> % только те кампании, у которых поставлена данная страна страна, или нет таргетирования
                     "(geo_region.code =  '" ++ CountryCode ++ "' geo_region.country_id is null) or ";
-            %        "acv_video2geo_region.geo_region_id is NULL "
-            %    ") ";
+                    "acv_video2geo_region.geo_region_id is NULL ";
         true ->
-            %" and ( "
+%            " and ( "
                     "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.name_en = '" ++ City ++ "') or "
-            %        "acv_video2geo_region.geo_region_id is NULL "
-            %    ") "
-    end ++ " acv_video2geo_region.geo_region_id is NULL) ",
+                    "acv_video2geo_region.geo_region_id is NULL "
+%                ") "
+%    end ++ " acv_video2geo_region.geo_region_id is NULL) ",
+    end ++ " ) ",
 
     Customer_query = <<"select * from customer where uuid=?;">>,
     mysql:prepare(mySqlConPool, get_customer, Customer_query),

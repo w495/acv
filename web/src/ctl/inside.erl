@@ -416,7 +416,7 @@ update_acv_video(Req) ->
     Data = Req:parse_post(),
     ?D("~n----------------------------------------------------------------~nData  = ~p", [Data ]),
     Geo_region_list =
-        [convert:to_integer(X) || X <- proplists:get_all_values("geo_region_list", Data)],
+        [convert:to_integer(X) || X <- proplists:get_all_values("geo_list", Data)],
     Cat_list =
         [convert:to_integer(X) || X <- proplists:get_all_values("cat_list", Data)],
     ?D("~n---------------------~nGeo_region_list = ~p", [Geo_region_list]),
