@@ -118,12 +118,12 @@
 <xsl:template name="s-roller-frame-pre-roll">
     <ul class="b-rf-ul">
         <li class="e-rf-ul">
-        	<a href="/docs">
+        	<a class="e-rf-ul" href="/docs">
             	<xsl:text>Размещение рекламы</xsl:text>
         	</a>  
         </li>
         <li class="e-rf-ul">
-        	<a href="/docs/audience">
+        	<a class="e-rf-ul" href="/docs/audience">
             	<xsl:text>Аудитория</xsl:text>
         	</a> 
         </li>  
