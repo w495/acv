@@ -124,7 +124,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             if(this.isModerator){
                 this.inp.Id.setValue(clip.id);
                 this.inp.Active.setValue(RegExp("^true$").test(clip.active));
-        		this.inp.mailtoLink.setHtml("<button><a href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
+        		this.inp.mailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
             }
             console.log("clip = ", clip);
             

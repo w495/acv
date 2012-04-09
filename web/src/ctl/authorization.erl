@@ -131,7 +131,7 @@ login(Req) ->
 
 innerLogin(_Req, Params) ->
     io:format("P: ~p~n", [Params]),
-    Outty = loginTMPL:render(Params ++ [{owner, config:get(site_owner, "threeline")}]),
+    Outty = loginTMPL:render(Params ++ [{owner, config:get(site_owner, "threeline")}]), 
 %    io:format(""
     {"text/html", [], [Outty]}.
 
@@ -150,17 +150,18 @@ do_login(Req) ->
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
     ?DEBUG(?FMT("do_login  login = ~p", [Login])),
-    ?DEBUG(?FMT("do_login  password = ~p", [Password])),
+    ?DEBUG(?FMT("do_login  password = ~p", [Password])), 
     try 
         Val = auth_biz:login(Login, Password),
         throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
             [cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
     catch
         throw:{ok, Ret} -> throw(Ret);
-        throw:Error -> 
+        throw:Error ->  
             %csrv:reg_rpc(customerActivityDAO, create, {Login, web, login, Error}),
-            innerLogin(Req, [{login, Login}, {error, Error}]);
-        T:E ->
+            innerLogin(Req, [{login, Login}, {error, Error}]),
+			io:format("asfasdfsdfsdfsdfsdfsdf");
+        T:E -> 
             ?DEBUG(?FMT("do_login unknown exception ~p:~p", [T, E])),
             innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
     end.

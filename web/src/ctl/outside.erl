@@ -139,9 +139,9 @@ signin_post(Req, State) ->
     Data = Req:parse_post(),
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
-    signin_post(Login, Password, State).
+    signin_post(Login, Password, State, Req).
 
-signin_post(Login, Password, State) ->
+signin_post(Login, Password, State, Req) ->
     ?D("Login  = ~p~n", [Login]),
     ?D("Password = ~p~n", [Password]),
     try
@@ -151,9 +151,11 @@ signin_post(Login, Password, State) ->
     catch
         throw:{ok, Ret} -> throw(Ret);
         throw:Error ->
-            ?D("Error  = ~p~n", [Error]);
+            ?D("Error  = ~p~n", [Error]), 
+        	Req:respond({302, [{"Location", "/"}, {"Content-Type", ?OUTPUT_HTML}] ,""});
         Throw:Error ->
-            ?D("~p  = ~p~n", [Throw, Error])
+            ?D("~p  = ~p~n", [Throw, Error]),
+        	Req:respond({302, [{"Location", "/"}, {"Content-Type", ?OUTPUT_HTML}] ,""})
     end.
 
 %% @doc
@@ -245,7 +247,7 @@ signup_post(Req, State) ->
                             % Кидаем событие о создании пользователя
                             % gen_event:notify(?SIGNUP_EVENT, Data),
 
-                            signin_post(Login, Pass, {normal});
+                            signin_post(Login, Pass, {normal}, Req);
                         {error, Error} ->
                             signup(Req, {error, Error, Data})
                     end;
