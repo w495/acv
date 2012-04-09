@@ -171,6 +171,10 @@ do_logout(Req) ->
     auth_biz:logout(Req:get_cookie_value(?AUTHCOOKIE)),
     throw({js_redirect, ?LOGOUT, []}).
 
+do_logout_with_redirect(Req) ->
+    auth_biz:logout(Req:get_cookie_value(?AUTHCOOKIE)),
+    throw({redirect, ?LOGOUT, []}).
+
 checkNumb([H|_T]) when H < 48; H > 57 ->
     throw(bad_consist);
 checkNumb([_H|T]) ->

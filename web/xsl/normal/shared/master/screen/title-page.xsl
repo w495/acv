@@ -36,7 +36,7 @@
                     <xsl:with-param name="Name" select="'pre-roll'"/>
                     <xsl:with-param name="Head" select="'Видеореклама10'"/>
                     <xsl:with-param name="Subhead" select="'PRE-ROLL'"/>
-                    <xsl:with-param name="Pic_url" select="'/i/tv-0.png'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
                     <xsl:with-param name="Content" >
                         <xsl:call-template name="s-roller-frame-pre-roll" />
                     </xsl:with-param>
@@ -58,32 +58,34 @@
                     <xsl:with-param name="Name" select="'post-roll'"/>
                     <xsl:with-param name="Head" select="'Видеореклама3'"/>
                     <xsl:with-param name="Subhead" select="'POST-ROLL'"/>
-                    <xsl:with-param name="Pic_url" select="'/i/tv-b.png'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
                     <xsl:with-param name="Content" >
                         <xsl:call-template name="s-roller-frame-pre-roll" />
                     </xsl:with-param>
                 </xsl:call-template>
             </li>
         </ul>
-        <div class="b-roller-nav">
-            <ul class="b-rn-ul">
-                <li class="e-rn-ul">
-                    <a class="e-rn-but cur" href="#pre-roll">
-                        <xsl:text><![CDATA[ ]]></xsl:text>
-                    </a>
-                </li>
-                <li class="e-rn-ul">
-                    <a class="e-rn-but" href="#mid-roll">
-                        <xsl:text><![CDATA[ ]]></xsl:text>
-                    </a>
-                </li>
-                <li class="e-rn-ul">
-                    <a class="e-rn-but" href="#post-roll">
-                        <xsl:text><![CDATA[ ]]></xsl:text>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <!--
+	        <div class="b-roller-nav">
+	            <ul class="b-rn-ul">
+	                <li class="e-rn-ul">
+	                    <a class="e-rn-but cur" href="#pre-roll">
+	                        <xsl:text><![CDATA[ ]]></xsl:text>
+	                    </a>
+	                </li>
+	                <li class="e-rn-ul">
+	                    <a class="e-rn-but" href="#mid-roll">
+	                        <xsl:text><![CDATA[ ]]></xsl:text>
+	                    </a>
+	                </li>
+	                <li class="e-rn-ul">
+	                    <a class="e-rn-but" href="#post-roll">
+	                        <xsl:text><![CDATA[ ]]></xsl:text>
+	                    </a>
+	                </li>
+	            </ul>
+	        </div>
+    	-->
     </div>
 </xsl:template>
 
@@ -145,7 +147,7 @@
 <xsl:template name="s-news">
     <header class="b-news-header">
         <h1 class="e-news-head">
-            <xsl:text>Информация для рекламодателя</xsl:text>
+            <xsl:text>О проекте</xsl:text>
         </h1>
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
@@ -156,12 +158,14 @@
             <xsl:call-template name="s-news-list" />
         </ul>
         <div class="s-news-all">
+        <!--
             <xsl:call-template name="u-button">
                 <xsl:with-param name="Href"  select="'/'"/>
                 <xsl:with-param name="Class" select="'b-na-bat'"/>
                 <xsl:with-param name="Title" select="'посмотреть все новости'"/>
                 <xsl:with-param name="Text"  select="'Посмотреть все'"/>
             </xsl:call-template>
+        -->
         </div>
     </div>
 </xsl:template>
@@ -212,29 +216,37 @@
 </xsl:template>
 
 <xsl:template name="s-about">
-    <article class="b-a">
-        <h2 class="b-ah">
-            <xsl:text>Обращение к рекламодателям</xsl:text>
-        </h2>
+    <article class="b-a"> 
         <div class="b-ac">
             <p class="b-ac-p" >
-                <xsl:text>Исходя из структуры пирамиды Маслоу, BTL правомочен.Повторный контакт упорядочивает коллективный диктат потребителя,учитывая современные тенденции. Еще Траут показал,что целевой сегмент рынка неверно стабилизирует диктат потребителя,не считаясь с затратами. Служба маркетинга компании, следовательно, экономит комплексный клиентский спрос, оптимизируя бюджеты.</xsl:text>
-            </p>
+                <xsl:text>
+                	TVzavr.ru – Интернет-кинотеатр, осуществляющий бесплатную онлайн-трансляцию лицензионных кино и видеофильмов.
+					Интернет-портал TVzavr.ru создан в апреле 2010 года и принадлежит  ООО «Ти Ви Завр»
+				</xsl:text>
+            </p> 
+            <br />
+        <h2 class="b-ah">
+            <xsl:text>Устройства доступа</xsl:text>
+        </h2>
             <ul class="b-ac-ul">
                 <li class="e-ac-ul">
-                    <xsl:text>социальная ответственность допускает институциональный</xsl:text>
+                    <xsl:text>Персональный компьютер</xsl:text>
                 </li>
                 <li class="e-ac-ul">
-                    <xsl:text>медиамикс, невзирая на действия конкурентов. Узнаваемость</xsl:text>
+                    <xsl:text> Мобильные устройства ( приложения для iOS и Android )</xsl:text>
                 </li>
                 <li class="e-ac-ul">
-                    <xsl:text>марки, как следует из вышесказанного, масштабирует</xsl:text>
+                    <xsl:text>Smart TV</xsl:text>
                 </li>
                 <li class="e-ac-ul">
-                    <xsl:text>сублимированный формирование имиджа, учитывая современные</xsl:text>
+                    <xsl:text>Set-top box</xsl:text>
                 </li>
-            </ul>
-        </div>
+            </ul> 
+            <center>
+				<img src="/i/ipad.jpg" />
+				<img src="/i/smarttv.jpg" />
+			</center>
+		</div>
     </article>
 </xsl:template>
 

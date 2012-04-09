@@ -187,16 +187,36 @@
     <hgroup class="b-header-group">
         <h2 class="b-thehead-caption"><xsl:text>портал для рекламодателей</xsl:text></h2>
         <h1 class="b-thehead">
-            <img class="b-thehead-logo" src="/i/logo.png" alt="tvzavr" title="tvzavr" />
+        	<a href="/">
+            	<img class="b-thehead-logo" src="/i/logo.png" alt="tvzavr" title="tvzavr" />
+        	</a>
         </h1>
     </hgroup>
     <div class="s-signin">
-        <xsl:call-template name="s-signin" />
+        	<xsl:call-template name="s-header-signin" />
     </div>
+</xsl:template>
+
+<xsl:template name="s-header-signin"> 
+	<xsl:call-template name="s-signin" />
 </xsl:template>
 
 <xsl:template name="s-signin">
     <xsl:text><![CDATA[ ]]></xsl:text>
+</xsl:template>
+
+<xsl:template name="s-logout-link"> 
+	<div style="float:right;">
+		<table>
+			<tr>
+				<td class="m-logout-link-l"></td>
+				<td class="m-logout-link-c">
+					<a href="/logout" class="m-white-link">Выйти из кабинета</a>
+				</td>
+				<td class="m-logout-link-r"></td>
+			</tr>
+		</table>
+	</div>
 </xsl:template>
 
 <xsl:template name="s-nav">

@@ -8,12 +8,17 @@
 <xsl:import href="../shared/master/screen/pers-page.xsl"/>
 
 <xsl:include href="../shared/utils/tipograf.xsl" />
-<xsl:include href="includes/signup-form.xsl" />
+<xsl:include href="includes/signup-form.xsl" /> 
 
 <xsl:template name="head-scripts-pers">
     <script src="/j/ria.js" type="text/javascript" >
         <xsl:text><![CDATA[ ]]></xsl:text>
     </script>
+</xsl:template>
+ 
+
+<xsl:template name="s-header-signin"> 
+	<xsl:call-template name="s-logout-link" />
 </xsl:template>
 
 <xsl:template name="s-main-pers">

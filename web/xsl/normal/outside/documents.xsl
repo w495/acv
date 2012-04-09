@@ -27,15 +27,14 @@
 
 <xsl:template name="s-about">
     <article class="b-a"> 
-        <div class="b-ac">
-            <p class="b-ac-p" >  
-            	<p>  
-					Мы размещаем рекламу, ориентированную на конечного потребителя –  посетителя TVzavr.ru и его семью.
-            	</p>   
-            	<p>  
-					Посетители нашего ресурса являются целевой аудиторией для многих компаний, как оказывающих финансовые, телекоммуникационные, образовательные и развлекательные услуги, так и предлагающих различные товары              средней ценовой категории. 
-				</p>    
-            </p> 
+        <div class="b-ac">  
+        	<img src="/i/macdonald.jpg" style="width:500px;float:right;" /> 
+        	<p class="b-ac-p">  
+				Мы размещаем рекламу, ориентированную на конечного потребителя –  посетителя TVzavr.ru и его семью.
+        	</p>   
+        	<p class="b-ac-p">  
+				Посетители нашего ресурса являются целевой аудиторией для многих компаний, как оказывающих финансовые, телекоммуникационные, образовательные и развлекательные услуги, так и предлагающих различные товары              средней ценовой категории. 
+			</p>    
         </div>
     </article> 
     <article class="b-a">
@@ -105,7 +104,7 @@
                     <xsl:with-param name="Name" select="'pre-roll'"/>
                     <xsl:with-param name="Head" select="'Документация'"/>
                     <xsl:with-param name="Subhead" select="'Список документов'"/>
-                    <xsl:with-param name="Pic_url" select="'/i/tv-0.png'"/>
+                    <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
                     <xsl:with-param name="Content" >
                         <xsl:call-template name="s-roller-frame-pre-roll" />
                     </xsl:with-param>
@@ -125,6 +124,11 @@
         <li class="e-rf-ul">
         	<a href="/docs/audience" class="m-white-link">
             	<xsl:text>Аудитория</xsl:text>
+        	</a> 
+        </li>  
+        <li class="e-rf-ul">
+        	<a href="/docs/content" class="m-white-link">
+            	<xsl:text>Контент</xsl:text>
         	</a> 
         </li>  
     </ul>

@@ -157,6 +157,40 @@ class Base(generate.gen_css.Gen_css):
             color: #FFFFFF;
         }"""
         
+        # left
+        res += """.m-logout-link-l {  
+            background-image:url('/i/button/b-0-0.png');
+            height: 28px;
+            width: 15px;
+        } """
+        
+        # center
+        res += """.m-logout-link-c {  
+            background-image:url('/i/button/b-0-1.png');
+            height: 23px;
+            padding-top: 5px;
+        } """
+        
+        # right
+        res += """.m-logout-link-r {  
+            background-image:url('/i/button/b-0-2.png');
+            height: 28px;
+            width: 15px;
+        } """
+        
+        #  Хотел сделать ссылочку на логаут с помощью css3. Вспломнил что есть Iгорь Eвгеньевич 
+        #res += """.m-logout-link {  
+        #    border-color:#156435;
+        #    -moz-border-radius: 20px;
+        #    -webkit-border-radius: 20px;
+        #    border-radius: 20px;
+        #    color: #FFFFFF; 
+        #    background: -webkit-gradient(linear, left top, left bottom, from(#279941), to(#156435));   
+        #    background: -moz-linear-gradient(top, #279941, #156435);   
+        #    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#279941, endColorstr=#156435);  
+        #    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#279941, endColorstr=#156435)";  
+        #} """
+        
         return res
         
     def body(self):

@@ -105,7 +105,10 @@ dmap(Path) ->
 
     % do_*
         "/do_login" ->          {authorization, do_login};
-        "/do_logout" ->         {authorization, do_logout};
+        % логаут для qooxdoo ( возвращает JSON )
+		"/do_logout" ->         {authorization, do_logout};
+		% логаут для человеков ( редиректит на главную страницу )
+        "/logout" ->            {authorization, do_logout_with_redirect};
         "/do_change_pass" ->    {authorization, do_change_pass};
         "/login" ->             {authorization, login};
     %%
@@ -118,6 +121,7 @@ dmap(Path) ->
         % Страница не требуется
 		%"/docs/video" -> 		{outside, docs_video};
         "/docs/audience" ->     {outside, docs_audience};
+        "/docs/content" ->     	{outside, docs_content};
 
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};

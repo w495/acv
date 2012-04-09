@@ -11,7 +11,7 @@
 <xsl:import href="base.xsl"/>
 
 <xsl:template name="s-title-base">
-    <xsl:text>личный кабинет рекламодателя</xsl:text>
+    <xsl:text>Личный кабинет рекламодателя</xsl:text>
 </xsl:template>
 
 <xsl:template name="link-css-base">

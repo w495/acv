@@ -14,6 +14,7 @@
     % Страница не требуется
 	%docs_video/1,
 	docs_audience/1,
+	docs_content/1,
     signin/1,
     signin_post/1,
     signup/1,
@@ -102,6 +103,19 @@ docs_video(Req) ->
 %%
 docs_audience(Req) ->
     Xsl_path = "xsl/normal/outside/documents_audience.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ), 
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Документация Контент
+%%
+docs_content(Req) ->
+    Xsl_path = "xsl/normal/outside/documents_content.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
