@@ -10,6 +10,9 @@
 -export([
     index/1,
     about/1,
+    docs/1,
+    docs_video/1,
+	docs_audience/1,
     signin/1,
     signin_post/1,
     signup/1,
@@ -65,6 +68,47 @@ about(Req) ->
     ),
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Документация
+%%
+docs(Req) ->
+    Xsl_path = "xsl/normal/outside/documents.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ), 
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Документация видео
+%%
+docs_video(Req) ->
+    Xsl_path = "xsl/normal/outside/documents_video.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ), 
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+ 
+%%
+%% Документация видео
+%%
+docs_audience(Req) ->
+    Xsl_path = "xsl/normal/outside/documents_audience.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ), 
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+
 
 %% @doc
 %% Возврaщает страницу регистрации

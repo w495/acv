@@ -19,6 +19,7 @@
     get_customers/1,
     get_customer/1,
     get_customer_by_login/1,
+	update_customer_profile/1,
     update_customer/1,
     delete_customer/1,
     test/0,
@@ -215,6 +216,27 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
     ),
     dao:pgret(PGRet).
 
+update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City, Organization, Position}, Password_hash, _updater_id}) ->
+
+    Q1 = "update customer set firstname = $1, lastname = $2, patronimic = $3, "
+            "pic_url = $4, email = $5,"
+            "city = $6, organization = $7, position = $8 "
+         "where id=$9;",
+
+    PGRet = dao:with_transaction_fk(
+        fun(Con) ->
+             {ok, 1} = pgsql:equery(Con, Q1,
+                    [Firstname, Lastname, Patronimic, Pic_url,
+                        Email, City, Organization, Position, _updater_id]),
+             if Password_hash =/= null ->
+                    {ok, 1} = pgsql:equery(Con, "update customer set password_hash=$1 "
+                        "where id = $2;", [Password_hash, _updater_id]);
+                true ->
+                    ok
+             end 
+        end
+    ),
+    dao:pgret(PGRet).
 
 delete_customer({Id, _updater_id}) ->
     Query = "update customer set deleted=true where id = $1;",

@@ -12,7 +12,7 @@
 <xsl:import href="base.xsl"/>
 
 <xsl:template name="s-title-base">
-    <xsl:text>главная</xsl:text>
+    <xsl:text>Главная</xsl:text>
 </xsl:template>
 
 
@@ -34,7 +34,7 @@
             <li class="s-roller-frame">
                 <xsl:call-template name="s-roller-frame">
                     <xsl:with-param name="Name" select="'pre-roll'"/>
-                    <xsl:with-param name="Head" select="'Видеореклама1'"/>
+                    <xsl:with-param name="Head" select="'Видеореклама10'"/>
                     <xsl:with-param name="Subhead" select="'PRE-ROLL'"/>
                     <xsl:with-param name="Pic_url" select="'/i/tv-0.png'"/>
                     <xsl:with-param name="Content" >
@@ -147,7 +147,7 @@
         <h1 class="e-news-head">
             <xsl:text>Информация для рекламодателя</xsl:text>
         </h1>
-        <a class="b-news-doc" href="" >
+        <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
     </header>
