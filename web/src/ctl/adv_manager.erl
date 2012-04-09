@@ -16,57 +16,31 @@
 -include("../include/web.hrl").
 
 get_adv(Req) ->
-    Data = Req:parse_qs(),
-    Tuple = norm:extr(Data, [
-        {"type", [string]},
-        {"resourse", [string]}
-    ]),
+    DefResXlm = "<block duration=\"600\" loadnext=\"300\">"
+                    "<creative category_id=\"16\" skip=\"no\" duration=\"600\" type=\"video\" start=\"0\" partner=\"videonow|doubleclick3\"/>"
+                    "</block>", 
+    Result = try
+        Data = Req:parse_qs(),
+        Tuple = norm:extr(Data, [
+            {"type", [string]},
+            {"resourse", [string]}
+        ]),
 
-    In = erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [proplists:get_value("userid", Data, null)]),
+        In = erlang:list_to_tuple(erlang:tuple_to_list(Tuple) ++ [proplists:get_value("userid", Data, null)]),
 
-    XCountryCode = Req:get_header_value("X-Country-Code"),
-    XCity = Req:get_header_value("X-City"),
-    Peer = Req:get(peer),
-    io:format("get_adv ::::::::::::::~p, ~p~n", [XCountryCode, XCity]),
-    Result = biz_adv_manager:get_acv_ext(In, {XCountryCode, XCity}),
-    
-
-
-%     Fake_result_1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> "
-%     "<block duration=\"120\" loadnext=\"600\"> "
-%     "<creative  type=\"video\" click=\"http://ya.ru\"  link_title=\"354b9bd8-c2aa-4a92-81ee-0fccc85a9273\" url=\"http://192.168.2.187:8000/static/data/acv-video/common/130387262/adv10.mp4\" start=\"0\" skip=\"no\"  duration=\"20\"  /> "
-%     "</block> ",
-% 
-% 
-%     Fake_result_2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-%     "<block duration=\"120\" loadnext=\"600\">"
-%     "  <creative type=\"video\""
-%     "            click=\"http://click-here/\""
-%     "            link_title=\"Adv from get here\""
-%     "            url=\"http://get-here/video.flv\""
-%     "            start=\"0\""
-%     "            skip=\"no\""
-%     "            duration=\"10\"/>"
-%     "  <creative type=\"video\""
-%     "            click=\"http://click-here/\""
-%     "            url=\"http://get-here/video.flv\""
-%     "            start=\"10\""
-%     "            skip=\"partner\""
-%     "            duration=\"10\">"
-%     "    <event type=\"start\" action=\"get\" url=\"http://some.url/here\"/>"
-%     "  </creative>"
-%     "  <creative type=\"video\""
-%     "            partner=\"partner.name\""
-%     "            start=\"20\""
-%     "            skip=\"yes\""
-%     "            category_id=\"0\""
-%     "            duration=\"10\"/>"
-%     "  <creative type=\"paused\""
-%     "            click=\"http://click-here/\""
-%     "            media='img'"
-%     "            url=\"http://get-here/paused.jpg\"/>"
-%     "</block>",
-
+        XCountryCode = Req:get_header_value("X-Country-Code"),
+        XCity = Req:get_header_value("X-City"),
+        Peer = Req:get(peer),
+        io:format("get_adv ::::::::::::::~p, ~p~n", [XCountryCode, XCity]),
+        case biz_adv_manager:get_acv_ext(In, {XCountryCode, XCity}) of
+            [] -> ResTry = DefResXlm;
+            Val -> ResTry = biz_adv_manager:make_acv_xml(Val)
+        end,
+        ResTry
+    catch Err:Reason ->
+        ?ERROR({?MODULE, ?LINE, catch_err, {Err, Reason}}),
+        DefResXlm
+    end,
     ?D("~n!!!------------------------------~n!!! Result = ~p ~n!!!------------------------------~n ", [Result]),
 
     {"application/xml", [], [Result]}.

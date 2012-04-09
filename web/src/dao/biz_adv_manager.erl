@@ -218,17 +218,19 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
         true ->
             Selected_clip = []
     end,
-    
-    if
-	Selected_clip =:= [] ->
-	    Result_string = "<block duration=\"600\" loadnext=\"300\">"
-			    "<creative category_id=\"16\" skip=\"no\" duration=\"600\" type=\"video\" start=\"0\" partner=\"videonow|doubleclick3\"/>"
-			    "</block>";
-	true ->
-	    Result_string = make_acv_xml(Selected_clip)
-    end,
-    ?D("~nType = ~p, Result_string  = ~s~n", [Type, Result_string]),
-    Result_string.
+   Selected_clip.
+
+% перенесено в контроллер
+%    if
+%       Selected_clip =:= [] ->
+%       Result_string = "<block duration=\"600\" loadnext=\"300\">"
+%           "<creative category_id=\"16\" skip=\"no\" duration=\"600\" type=\"video\" start=\"0\" partner=\"videonow|doubleclick3\"/>"
+%            "</block>";
+%        true ->
+%       Result_string = make_acv_xml(Selected_clip)
+%       end,
+%   ?D("~nType = ~p, Result_string  = ~s~n", [Type, Result_string]),
+%    Result_string.
 
 %%% 
 %%% @spec

@@ -202,14 +202,14 @@ get_encoding(_Req) ->
 %%%
 %%% Возвращает список всех регионов (и страны и города)
 %%%
-get_all_geo_regions(Req) ->
+get_all_geo_regions(_Req) ->
     Res = dao:dao_call(dao_geo_region, get_all_geo_regions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
 %%% Возвращает список всех районов (например СНГ)
 %%%
-get_geo_areas(Req) ->
+get_geo_areas(_Req) ->
     Res = dao:dao_call(dao_geo_region, get_geo_areas, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -236,7 +236,7 @@ get_contries(Req) ->
 %%%
 %%% Возвращает список стран СНГ
 %%%
-get_contries_sng(Req) ->
+get_contries_sng(_Req) ->
     Res = dao:dao_call(dao_geo_region, get_contries, "SNG", values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -366,7 +366,7 @@ get_all_acv_banners(Req) ->
 %%% Возвращает полный спис категорий
 %%%
 get_all_cats(Req) ->
-    Customer_id = authorization:get_customer_id(Req),
+    Customer_id = authorization:get_customer_id(Req), % TODO зачем эта переменная?
     Res = mysql_dao:dao_call(dao_cat, get_all_cats, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 

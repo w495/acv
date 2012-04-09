@@ -36,6 +36,13 @@ upgrade() ->
     [supervisor:start_child(?MODULE, Spec) || Spec <- Specs],
     ok.
 
+addMysqlPoolConnection(_, 0, _) ->
+    done;
+addMysqlPoolConnection(Mysql, Count, Params={Host, Port, User, Pass, DB}) ->
+    mysql:connect(Mysql, Host, Port, User, Pass, DB, true),
+    addMysqlPoolConnection(Mysql, Count-1, Params).
+
+
 %% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
 init([]) ->
@@ -94,6 +101,19 @@ init([]) ->
         worker,
         [mysql]
     },
+
+    io:format("---------------------------------~n~n"),
+%    mysql:connect(mySqlConPool, config:get(vk_db_host, "localhost"), undefined, config:get(vk_db_user, "root"), config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk"), true),
+    io:format("---------------------------------~n~n"),
+
+%    addMysqlPoolConnection(mySqlConPool, 9, {
+%        config:get(vk_db_host, "localhost"), 
+%        undefined, 
+%        config:get(vk_db_user, "root"), 
+%        config:get(vk_db_password, "1111"), 
+%        config:get(vk_db_name, "vk")
+%    }),
+
     %%% Соединение с внешней базой данных статистики
     MysqlStat = {
         mysqlStat,
@@ -109,6 +129,16 @@ init([]) ->
         worker,
         [mysql]
     },
+
+%    addMysqlPoolConnection(mysqlStat, 9, {
+%        config:get(stat_db_host, "localhost"), 
+%        undefined, 
+%        config:get(stat_db_user, "root"), 
+%        config:get(stat_db_password, "1111"), 
+%        config:get(stat_db_name, "vk")
+%    }),
+
+
     %%% Шаблонизатор
     Xslt_processor = { 
         xslt_sup,
