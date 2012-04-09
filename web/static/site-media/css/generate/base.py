@@ -153,9 +153,6 @@ class Base(generate.gen_css.Gen_css):
             text-decoration:none;
         }"""
 
-        res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
-            color: #FFFFFF;
-        }"""
         
         return res
         
@@ -700,6 +697,11 @@ class Base(generate.gen_css.Gen_css):
             height: 300px;
         }
         """
+        
+        res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
+            color: #ffffff;
+        }"""
+        
         return res
 
     def s_news(self):
