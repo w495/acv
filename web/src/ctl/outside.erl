@@ -49,6 +49,7 @@ index(Req) ->
             {"meta",    meta([Req])}             % описание запроса
         ]
     ),
+
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
