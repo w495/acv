@@ -11,7 +11,8 @@
     index/1,
     about/1,
     docs/1,
-    docs_video/1,
+    % Страница не требуется
+	%docs_video/1,
 	docs_audience/1,
     signin/1,
     signin_post/1,
@@ -82,6 +83,7 @@ docs(Req) ->
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
+% Страница не требуется
 %%
 %% Документация видео
 %%
