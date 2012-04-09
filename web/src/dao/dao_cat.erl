@@ -22,7 +22,7 @@
 get_all_cats(_) ->
     Query  = <<"select mark.id, mark.name, mark.seo_alias from mark "
                 "join mark_type on mark.mark_type_id = mark_type.id "
-            "where mark_type.name=\"Genre\"; ">>,
+            "where mark_type.name=\"Genre\" order by mark.name desc; ">>,
     mysql_dao:simple(Query).
 
 

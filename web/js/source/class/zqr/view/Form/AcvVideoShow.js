@@ -55,7 +55,9 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             if(this.isModerator){
                 this.inp.Id = new qx.ui.form.TextField();
                 this.inp.Active = new qx.ui.form.CheckBox("Разрешена");
+        	this.inp.email = new qx.ui.basic.Label("").set({rich: true});
                 lholder.add(this.inp.Active);
+                lholder.add(this.inp.email);
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
@@ -184,7 +186,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             else
                 txt += "\n";
             for(var i=0; i<geoList.length; i++)
-                txt += geoList[i].name + " (" + geoList[i].code + ")\n";
+                txt += geoList[i].name_ru + " (" + geoList[i].code + ")\n";
             txt += "\nТаргетирование по жанрам: ";
             if(!catList)
                 catList = [];
@@ -195,7 +197,13 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             for(var i=0; i<catList.length; i++)
                 txt += catList[i].name + "\n";
             txt += "\n";
+
+	    if(this.isModerator) {
+		txt += "Email пользователя: " + clip.email;
+	    }
             this.taSummary.setValue(txt);
+
+/*
             this.flashPlayer = new qx.ui.embed.Flash("resource/zqr/flash/gddflvplayer.swf").set({
 //                scale: "noscale",
                 width: 448,
@@ -206,6 +214,31 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                     autoplay : "false"
                 }
             });
+*/
+/*
+<embed src="/static/site-media/flash/tvzavrplayer2.swf" 
+    quality="high"
+    wmode="opaque" 
+    allowfullscreen="true" 
+    allowscriptaccess="always" 
+    flashvars="autoplay=1&src=/static/data/vid/01.mp4" 
+    width="640" 
+    height="400" 
+    type="application/x-shockwave-flash" 
+    pluginspage="http://www.macromedia.com/go/getflashplayer" />
+*/
+
+            this.flashPlayer = new qx.ui.embed.Flash("resource/zqr/flash/tvzavrplayer2.swf").set({
+                width: 448,
+                height: 336,
+//                allowfullscreen : false,
+//                allowscriptaccess : "always",
+                variables : {
+            	    autoplay:0,
+            	    src:"/" + clip.ref
+                }
+            });
+
             this.flashBar.add(this.flashPlayer);//, {flex: 1});
             return true;
         }

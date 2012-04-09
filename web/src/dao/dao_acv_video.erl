@@ -91,7 +91,7 @@
                         [Cat_id_list::integer()]}) -> integer().
 
 get_acv_video(Id) ->
-    Q1 = "select * from acv_video where id = $1;",
+    Q1 = "select acv_video.*, customer.email from acv_video join customer on acv_video.customer_id = customer.id where acv_video.id = $1;",
     Q2 = "select cat_id from acv_video2cat where acv_video_id = $1;",
     {ok, R1} = dao:simple(Q1, [Id]),
     R2 = dao:with_connection_fk(fun(Con) ->
