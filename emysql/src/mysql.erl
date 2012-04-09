@@ -422,11 +422,11 @@ execute(PoolId, Name, Params) when is_list(Params) ->
     execute(PoolId, Name, Params, undefined).
 
 execute(PoolId, Name, Params, Timeout) ->
-    io:format("~p:execute/4 ?STATE_VAR: ~p~n", [?MODULE, get(?STATE_VAR)]),
+%%cff    io:format("~p:execute/4 ?STATE_VAR: ~p~n", [?MODULE, get(?STATE_VAR)]),
     case get(?STATE_VAR) of
         undefined ->
 	        RRR = call_server(PoolId, {execute, PoolId, Name, Params}, Timeout),
-            io:format("~p:execute/4 call_server result:~p~n", [?MODULE, RRR]),
+%%cff            io:format("~p:execute/4 call_server result:~p~n", [?MODULE, RRR]),
             RRR;
 	    State ->
 	        case mysql_conn:execute_local(State, Name, Params) of
@@ -538,13 +538,13 @@ handle_call({get_prepared, Name, Version}, _From, State) ->
 
 handle_call({execute, PoolId, Name, Params}, From, State) ->
     with_next_conn(PoolId, State, fun(Conn, State1) ->
-        io:format("~p:handle_call({execute with_next_conn start...~n", [?MODULE]),
+%%cff        io:format("~p:handle_call({execute with_next_conn start...~n", [?MODULE]),
         case gb_trees:lookup(Name, State1#state.prepares) of
-		    none ->
-		        {reply, {error, {no_such_statement, Name}}, State1};
+            none ->
+                {reply, {error, {no_such_statement, Name}}, State1};
             {value, {_Stmt, Version}} ->
-		     RRes = mysql_conn:execute(Conn#conn.pid, Name, Version, Params, From),
-             io:format("~p:handle_call({execute mysql_conn:execute reuslt: ~p~n", [?MODULE, RRes]),
+                RRes = mysql_conn:execute(Conn#conn.pid, Name, Version, Params, From),
+%%cff             io:format("~p:handle_call({execute mysql_conn:execute reuslt: ~p~n", [?MODULE, RRes]),
 		        {noreply, State1}
 	    end
     end);

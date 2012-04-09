@@ -311,7 +311,7 @@ pers(Req) ->
     {?OUTPUT_HTML, [], [Outty]}.
 
 
-captcha(Req) ->
+captcha(_Req) ->
     {CodeHex, BinPng} = captcha:new(),
     throw({cookize, "image/png", mochiweb_cookies:cookie(?CATCHA_COOKIE, CodeHex, ?F_COOKIEOPTIONS), BinPng}).
 
