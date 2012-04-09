@@ -54,9 +54,11 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             lholder.add(this.taSummary, {flex : 1});
             if(this.isModerator){
                 this.inp.Id = new qx.ui.form.TextField();
-                this.inp.Active = new qx.ui.form.CheckBox("Разрешена");
-        	this.inp.email = new qx.ui.basic.Label("").set({rich: true});
+                this.inp.Active = new qx.ui.form.CheckBox("Разрешена"); 
+                this.inp.mailtoLink = new qx.ui.embed.Html();
+        		this.inp.email = new qx.ui.basic.Label("").set({rich: true});
                 lholder.add(this.inp.Active);
+                lholder.add(this.inp.mailtoLink);
                 lholder.add(this.inp.email);
             }
             mholder.add(lholder, {flex : 1});
@@ -122,6 +124,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             if(this.isModerator){
                 this.inp.Id.setValue(clip.id);
                 this.inp.Active.setValue(RegExp("^true$").test(clip.active));
+        		this.inp.mailtoLink.setHtml("<button><a href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
             }
             console.log("clip = ", clip);
             

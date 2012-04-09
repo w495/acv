@@ -152,6 +152,10 @@ class Base(generate.gen_css.Gen_css):
             cursor:pointer;
             text-decoration:none;
         }"""
+
+        res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
+            color: #FFFFFF;
+        }"""
         
         return res
         

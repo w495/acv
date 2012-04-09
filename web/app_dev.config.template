@@ -12,8 +12,8 @@
         {expcookie, 180000}, % in seconds  300 min
 
         %% База данных рекламных компаний.
-            {fk_db_user, "w-495"},
-            {fk_db_password, "eiir"},
+            {fk_db_user, "kazhuravlev"},
+            {fk_db_password, "123"},
             {fk_db_name, "fk"},
             {fk_db_host, "127.0.0.1"},
 

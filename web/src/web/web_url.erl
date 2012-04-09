@@ -115,7 +115,8 @@ dmap(Path) ->
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
         "/docs" -> 				{outside, docs};
-        "/docs/video" -> 		{outside, docs_video};
+        % Страница не требуется
+		%"/docs/video" -> 		{outside, docs_video};
         "/docs/audience" ->     {outside, docs_audience};
 
         "/signin" ->            {outside, signin};

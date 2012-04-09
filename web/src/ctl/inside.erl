@@ -278,6 +278,7 @@ get_all_acv_videos(Req) ->
 get_acv_videos(Req) ->
     Customer_id = authorization:get_customer_id(Req),
     Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
+	io:format("~p~n", [Res]),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
