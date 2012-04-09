@@ -102,18 +102,6 @@ init([]) ->
         [mysql]
     },
 
-    io:format("---------------------------------~n~n"),
-%    mysql:connect(mySqlConPool, config:get(vk_db_host, "localhost"), undefined, config:get(vk_db_user, "root"), config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk"), true),
-    io:format("---------------------------------~n~n"),
-
-%    addMysqlPoolConnection(mySqlConPool, 9, {
-%        config:get(vk_db_host, "localhost"), 
-%        undefined, 
-%        config:get(vk_db_user, "root"), 
-%        config:get(vk_db_password, "1111"), 
-%        config:get(vk_db_name, "vk")
-%    }),
-
     %%% Соединение с внешней базой данных статистики
     MysqlStat = {
         mysqlStat,

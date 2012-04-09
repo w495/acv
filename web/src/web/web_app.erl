@@ -51,6 +51,13 @@
 -define(WEB_APP_WEB,   web_web).
 -define(WEB_APP_SUP,   web_sup).
 
+
+addMysqlPoolConnection(_, 0, _) ->
+    done;
+addMysqlPoolConnection(Mysql, Count, Params={Host, Port, User, Pass, DB}) ->
+    mysql:connect(Mysql, Host, Port, User, Pass, DB, true),
+    addMysqlPoolConnection(Mysql, Count-1, Params).
+
 %%% @doc
 %%% Стартуем само приложение
 %%%
@@ -59,6 +66,26 @@ start(Type, _StartArgs) ->
     ok = error_logger:add_report_handler(flog, [web]),
     web:reload_cfg(),
     Rc = ?WEB_APP_SUP:start_link(),
+    io:format("#################################~n~n"),
+%    mysql:connect(mySqlConPool, config:get(vk_db_host, "localhost"), undefined, config:get(vk_db_user, "root"),  config:get(vk_db_password, "1111"), config:get(vk_db_name, "vk"), true),
+
+    addMysqlPoolConnection(mySqlConPool, 9, {
+        config:get(vk_db_host, "localhost"), 
+        undefined, 
+        config:get(vk_db_user, "root"), 
+        config:get(vk_db_password, "1111"), 
+        config:get(vk_db_name, "vk")
+    }),
+
+    addMysqlPoolConnection(mysqlStat, 9, {
+        config:get(stat_db_host, "localhost"), 
+        undefined, 
+        config:get(stat_db_user, "root"), 
+        config:get(stat_db_password, "1111"), 
+        config:get(stat_db_name, "vk")
+    }),
+
+
     case Type of
         {takeover,_} -> ok;
         _ -> internal_start(?WEB_APP_NUMBER,?WEB_APP_DELAY)
