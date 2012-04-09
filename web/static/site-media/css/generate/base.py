@@ -153,6 +153,10 @@ class Base(generate.gen_css.Gen_css):
             text-decoration:none;
         }"""
 
+
+        res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
+            color: #ffffff;
+        }"""
         
         return res
         
@@ -684,6 +688,7 @@ class Base(generate.gen_css.Gen_css):
         res +=""".e-rf-ul{
             margin: 0px 0px 10px 0px;
             font-size: 14px;
+            color: #ffffff;
             line-height: 16px;
         }
         """
@@ -697,8 +702,9 @@ class Base(generate.gen_css.Gen_css):
             height: 300px;
         }
         """
-        
-        res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
+
+
+        res += """.e-rf-ul:link, .e-rf-ul:hover, .e-rf-ul:visited{
             color: #ffffff;
         }"""
         
