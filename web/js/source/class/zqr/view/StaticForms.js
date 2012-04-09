@@ -37,6 +37,11 @@ qx.Class.define("zqr.view.StaticForms",
             return new zqr.view.Form.CustomerForm(biz, Row, formDescr);
         },
         
+        /// Форма просмотра профиля пользователя
+        customerProfileForm : function(biz, Row, formDescr) {
+            return new zqr.view.Form.CustomerProfileForm(biz, Row, formDescr);
+        },
+        
         /// Форма редактирования пара метров
         configForm : function(biz, Row, formDescr) {
             return new zqr.view.Form.ConfigForm(biz, Row, formDescr);

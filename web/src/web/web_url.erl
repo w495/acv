@@ -90,14 +90,15 @@ dmap(Path) ->
         "/delete-customer-group" ->     {inside, delete_customer_group};
 
     % customers *
-        "/get-customers" ->         {inside, get_customers};
-        "/get-experts" ->           {inside, get_experts};
-        "/get-customer-info" ->
-            {inside, get_customer_info};
-        "/update-customer" ->
-            {inside, update_customer};
-        "/update-customer/upload-image" ->
-                {web_file, upload_customer_image};
+        "/get-customers" ->         		{inside, get_customers};
+        "/get-experts" ->           		{inside, get_experts};
+        "/get-customer-info" ->     		{inside, get_customer_info};
+        "/update-customer" ->       		{inside, update_customer};
+        "/update-customer/upload-image" ->  {web_file, upload_customer_image};
+		
+	% view профиля ( от имени пользователя )
+        "/update-customer-profile" ->       {user_ctl, update_customer_profile};
+        "/get-customer-profile" ->       	{user_ctl, get_customer_profile};
 
         "/delete-customer" ->       {inside, delete_customer};
         "/get-permissions" ->       {inside, get_permissions};
@@ -113,6 +114,9 @@ dmap(Path) ->
         "/" ->                  {outside, index};
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
+        "/docs" -> 				{outside, docs};
+        "/docs/video" -> 		{outside, docs_video};
+        "/docs/audience" ->     {outside, docs_audience};
 
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};

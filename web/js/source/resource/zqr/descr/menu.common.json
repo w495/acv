@@ -44,6 +44,22 @@
         ]
     },
     
+    {   name : "Аккаунт",
+        opened : true,
+        subitems: [
+            {
+                name : "Профиль",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "resource/zqr/descr/customer-profile.json"
+            }, 
+            {
+                name : "Выход",
+                icon : "icon/16/apps/utilities-keyring.png",
+                model : "/do_logout"
+            }, 
+        ]
+    },
+    
     /*
         {
             name : "Настройки",
