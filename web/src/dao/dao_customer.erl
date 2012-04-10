@@ -210,8 +210,8 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
              case length(GroupList) of
                 0 -> ok;
                 L -> {ok, L} = pgsql:equery(Con, Q3, [])
-            end,
-            {return, Id}
+            end
+            %,{return, Id}
         end
     ),
     dao:pgret(PGRet).
