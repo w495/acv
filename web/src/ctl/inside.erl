@@ -536,7 +536,22 @@ delete_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-activate_acv_video(Req) -> 
+chstate_acv_video(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Data = Req:parse_post(),
+
+    State = norm:extr(Data, [
+        {"id",           [nullable, integer]},
+        {"active",       [nullable, boolean]},
+        {"pay_status",   [nullable, boolean]},
+        {"sum",          [nullable, integer]}
+    ]),
+
+    Res = dao:dao_call(dao_acv_video, chstate_acv_video, State, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+activate_acv_video(Req) ->
+    authorization:auth_required(Req, "admin"),
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
 

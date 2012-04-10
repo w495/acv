@@ -122,15 +122,15 @@ fetch_stat_by_time(From_id) ->
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
         = mysql:execute(mysqlStat, fetch_stat_by_time, [From_id]),
     L = mysql_dao:make_proplist(Cols, Vals),
-    ?D("===================~n", []),
-    ?D("Stats stream: ~p~n", [L]),
+%    ?D("===================~n", []),
+%    ?D("Stats stream: ~p~n", [L]),
     compose_stat(L),
     EL = ets:tab2list(stat_clt),
-    ?D("===================~n", []),
-    ?D("Composed stats: ~p~n", [EL]),
+%    ?D("===================~n", []),
+%    ?D("Composed stats: ~p~n", [EL]),
     To_db = collect(EL, []),
-    ?D("===================~n", []),
-    ?D("Stats to DB:~p~n", [To_db]),
+%    ?D("===================~n", []),
+%    ?D("Stats to DB:~p~n", [To_db]),
     to_db(To_db).
 
 % fetch_stat_by_id() ->
@@ -167,15 +167,15 @@ fetch_stat_by_id(From_id) ->
     {data,{mysql_result, Cols, Vals, _X31, _X32}}
         = mysql:execute(mysqlStat, fetch_stat_by_id, [From_id]),
     L = mysql_dao:make_proplist(Cols, Vals),
-    ?D("===================~n", []),
-    ?D("Stats stream: ~p~n", [L]),
+%    ?D("===================~n", []),
+%    ?D("Stats stream: ~p~n", [L]),
     compose_stat(L),
     EL = ets:tab2list(stat_clt),
-    ?D("===================~n", []),
-    ?D("Composed stats: ~p~n", [EL]),
+%    ?D("===================~n", []),
+%    ?D("Composed stats: ~p~n", [EL]),
     To_db = collect(EL, []),
-    ?D("===================~n", []),
-    ?D("Stats to DB:~p~n", [To_db]),
+%    ?D("===================~n", []),
+%    ?D("Stats to DB:~p~n", [To_db]),
     to_db(To_db).
 
 compute_stat_max_id() ->

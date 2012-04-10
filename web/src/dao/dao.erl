@@ -77,10 +77,16 @@ dao_values(Module, Function, Param) ->
 
 dao_call(Module, Function, Param) ->
     case Module:Function(Param) of
-        {ok, Vals} -> Res = db2json:encode(Vals);
-        ok -> Res = {struct, [{<<"result">>, ok}]};
-        {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-        {error, E} -> io:format("$~p~n", [E]), Res = make_error_json(E)
+        {ok, Vals} ->
+            io:format("Vals = ~p~n", [Vals]),
+            Res = db2json:encode(Vals);
+        ok ->
+            Res = {struct, [{<<"result">>, ok}]};
+        {retVal, ok} ->
+            Res = {struct, [{<<"result">>, ok}]};
+        {error, E} ->
+            io:format("$~p~n", [E]),
+            Res = make_error_json(E)
     end,
     Res.
 

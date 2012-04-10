@@ -118,14 +118,6 @@ init([]) ->
         [mysql]
     },
 
-%    addMysqlPoolConnection(mysqlStat, 9, {
-%        config:get(stat_db_host, "localhost"), 
-%        undefined, 
-%        config:get(stat_db_user, "root"), 
-%        config:get(stat_db_password, "1111"), 
-%        config:get(stat_db_name, "vk")
-%    }),
-
 
     %%% Шаблонизатор
     Xslt_processor = { 

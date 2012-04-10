@@ -18,10 +18,13 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
     
     members : {
         urc : {  // upload request config
-            url: {
-                accept: "/activate-acv-video",
-                reject: "/disactivate-acv-video"
-            },
+        
+//             url: {
+//                 accept: "/activate-acv-video",
+//                 reject: "/disactivate-acv-video"
+//             },
+
+            url: "/chstate-acv-video",
             method: "POST",
             mimetype: "application/json"
         },
@@ -34,13 +37,18 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
         /* Поля формы */
         inp : {
             Id                  : null,
-            Active              : null
+            Pay_status          : null,
+            Active              : null,
+            Sum                 : null
         },
         
         taSummary   : null,
         flashBar    : null,
         flashPlayer : null,
-        
+        MailtoLink  : null,
+        EmailLabel  : null,
+        Mkbulling   : null,
+
         buildForm : function() {
             this.base(arguments);
             var layout = new qx.ui.layout.Grid(2, 1);
@@ -54,12 +62,39 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             lholder.add(this.taSummary, {flex : 1});
             if(this.isModerator){
                 this.inp.Id = new qx.ui.form.TextField();
-                this.inp.Active = new qx.ui.form.CheckBox("Разрешена"); 
-                this.inp.mailtoLink = new qx.ui.embed.Html();
-        		this.inp.email = new qx.ui.basic.Label("").set({rich: true});
-                lholder.add(this.inp.Active);
-                lholder.add(this.inp.mailtoLink);
-                lholder.add(this.inp.email);
+
+                this.inp.Active = new qx.ui.form.CheckBox("");
+                this.inp.Pay_status = new qx.ui.form.CheckBox("");
+                this.inp.Sum = new qx.ui.form.Spinner(1, 2, 134217728*2);
+                
+                var lhtl = new qx.ui.layout.Grid(4, 1);
+                lhtl.setColumnFlex(3, 1);
+                lhtl.setColumnAlign(0, "right", "top");
+                
+                var lhtable = new qx.ui.groupbox.GroupBox();
+                lhtable.setLayout(lhtl)
+                
+                var vertical_offset = -1;
+                lhtable.add(new qx.ui.basic.Label().set({value: "Счет оплачен",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                lhtable.add(this.inp.Pay_status,   {row:vertical_offset, column:1});
+                lhtable.add(new qx.ui.basic.Label().set({value: "Сумма",  rich : true}),
+                        {row:vertical_offset, column:2});
+                lhtable.add(this.inp.Sum,   {row:vertical_offset, column:3});
+
+                lhtable.add(new qx.ui.basic.Label().set({value: "Разрешена",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                lhtable.add(this.inp.Active,   {row:vertical_offset, column:1, colSpan:2});
+
+                
+                this.MailtoLink = new qx.ui.embed.Html();
+        		this.EmailLabel = new qx.ui.basic.Label("").set({rich: true});
+
+                lholder.add(lhtable);
+                
+                lholder.add(this.MailtoLink);
+                lholder.add(this.EmailLabel);
+                
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
@@ -101,12 +136,13 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 item = fieldName.toLowerCase()
                 res[item] = this.inp[fieldName].getValue();
             }  
-            var url = this.urc.url.reject;
-            if(this.inp.Active.getValue())
-                url = this.urc.url.accept
+//             var url = this.urc.url.reject;
+//             if(this.inp.Active.getValue())
+//                 url = this.urc.url.accept
+                
             if(this.validateForm()) {
                 this.uReq = new qx.io.remote.Request
-                    (url, this.urc.method, this.urc.mimetype);
+                    (this.urc.url, this.urc.method, this.urc.mimetype);
                 this.uReq.setTimeout(60000);
                 for(var item in res){
                     this.uReq.setParameter(item, res[item], true);
@@ -123,8 +159,10 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             var clip = result.value;
             if(this.isModerator){
                 this.inp.Id.setValue(clip.id);
+                this.inp.Pay_status.setValue(RegExp("^true$").test(clip.pay_status));
                 this.inp.Active.setValue(RegExp("^true$").test(clip.active));
-        		this.inp.mailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
+                this.inp.Sum.setValue(clip.sum);
+        		this.MailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
             }
             console.log("clip = ", clip);
             
