@@ -37,9 +37,14 @@ get_adv(Req) ->
             Val -> ResTry = biz_adv_manager:make_acv_xml(Val)
         end,
         ResTry
-    catch Err:Reason ->
-        ?ERROR({?MODULE, ?LINE, catch_err, {Err, Reason}}),
-        DefResXlm
+    catch 
+        Error ->
+            ?ERROR(?FMT("~p~n", [{?MODULE, ?LINE, catch_err, Error}])),
+            DefResXlm;
+    
+        Err:Reason ->
+            ?ERROR(?FMT("~p~n", [{?MODULE, ?LINE, catch_err, {Err, Reason}}])),
+            DefResXlm
     end,
     ?D("~n!!!------------------------------~n!!! Result = ~p ~n!!!------------------------------~n ", [Result]),
 
