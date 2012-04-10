@@ -141,10 +141,10 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
         mysql:execute(mySqlConPool, get_customer, [User_id]),
     Customer_list = mysql_dao:make_proplist(Customer_cols, Customer_vals),
 
-    ?D("--~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
-    ?D("~n------------------------~n", []),
-    ?D("Q2S3 = ~p", [Q2S3]),
-    ?D("~n------------------------~n", []),
+%    ?D("--~nUser_id = ~p, Customer_list (~p) ~n", [User_id, Customer_list]),
+%    ?D("~n------------------------~n", []),
+%    ?D("Q2S3 = ~p", [Q2S3]),
+%    ?D("~n------------------------~n", []),
 
     %%% Таргетирование по параметрам кастомера.
     case Customer_list of
@@ -190,7 +190,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
                 "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
     Q2 = Q2S4 ++ ";",
-    ?D("===============~n~p~n", [Q2]),
+%    ?D("===============~n~p~n", [Q2]),
     {ok, Acv_videos} = dao:simple(Q2),
     if
         length(Acv_videos) > 0 ->

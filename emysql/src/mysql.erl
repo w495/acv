@@ -578,8 +578,7 @@ handle_cast({prepare, Name, Stmt}, State) ->
 	    none ->
 		1
 	end,
-    ?Log2(LogFun, debug,
-	"received prepare/2: ~p (ver ~p) ~p", [Name, Version1, Stmt]),
+%    ?Log2(LogFun, debug, "received prepare/2: ~p (ver ~p) ~p", [Name, Version1, Stmt]),
     {noreply, State#state{prepares =
 			  gb_trees:enter(Name, {Stmt, Version1},
 					  State#state.prepares)}};
