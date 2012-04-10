@@ -175,6 +175,9 @@ create table acv_video (
     deleted bool default false,     /* удаление */
     stoped  bool default false,     /* остановка */
 
+    pay_status bool default null,     /* статус оплаты */
+    sum    int default null,          /* сумма оплаты  */
+
     customer_id int references customer(id)
         /* зачем пользователю знать про чужие баннеры */
 
