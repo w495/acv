@@ -8,7 +8,6 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
     
     construct : function(uReq, Row, Options) {
         this.Options = Options;
-        this.inp = {};
         this.base(arguments, uReq, Row, Options);
     },
 

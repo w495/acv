@@ -10,8 +10,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.BasePage",
 
     construct : function(uReq, Row, Options) {
         this.uReq = uReq;
+        this.inp = {};
         this.buildForm();
-        
         if(!Row)
             console.log("##", Row, "$$", this.drc.url );
             
