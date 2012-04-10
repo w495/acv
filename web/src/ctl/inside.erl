@@ -35,7 +35,8 @@ call_after({Req, Result}) ->
 % % PERMISSIONS
 % ============================================================================
 
-get_permissions(_Req) ->
+get_permissions(Req) ->
+	authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_customer, get_permissions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -43,11 +44,14 @@ get_permissions(_Req) ->
 % % CUSTOMER_GROUPS
 % ============================================================================
 
-get_customer_groups(_Req) ->
+get_customer_groups(Req) -> 
+	authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_customer, get_customer_groups, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_customer_group_info(Req) ->
+	authorization:auth_required(Req, "admin"),
+
     Data = Req:parse_qs(),
     Id = utils:to_integer(proplists:get_value("id", Data)),
     io:format("Id = ~p~n", [Id]),
@@ -60,6 +64,7 @@ get_customer_group_info(Req) ->
     {"application/json", [], [Res2]}.
 
 update_customer_group(Req) ->
+	authorization:auth_required(Req, "admin"),
     #web_session{customer_id=UID} = authorization:auth_required(Req),
     Data = Req:parse_post(),
     PermissionList = [utils:to_integer(X) || X <- proplists:get_all_values("permissions", Data)],
@@ -71,6 +76,7 @@ update_customer_group(Req) ->
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 delete_customer_group(Req) ->
+	authorization:auth_required(Req, "admin"),
     #web_session{customer_id=UID} = authorization:auth_required(Req),
     Data = Req:parse_post(),
     Id = utils:to_integer(proplists:get_value("id", Data)),
@@ -81,15 +87,18 @@ delete_customer_group(Req) ->
 % % CUSTOMER
 % ============================================================================
 
-get_customers(_Req) ->
+get_customers(Req) ->
+	authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_customer, get_customers, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-get_experts(_Req) ->
+get_experts(Req) ->
+	authorization:auth_required(Req, "admin"),
     Res = dao:dao_call(dao_customer, getExperts, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 get_customer_info(Req) ->
+	authorization:auth_required(Req, "admin"),
     Data = Req:parse_qs(),
     % % помни parse_post --- работает с GET
     % % Data = [{"key", "value"}, ... ]
@@ -105,6 +114,7 @@ get_customer_info(Req) ->
     {"application/json", [], [Res2]}.
 
 update_customer(Req) ->
+	authorization:auth_required(Req, "admin"),
     #web_session{customer_id=UID} = authorization:auth_required(Req),
     Data = Req:parse_post(),
     Pass = proplists:get_value("password", Data, ""),
@@ -134,6 +144,7 @@ update_customer(Req) ->
         {"application/json", [], [mochijson2:encode(Res)]}.
 
 delete_customer(Req) ->
+	authorization:auth_required(Req, "admin"),
     #web_session{customer_id=UID} = authorization:auth_required(Req),
 
     Data = Req:parse_post(),
@@ -144,36 +155,36 @@ delete_customer(Req) ->
     Res = dao:dao_call(dao_customer, delete_customer, {Id, UID}),
         {"application/json", [], [mochijson2:encode(Res)]}.
 
-get_adv_coms(_Req) ->
-    Res = dao:dao_call(dao_adv_com, getAdvComs, nil, values),
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%get_adv_coms(_Req) ->
+%    Res = dao:dao_call(dao_adv_com, getAdvComs, nil, values),
+%    {"application/json", [], [mochijson2:encode(Res)]}.
 
-get_adv_com(Req) ->
-    Data = Req:parse_qs(),
-    Id = utils:to_integer(proplists:get_value("id", Data)),
-    Res = dao:dao_call(dao_adv_com, getAdvCom, Id),
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%get_adv_com(Req) ->
+%    Data = Req:parse_qs(),
+%    Id = utils:to_integer(proplists:get_value("id", Data)),
+%    Res = dao:dao_call(dao_adv_com, getAdvCom, Id),
+%    {"application/json", [], [mochijson2:encode(Res)]}.
 
-update_adv_com(Req) ->
-    Data = Req:parse_post(),
-    Info = norm:extr(Data, [
-        {"id", [nullable, integer]},
-        {"name", [string]},
-        {"ref", [string]},
-        {"datestart", [datetimeUnixtime]},
-        {"datestop", [datetimeUnixtime]},
-        {"banner_place_id", [integer]},
-        {"pic_url", [string]}
-    ]),
-    Res = dao:dao_call(dao_adv_com, updateAdvCom, Info),
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%update_adv_com(Req) ->
+%    Data = Req:parse_post(),
+%    Info = norm:extr(Data, [
+%        {"id", [nullable, integer]},
+%        {"name", [string]},
+%        {"ref", [string]},
+%        {"datestart", [datetimeUnixtime]},
+%        {"datestop", [datetimeUnixtime]},
+%        {"banner_place_id", [integer]},
+%        {"pic_url", [string]}
+%    ]),
+%    Res = dao:dao_call(dao_adv_com, updateAdvCom, Info),
+%    {"application/json", [], [mochijson2:encode(Res)]}.
 
-delete_adv_com() ->
-    test1:est().
+%delete_adv_com() ->
+%    test1:est().
 
-get_banner_places(_Req) ->
-    Res = dao:dao_call(dao_adv_com, getBannerPlaces, nil, values),
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%get_banner_places(_Req) ->
+%    Res = dao:dao_call(dao_adv_com, getBannerPlaces, nil, values),
+%    {"application/json", [], [mochijson2:encode(Res)]}.
 
 
 
@@ -190,9 +201,9 @@ loop(Port, Data, Timeout) ->
         throw(timeout)
 end.
 
-get_encoding(_Req) ->
-    Res = dao:dao_call(dao_src, getEncoding, nil, values),
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%get_encoding(_Req) ->
+%    Res = dao:dao_call(dao_src, getEncoding, nil, values),
+%    {"application/json", [], [mochijson2:encode(Res)]}.
 
 
 %%% ===========================================================================
@@ -202,14 +213,16 @@ get_encoding(_Req) ->
 %%%
 %%% Возвращает список всех регионов (и страны и города)
 %%%
-get_all_geo_regions(_Req) ->
+get_all_geo_regions(Req) ->
+	authorization:auth_required(Req),
     Res = dao:dao_call(dao_geo_region, get_all_geo_regions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 %%%
 %%% Возвращает список всех районов (например СНГ)
 %%%
-get_geo_areas(_Req) ->
+get_geo_areas(Req) ->
+	authorization:auth_required(Req),
     Res = dao:dao_call(dao_geo_region, get_geo_areas, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -218,6 +231,7 @@ get_geo_areas(_Req) ->
 %%% Возвращает список всех стран или стран конкретного района
 %%%
 get_contries(Req) ->
+	authorization:auth_required(Req),
     Data = Req:parse_qs(),
     case proplists:get_value("id", Data) of
         undefined ->
@@ -236,7 +250,8 @@ get_contries(Req) ->
 %%%
 %%% Возвращает список стран СНГ
 %%%
-get_contries_sng(_Req) ->
+get_contries_sng(Req) ->
+	authorization:auth_required(Req),
     Res = dao:dao_call(dao_geo_region, get_contries, "SNG", values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -244,6 +259,7 @@ get_contries_sng(_Req) ->
 %%% Возвращает список всех городов или городов конкретной страны
 %%%
 get_cities(Req) ->
+	authorization:auth_required(Req),
     Data = Req:parse_qs(),
     case proplists:get_value("id", Data) of
         undefined ->
@@ -276,6 +292,7 @@ get_all_acv_videos(Req) ->
 %%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
 %%%
 get_acv_videos(Req) ->
+	authorization:auth_required(Req),
     Customer_id = authorization:get_customer_id(Req),
     Res = dao:dao_call(dao_acv_video, get_acv_videos, Customer_id, values),
 	io:format("~p~n", [Res]),
@@ -298,6 +315,7 @@ get_all_acv_video_stats(Req) ->
 %%% Возвращает полный статистики реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
 %%%
 get_acv_video_stats(Req) ->
+	authorization:auth_required(Req),
     Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_qs(),
     Info = norm:extr(Data , [
@@ -319,6 +337,7 @@ get_acv_video_stat(Req) ->
 %%%      для конкретной рекламной компании
 %%%
 get_acv_video_stat_by_films(Req) ->
+	authorization:auth_required(Req, "admin"),
     Data = Req:parse_qs(),
     ?D("~n~nData  = ~p~n~n", [Data]),
     Info = norm:extr(Data , [
@@ -336,6 +355,7 @@ get_acv_video_stat_by_films(Req) ->
 %%%      для конкретной рекламной компании
 %%%
 get_acv_video_stat_by_film(Req) ->
+	authorization:auth_required(Req, "admin"),
     Data = Req:parse_qs(),
     ?D("~n~nData  = ~p~n~n", [Data]),
     Info = norm:extr(Data , [
@@ -367,6 +387,7 @@ get_all_acv_banners(Req) ->
 %%% Возвращает полный спис категорий
 %%%
 get_all_cats(Req) ->
+	authorization:auth_required(Req),
     Customer_id = authorization:get_customer_id(Req), % TODO зачем эта переменная?
     Res = mysql_dao:dao_call(dao_cat, get_all_cats, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
@@ -375,37 +396,50 @@ get_all_cats(Req) ->
 %%% Возвращает полный спис реклам ДАННОГО ПОЛЬЗОВАТЕЛЯ
 %%%
 get_acv_banners(Req) ->
+    authorization:auth_required(Req, "admin"),
     Customer_id = authorization:get_customer_id(Req),
     Res = dao:dao_call(dao_acv_banner, get_acv_banners, Customer_id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-get_acv_video_common(Req) ->
+get_acv_video_common(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_value(dao_acv_video, get_acv_video_common, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_upload(Req) ->
+get_acv_video_upload(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_value(dao_acv_video, get_acv_video_upload, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_show(Req) ->
+get_acv_video_show(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_value(dao_acv_video, get_acv_video_show, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_users(Req) ->
+get_acv_video_users(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_value(dao_acv_video, get_acv_video_users, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_geos(Req) ->
+get_acv_video_geos(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_values(dao_acv_video, get_acv_video_geos, Acv_video_id),
     {"application/json", [], [Res]}.
 
-get_acv_video_cats(Req) ->
+get_acv_video_cats(Req) -> 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Req:parse_qs())),
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),
     Res = dao:dao_values(dao_acv_video, get_acv_video_cats, Acv_video_id),
     {"application/json", [], [Res]}.
 
@@ -413,6 +447,13 @@ get_acv_video_cats(Req) ->
 %%% Изменяет рекламу для роликов
 %%%
 update_acv_video(Req) ->
+	%
+	% Если данная функция будет работать как функция изменения информации о видео,
+	% то необходимо будет заменить строку "authorization:auth_required(Req)" на строку
+	% "authorization:auth_required(Req,{fun dao_acv_video:is_owner/2, Acv_video_id, "admin"}),"
+ 	% где Acv_video_id - идентификатор для видео, информацию о котором необхордимо изменить
+	%
+	authorization:auth_required(Req),
     Customer_id = authorization:get_customer_id(Req),
     Data = Req:parse_post(),
     ?D("~n----------------------------------------------------------------~nData  = ~p", [Data ]),
@@ -495,10 +536,12 @@ delete_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, delete_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-activate_acv_video(Req) ->
-    authorization:auth_required(Req, "admin"),
+activate_acv_video(Req) -> 
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
     Res = dao:dao_call(dao_acv_video, activate_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -506,6 +549,9 @@ disactivate_acv_video(Req) ->
     authorization:auth_required(Req, "admin"),
     Data = Req:parse_post(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
     Res = dao:dao_call(dao_acv_video, disactivate_acv_video, Id, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -523,6 +569,9 @@ full_delete_acv_video(Req) ->
 get_acv_video(Req) ->
     Data = Req:parse_qs(),
     Id = convert:to_integer(proplists:get_value("id", Data)),
+
+    authorization:auth_required(Req, % доступ для владельца и admin
+        {fun dao_acv_video:is_owner/2, Id, "admin"}),
     case dao_acv_video:get_acv_video(Id) of
         {ok, ACV, CatList, GeoList} ->
             Res1 = db2json:encode(ACV),

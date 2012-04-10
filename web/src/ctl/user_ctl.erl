@@ -6,11 +6,6 @@
 -module(user_ctl).
 -compile(export_all).
 
--export([ 
-    call_after/1,  
-    update_customer_profile/1,
-    get_customer_profile/1]). 
-
 -import(mochiweb_cookies, [cookie/2]).
 -include("../include/web_session.hrl").
 -include("../include/common.hrl").
@@ -23,6 +18,7 @@ call_after({Req, Result}) ->
 
 % Пользователь обновляет свою информацию
 update_customer_profile(Req) ->
+	authorization:auth_required(Req),
     #web_session{customer_id=UID} = authorization:auth_required(Req),
     Data = Req:parse_post(),
     Pass = proplists:get_value("password", Data, ""),
@@ -50,6 +46,7 @@ update_customer_profile(Req) ->
 
 % Пользователь получает свою информацию
 get_customer_profile(Req) ->
+	authorization:auth_required(Req),
     #web_session{customer_id=UID} = authorization:auth_required(Req), 
  
     case dao_customer:get_customer(UID) of

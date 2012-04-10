@@ -28,6 +28,7 @@ make_error_json({unexpected, E}) ->
         {struct,
             [{<<"type">>, <<"unexpected">>},
             {<<"info">>, <<"unexpected">>}]}}]};
+
 make_error_json({Etype, Einfo}) ->
     io:format("Queue error: ~p~n", [Einfo]),
     {struct,

@@ -15,12 +15,34 @@
 -define(LOGOUT, "/").
 
 
+%
+% Возвращает true если пользователь авторизован
+%
+is_auth(Request) ->
+    Cookie = Request:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined -> 
+			false;
+        A ->
+            case auth_biz:get_session(A) of
+                [] -> 
+					false;
+                [_H=#web_session{permissions=PList}|_T] -> 
+					true
+            end
+    end.
+
+
 auth_required(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
-        undefined -> throw(auth_required);
+        undefined -> 
+			error:return_json(Req, "Auth Required");
+			%throw(auth_required);
         A ->    case auth_biz:get_session(A) of
-                    [] -> throw(auth_required);
+                    [] -> 
+						error:return_json(Req, "Auth Required");
+						%throw(auth_required);
                     [H|_T] -> H
                 end
     end.
@@ -68,10 +90,13 @@ auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined ->
-            throw(auth_required);
+			error:return_json(Req, "Auth Required");
+            %throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
-                [] -> throw(auth_required);
+                [] -> 
+					error:return_json(Req, "Auth Required");
+					%throw(auth_required);
                 [H = #web_session{customer_id = Customer_id, permissions=PList}|_T] ->
                     case Is_owner_fun(Customer_id, Obj) of
                         true -> H;
@@ -80,7 +105,8 @@ auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
                                 true -> H;
                                 false ->
                                     ?INFO(?FMT("Permission required: ~p~n",[Perm])),
-                                    throw({permission_required, Perm})
+									error:return_json(Req, "Permission Required")
+                                    %throw({permission_required, Perm})
                             end
                     end
             end
@@ -94,17 +120,21 @@ auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
 auth_required(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
-        undefined -> throw(auth_required);
+        undefined -> 
+			error:return_json(Req, "Auth Required");
+			%throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
-                [] -> throw(auth_required);
+                [] -> 
+					error:return_json(Req, "Auth Required");
                 [H=#web_session{permissions=PList}|_T] -> 
                     case lists:member(Perm, PList) of
                         true -> 
                             H;
                         false -> 
-                            ?INFO(?FMT("Permission required: ~p~n",[Perm])),
-                            throw({permission_required, Perm})
+                            ?INFO(?FMT("Permission required: ~p~n",[Perm])), 
+							error:return_json(Req, "Permission Required")
+                            %throw({permission_required, Perm})
                     end
             end
     end.
@@ -116,10 +146,14 @@ auth_required(Req, Perm) ->
 auth_if(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
-        undefined -> throw(auth_required);
+        undefined -> 
+			error:return_json(Req, "Auth Required");
+			%throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
-                [] -> throw(auth_required);
+                [] -> 
+					error:return_json(Req, "Auth Required");
+					%throw(auth_required);
                 [#web_session{permissions=PList}|_T] ->
                     lists:member(Perm, PList)
             end
@@ -183,6 +217,7 @@ checkNumb([])->
     ok.
 
 do_change_pass(Req) ->
+	auth_required(Req),
     Data = Req:parse_qs(),
     OldPassword =  proplists:get_value("oldpassword", Data),
     Password1 = proplists:get_value("password1", Data),

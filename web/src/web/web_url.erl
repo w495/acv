@@ -137,8 +137,8 @@ dmap(Path) ->
     %% Тестирование почты
     %%
 
-        "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
-        "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
+    %    "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
+    %    "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
     %%
     %% Основа админки
     %%

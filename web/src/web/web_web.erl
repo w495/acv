@@ -150,14 +150,14 @@ processControllerException(throw, {auth_ajax, State} , Req) ->
             end,
             V = {struct, [{<<"mess">>, Emess }, {"val", Emess}]}
     end,
-    Req:ok({?OUTPUT_JSON, [], [mochijson2:encode(V)]});
-
+    Req:ok({?OUTPUT_JSON, [], [mochijson2:encode(V)]}); 
 
 processControllerException(throw, auth_required_dialog, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
     V = {struct, [{<<"ERROR">>, <<"auth_required">>}]},
     DataOut = mochijson2:encode(V),
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
+
 processControllerException(throw, {cookize, Ctype, Cookie, Body}, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) COOKIZE~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
     Req:respond({200, [{"Content-Type", Ctype}, Cookie], Body});
