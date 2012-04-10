@@ -178,6 +178,9 @@ class Base(generate.gen_css.Gen_css):
             height: 28px;
             width: 15px;
         } """
+         
+        res += """::-webkit-validation-bubble{margin-top:-10px;} 
+        ::-webkit-validation-bubble-message{padding:5px; font-size:12px;}  """
         
         #  Хотел сделать ссылочку на логаут с помощью css3. Вспломнил что есть Iгорь Eвгеньевич 
         #res += """.m-logout-link {  
