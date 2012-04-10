@@ -295,21 +295,20 @@ pref(Req) ->
 %%
 %% Возврщает страницу пользователя
 %%
-pers(Req) ->
-    try
-        authorization:auth_required(Req)
-    catch
-        throw:auth_required -> throw({redirect, "/", []})
-    end,
-    Xsl_path = "xsl/normal/outside/pers.xsl",
-    Xml  = xml:encode_data(
-        [
-            {"meta",    meta([Req])}             % описание запроса
-        ]
-    ),
-    Outty = xslt:apply(Xsl_path, Xml),
-    {?OUTPUT_HTML, [], [Outty]}.
-
+pers(Req) -> 
+	case authorization:is_auth(Req) of
+		false -> 
+			error:redirect(Req, "/");
+		Another -> 
+		    Xsl_path = "xsl/normal/outside/pers.xsl",
+		    Xml  = xml:encode_data(
+		        [
+		            {"meta",    meta([Req])}             % описание запроса
+		        ]
+		    ),
+		    Outty = xslt:apply(Xsl_path, Xml),
+		    {?OUTPUT_HTML, [], [Outty]}
+	end.
 
 captcha(_Req) ->
     {CodeHex, BinPng} = captcha:new(),

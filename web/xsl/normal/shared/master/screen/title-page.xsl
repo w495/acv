@@ -11,8 +11,10 @@
 
 <xsl:import href="base.xsl"/>
 
+
+
 <xsl:template name="s-title-base">
-    <xsl:text>Главная</xsl:text>
+	<xsl:text>Главная</xsl:text>
 </xsl:template>
 
 
