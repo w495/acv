@@ -60,6 +60,9 @@ dmap(Path) ->
         "/get-acv-video/category-targeting"
             -> {inside, get_acv_video_cats};
 
+        "/chstate-acv-video"
+            -> {inside, chstate_acv_video};
+
         "/disactivate-acv-video"
             -> {inside, disactivate_acv_video};
         "/activate-acv-video"
