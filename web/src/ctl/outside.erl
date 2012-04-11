@@ -20,6 +20,7 @@
     signup/1,
     signup_post/1,
     captcha/1,
+    pay/1,
     pers/1,
     test/0,
     test/1
@@ -309,6 +310,24 @@ pers(Req) ->
 		    Outty = xslt:apply(Xsl_path, Xml),
 		    {?OUTPUT_HTML, [], [Outty]}
 	end.
+
+%%
+%% Возврщает страницу пользователя
+%%
+pay(Req) ->
+    case authorization:is_auth(Req) of
+        false ->
+            error:redirect(Req, "/");
+        Another ->
+            Xsl_path = "xsl/normal/outside/pay.xsl",
+            Xml  = xml:encode_data(
+                [
+                    {"meta",    meta([Req])}             % описание запроса
+                ]
+            ),
+            Outty = xslt:apply(Xsl_path, Xml),
+            {?OUTPUT_HTML, [], [Outty]}
+    end.
 
 captcha(_Req) ->
     {CodeHex, BinPng} = captcha:new(),

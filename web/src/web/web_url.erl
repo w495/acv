@@ -131,6 +131,7 @@ dmap(Path) ->
 
         "/pref" ->              {outside, pref};
         "/pers" ->              {outside, pers};
+        "/pay" ->               {outside, pay};
 
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
@@ -140,8 +141,9 @@ dmap(Path) ->
     %% Тестирование почты
     %%
 
-    %    "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
-    %    "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
+        "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
+        "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
+
     %%
     %% Основа админки
     %%

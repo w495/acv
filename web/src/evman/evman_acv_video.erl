@@ -8,6 +8,8 @@
 -export([start_link/0, start_link/1, add_handler/2, add_guarded_handler/2,
          get_handlers/0, info/1]).
 
+-export([chstate/1]).
+
 start_link() ->
     gen_event:start_link({local, ?EVENTNAME}).
 
@@ -39,6 +41,9 @@ update(Msg) ->
 
 activate(Msg) ->
     gen_event:notify(?EVENTNAME, {activate, Msg}).
+
+chstate(Msg) ->
+    gen_event:notify(?EVENTNAME, {chstate, Msg}).
 
 start(Msg) ->
     gen_event:notify(?EVENTNAME, {start, Msg}).

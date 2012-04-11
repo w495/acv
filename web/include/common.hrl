@@ -23,19 +23,23 @@
 -define( I(F, P),   ?INFO(?FMT(F,P)) ).
 -define( E(F, P),   ?ERROR(?FMT(F,P)) ).
 
--ifdef(debug).
-    -ifdef(ext_debug).
-        -define( DEBUG(P), io:format(P,[]) ).
-        -define( D(F, P),   io:format(F,P) ).
-    -else.
-        -define( DEBUG(P), flog:debug(P) ).
-        -define( D(F, P),  ?DEBUG(?FMT(F,P)) ).
-    -endif.
--else.
-    -define( DEBUG(P), true).
-    -define( D(F, P),  true).
--endif.
+%%% 
+%%% -ifdef(debug).
+%%%     -ifdef(ext_debug).
+%%%         -define( DEBUG(P), io:format(P,[]) ).
+%%%         -define( D(F, P),   io:format(F,P) ).
+%%%     -else.
+%%%         -define( DEBUG(P), flog:debug(P) ).
+%%%         -define( D(F, P),  ?DEBUG(?FMT(F,P)) ).
+%%%     -endif.
+%%% -else.
+%%%     -define( DEBUG(P), true).
+%%%     -define( D(F, P),  true).
+%%% -endif.
+%%%
 
+-define( DEBUG(P), io:format(P,[]) ).
+-define( D(F, P),   io:format(F,P) ).
 
 
 %%% ---------------------------------------------------------------------------

@@ -13,11 +13,21 @@ init([]) ->
     {ok, #state{}}.
 
 handle_event({signup, Msg}, State) ->
-    ?D("eh ~p | signup event for customer : ~p~n", [self(), Msg]),
+    ?D("mail_customer ~p | signup event for customer : ~p~n", [self(), Msg]),
     {ok, State};
 
+handle_event({chstate, Id}, State) ->
+    {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Id),
+
+    Email = proplists:get_value("email", Acv_video),
+
+
+    ?D("mail_customer ~p | chstate : ~p~n", [self(), Acv_video]),
+    {ok, State};
+
+
 handle_event(Event, State) ->
-    ?D("eh ~p | unknown event : ~p~n", [self(), Event]),
+    ?D("mail_customer ~p | unknown event : ~p~n", [self(), Event]),
     {ok, State}.
 
 handle_call(_Request, State) ->

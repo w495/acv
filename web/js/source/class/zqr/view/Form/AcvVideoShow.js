@@ -19,11 +19,15 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
     members : {
         urc : {  // upload request config
         
-//             url: {
-//                 accept: "/activate-acv-video",
-//                 reject: "/disactivate-acv-video"
-//             },
-
+            /**
+                не удалено, но заменено на /chstate-acv-video
+                """
+                    url: {
+                        accept: "/activate-acv-video",
+                        reject: "/disactivate-acv-video"
+                    },
+                """
+            */
             url: "/chstate-acv-video",
             method: "POST",
             mimetype: "application/json"
@@ -42,12 +46,10 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             Sum                 : null
         },
         
-        taSummary   : null,
-        flashBar    : null,
-        flashPlayer : null,
-        MailtoLink  : null,
-        EmailLabel  : null,
-        Mkbulling   : null,
+        taSummary   : null, /* текстовое описание рекламной кампании */
+        flashBar    : null, /* поле флеш */
+        flashPlayer : null, /* объект плеера */
+        mailtoLink  : null, /* кнопка c mailto: */
 
         buildForm : function() {
             this.base(arguments);
@@ -61,40 +63,47 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 .set({width:400, height:300, readOnly: true});
             lholder.add(this.taSummary, {flex : 1});
             if(this.isModerator){
+                /**
+                    Если видео просматривает модератор,
+                    то появляется дополнительный набор полей,
+                    которые модератор может отредактировать.
+                **/
                 this.inp.Id = new qx.ui.form.TextField();
-
                 this.inp.Active = new qx.ui.form.CheckBox("");
-                this.inp.Pay_status = new qx.ui.form.CheckBox("");
-                this.inp.Sum = new qx.ui.form.Spinner(1, 2, 134217728*2);
+                this.inp.Sum = new qx.ui.form.Spinner(0, 0, 134217728).set({
+                    enabled: false
+                });
+                this.inp.Pay_status = new qx.ui.form.TextField().set({
+                    readOnly: true
+                });
                 
-                var lhtl = new qx.ui.layout.Grid(4, 1);
-                lhtl.setColumnFlex(3, 1);
+                var lhtl = new qx.ui.layout.Grid(3, 1);
+                lhtl.setColumnFlex(1, 1);
                 lhtl.setColumnAlign(0, "right", "top");
-                
                 var lhtable = new qx.ui.groupbox.GroupBox();
-                lhtable.setLayout(lhtl)
+                lhtable.setLayout(lhtl);
+
+                this.mailtoLink = new qx.ui.embed.Html();
                 
                 var vertical_offset = -1;
-                lhtable.add(new qx.ui.basic.Label().set({value: "Счет оплачен",  rich : true}),
-                        {row:++vertical_offset, column:0});
-                lhtable.add(this.inp.Pay_status,   {row:vertical_offset, column:1});
-                lhtable.add(new qx.ui.basic.Label().set({value: "Сумма",  rich : true}),
-                        {row:vertical_offset, column:2});
-                lhtable.add(this.inp.Sum,   {row:vertical_offset, column:3});
-
+                /* -------------------------------------------------------- */
                 lhtable.add(new qx.ui.basic.Label().set({value: "Разрешена",  rich : true}),
                         {row:++vertical_offset, column:0});
-                lhtable.add(this.inp.Active,   {row:vertical_offset, column:1, colSpan:2});
-
+                lhtable.add(this.inp.Active,   {row:vertical_offset, column:1});
+                /* -------------------------------------------------------- */
+                lhtable.add(new qx.ui.basic.Label().set({value: "Сумма",  rich : true}),
+                        {row:++vertical_offset, column:0});
+                lhtable.add(this.inp.Sum,   {row:vertical_offset, column:1});
+                lhtable.add(new qx.ui.basic.Label().set({value: "[руб]",  rich : true}),
+                        {row:vertical_offset, column:2});
+                /* -------------------------------------------------------- */
+//                 lhtable.add(new qx.ui.basic.Label().set({value: "Состояние счета",  rich : true}),
+//                         {row:++vertical_offset, column:0});
+//                 lhtable.add(this.inp.Pay_status,   {row:vertical_offset, column:1});
+                /* -------------------------------------------------------- */
                 
-                this.MailtoLink = new qx.ui.embed.Html();
-        		this.EmailLabel = new qx.ui.basic.Label("").set({rich: true});
-
                 lholder.add(lhtable);
-                
-                lholder.add(this.MailtoLink);
-                lholder.add(this.EmailLabel);
-                
+                lholder.add(this.mailtoLink);
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
@@ -115,8 +124,12 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
         **/
         addListeners: function(){
             var _this = this;
+            this.inp.Active.addListener("changeValue",function(event){
+               _this.inp.Sum.setEnabled(_this.inp.Active.getValue());
+            });
         },
-        
+
+
         /**
             Проверяет коректность данных
         **/
@@ -135,11 +148,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             for(var fieldName in this.inp){
                 item = fieldName.toLowerCase()
                 res[item] = this.inp[fieldName].getValue();
-            }  
-//             var url = this.urc.url.reject;
-//             if(this.inp.Active.getValue())
-//                 url = this.urc.url.accept
-                
+            }
             if(this.validateForm()) {
                 this.uReq = new qx.io.remote.Request
                     (this.urc.url, this.urc.method, this.urc.mimetype);
@@ -158,19 +167,32 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
 
             var clip = result.value;
             if(this.isModerator){
+                /**
+                    Если видео просматривает модератор,
+                    то появляется дополнительный набор полей,
+                    которые модератор может отредактировать.
+                **/
                 this.inp.Id.setValue(clip.id);
-                this.inp.Pay_status.setValue(RegExp("^true$").test(clip.pay_status));
                 this.inp.Active.setValue(RegExp("^true$").test(clip.active));
-                this.inp.Sum.setValue(clip.sum);
-        		this.MailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
+                this.inp.Sum.setValue(parseInt(clip.sum));
+
+                this.mailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
             }
             console.log("clip = ", clip);
-            
             var catList = result.cats.values;
             var geoList = result.geo.values;
             var txt = "Рекламная кампания, размещение видео в видео.\n";
             txt += "Название: " + clip.name + "\n";
             txt += "Комментарий: " + clip.comment + "\n";
+            
+            txt += "-------------------\n";
+            txt += "Состояние счета: ";
+            switch(clip.pay_status) {
+                case "":        txt += "счет не выставлен"; break;
+                case "false":   txt += "счет выставлен, но не оплачен"; break;
+                case "true":    txt += "счет выставлен и оплачен"; break;
+            }
+            txt += "\n";
             txt += "Статус: ";
             switch(clip.active) {
                 case "":        txt += "на модерации"; break;
@@ -178,6 +200,8 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 case "true":    txt += "разрешен"; break;
             }
             txt += "\n";
+            txt += "-------------------\n";
+
             txt += "Дата начала: " + zqr.util.utils.formatJsDateTime(zqr.util.utils.getDate(clip.datestart, 0)) + "\n";
             txt += "Дата конца: " + zqr.util.utils.formatJsDateTime(zqr.util.utils.getDate(clip.datestop, 0)) + "\n";
             txt += "Внешняя ссылка: " + clip.url + "\n";
@@ -239,41 +263,15 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 txt += catList[i].name + "\n";
             txt += "\n";
 
-	    if(this.isModerator) {
-		txt += "Email пользователя: " + clip.email;
-	    }
+            if(this.isModerator) {
+                txt += "Email пользователя: " + clip.email;
+            }
             this.taSummary.setValue(txt);
 
-/*
-            this.flashPlayer = new qx.ui.embed.Flash("resource/zqr/flash/gddflvplayer.swf").set({
-//                scale: "noscale",
-                width: 448,
-                height: 336,
-                variables : {
-                    vdo: "/" + clip.ref,
-//                    vdo: "/static/data/acv-video/common/5831108/adv02.mp4",
-                    autoplay : "false"
-                }
-            });
-*/
-/*
-<embed src="/static/site-media/flash/tvzavrplayer2.swf" 
-    quality="high"
-    wmode="opaque" 
-    allowfullscreen="true" 
-    allowscriptaccess="always" 
-    flashvars="autoplay=1&src=/static/data/vid/01.mp4" 
-    width="640" 
-    height="400" 
-    type="application/x-shockwave-flash" 
-    pluginspage="http://www.macromedia.com/go/getflashplayer" />
-*/
 
             this.flashPlayer = new qx.ui.embed.Flash("resource/zqr/flash/tvzavrplayer2.swf").set({
                 width: 448,
                 height: 336,
-//                allowfullscreen : false,
-//                allowscriptaccess : "always",
                 variables : {
             	    autoplay:0,
             	    src:"/" + clip.ref

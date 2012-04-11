@@ -86,11 +86,24 @@
 
 -spec get_all_acv_videos(any()) -> [proplist()].
 -spec get_acv_videos(Customer_id::integer()) -> [proplist()].
--spec get_acv_video(Acv_video_id::integer()) -> [proplist()].
+
+-spec get_acv_video(Acv_video_id::integer()) -> [proplist()];
+    ({Acv_video_id::integer(), _, _, _, _}) -> [proplist()].
+
 -spec update_acv_video(Acv_video::acv_video()) -> [proplist()];
     ({acv_video(), [Geo_region_list::integer()],
                         [Cat_id_list::integer()]}) -> integer().
 
+%%% @doc
+%%% Возвращает список proplist относящийся к acv_video с заданным State.
+%%% Где State --- это tuple с первым элементом равном Id.
+%%%
+get_acv_video(State) when erlang:is_tuple(State) ->
+    get_acv_video(erlang:element(1, State));
+
+%%% @doc
+%%% Возвращает список proplist относящийся к acv_video с заданным id
+%%%
 get_acv_video(Id) ->
     Q1 = "select acv_video.*, customer.email from acv_video join customer on acv_video.customer_id = customer.id where acv_video.id = $1;",
     Q2 = "select cat_id from acv_video2cat where acv_video_id = $1;",

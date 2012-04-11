@@ -13,11 +13,11 @@ init([]) ->
     {ok, #state{}}.
 
 handle_event({signup, Msg}, State) ->
-    ?D("eh ~p | signup event for admin : ~p~n", [self(), Msg]),
+    ?D("mail_admin ~p | signup event for admin : ~p~n", [self(), Msg]),
     {ok, State};
 
 handle_event(Event, State) ->
-    ?D("eh ~p | unknown event : ~p~n", [self(), Event]),
+    ?D("mail_admin ~p | unknown event : ~p~n", [self(), Event]),
     {ok, State}.
 
 handle_call(_Request, State) ->

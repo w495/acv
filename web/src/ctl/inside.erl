@@ -548,6 +548,10 @@ chstate_acv_video(Req) ->
     ]),
 
     Res = dao:dao_call(dao_acv_video, chstate_acv_video, State, values),
+
+    Id = convert:to_integer(proplists:get_value("id", Data)),
+    evman_acv_video:chstate(Id),
+
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 activate_acv_video(Req) ->
