@@ -61,8 +61,8 @@ mail(Rmail, Rname, Rsubject, Rbody) ->
             ], [], Rbody},
     gen_smtp_client:send(
         {
-            Rmail,
-            [sys_mail_username()],
+            sys_mail_username(),
+            [Rmail],
             mimemail:encode(Email)
         },  sys_mail_options()
     ).
