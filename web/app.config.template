@@ -9,35 +9,57 @@
         {site_owner, "tvzavr"},
         {log_level, {debug,all}},
         {cookiename, "FK"},
-        {expcookie, 180000}, % in seconds  300 min
 
-        {fk_db_user, "root"},
-        {fk_db_password, "root"},
-        {fk_db_name, "fk"},
-        {fk_db_host, "127.0.0.1"},
+        %% База данных рекламных компаний.
+            {fk_db_user, "root"},
+            {fk_db_password, "root"},
+            {fk_db_name, "fk"},
+            {fk_db_host, "127.0.0.1"},
 
-        {stat_db_user, "cff"},
-        {stat_db_password, "k9an612e"},
-        {stat_db_name, "AVSrv"},
-        {stat_db_host, "192.168.2.102"},
+        %% База ВНЕШНЯЯ данных видео
+            {vk_db_user, "repl"},
+            {vk_db_password, "yhbvft"},
+            {vk_db_name, "vk"},
+            {vk_db_host, "192.168.2.110"},
 
-        {vk_db_user, "repl"},
-        {vk_db_password, "yhbvft"},
-        {vk_db_name, "vk"},
-        {vk_db_host, "192.168.2.110"},
+        %% База ВНЕШНЯЯ данных со статистикой
+            {stat_db_user, "cff"},
+            {stat_db_password, "k9an612e"},
+            {stat_db_name, "AVSrv"},
+            {stat_db_host, "192.168.2.102"},
 
-        {vk_streamer, "http://192.168.2.187:8000"},
+        %% Параметры почтовых сообщений
+            {sys_mail_name,     "Система рекламы tvzavr"},
+            {sys_mail_user,     "nikitin.i@tvzavr.ru"},
+            {sys_mail_password, "maiqu6Ce6aht"},
+            {sys_mail_relay,    "active-video.ru"},
 
-        {web_session_gc_period, 600000}, % 10 min
-        {web_session_expire_timeout, 180000}, % in sec 300 min
+            {sys_bill_product_id,   "006268-0001-0001"},
+            {sys_bill_shop_id,      "adv"},
+            {sys_bill_ps_id,        "chronopay"},
+            {sys_bill_secret,       "ahGoh6elShoa5vei"},
 
-        {http_host,  "0.0.0.0"},
-        {https_host, "0.0.0.0"},
-        {http_port,  7000},
-        {https_port, 7443},
-        {https_certfile, "priv/https-files/cert.pem"},
-        {https_keyfile,  "priv/https-files/key.pem"},
+        %% Параметры почтовых сообщений
 
+            {web_session_gc_period, 600000}, % 10 min
+            {web_session_expire_timeout, 180000}, % in sec 300 min
+            {expcookie, 180000}, % in seconds  300 min
+
+        %% Параметры адресов
+            %% Параметры текущего хоста
+                {http_host,  "0.0.0.0"},
+                {https_host, "0.0.0.0"},
+                {http_port,  8001},
+                {https_port, 8443},
+                {https_certfile, "priv/https-files/cert.pem"},
+                {https_keyfile,  "priv/https-files/key.pem"},
+
+                {sys_dns,      "http://127.0.0.1:8001"},
+
+            %% Параметры стримяшего хоста
+                {vk_streamer, "http://192.168.2.187:8000"},
+
+        {max_auth_error, 10}
         {max_auth_error, 10}
     ]},
 

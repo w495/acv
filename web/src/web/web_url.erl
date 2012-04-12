@@ -133,6 +133,10 @@ dmap(Path) ->
         "/pers" ->              {outside, pers};
         "/pay" ->               {outside, pay};
 
+        "/surl" ->              {outside, surl};
+        "/furl" ->              {outside, furl};
+        "/curl" ->              {outside, curl};
+
         "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
         "/captcha.png" ->       {outside, captcha};

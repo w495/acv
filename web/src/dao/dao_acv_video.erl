@@ -30,6 +30,10 @@
     disactivate_acv_video/1,
     chstate_acv_video/1,
 
+    mkbill/1,
+    paybill/1,
+    bill/1,
+
     full_delete_acv_video/1,
     delete_acv_video_shown_expired/0,
     stop_old_acv_video/0,
@@ -105,7 +109,7 @@ get_acv_video(State) when erlang:is_tuple(State) ->
 %%% Возвращает список proplist относящийся к acv_video с заданным id
 %%%
 get_acv_video(Id) ->
-    Q1 = "select acv_video.*, customer.email from acv_video join customer on acv_video.customer_id = customer.id where acv_video.id = $1;",
+    Q1 = "select acv_video.*, customer.email, customer.login from acv_video join customer on acv_video.customer_id = customer.id where acv_video.id = $1;",
     Q2 = "select cat_id from acv_video2cat where acv_video_id = $1;",
     {ok, R1} = dao:simple(Q1, [Id]),
     R2 = dao:with_connection_fk(fun(Con) ->
@@ -596,6 +600,19 @@ disactivate_acv_video(Acv_video_id) ->
     Query = "update acv_video set active = false where id=$1;",
     dao:simple(Query, [(Acv_video_id)]).
 
+mkbill(Acv_video_id) ->
+    bill({Acv_video_id, false}).
+
+paybill(Acv_video_id) ->
+    bill({Acv_video_id, false}).
+
+bill({Acv_video_id, Pay_status}) ->
+    Query =
+        " update acv_video set "
+        "   pay_status = $2 "
+        " where id = $1;",
+    dao:simple(Query, [Acv_video_id, Pay_status]).
+
 %%%
 %%% @doc
 %%% Изменяет состояние кампании:
@@ -607,6 +624,7 @@ disactivate_acv_video(Acv_video_id) ->
 %%%     Счет не выставлен  = null
 %%% Sum
 %%%
+
 
 chstate_acv_video({Acv_video_id, Active, Pay_state, Sum}) ->
     Query =

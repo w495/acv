@@ -8,6 +8,7 @@
 -define(UPDATER_ID, 1).
 
 -export([
+    hexstring/1,
     index/1,
     about/1,
     docs/1,
@@ -22,6 +23,9 @@
     captcha/1,
     pay/1,
     pers/1,
+    surl/1,
+    furl/1,
+    curl/1,
     test/0,
     test/1
 ]).
@@ -33,7 +37,6 @@
 -include("common.hrl").
 -include("web.hrl").
 
--define(CATCHA_COOKIE, "captcha_codehex").
 
 %%
 %% Возврщает список вспомогательной информации для страницы
@@ -41,6 +44,7 @@
 
 meta([Req|_]) ->
     [
+            {"customer_id",         authorization:get_customer_id(Req)},
             {"login",               authorization:auth_getlogin(Req)},
             {"current-path",        Req:get(path)}
     ].
@@ -314,20 +318,141 @@ pers(Req) ->
 %%
 %% Возврщает страницу пользователя
 %%
-pay(Req) ->
+surl(Req) ->
     case authorization:is_auth(Req) of
         false ->
             error:redirect(Req, "/");
         Another ->
-            Xsl_path = "xsl/normal/outside/pay.xsl",
+            Xsl_path = "xsl/normal/outside/surl.xsl",
             Xml  = xml:encode_data(
                 [
-                    {"meta",    meta([Req])}             % описание запроса
+                    {"meta",    meta([Req])}
                 ]
             ),
             Outty = xslt:apply(Xsl_path, Xml),
             {?OUTPUT_HTML, [], [Outty]}
     end.
+
+%%
+%% Возврщает страницу пользователя
+%%
+furl(Req) ->
+    case authorization:is_auth(Req) of
+        false ->
+            error:redirect(Req, "/");
+        Another ->
+            Xsl_path = "xsl/normal/outside/furl.xsl",
+            Xml  = xml:encode_data(
+                [
+                    {"meta",    meta([Req])}
+                ]
+            ),
+            Outty = xslt:apply(Xsl_path, Xml),
+            {?OUTPUT_HTML, [], [Outty]}
+    end.
+
+%%
+%% Возврщает страницу пользователя
+%%
+curl(Req) ->
+    %%%     curl?user_id=1&product_id=006268-0001-0001&amount=10.0&sign=ef03688421e3f9ec816b38f6ee5bf64d1cee3b4a4329294ec2e88f5ea9d80639bbabd8657cd29bcf8cdc4f5bc10efb52de971a9e87635a29e3763f0da
+    Xsl_path = "xsl/normal/outside/curl.xsl",
+
+    Data = Req:parse_qs(),
+
+    User_id = convert:to_integer(proplists:get_value("user_id", Data)),
+    User_id = convert:to_integer(proplists:get_value("user_id", Data)),
+
+
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+
+%%
+%% Возврщает страницу пользователя
+%%
+pay(Req) ->
+    case authorization:is_auth(Req) of
+        false ->
+            error:redirect(Req, "/");
+        Another ->
+            Data = Req:parse_qs(),
+            ?D("Data = ~p", [Data]),
+            Id = convert:to_integer(proplists:get_value("id", Data)),
+
+            authorization:auth_required(Req, % доступ для владельца и admin
+                {fun dao_acv_video:is_owner/2, Id, "admin"}),
+
+
+            case dao_acv_video:get_acv_video(Id) of
+                {ok, [Acv_video], _, _} ->
+                    Customer_id = proplists:get_value("customer_id", Acv_video),
+                    Sum = proplists:get_value("sum", Acv_video),
+
+                    Payfields = [
+                        {"user_id",         Customer_id},
+                        {"product_id",      ?SYS_BILL_PRODUCT_ID},
+                        {"amount",          Sum},
+                        {"shop_id",         ?SYS_BILL_SHOP_ID},
+                        {"ps_id",           ?SYS_BILL_PS_ID},
+                        {"success_url",     ?SYS_BILL_SURL},
+                        {"failure_url",     ?SYS_BILL_FURL},
+                        {"secret",          ?SYS_BILL_SECRET}
+                    ],
+
+                    Sign = sha512(Payfields),
+                    ?D("Sign = ~p~n", [Sign]),
+
+                    Xsl_path = "xsl/normal/outside/pay.xsl",
+                    Xml  = xml:encode_data(
+                        [
+                            {"meta",     meta([Req])},             % описание запрос
+                            {"pay",      Payfields},             % описание запроса
+                            {"sign",     Sign}             % описание запроса
+                        ]
+                    ),
+                    Outty = xslt:apply(Xsl_path, Xml),
+                    {?OUTPUT_HTML, [], [Outty]};
+                _ ->
+                    Xsl_path = "xsl/normal/outside/pay.xsl",
+                    Xml  = xml:encode_data(
+                        [
+                            {"meta",     meta([Req])}             % описание запрос
+                        ]
+                    ),
+                    Outty = xslt:apply(Xsl_path, Xml),
+                    {?OUTPUT_HTML, [], [Outty]}
+            end
+    end.
+
+sha512(Proplist)->
+    Str = lists:concat(lists:map(fun({Name, Item}) ->
+        convert:to_list(Item) end, Proplist)),
+    ?D("~nStr = ~p~n", [Str]),
+    hexstring(
+        sha2:sha512(Str)
+    ).
+
+hexstring(Binary) when is_binary(Binary) ->
+    lists:flatten(lists:map(
+        fun(X) -> io_lib:format("~2.16.0b", [X]) end,
+        binary_to_list(Binary)));
+hexstring(<<X:128/big-unsigned-integer>>) ->
+    lists:flatten(io_lib:format("~32.16.0b", [X]));
+hexstring(<<X:160/big-unsigned-integer>>) ->
+    lists:flatten(io_lib:format("~40.16.0b", [X]));
+hexstring(<<X:256/big-unsigned-integer>>) ->
+    lists:flatten(io_lib:format("~64.16.0b", [X]));
+hexstring(<<X:512/big-unsigned-integer>>) ->
+    lists:flatten(io_lib:format("~128.16.0b", [X])).
+
+
+
 
 captcha(_Req) ->
     {CodeHex, BinPng} = captcha:new(),

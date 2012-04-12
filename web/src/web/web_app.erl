@@ -11,39 +11,6 @@
 
 -include("common.hrl").
 
-%
-% TODO: разнести по hrl
-%
--define(WEB_APP_TIMEOUT,    5000).
--define(WEB_APP_DELAY,      2000).
--define(WEB_APP_NUMBER,     10).
-
-%
-% TODO: разнести по hrl
-%
--define(WEB_APP_HTTP,   web_web_http_80).
--define(WEB_APP_HTTPS,  web_web_https_8443).
-
-%
-% TODO: разнести по hrl
-%
--define(DEFAULT_HTTP_IP,        "0.0.0.0").
--define(DEFAULT_HTTPS_IP,       "0.0.0.0").
--define(DEFAULT_HTTP_PORT,      8000).
--define(DEFAULT_HTTPS_PORT,     8443).
--define(DEFAULT_HTTPS_CERTFILE, "priv/https-files/cert.pem").
--define(DEFAULT_HTTPS_KEYFILE,  "priv/https-files/key.pem").
-
-%
-% TODO: разнести по hrl
-%
--define(HTTP_IP,        config:get(http_host,       ?DEFAULT_HTTP_IP)).
--define(HTTP_PORT,      config:get(http_port,       ?DEFAULT_HTTP_PORT)).
--define(HTTPS_IP,       config:get(https_host,      ?DEFAULT_HTTPS_IP)).
--define(HTTPS_PORT,     config:get(https_port,      ?DEFAULT_HTTPS_PORT)).
--define(HTTPS_CERTFILE, config:get(https_certfile,  ?DEFAULT_HTTPS_CERTFILE)).
--define(HTTPS_KEYFILE,  config:get(https_keytfile,  ?DEFAULT_HTTPS_KEYFILE)).
-
 %%%
 %%% Имена модулей вынесены
 %%%     на случай переименования этих модулей в будущем

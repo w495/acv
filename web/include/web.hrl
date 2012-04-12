@@ -1,5 +1,7 @@
 
-
+%%% ---------------------------------------------------------------------
+%%% Предопределенные статичные пути
+%%% ---------------------------------------------------------------------
 
 -define(RIA_DEPS_URL,  "/deps/qooxdoo/").
 -define(RIA_DEPS_PATH, "deps/qooxdoo/").
@@ -16,7 +18,6 @@
 -define(RIA_BIN_PATH, ?RIA_HOME ++ "/script/").
 
 
-
 -define(RIA_MENU_URL_,
     "/" ++ ?QOOXDOO_BUILD ++ "/resource/zqr/descr/menu.json").
 
@@ -24,10 +25,6 @@
 
 -define(RIA_MENU_ADMIN_PATH,  "resource/zqr/descr/menu.admin.json").
 -define(RIA_MENU_COMMON_PATH, "resource/zqr/descr/menu.common.json").
-
-
-
-
 
 
 -define(STATIC_DATA_URL,        "/static/data/").

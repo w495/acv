@@ -33,14 +33,6 @@
 />
 
 
-<!--
-    Включаем сторонние статичные элементы.
-    Они предельно конкретны и меняться от шаблона к шаблону не будут.
-    Все include могут быть только в этом документе
--->
-
-
-<!-- ====================================================================  -->
 
 <xsl:template match="/" name="s-html">
     <!--
@@ -54,70 +46,9 @@
 </xsl:template>
 
 <xsl:template name="s-head">
-
-</xsl:template>
-
-<xsl:template name="s-title">
-    <!--
-        Заголовок страницы, вида
-        {Заголовок}     ::= {надзаголовок}{разделитель}{подзаголовок}
-        {надзаголовок}  ::= "название сайта"
-        {разделитель}   ::= ": "
-        {подзаголовок}  ::= "название раздела"
-    -->
-    <xsl:param name="Delim" select="': '" />
-    <xsl:text>Система рекламы tvzavr</xsl:text>
-    <xsl:value-of select="$Delim" />
-    <xsl:call-template name="s-title-root"/>
-</xsl:template>
-
-<xsl:template name="s-title-root">
-    <!--
-        Подзаголовок страницы.
-    -->
-    <xsl:text>шаблон документа</xsl:text>
-</xsl:template>
-
-<xsl:template name="links">
-    <!--
-        Ссылки на ресурсы не относящиеся к html.
-                icon
-                shortcut icon
-                apple-touch-icon
-            тоже вряд ли будут меняться в рамках одного шаблона,
-            Для единнообразия, мы решили положить их в этот шаблон.
-    -->
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-    <xsl:call-template name="link-css" />
-</xsl:template>
-
-<xsl:template name="link-css">
-    <!--
-        Стили страницы - нулевой уровень
-    -->
-    <link rel="stylesheet" type="text/css" media="all" href="/c/base.css" />
-    <xsl:call-template name="link-css-1" />
-</xsl:template>
-
-<xsl:template name="link-css-1">
-    <!--
-        Стили страницы - первый уровень
-    -->
-</xsl:template>
-
-<xsl:template name="head-scripts">
-    <!--
-        Скрипты добавляемые вверху страницы.
-        Рекомендовано это использовать, если сами скрипты
-        изменяют начальный вид страницы или ее DOM (до загрузки).
-        Например, modernizr.
-        Для обычного использования НЕ РЕКОМЕНДОВАНЫ.
-    -->
-    <script src="/j/mm.js" type="text/javascript" >
-        <xsl:text><![CDATA[ ]]></xsl:text>
-    </script>
+    <xsl:text>Здравствуйте,</xsl:text>
+    <xsl:value-of select="/data/meta/username" />
+    <xsl:text>!</xsl:text>
 </xsl:template>
 
 <xsl:template name="s-body">
@@ -134,17 +65,6 @@
 <xsl:template name="s-header">
     <!--
         Основной заголовок сайта.
-    -->
-</xsl:template>
-
-<xsl:template name="s-signin">
-    <xsl:text><![CDATA[ ]]></xsl:text>
-</xsl:template>
-
-<xsl:template name="s-nav">
-    <!--
-        Навигация по внешней части сайта.
-        Должна содержать ссылки на все разделы, благо их не много
     -->
 </xsl:template>
 
@@ -180,17 +100,10 @@
         Подол страницы
     -->
     <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>Все права защищены.</xsl:text>
 </xsl:template>
 
-<xsl:template name="foot-scripts">
-    <!--
-        Скрипты добавляемые внизу страницы.
-        Рекомендовано это использовать, если сами скрипты не меняют
-        начальный вид страницы или ее DOM (до загрузки)
-    -->
-    <xsl:call-template name="foot-scripts-root" />
-</xsl:template>
 
 
 </xsl:stylesheet>

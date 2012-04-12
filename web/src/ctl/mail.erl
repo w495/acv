@@ -8,7 +8,7 @@
 -define(UPDATER_ID, 1).
 
 -export([
-    chstate/1,
+    mkbill/1,
     mail/4,
     test_mail/0,
     test/0,
@@ -30,30 +30,12 @@ mmh_person(Name, Mail)->
         mmh_utf8(Name) ++ "<" ++ Mail ++ ">"
     ).
 
-sys_mail_name() ->
-    config:get(sys_mail_username, "Система рекламы tvzavr.ru").
-
-sys_mail_username() ->
-    config:get(sys_mail_username, "nikitin.i@tvzavr.ru").
-
-sys_mail_relay() ->
-    config:get(sys_mail_relay, "active-video.ru").
-
-sys_mail_password() ->
-    config:get(sys_mail_password, "maiqu6Ce6aht").
-
-sys_mail_options() ->
-    [
-        {relay,    sys_mail_relay()},
-        {username, sys_mail_username()},
-        {password, sys_mail_password()}
-    ].
 
 
 mail(Rmail, Rname, Rsubject, Rbody) ->
     Email = {<<"text">>, <<"plain">>,
             [
-                {<<"From">>, mmh_person(sys_mail_name(), sys_mail_username())},
+                {<<"From">>, mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME)},
                 {<<"To">>,   mmh_person(Rname, Rmail)},
                 {<<"Subject">>,
                     erlang:list_to_binary(mmh_utf8(Rsubject))
@@ -61,44 +43,32 @@ mail(Rmail, Rname, Rsubject, Rbody) ->
             ], [], Rbody},
     gen_smtp_client:send(
         {
-            sys_mail_username(),
+            ?SYS_MAIL_USERNAME,
             [Rmail],
             mimemail:encode(Email)
-        },  sys_mail_options()
+        },  ?SYS_MAIL_OPTIONS
     ).
 
 
 
-chstate(Param) ->
-    Xslh_path = "xsl/mail/outside/chstateh.xsl",
-    Xslb_path = "xsl/mail/outside/chstateb.xsl",
-
-    Metah = [
-            {"current-path",        "sd"}
-    ],
-
-    Metab = [
-            {"current-path",        "sd"}
-    ],
-
-    Xmlh  = xml:encode_data(
-        [
-            {"meta",    Metah}
-        ]
-    ),
-
+mkbill({Rmail, Rname, {data, Acv_video}}) ->
+    Rsubject = "Выставлен счет",
+    Xslb_path = "xsl/mail/outside/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
-            {"meta",    Metab}
+            {"meta",
+                [
+                    {"sys-dns",     ?SYS_DNS},
+                    {"usermail",    Rmail},
+                    {"username",    Rname}
+                ]
+            },
+            {"video", Acv_video}
         ]
     ),
-
-    Outtyh = xslt:apply(Xslh_path, Xmlh),
     Rbody = xslt:apply(Xslb_path, Xmlb),
 
-
-
-    ok.
+    mail(Rmail, Rname, Rsubject, Rbody).
 
 
 test_mail() ->

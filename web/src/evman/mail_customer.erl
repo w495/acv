@@ -19,8 +19,20 @@ handle_event({signup, Msg}, State) ->
 handle_event({chstate, Id}, State) ->
     {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Id),
 
-    Email = proplists:get_value("email", Acv_video),
+    Rmail = proplists:get_value("email", Acv_video),
+    Rname = proplists:get_value("login", Acv_video),
 
+    case {
+        proplists:get_value("active", Acv_video),
+        proplists:get_value("pay_status", Acv_video)
+    } of
+        {true, null} ->
+            mail:mkbill({Rmail, Rname, {data, Acv_video}}),
+            %%dao_acv_video:mkbill(Id),
+            ok;
+        _ ->
+            ok
+    end,
 
     ?D("mail_customer ~p | chstate : ~p~n", [self(), Acv_video]),
     {ok, State};

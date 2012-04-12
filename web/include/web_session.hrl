@@ -11,10 +11,9 @@
 
 
 -define(AUTHCOOKIE, config:get(cookiename, "MCHS")).
--define(SPEC, config:get(cookiename_site_varaint, "SPEC")).
--define(VARIANT, config:get(cookiename_site_varaint, "VARIANT")).
--define(COLOR, config:get(cookiename_site_color, "COLOR")).
 -define(EXPCOOKIE, config:get(expcookie, 18000)).
 
 
 -define(F_COOKIEOPTIONS, [{max_age, ?EXPCOOKIE}, {path, "/"}]).
+
+-define(CATCHA_COOKIE, "captcha_codehex").
