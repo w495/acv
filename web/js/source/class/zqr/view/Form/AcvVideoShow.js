@@ -55,9 +55,9 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             if(this.isModerator){
                 this.inp.Id = new qx.ui.form.TextField();
                 this.inp.Active = new qx.ui.form.CheckBox("Разрешена");
-        	this.inp.email = new qx.ui.basic.Label("").set({rich: true});
+//        	this.inp.email = new qx.ui.basic.Label("").set({rich: true});
                 lholder.add(this.inp.Active);
-                lholder.add(this.inp.email);
+//                lholder.add(this.inp.email);
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())

@@ -130,6 +130,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
         true ->
 %            " and ( "
                     "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.name_en = '" ++ City ++ "') or "
+                    "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.country_id is null) or "
                     "acv_video2geo_region.geo_region_id is NULL "
 %                ") "
 %    end ++ " acv_video2geo_region.geo_region_id is NULL) ",
