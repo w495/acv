@@ -36,7 +36,7 @@
             <li class="s-roller-frame">
                 <xsl:call-template name="s-roller-frame">
                     <xsl:with-param name="Name" select="'pre-roll'"/>
-                    <xsl:with-param name="Head" select="'Видеореклама10'"/>
+                    <xsl:with-param name="Head" select="'Видеореклама'"/>
                     <xsl:with-param name="Subhead" select="'PRE-ROLL'"/>
                     <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
                     <xsl:with-param name="Content" >

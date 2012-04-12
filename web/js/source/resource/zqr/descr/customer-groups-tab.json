@@ -8,17 +8,17 @@
             specParam: 'tab-change-state-action'},
             
         {type : 'button', name : 'Создать',
-            action : 'resource/zqr/descr/customer-form.json',
+            action : 'resource/zqr/descr/customer-group-form.json',
             icon : 'icon/32/actions/document-new.png'},
 
         {type : 'button', name : 'Редактировать',
-            action : 'resource/zqr/descr/customer-form.json',
+            action : 'resource/zqr/descr/customer-group-form.json',
             icon : 'icon/32/actions/zoom-in.png',
             specParam: 'tab-row'},
 
         {type : 'button',
             name : 'Удалить',
-            action : '/delete-customer',
+            action : '/delete-customer-group',
             icon : 'icon/32/actions/edit-delete.png',
             specParam: 'tab-row-action',
             confirmMsg : 'Уверены ли вы в том что хотите удалить пользователя?'}
