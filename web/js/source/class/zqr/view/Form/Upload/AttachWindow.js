@@ -26,6 +26,7 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
         this.cancelButton = new qx.ui.form.Button("Отмена");
         this.cancelButton.addListener("execute", this._onCancelClick, this);
         this.buildWindow();
+	this.setResizable(false, false,false,false);
         this.addListeners();
         this.fillWindow();
     },
@@ -68,9 +69,9 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
         // TODO это точно надо брать с сервера.
         attach_types: {
             "1": 'file',
-            "2": 'video',
-            "3": 'image',
-            "4": 'link'
+            "2": 'video'
+            //"3": 'image',
+            //"4": 'link'
         },
 
         urc : {  // upload request config
@@ -86,20 +87,20 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
         buildWindow: function()
         {  
             this.inp.Name  = new qx.ui.form.TextField();
+	    this.inp.Name.setWidth(bsk.Config.UPLOAD_INPUT_WIDTH);
             this.inp.Alt   = new qx.ui.form.TextField();
             this.inp.Attach_type_id = new qx.ui.form.TextField("1");
             this.fake_inp.Type = new qx.ui.form.SelectBox();
             this.fileText = new qx.ui.form.TextField();
-            this.fileButton = new zqr.view.Form.Upload.UploadButton(
+            this.fileButton = new bsk.view.Form.Upload.UploadButton(
                 this.urc.button_id,
                 null,
                 "icon/16/actions/document-save.png"
             );
-            this.fileForm = new zqr.view.Form.Upload.UploadForm(
+            this.fileForm = new bsk.view.Form.Upload.UploadForm(
                 this.urc.form_id,
                 this.urc.url
             );
-            
             this.setLayout(new qx.ui.layout.VBox(10));
             this.setShowMinimize(false);
             this.setShowMaximize(false);
@@ -173,6 +174,7 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
             for(var item in data){                
                 this.fileForm.setParameter(item, data[item]);
             }
+            bsk.view.Form.Upload.UploadFakeStatusBar.on();
             return this.fileForm.send();
         },
         
@@ -183,7 +185,8 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
         addListeners: function(){
             var _this = this;
             this.addListener("appear",function(){ this.center(); }, this);
-            this.addListener('completed',function(e){            
+            this.addListener('completed',function(e){
+                bsk.view.Form.Upload.UploadFakeStatusBar.off();
                 for(var item in this.inp){
                     if(_this.inp[item])
                     {
@@ -206,6 +209,7 @@ qx.Class.define("zqr.view.Form.Upload.AttachWindow",
                     alt:            _this.inp.Alt.getValue(),
                     attach_type_id: _this.inp.Attach_type_id.getValue()
                 };
+                bsk.view.Form.Upload.UploadFakeStatusBar.off();
                 _this.fireDataEvent("completed", data);
                 _this.close();
             });
