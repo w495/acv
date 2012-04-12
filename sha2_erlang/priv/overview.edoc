@@ -1,0 +1,8 @@
+-*- html -*-
+@title sha2_erlang
+@copyright 2010 Andrew Tunnell-Jones
+@author Andrew Tunnell-Jones [http://andrew.tj.id.au/]
+@reference <a target="_top" href="http://andrewtj.github.com/sha2_erlang/">Documentation</a>
+@reference <a target="_top" href="http://github.com/andrewtj/sha2_erlang/">Source Code Repository</a>
+@doc
+<p>Erlang NIF wrappers around OpenSSL's SHA224, SHA256, SHA384 and SHA512 digest and HMAC functions.</p>
