@@ -128,7 +128,6 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
                     _this.inp.Ref.setValue(_this.refButton.getFileName());
                     if(zqr.view.Form.AbstractForm.customFormChkVideoFileName(_this.inp.Ref)){
                         zqr.view.Form.Upload.UploadFakeStatusBar.on();
-                        _this.setEnabled(false);
                         _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
                         _this.refForm.send();
                     }else{
@@ -142,7 +141,6 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             this.refForm.addListener('completed',function(e) {
                 var response = _this.refForm.getIframeTextContent();
                 zqr.view.Form.Upload.UploadFakeStatusBar.off();
-                _this.setEnabled(true);
                 _this.inp.Ref.setValue(response);
             });
         },
