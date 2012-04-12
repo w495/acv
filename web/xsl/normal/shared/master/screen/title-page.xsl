@@ -151,9 +151,11 @@
         <h1 class="e-news-head">
             <xsl:text>О проекте</xsl:text>
         </h1>
+        <!--
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
+        -->
     </header>
     <div class="b-news">
         <ul class="s-news-list">
@@ -176,19 +178,19 @@
 <!-- <xsl:for> -->
         <li class="s-news-list-item">
             <xsl:call-template name="s-news-list-item">
-                <xsl:with-param name="Caption" select="'TVZavr вам покажет'" />
+                <xsl:with-param name="Caption" select="''" />
                 <xsl:with-param name="Pic_url" select="'/i/acv-1.jpg'" />
             </xsl:call-template>
         </li>
         <li class="s-news-list-item">
             <xsl:call-template name="s-news-list-item">
-                <xsl:with-param name="Caption" select="'Вам покажет acv-2.jpg'" />
+                <xsl:with-param name="Caption" select="''" />
                 <xsl:with-param name="Pic_url" select="'/i/acv-2.jpg'" />
             </xsl:call-template>
         </li>
         <li class="s-news-list-item">
             <xsl:call-template name="s-news-list-item">
-                <xsl:with-param name="Caption" select="'пок вамажет TVZ'" />
+                <xsl:with-param name="Caption" select="''" />
                 <xsl:with-param name="Pic_url" select="'/i/acv-3.jpg'" />
             </xsl:call-template>
         </li>
@@ -277,9 +279,14 @@
     <xsl:param name="Class" select="'but'"/>
     <xsl:param name="Title" select="'title'"/>
     <xsl:param name="Text" select="'text'"/>
+
+    <a class="{$Class}"><xsl:text><![CDATA[ ]]></xsl:text></a>
+
+    <!--
     <a class="{$Class} m-button" href="{$Href}" title="{$Title}">
         <xsl:value-of select="$Text" />
     </a>
+    -->
     <!-- Alt:
         <form>
             <input type="button" />
