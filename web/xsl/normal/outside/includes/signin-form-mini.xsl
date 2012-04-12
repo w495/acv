@@ -43,8 +43,10 @@
     </form>
     <div class="s-sfm-lc" >
         <a class="s-sfm-l m-signup" href="/signup" ><xsl:text>Зарегестрироваться</xsl:text></a>
-        <xsl:text> / </xsl:text>
-        <a class="s-sfm-l m-rempass" href="/rempass"><xsl:text>Вспомнить пароль</xsl:text></a>
+        <!--
+            <xsl:text> / </xsl:text>
+            <a class="s-sfm-l m-rempass" href="/rempass"><xsl:text>Вспомнить пароль</xsl:text></a>
+        -->
     </div>
 
 </xsl:template>
