@@ -1,7 +1,7 @@
 /* ************************************************************************
 ************************************************************************ */
 
-qx.Class.define("bsk.view.Form.Upload.AttachList",
+qx.Class.define("zqr.view.Form.Upload.AttachList",
 {
     extend : qx.ui.tree.Tree,
  
@@ -47,7 +47,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
         
         _onIncomeItems : function(response) {
             var result = response.getContent();
-            if (false == bsk.util.errors.process(this, result) )
+            if (false == zqr.util.errors.process(this, result) )
                 return false;
             this.data = {};
             this.addItems(result.values);
@@ -65,7 +65,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
 
                 var checkbox = new qx.ui.form.CheckBox();
                 checkbox.setFocusable(false);
-                checkbox.bsk_element = E;
+                checkbox.zqr_element = E;
                 checkbox.Item = Item;
                 Item.addWidget(checkbox);
                 
@@ -91,7 +91,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
             
             var checkbox = new qx.ui.form.CheckBox();
             checkbox.setFocusable(false);
-            checkbox.bsk_element = value;
+            checkbox.zqr_element = value;
             checkbox.Item = Item;
             Item.addWidget(checkbox);
             Item.setIcon(null);
@@ -137,7 +137,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
             for(var key in this.data) {
                 var cb = this.data[key];
                 if(cb.getValue() == true) {
-                    ret.push(cb.bsk_element.id);
+                    ret.push(cb.zqr_element.id);
                 }
             }
             return ret;
@@ -147,7 +147,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
             var ret = [];
             for(var key in this.data) {
                 var cb = this.data[key];
-                ret.push(cb.bsk_element.id);
+                ret.push(cb.zqr_element.id);
             }
             return ret;
         },
@@ -158,7 +158,7 @@ qx.Class.define("bsk.view.Form.Upload.AttachList",
             for(var key in this.data) {
                 var cb = this.data[key];
                 if(cb.getValue() == true) {
-                    ret.push(cb.bsk_element);
+                    ret.push(cb.zqr_element);
                 }
             }
             return ret;

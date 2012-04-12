@@ -250,7 +250,16 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             type : 'file',
             accept : this.__accept,
             name : ''
-        }); 
+        });
+        
+        this.addListener("focus", function(e){
+            control.focus();
+        }, this);
+        
+        this.addListener("focusout", function(e){
+            this.reset();
+        }, this);
+        
         control.addListener("change", function(e){
             var controlDom = control.getDomElement();
             this.__valueInputOnChange = true;            
@@ -264,6 +273,7 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             var value = e.getData();
             this.setFileName(value);
             this.fireDataEvent('changeFileName',value);
+            this.reset();
         },this);
 
        return control;

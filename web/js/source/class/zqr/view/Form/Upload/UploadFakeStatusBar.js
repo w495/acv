@@ -29,7 +29,7 @@
  * 
  *
  */
-qx.Class.define("bsk.view.Form.Upload.UploadFakeStatusBar",
+qx.Class.define("zqr.view.Form.Upload.UploadFakeStatusBar",
 {
     type : "static",
 
