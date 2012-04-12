@@ -204,7 +204,7 @@
     <xsl:param name="Caption"  select="'default'" />
     <xsl:param name="Alt" select="'default'" />
     <xsl:param name="Title"  select="'default'" />
-    <a class="b-nlil" href="{$Link}" title="{$Caption}">
+    <div class="b-nlil" href="{$Link}" title="{$Caption}">
         <figure class="b-nli">
             <img
                 class="b-nliim"
@@ -216,7 +216,7 @@
                 <xsl:value-of select="$Caption"/>
             </figcaption>
         </figure>
-    </a>
+    </div>
 </xsl:template>
 
 <xsl:template name="s-about">
