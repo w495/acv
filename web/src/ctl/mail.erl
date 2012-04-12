@@ -50,6 +50,23 @@ mail(Rmail, Rname, Rsubject, Rbody) ->
     ).
 
 
+paybill({Rmail, Rname, {data, Acv_video}}) ->
+    Rsubject = "Ваш счет оплачен",
+    Xslb_path = "xsl/mail/outside/paybill.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",
+                [
+                    {"sys-dns",     ?SYS_DNS},
+                    {"usermail",    Rmail},
+                    {"username",    Rname}
+                ]
+            },
+            {"video", Acv_video}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail(Rmail, Rname, Rsubject, Rbody).
 
 mkbill({Rmail, Rname, {data, Acv_video}}) ->
     Rsubject = "Выставлен счет",
@@ -67,7 +84,6 @@ mkbill({Rmail, Rname, {data, Acv_video}}) ->
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-
     mail(Rmail, Rname, Rsubject, Rbody).
 
 

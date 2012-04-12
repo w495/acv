@@ -27,8 +27,16 @@ handle_event({chstate, Id}, State) ->
         proplists:get_value("pay_status", Acv_video)
     } of
         {true, null} ->
+            % Cчет еще не выставлен, выставляем
             mail:mkbill({Rmail, Rname, {data, Acv_video}}),
-            %%dao_acv_video:mkbill(Id),
+            dao_acv_video:mkbill(Id),
+            ok;
+        {true, false} ->
+            % Cчет еще не оплачен, оплачиваем
+            mail:paybill({Rmail, Rname, {data, Acv_video}}),
+            dao_acv_video:paybill(Id),
+            ok;
+        {true, true} ->
             ok;
         _ ->
             ok
