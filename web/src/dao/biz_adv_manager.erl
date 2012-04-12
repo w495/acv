@@ -96,13 +96,23 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
                 " acv_video." ++ Type ++ " = true and "
                 %%% Ограничение по времени показа
                 %%% acv_video.time_from < \now(hours) < acv_video.time_to
-                " (acv_video.time_from < "
+                %%% а кроме того обработка времени показа с 22:00 до 3:00
+                " ((acv_video.time_from < "
                         " (select (extract( hour from  now()::time))) "
                     " or acv_video.time_from is NULL) "
                         " and "
                 " ((select (extract( hour from  now()::time))) "
                         " < acv_video.time_to "
                     " or acv_video.time_to is NULL) "
+                    " or "
+                    "(acv_video.time_from > acv_video.time_to and "
+                	"( "
+                	    "(acv_video.time_from <  (select (extract( hour from  now()::time))) and "
+                	    "(select (extract( hour from  now()::time))) < 24  ) "
+                	" or "
+                	    "( 0 < (select (extract( hour from  now()::time))) and "
+                	    "(select (extract( hour from  now()::time))) < acv_video.time_to   ) "
+            	" ))) "
                         " and "
                 "not exists "
                     " (select * from acv_video_shown "
@@ -130,6 +140,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
         true ->
 %            " and ( "
                     "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.name_en = '" ++ City ++ "') or "
+                    "(geo_region.code = '" ++ CountryCode ++ "' and geo_region.country_id is null) or "
                     "acv_video2geo_region.geo_region_id is NULL "
 %                ") "
 %    end ++ " acv_video2geo_region.geo_region_id is NULL) ",
