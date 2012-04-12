@@ -178,8 +178,10 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 **/
                 this.inp.Id.setValue(clip.id);
                 this.inp.Active.setValue(RegExp("^true$").test(clip.active));
-                this.inp.Sum.setValue(parseInt(clip.sum));
-
+                if(clip.sum && clip.sum != ""){
+                    this.inp.Sum.setValue(parseInt(clip.sum));
+                }
+                
                 this.mailtoLink.setHtml("<button><a target='_blank' href='mailto:"+clip.email+"' style='text-decoration:none;color:black !important;'>Отправить сообщение</a></button>");
             }
             console.log("clip = ", clip);
