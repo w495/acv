@@ -359,7 +359,8 @@ curl(Req) ->
     Xsl_path = "xsl/normal/outside/curl.xsl",
 
     Data = Req:parse_qs(),
-    Acv_video_id = proplists:get_value("shop_f1", Data),
+    ?D("Data = ~p", [Data]),
+    Acv_video_id = convert:to_integer(proplists:get_value("shop_f1", Data)),
 
     dao_acv_video:paybill(Acv_video_id),
 
