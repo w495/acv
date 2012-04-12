@@ -359,10 +359,9 @@ curl(Req) ->
     Xsl_path = "xsl/normal/outside/curl.xsl",
 
     Data = Req:parse_qs(),
+    Acv_video_id = proplists:get_value("shop_f1", Data),
 
-    User_id = convert:to_integer(proplists:get_value("user_id", Data)),
-    User_id = convert:to_integer(proplists:get_value("user_id", Data)),
-
+    dao_acv_video:paybill(Acv_video_id),
 
     Xml  = xml:encode_data(
         [
@@ -391,9 +390,11 @@ pay(Req) ->
 
             case dao_acv_video:get_acv_video(Id) of
                 {ok, [Acv_video], _, _} ->
+                    Acv_video_id = proplists:get_value("id", Acv_video),
                     Customer_id = proplists:get_value("customer_id", Acv_video),
                     Sum = proplists:get_value("sum", Acv_video),
 
+                    %shop_f1, shop_f2, shop_f3, shop_f4, shop_f5
                     Payfields = [
                         {"user_id",         Customer_id},
                         {"product_id",      ?SYS_BILL_PRODUCT_ID},
@@ -402,6 +403,11 @@ pay(Req) ->
                         {"ps_id",           ?SYS_BILL_PS_ID},
                         {"success_url",     ?SYS_BILL_SURL},
                         {"failure_url",     ?SYS_BILL_FURL},
+                        {"shop_f1",         Acv_video_id},
+                        {"shop_f2",         "2"},
+                        {"shop_f3",         "3"},
+                        {"shop_f4",         "4"},
+                        {"shop_f5",         "5"},
                         {"secret",          ?SYS_BILL_SECRET}
                     ],
 

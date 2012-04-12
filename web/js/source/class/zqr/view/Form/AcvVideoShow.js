@@ -69,7 +69,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                     которые модератор может отредактировать.
                 **/
                 this.inp.Id = new qx.ui.form.TextField();
-<<<<<<< HEAD
+
                 this.inp.Active = new qx.ui.form.CheckBox("");
                 this.inp.Sum = new qx.ui.form.Spinner(0, 0, 134217728).set({
                     enabled: false
@@ -105,12 +105,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 
                 lholder.add(lhtable);
                 lholder.add(this.mailtoLink);
-=======
-                this.inp.Active = new qx.ui.form.CheckBox("Разрешена");
-//        	this.inp.email = new qx.ui.basic.Label("").set({rich: true});
-                lholder.add(this.inp.Active);
-//                lholder.add(this.inp.email);
->>>>>>> f6b84ad28136c0e218cb42ac0e12f67c01a886ae
+
             }
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
@@ -146,7 +141,7 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             return flag;
         },
 
-        /**
+        /**shop_f1
             Формирует данные для сервера
         **/
         _uploadData : function(e) {

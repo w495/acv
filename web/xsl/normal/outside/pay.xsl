@@ -34,6 +34,12 @@
         <input type="hidden" name="ps_id"         value="{/data/pay/ps_id}"  />
         <input type="hidden" name="success_url"    value="{/data/pay/success_url}"  />
         <input type="hidden" name="failure_url"    value="{/data/pay/failure_url}"  />
+        <input type="hidden" name="shop_f1"    value="{/data/pay/shop_f1}"  />
+        <input type="hidden" name="shop_f2"    value="{/data/pay/shop_f2}"  />
+        <input type="hidden" name="shop_f3"    value="{/data/pay/shop_f3}"  />
+        <input type="hidden" name="shop_f4"    value="{/data/pay/shop_f4}"  />
+        <input type="hidden" name="shop_f5"    value="{/data/pay/shop_f5}"  />
+
         <input type="hidden" name="sign" value="{/data/sign}" />
         <input type="submit" value="Оплатить"   />
     </form>
