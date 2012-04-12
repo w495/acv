@@ -126,9 +126,11 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
         **/
         addListeners: function(){
             var _this = this;
-            this.inp.Active.addListener("changeValue",function(event){
-               _this.inp.Sum.setEnabled(_this.inp.Active.getValue());
-            });
+            if(this.isModerator){
+                _this.inp.Active.addListener("changeValue",function(event){
+                _this.inp.Sum.setEnabled(_this.inp.Active.getValue());
+                });
+            }
         },
 
 
