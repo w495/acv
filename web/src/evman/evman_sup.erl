@@ -54,8 +54,8 @@ init([]) ->
         permanent, 5000, worker, [evman_customer]},
 
     Processes = [
-        Evman_acv_video,   % События видео
-        Evman_customer     % События заказчика
+        Evman_customer,     % События заказчика
+        Evman_acv_video   % События видео
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 

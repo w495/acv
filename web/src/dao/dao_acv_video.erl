@@ -604,7 +604,7 @@ mkbill(Acv_video_id) ->
     bill({Acv_video_id, false}).
 
 paybill(Acv_video_id) ->
-    bill({Acv_video_id, false}).
+    bill({Acv_video_id, true}).
 
 bill({Acv_video_id, Pay_status}) ->
     Query =

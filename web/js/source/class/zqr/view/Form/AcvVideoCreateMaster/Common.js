@@ -141,6 +141,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Common",
         **/
         validateForm : function() {
             var flag = true;
+            return flag;
             
             var id =  this.inp.Id.getValue();
             if(null == this.inp.Comment.getValue()) {

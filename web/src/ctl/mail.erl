@@ -12,7 +12,8 @@
     mail/4,
     test_mail/0,
     test/0,
-    test/1
+    test/1,
+    paybill/1
 ]).
 
 
@@ -89,12 +90,25 @@ mkbill({Rmail, Rname, {data, Acv_video}}) ->
 
 test_mail() ->
 
-    Rmail = "w@w-495.ru",
+    Rmail = "countff@gmail.com",
     Rname = "Получатель",
     Rsubject = "Тема письма",
+%    Xslb_path = "xsl/mail/outside/test_mailb.xsl",
+    Xslb_path = "xsl/mail/outside/mkbill.xsl",
 
-    Xslb_path = "xsl/mail/outside/test_mailb.xsl",
-    Xmlb  = xml:encode_data([{"meta",[{"current-path","sd"}]}]),
+%    Xmlb  = xml:encode_data([{"meta",[{"current-path","sd"}]}]),
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",
+                [
+                    {"sys-dns",     ?SYS_DNS},
+                    {"usermail",    Rmail},
+                    {"username",    Rname}
+                ]
+            },
+            {"video", "JJJJJJJ"}
+        ]
+    ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
 
     mail(Rmail, Rname, Rsubject, Rbody).

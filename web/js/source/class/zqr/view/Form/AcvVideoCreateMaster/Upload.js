@@ -215,6 +215,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         **/
         validateForm : function() {
             var flag = true;
+            return flag;
             
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 5000, this.inp.Link_title);
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 5000, this.inp.Url);
@@ -232,7 +233,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         saveData : function(e) {
             this.base(arguments, e);
 
-            var formIsValid = this.validateForm();
+            var formIsValid = true;//this.validateForm();
             if(formIsValid){
                 var res = {}
                 for(var fieldName in this.inp){

@@ -88,6 +88,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
                 "left join geo_region on acv_video2geo_region.geo_region_id=geo_region.id "
             "where "
                 " acv_video.deleted = false and "
+                " acv_video.pay_status = true and "
                 " acv_video.active = true and "
                 " acv_video.stoped = false and "
                 " acv_video.datestart < (select NOW()) and "
@@ -135,7 +136,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
 %            "";
             " acv_video2geo_region.geo_region_id is NULL";
         true, City =:= undefined -> % только те кампании, у которых поставлена данная страна страна, или нет таргетирования
-                    "(geo_region.code =  '" ++ CountryCode ++ "' geo_region.country_id is null) or ";
+                    "(geo_region.code =  '" ++ CountryCode ++ "' and geo_region.country_id is null) or "
                     "acv_video2geo_region.geo_region_id is NULL ";
         true ->
 %            " and ( "
@@ -201,7 +202,7 @@ get_acv({Type, Resourse, User_id}, Peer={CountryCode, City}) when
                 "acv_video.age_from is NULL and acv_video.age_to is NULL"
     end,
     Q2 = Q2S4 ++ ";",
-%    ?D("===============~n~p~n", [Q2]),
+    ?D("===============~n~p~n", [Q2]),
     {ok, Acv_videos} = dao:simple(Q2),
     if
         length(Acv_videos) > 0 ->

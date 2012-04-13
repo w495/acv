@@ -254,7 +254,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Firstname);
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Lastname);
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
-
+/*
             for(var fieldName in this.inp){
                 if(  ("Password1" == fieldName)
                     || ("Password2" == fieldName)
@@ -266,7 +266,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 
                 flag &= zqr.view.Form.AbstractForm.customFormChkSymb(this.inp[fieldName]);
             }
-            
+*/            
             flag &= zqr.view.Form.AbstractForm.customFormChkImgFileName(this.inp.Pic_url);
             flag &= zqr.view.Form.AbstractForm.customFormChkEmail(this.inp.Email);
             

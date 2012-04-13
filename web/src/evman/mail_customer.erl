@@ -34,6 +34,7 @@ handle_event({chstate, Id}, State) ->
         {true, false} ->
             % Cчет еще не оплачен, оплачиваем
             mail:paybill({Rmail, Rname, {data, Acv_video}}),
+            io:format("############# mail:paybill~n~n"),
             dao_acv_video:paybill(Id),
             ok;
         {true, true} ->

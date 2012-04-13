@@ -36,7 +36,8 @@ call_after({Req, Result}) ->
 % ============================================================================
 
 get_permissions(Req) ->
-	authorization:auth_required(Req, "admin"),
+%%	authorization:auth_required(Req, "admin"),
+    authorization:auth_required(Req),
     Res = dao:dao_call(dao_customer, get_permissions, nil, values),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -337,7 +338,7 @@ get_acv_video_stat(Req) ->
 %%%      для конкретной рекламной компании
 %%%
 get_acv_video_stat_by_films(Req) ->
-	authorization:auth_required(Req, "admin"),
+%%	authorization:auth_required(Req, "admin"),
     Data = Req:parse_qs(),
     ?D("~n~nData  = ~p~n~n", [Data]),
     Info = norm:extr(Data , [
@@ -355,7 +356,7 @@ get_acv_video_stat_by_films(Req) ->
 %%%      для конкретной рекламной компании
 %%%
 get_acv_video_stat_by_film(Req) ->
-	authorization:auth_required(Req, "admin"),
+%%	authorization:auth_required(Req, "admin"),
     Data = Req:parse_qs(),
     ?D("~n~nData  = ~p~n~n", [Data]),
     Info = norm:extr(Data , [

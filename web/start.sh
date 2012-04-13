@@ -1,6 +1,10 @@
 #!/bin/sh
 
+#NODENAME="advsystem@localhost"
+
 NODENAME="advsystem@localhost"
+
+
 CONFIG=app
 COOKIE=OCFDAZSCILRVUEHEWFWA
 
