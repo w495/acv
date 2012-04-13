@@ -90,6 +90,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Значение должно занимать не более " + max + " символов");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
 
@@ -103,6 +104,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Значение должно быть не менее " + from + " и не более " + to + " символов");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -117,6 +119,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                     " и пробелов ");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -128,6 +131,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Неверное имя. Пример: video-file_1.mp4 (*.m4v, *.flv, *.swf)");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -139,6 +143,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Неверное имя. Пример: userpic.png (*.jpg, *.jpeg, *.gif)");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -149,6 +154,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Не валидный адрес ");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -160,6 +166,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Не валидный адрес ");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -171,6 +178,8 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 pass2.setInvalidMessage("Пароли не совпадают");
                 return false;
             }
+            pass1.setValid(true);
+            pass2.setValid(true);
             return true;
         },
 
@@ -181,6 +190,19 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Должно быть число");
                 return false;
             }
+            field.setValid(true);
+            return true;
+        },
+
+
+        customFormcheckNumber : function(field) {
+            var value = field.getValue();
+            if (value  && ((typeof value != "number" && (!(value instanceof Number))) && (!(isFinite(value))))) {
+                field.setValid(false);
+                field.setInvalidMessage("Должно быть число");
+                return false;
+            }
+            field.setValid(true);
             return true;
         },
 
@@ -191,6 +213,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Должна быть дата");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
         
@@ -209,6 +232,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Должна корректная быть дата");
                 return false;
             }
+            field.setValid(true);
             return true;
         },
 
@@ -219,6 +243,7 @@ qx.Class.define("zqr.view.Form.AbstractForm",
                 field.setInvalidMessage("Поле обязательно для заполнения");
                 return false;
             }
+            field.setValid(true);
             return true;
         }
 

@@ -64,6 +64,13 @@ qx.Class.define("zqr.view.Form.ConfigForm",
             
             this.addbuttonRow(cnt, ++vertical_offset);
             this.controller.placeForm(cnt);
+        },
+
+        fillForm : function(data) {
+            for(var fieldName in this.inp){
+                var item = fieldName.toLowerCase();
+                this.inp[fieldName].setValue(data.values[item])
+            }
         }
 
     }
