@@ -215,13 +215,12 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         **/
         validateForm : function() {
             var flag = true;
-            return flag;
             
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 5000, this.inp.Link_title);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 5000, this.inp.Url);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(5, 5000, this.inp.Ref);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(5, 200, this.inp.Ref);
             flag &= zqr.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
-            //flag &= zqr.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);;
+            flag &= zqr.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);;
             flag &= zqr.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
             
             return flag;
@@ -233,7 +232,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         saveData : function(e) {
             this.base(arguments, e);
 
-            var formIsValid = true;//this.validateForm();
+            var formIsValid = this.validateForm();
             if(formIsValid){
                 var res = {}
                 for(var fieldName in this.inp){

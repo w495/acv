@@ -122,8 +122,8 @@ qx.Class.define("zqr.view.Form.AbstractForm",
         
         customFormChkVideoFileName : function(field) {
             var value = field.getValue();
-            //if (value && (!(/^(\w(\w|_|-|\/)+[.](mp4|m4v|flv|swf))$/i).test(value))){
-            if (value && (!(/^(.+[.](mp4|m4v|flv|swf))$/i).test(value))){
+            if (value && (!(/^(\w(\w|_|-|:|\/|\\)+[.](mp4|m4v|flv|swf))$/i).test(value))){
+            //if (value && (!(/^(.+[.](mp4|m4v|flv|swf))$/i).test(value))){
                 field.setValid(false);
                 field.setInvalidMessage("Неверное имя. Пример: video-file_1.mp4 (*.m4v, *.flv, *.swf)");
                 return false;
@@ -133,8 +133,8 @@ qx.Class.define("zqr.view.Form.AbstractForm",
         
         customFormChkImgFileName : function(field) {
             var value = field.getValue();
-            //if (value && (!(/^((\w|_|-|\/)+[.](png|jpg|jpeg|gif))$/i).test(value))){
-            if (value && (!(/^(.+[.](png|jpg|jpeg|gif))$/i).test(value))){
+            if (value && (!(/^((\w|_|-|:|\/|\\)+[.](png|jpg|jpeg|gif))$/i).test(value))){
+            //if (value && (!(/^(.+[.](png|jpg|jpeg|gif))$/i).test(value))){
                 field.setValid(false);
                 field.setInvalidMessage("Неверное имя. Пример: userpic.png (*.jpg, *.jpeg, *.gif)");
                 return false;

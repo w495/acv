@@ -141,14 +141,12 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Common",
         **/
         validateForm : function() {
             var flag = true;
-            return flag;
             
             var id =  this.inp.Id.getValue();
             if(null == this.inp.Comment.getValue()) {
                 this.inp.Comment.setValue("");
             }
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Name);
-            flag &= zqr.view.Form.AbstractForm.customFormChkSymb(this.inp.Name);
             flag &= zqr.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStart,
                 zqr.view.Form.AcvVideoCreateMaster.Common.DATE_PAST_OFFSET
                 + zqr.view.Form.AcvVideoCreateMaster.Common.DATE_DELTA);
