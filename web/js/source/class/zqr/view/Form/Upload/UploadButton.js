@@ -229,40 +229,48 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             zIndex: this.getZIndex() + 11,
             opacity: 0,
             // align to the top right hand corner
-            top: '0px',
-            right: '0px',
+            top:    '0px',
+            right:  '0px',
+            width:  '100px',
+            height: '100px',
             // ff ignores the width setting
             // pick a realy large font size to get
             // a huge button that covers
             // the area of the upload button
-            fontSize: '400px'
+            fontSize: '4px'
         };
         if ( qx.core.Environment.get('browser.name') == 'ie' && qx.core.Environment.get('browser.version') < 9 ) {
             css.filter = 'alpha(opacity=0)';
-            css.width = '200%';
+            css.width = '100%';
             css.height = '100%';
         }
 
         if(!this.__accept)
             this.__accept = ""
 
-        control =  new qx.html.Element('input',css,{        
+        control =  new qx.html.Element('input',css,{
             type : 'file',
             accept : this.__accept,
             name : ''
         });
-        
+
+
+        console.log("--> _createInput: function()");
+
         this.addListener("focus", function(e){
+            console.log("--> this.addListener.focus");
             control.focus();
         }, this);
-        
+
         this.addListener("focusout", function(e){
+            console.log("--> this.addListener.focusout");
             this.reset();
         }, this);
-        
+
         control.addListener("change", function(e){
+            console.log("--> this.addListener.change");
             var controlDom = control.getDomElement();
-            this.__valueInputOnChange = true;            
+            this.__valueInputOnChange = true;
             if (controlDom.files 
                 && controlDom.files.length > 0 ){
                   this.setFileSize(
@@ -273,7 +281,7 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             var value = e.getData();
             this.setFileName(value);
             this.fireDataEvent('changeFileName',value);
-            this.reset();
+            //this.reset();
         },this);
 
        return control;
