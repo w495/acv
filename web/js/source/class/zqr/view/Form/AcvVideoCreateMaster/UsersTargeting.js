@@ -93,7 +93,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         makeBoxGender : function() {
             this.inp.Gender = new qx.ui.form.SelectBox();
             this.__fillSelect(this.inp.Gender, [
-                    {name:"Все",     value: "null"},
+                    // {name:"Все",     value: "null"},
                     {name:"Мужской", value: "true"},
                     {name:"Женский", value: "false"}
                 ], "name", "value");

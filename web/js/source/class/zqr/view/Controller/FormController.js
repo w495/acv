@@ -21,8 +21,14 @@ qx.Class.define("zqr.view.Controller.FormController",
         var label;
         if(Row == undefined || Row.isNew)
             label = "Создание " + objName;
-        else
-            label = "Редактирование " + objName;
+        else{
+            if(formModel.readOnly){
+                label = "Информация " + objName;
+            }else{
+                label = "Редактирование " + objName;
+            }
+            
+        }
         this.formCont = new qx.ui.groupbox.GroupBox(label);
         //this.formCont = new qx.ui.container.Composite();
         this.formCont.setLayout(new qx.ui.layout.VBox());

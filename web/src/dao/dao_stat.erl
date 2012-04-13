@@ -198,6 +198,20 @@ get_max_id(Con) ->
     Query = "select av_stats_max_id from var;",
     S = dao:pgret(pgsql:equery(Con, Query)),
     {ok,[[{"av_stats_max_id",Max_id}]]}  = S,
+    case convert:to_integer(Max_id) of
+        0 ->
+            flog:error(
+                "\n"
+                "================================================\n"
+                "ERROR REQUIRED\n"
+                "------------------------------------------------\n"
+                "var.av_stats_max_id == 0 \n"
+                "================================================\n"
+            ),
+            ok;
+        _ ->
+            ok
+    end,
     Max_id.
 
 

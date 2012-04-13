@@ -72,7 +72,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             layout.setColumnAlign(0, "right", "top");
             
             this.composite  = new qx.ui.container.Composite (layout);
-            this.composite.setWidth(zqr.Config.MASTER_FORM_WIDTH_M);
+            this.composite.setWidth(zqr.Config.MASTER_FORM_WIDTH);
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -82,7 +82,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                 
             this.boxPlace = this.makeBoxPlace();
             this.boxRerun = this.makeBoxRerun();
-            this.inp.Wish = new qx.ui.form.Spinner(0, 10, 1152921504606846976);
+            this.inp.Wish = new qx.ui.form.Spinner(0, 1000, 1152921504606846976);
             this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
                 .set({enabled: false});
                 

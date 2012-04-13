@@ -1,6 +1,7 @@
 {
     type : "form",
     controller : "acvVideoShow",
+    readOnly: true,
     toolbar : [
         {type : "back"}
     ]

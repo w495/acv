@@ -38,7 +38,8 @@
             ],
             render : "horisontal",
             submit_url : "/get-all-acv-video-stats",
-            
+
+            withCancel    : false,
             disableCancel : true
         },
     
