@@ -151,11 +151,9 @@
         <h1 class="e-news-head">
             <xsl:text>О проекте</xsl:text>
         </h1>
-        <!--
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
-        -->
     </header>
     <div class="b-news">
         <ul class="s-news-list">
