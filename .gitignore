@@ -25,3 +25,4 @@ web/static/data/docs/*
 
 web/static/site-media/css/base.bgi.css
 web/static/site-media/css/base.css3.css
+erlxslt/priv/cbin/libxslt_adapter
