@@ -362,7 +362,16 @@ curl(Req) ->
     ?D("Data = ~p", [Data]),
     Acv_video_id = convert:to_integer(proplists:get_value("shop_f1", Data)),
 
-    evman_acv_video:chstate(Acv_video_id),
+    %% 
+    %% evman_acv_video:chstate(Acv_video_id),
+    %% Тут должны быть евенты, пока временно убраны отсюда.
+    %%
+
+    {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
+    Rmail = proplists:get_value("email", Acv_video),
+    Rname = proplists:get_value("login", Acv_video),
+    mail:paybill({Rmail, Rname, {data, Acv_video}}),
+    dao_acv_video:paybill(Acv_video_id),
 
     Xml  = xml:encode_data(
         [

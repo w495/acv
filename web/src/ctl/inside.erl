@@ -550,8 +550,18 @@ chstate_acv_video(Req) ->
 
     Res = dao:dao_call(dao_acv_video, chstate_acv_video, State, values),
 
-    Id = convert:to_integer(proplists:get_value("id", Data)),
-    evman_acv_video:chstate(Id),
+    Acv_video_id = convert:to_integer(proplists:get_value("id", Data)),
+
+    %%
+    %% evman_acv_video:chstate(Acv_video_id),
+    %% Тут должны быть евенты, пока временно убраны отсюда.
+    %%
+
+    {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
+    Rmail = proplists:get_value("email", Acv_video),
+    Rname = proplists:get_value("login", Acv_video),
+    mail:mkbill({Rmail, Rname, {data, Acv_video}}),
+    dao_acv_video:mkbill(Acv_video_id),
 
     {"application/json", [], [mochijson2:encode(Res)]}.
 
