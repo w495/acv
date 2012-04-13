@@ -36,12 +36,14 @@ qx.Class.define("zqr.view.Form.Upload.UploadFakeStatusBar",
     statics : {
         
         on: function(){
+            console.log("zqr.view.Form.Upload.UploadFakeStatusBar.on");
             var resRootItem = document.getElementById("upload_progress_bar");
             resRootItem.style.display = "block"
             return resRootItem;
         },
         
         off: function(){
+            console.log("zqr.view.Form.Upload.UploadFakeStatusBar.off");
             var resRootItem = document.getElementById("upload_progress_bar");
             resRootItem.style.display = "none"
             return resRootItem;
