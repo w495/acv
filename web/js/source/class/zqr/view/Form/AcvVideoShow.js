@@ -212,7 +212,14 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             txt += "Дата конца: " + zqr.util.utils.formatJsDateTime(zqr.util.utils.getDate(clip.datestop, 0)) + "\n";
             txt += "Внешняя ссылка: " + clip.url + "\n";
             txt += "URL ролика: " + clip.ref + "\n";
-            txt += "Продолжительность ролика: " + clip.duration + " секунд\n";
+
+            /*
+                Убрал, ибо пользователь задать это не может,
+                В базу забивается некая очень большая константа,
+                которая не соответсвует правде.
+                txt += "Продолжительность ролика: " + clip.duration + " секунд\n";
+            */
+
             txt += "Желаемое количество показов: " + clip.wish + "\n";
             txt += "Показано: " + clip.shown + "\n";
             var tpl = "";

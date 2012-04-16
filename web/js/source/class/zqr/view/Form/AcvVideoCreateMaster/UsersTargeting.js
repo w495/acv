@@ -185,14 +185,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
             this.inp.Age_to.setValue(parseInt(data.value.age_to));
         },
 
-        /**
-            Проверяет коректность данных
-        **/
-        validateForm : function() {
-
-            console.log("validateForm : function()")
-            var flag = true;
-
+        validateAge: function() {
             var age_from = this.inp.Age_from.getValue();
             var age_to = this.inp.Age_to.getValue();
             console.log("age_from  = ", age_from);
@@ -202,23 +195,20 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
                 this.inp.Age_to.setValid(false);
                 this.inp.Age_from.setInvalidMessage("Должно быть меньше");
                 this.inp.Age_to.setInvalidMessage("Должно быть больше");
-                flag &=  false;
+                return false;
             }
+            return true;
+        }
 
+        /**
+            Проверяет коректность данных
+        **/
+        validateForm : function() {
+            console.log("validateForm : function()")
+            var flag = true;
 
-            var time_from = this.inp.Time_from.getValue();
-            var time_to = this.inp.Time_to.getValue();
-            console.log("time_from  = ", time_from);
-            console.log("time_to    = ", time_to);
-            if (time_from > time_to) {
-                this.inp.Time_from.setValid(false);
-                this.inp.Time_to.setValid(false);
-                this.inp.Time_from.setInvalidMessage("Должно быть меньше");
-                this.inp.Time_to.setInvalidMessage("Должно быть больше");
-                flag &=  false;
-            }
-
-
+            flag &= this.validateAge();
+            
             console.log("flag = ", flag);
             return flag;
         },
