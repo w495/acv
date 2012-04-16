@@ -9,6 +9,11 @@
 <xsl:include href="includes/signin-form-mini.xsl" />
 <xsl:include href="../shared/utils/tipograf.xsl" />
 
+<!--
+    Совсем по-хорошему всю
+    документацию надо переверстывать.
+-->
+
 <xsl:template name="s-title-base">
     <xsl:text>Документация</xsl:text>
 </xsl:template>
