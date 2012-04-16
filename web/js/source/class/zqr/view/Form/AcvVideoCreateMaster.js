@@ -36,7 +36,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
 
         // Дублирование логики с верхней  кнопкой назад [<-].
         
-        this.__hidebutton(this.cancelButton);
+//        this.__hidebutton(this.cancelButton);
         
         this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
         this.prevButton.addListener("execute", this._onPrevClick, this);
@@ -46,7 +46,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         this.sendButton.addListener("execute", this._onSendClick, this);
 
         this.__hidebutton(this.sendButton);
-        this.__disablebutton(this.prevButton);
+        this.__hidebutton(this.prevButton);
 
         // ---------------------------------------------------------------
         
@@ -125,17 +125,22 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
                 this.__hidebutton(this.nextButton);
                 this.__showbutton(this.sendButton);
             }
-            this.__enablebutton(this.prevButton);
+            //this.__enablebutton(this.prevButton);
+            this.__showbutton(this.prevButton);
+            this.__hidebutton(this.cancelButton);
         },
         
         __gotoPrev : function(){
             if(0 < this.__step){
                 this.__step -= 1;
-                if(0 == this.__step)
-                    this.__disablebutton(this.prevButton);
+                if(0 == this.__step) {
+                    this.__showbutton(this.cancelButton);
+                    this.__hidebutton(this.prevButton);
+                }
             }
             else{
-                this.__disablebutton(this.prevButton);
+                this.__showbutton(this.cancelButton);
+                this.__hidebutton(this.prevButton);
             }
             this.__hidebutton(this.sendButton);
             this.__showbutton(this.nextButton);
@@ -214,11 +219,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
          },
          
         _onPrevClick: function() {
-            if(this.validateCurrent()){
+//            if(this.validateCurrent()){
                 this.__delCur();
                 this.__gotoPrev();
                 this.showCurrentPage();
-            }
+//            }
          },
          
         _onCancelClick : function(e) {

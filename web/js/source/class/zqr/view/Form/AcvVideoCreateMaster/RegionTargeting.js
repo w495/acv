@@ -34,7 +34,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
         },
         
         getComposite : function(){
-            return this.composite;
+            return this.boxGeo;
         },
 
         regionListOptions: {
@@ -45,17 +45,19 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
         
         buildForm : function(){
             var RFM = zqr.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
-            var pageName = new qx.ui.basic.Label()
+            /*var pageName = new qx.ui.basic.Label()
                 .set({
                     value: "Таргетирование по регионам",  font: "bold",
                     alignX: "left", rich : true
-                });
+                });*/
+            this.boxGeo = new qx.ui.groupbox.CheckGroupBox("Таргетирование по регионам");
             var layout = new qx.ui.layout.Grid(2, 1);
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");
-            this.composite  = new qx.ui.container.Composite(layout);
-            this.composite.setWidth(zqr.Config.MASTER_FORM_WIDTH_M);
-            
+//            this.composite  = new qx.ui.container.Composite(layout);
+            this.boxGeo.setLayout(layout);
+            this.boxGeo.setWidth(zqr.Config.MASTER_FORM_WIDTH_M);
+            this.boxGeo.setValue(false);
             
             this.inp.List = new zqr.view.
                 SelListTreeDirs(
@@ -69,11 +71,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
             this.inp.List.setHeight(zqr.Config.SELLISTTREE_HEIGHT);
 
             var vertical_offset = -1;
-            this.composite.add(pageName,
+/*            this.composite.add(pageName,
+                {row:++vertical_offset, column:0});*/
+            this.boxGeo.add(this.inp.List,
                 {row:++vertical_offset, column:0});
-            this.composite.add(this.inp.List,
-                {row:++vertical_offset, column:0});
-            return this.composite;
+            return this.boxGeo;
         },
         
         
@@ -86,6 +88,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
                 list.push(data.values[geo].geo_region_id);
             }
             this.inp.List.setChecked(list);
+            this.boxGeo.setValue(list.length>0);
         },
         
         /**
@@ -101,8 +104,10 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
             Применив некоторые преобразования <<загружает>> данные на сервер
         **/
         saveData : function(e) {
-            var list = this.inp.List.getCheckedId();
             if(this.validateForm()) {
+                var list = [];
+                if(this.boxGeo.getValue())
+                    this.inp.List.getCheckedId();
                 this.uReq.setParameter("geo_list", list, true);
             }
             return true;
