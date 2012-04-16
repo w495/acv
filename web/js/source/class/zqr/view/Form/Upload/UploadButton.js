@@ -129,8 +129,10 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
         if(this.__form){
             this.__form.addListener('completed',function(e) {
                 console.log("this.__form -> completed 1");
-                //this.setVisibility("visible");
-                this.setEnabled(true);
+                this.__inputEl.show();
+                this.__inputEl.focus();
+                this.focus();
+                this.setVisibility("visible");
             }, this);
         }
     },
@@ -301,7 +303,7 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             this.fireDataEvent('changeFileName',value);
             if(this.getForm()){
                 console.log("this.__form = ", this.getForm());
-                this.setEnabled(false);
+                control.hide();
                 //this.setVisibility("hidden");
             }
         },this);
