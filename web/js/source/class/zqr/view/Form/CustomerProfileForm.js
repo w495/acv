@@ -17,6 +17,11 @@ qx.Class.define("zqr.view.Form.CustomerProfileForm",
     	*/
         Row={id:0};
         this.base(arguments, controller, Row);
+
+        //this.submitButton =  new qx.ui.form.Button("Сохранить");
+        //this.submitButton.addListener("execute", this._onSubmitClickChild, this);
+
+            
         this.addListeners(); 
     },
 
@@ -63,25 +68,50 @@ qx.Class.define("zqr.view.Form.CustomerProfileForm",
          
 	    
         buildForm : function() {
-            this.base(arguments); 
-              
-  			
-        	this.submitButton =  new qx.ui.form.Button("Сохранить");  
-	        this.submitButton.addListener("execute", this._onSubmitClickChild, this); 
-	        this.cancelButton = new qx.ui.form.Button("Отменить");
-	        this.cancelButton.addListener("execute", this._onCancelClick, this);
-			
-	        
-            this.inp.Password1    = new qx.ui.form.PasswordField().set({placeholder: "pass", required:true});
-            this.inp.Password2    = new qx.ui.form.PasswordField().set({placeholder: "pass", required:true});
-            this.inp.Email        = new qx.ui.form.TextField().set({placeholder: "abc@def.gh", required:true});
-            this.inp.City         = new qx.ui.form.TextField().set({placeholder: "Город"});
-            this.inp.Organization = new qx.ui.form.TextField().set({placeholder: "Организация"});
-            this.inp.Position     = new qx.ui.form.TextField().set({placeholder: "Должность"});
-            this.inp.Firstname    = new qx.ui.form.TextField().set({placeholder: "Ваше имя"});
-            this.inp.Lastname     = new qx.ui.form.TextField().set({placeholder: "Фамилия"});
-            this.inp.Patronimic   = new qx.ui.form.TextField().set({placeholder: "Отчество"});
-            this.inp.Pic_url      = new qx.ui.form.TextField().set({placeholder: "файл", readOnly:true});
+            this.base(arguments);
+            
+            this.inp.Password1    = new qx.ui.form.PasswordField()
+                .set({
+                        placeholder: "pass"
+                });
+            this.inp.Password2    = new qx.ui.form.PasswordField()
+                .set({
+                        placeholder: "pass"
+                });
+            this.inp.Email        = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "abc@def.gh",
+                        required:true
+                });
+            this.inp.City         = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Город"
+                });
+            this.inp.Organization = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Организация"
+                });
+            this.inp.Position     = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Должность"
+                });
+            this.inp.Firstname    = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Ваше имя"
+                });
+            this.inp.Lastname     = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Фамилия"
+                });
+            this.inp.Patronimic   = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "Отчество"
+                });
+            this.inp.Pic_url      = new qx.ui.form.TextField()
+                .set({
+                        placeholder: "файл",
+                        readOnly:true
+                });
              
         
             /* Сопровождающая картинка */
@@ -189,9 +219,15 @@ qx.Class.define("zqr.view.Form.CustomerProfileForm",
         validateForm : function() {
             var pass1 = this.inp.Password1.getValue();
             var pass2 = this.inp.Password2.getValue();
-            var flag = true;  
-            flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Password1);
-            flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Password2);
+            var flag = true;
+
+            /**
+                Пользователю не обязательно менять свой пароль,
+                Чтобы что-то поменять
+                flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Password1);
+                flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Password2);
+            */
+
             flag &= zqr.view.Form.AbstractForm.customFormPassCheck(this.inp.Password1, this.inp.Password2); 
  
             flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Firstname);
@@ -219,18 +255,32 @@ qx.Class.define("zqr.view.Form.CustomerProfileForm",
         /**
             При клике по кнопке отмена
         **/
-        _onCancelClick : function(e) {  
+        _onCancelClick : function(e) {
         	// подгрузить данные с сервера
-           	this.loadFormData(0, "id");
+            /* this.loadFormData(0, "id");
+                // А ЗАЧЕМ ???
+                //      Если, мы хотим обновиться,
+                //      то лучше сделать отдельную кнопку.
+                //      Ибо не очевидно, что эта что-то обновляет.
+                //          ~~--- w-495
+            */
+           	return false;
         },
-        _onSubmitClickChild: function(e){ 
-        	// Вывод диалога для подтверждения дейцствий пользователя
-			if (confirm("Сохранить изменения?")) { 
-				// отправить изменения на сервер
-	        	this._onSubmitClick(); 
-			}  
+
+        /**
+            Посылает данные на сервер.
+        **/
+       _onSubmitClick : function(e) {
+            if (confirm("Сохранить изменения?")) {
+                this._uploadData(e);
+                if(this.uReq){
+                    this.submit(this.uReq);
+                    this.controller.onCancelClick();
+                }
+            }
         },
-        
+
+                
         /**
             Формирует данные для сервера
         **/

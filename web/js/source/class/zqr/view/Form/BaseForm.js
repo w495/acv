@@ -3,6 +3,19 @@
     Абстрактный класс описания формы
     для созданию / редактированию чего либо.
 
+#asset(qx/icon/Tango/32/actions/edit-undo.png)
+#asset(qx/icon/Tango/32/actions/edit-redo.png)
+
+#asset(qx/icon/Tango/32/actions/media-seek-backward.png)
+#asset(qx/icon/Tango/32/actions/media-seek-forward.png)
+
+#asset(qx/icon/Tango/32/actions/mail-mark-junk.png)
+
+#asset(qx/icon/Tango/32/actions/dialog-apply.png)
+#asset(qx/icon/Tango/32/actions/dialog-ok.png)
+
+#asset(qx/icon/Tango/32/actions/process-stop.png)
+
 ************************************************************************ */
 
 
@@ -19,9 +32,9 @@ qx.Class.define("zqr.view.Form.BaseForm",
         //      ибо в случае отказа функция вызываться не будет.
         // Использовать hasListener тут нельзя,
         //      ибо биндит к члену класса
-        this.submitButton =  new qx.ui.form.Button("Отправить");
+        this.submitButton =  new qx.ui.form.Button("Отправить", "icon/32/actions/dialog-ok.png");
         this.submitButton.addListener("execute", this._onSubmitClick, this);
-        this.cancelButton = new qx.ui.form.Button("Отмена");
+        this.cancelButton = new qx.ui.form.Button("Отмена", "icon/32/actions/mail-mark-junk.png");
         this.cancelButton.addListener("execute", this._onCancelClick, this);
         this.inp = {};
         this.fake_inp = {};

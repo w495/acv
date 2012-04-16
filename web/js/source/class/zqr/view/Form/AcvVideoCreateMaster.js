@@ -11,6 +11,8 @@
 #asset(qx/icon/Tango/32/actions/mail-mark-junk.png)
 
 #asset(qx/icon/Tango/32/actions/dialog-apply.png)
+#asset(qx/icon/Tango/32/actions/dialog-ok.png)
+
 #asset(qx/icon/Tango/32/actions/process-stop.png)
 
     
@@ -41,7 +43,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         this.prevButton.addListener("execute", this._onPrevClick, this);
         this.nextButton =  new qx.ui.form.Button("Далее",  "icon/32/actions/edit-redo.png");
         this.nextButton.addListener("execute", this._onNextClick, this);
-        this.sendButton = new qx.ui.form.Button("Отправить", "icon/32/actions/dialog-apply.png");
+        this.sendButton = new qx.ui.form.Button("Отправить", "icon/32/actions/dialog-ok.png");
         this.sendButton.addListener("execute", this._onSendClick, this);
 
         this.__hidebutton(this.sendButton);
