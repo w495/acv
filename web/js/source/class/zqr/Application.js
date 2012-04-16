@@ -142,7 +142,13 @@ qx.Class.define("zqr.Application",
                     this.cur_controller = undefined;
                     this.ActionRow = undefined;
                     this.FilterVal = undefined;
-                    this.loadActionModel(this.curMenu.model);
+                    
+                    if(this.curMenu.isGlobal){
+                        location.href = this.curMenu.model
+                    }
+                    else{
+                        this.loadActionModel(this.curMenu.model);
+                    }
                     this.show_global_pb();
                 }
                 else {
