@@ -1,8 +1,4 @@
 {
     type : "form",
-    controller : "acvVideoCreate",
-    toolbar : [
-        {type : "back"}
-    ]
-
+    controller : "acvVideoCreate"
 }

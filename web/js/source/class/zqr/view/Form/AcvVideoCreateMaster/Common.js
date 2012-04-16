@@ -71,24 +71,43 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Common",
 
             this.inp.Id = new qx.ui.form.TextField();
             this.inp.Name = new qx.ui.form.TextField() 
-                .set({placeholder: "Название рекламной кaмпании",
-                     required:true});
+                .set({
+                    placeholder: "Название рекламной кaмпании",
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Название рекламной кaмпании")
+                });
+                
             this.inp.Comment = new qx.ui.form.TextArea() 
-                .set({placeholder: "Его кроме Вас никто не увидит",
-                     required:true});
+                .set({
+                    placeholder: "Его кроме Вас никто не увидит",
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Ваш комментарий к вашей рекламной кaмпании")
+
+                });
                 
             var dateStart = new Date();
             dateStart.setDate(dateStart.getDate()
                 - zqr.view.Form.AcvVideoCreateMaster.Common.DATE_PAST_OFFSET);
             this.inp.DateStart = new qx.ui.form.DateField()
-                .set({value: dateStart,
-                     required:true});
+                .set({
+                    value: dateStart,
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Камапания начнется ровно в 00:00 этой даты")
+                });
             var dateStop = new Date();
             dateStop.setDate(dateStop.getDate()
                 + zqr.view.Form.AcvVideoCreateMaster.Common.DATE_FUTURE_OFFSET);
             this.inp.DateStop = new qx.ui.form.DateField()
-                .set({value: dateStop,
-                     required:true});
+                .set({
+                    value: dateStop,
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Камапания закончится ровно в 00:00 этой даты")
+                });
+                
             var pageName = new qx.ui.basic.Label()
                 .set({
                     value: "Общая информация",  font: "bold",

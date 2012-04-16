@@ -198,7 +198,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
                 return false;
             }
             return true;
-        }
+        },
 
         /**
             Проверяет коректность данных

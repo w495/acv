@@ -20,9 +20,11 @@
         {"type" : "button",
             "name" : "Разрешить",
             "action" : "/activate-acv-video",
+            "action" : "/resource/zqr/descr/acv-video-show-mod.json",
             "icon" : "icon/32/actions/dialog-apply.png",
-            "specParam": "tab-row-action"
+            "specParam": "tab-row"
         },
+
         {"type" : "button",
             "name" : "Запустить",
             "action" : "/start-acv-video",

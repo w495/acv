@@ -1,6 +1,11 @@
 
 /* ************************************************************************
 
+#asset(qx/icon/Tango/32/actions/edit-undo.png)
+#asset(qx/icon/Tango/32/actions/edit-redo.png)
+
+#asset(qx/icon/Tango/32/actions/dialog-ok.png)
+#asset(qx/icon/Tango/32/actions/go-next.png)
 #asset(qx/icon/Tango/32/actions/go-previous.png)
 #asset(qx/icon/Tango/32/actions/system-log-out.png)
 #asset(qx/icon/Tango/32/actions/list-add.png)
@@ -20,9 +25,14 @@
 #asset(qx/icon/Tango/32/actions/dialog-apply.png)
 #asset(qx/icon/Tango/32/actions/dialog-close.png)
 
+#asset(qx/icon/Tango/22/actions/go-next.png)
 #asset(qx/icon/Tango/22/actions/go-previous.png)
 #asset(qx/icon/Tango/22/actions/system-log-out.png)
 
+#asset(qx/icon/Tango/22/actions/dialog-ok.png)
+#asset(qx/icon/Tango/22/actions/dialog-apply.png)
+#asset(qx/icon/Tango/22/actions/dialog-close.png)
+#asset(qx/icon/Tango/22/actions/edit-delete.png)
 
 #asset(qx/icon/Tango/22/actions/list-add.png)
 #asset(qx/icon/Tango/22/actions/zoom-in.png)
@@ -30,7 +40,13 @@
 #asset(qx/icon/Tango/22/apps/preferences-users.png)
 #asset(qx/icon/Tango/22/actions/edit-delete.png)
 
+#asset(qx/icon/Tango/16/actions/dialog-ok.png)
+#asset(qx/icon/Tango/16/actions/dialog-apply.png)
+#asset(qx/icon/Tango/16/actions/dialog-close.png)
+#asset(qx/icon/Tango/16/actions/edit-delete.png)
+#asset(qx/icon/Tango/16/actions/go-next.png)
 #asset(qx/icon/Tango/16/actions/go-previous.png)
+
 #asset(qx/icon/Tango/16/actions/system-log-out.png)
 #asset(qx/icon/Tango/16/actions/document-new.png)
 #asset(qx/icon/Tango/16/actions/document-open.png)
@@ -42,9 +58,6 @@
 #asset(qx/icon/Tango/16/apps/office-chart.png)
 #asset(qx/icon/Tango/16/apps/preferences-users.png)
 #asset(qx/icon/Tango/16/actions/edit-delete.png)
-
-
-
 
 
 

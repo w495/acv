@@ -1,5 +1,18 @@
 /* ************************************************************************
     Мастер создания видео рекламы.
+
+
+#asset(qx/icon/Tango/32/actions/edit-undo.png)
+#asset(qx/icon/Tango/32/actions/edit-redo.png)
+
+#asset(qx/icon/Tango/32/actions/media-seek-backward.png)
+#asset(qx/icon/Tango/32/actions/media-seek-forward.png)
+
+#asset(qx/icon/Tango/32/actions/mail-mark-junk.png)
+
+#asset(qx/icon/Tango/32/actions/dialog-apply.png)
+#asset(qx/icon/Tango/32/actions/process-stop.png)
+
     
 ************************************************************************ */
 
@@ -18,17 +31,18 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         this.counterLabel = new qx.ui.basic.Label();
         // кнопки
         // ---------------------------------------------------------------
-        this.nextButton =  new qx.ui.form.Button("Далее");
-        this.nextButton.addListener("execute", this._onNextClick, this);
-        this.prevButton =  new qx.ui.form.Button("Назад");
-        this.prevButton.addListener("execute", this._onPrevClick, this);
-        this.cancelButton = new qx.ui.form.Button("Отмена");
+        this.cancelButton = new qx.ui.form.Button("Отмена", "icon/32/actions/mail-mark-junk.png");
         this.cancelButton.addListener("execute", this._onCancelClick, this);
-        this.sendButton = new qx.ui.form.Button("Послать!");
+        this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
+        this.prevButton.addListener("execute", this._onPrevClick, this);
+        this.nextButton =  new qx.ui.form.Button("Далее",  "icon/32/actions/edit-redo.png");
+        this.nextButton.addListener("execute", this._onNextClick, this);
+        this.sendButton = new qx.ui.form.Button("Отправить", "icon/32/actions/dialog-apply.png");
         this.sendButton.addListener("execute", this._onSendClick, this);
-        
+
         this.__hidebutton(this.sendButton);
-        this.__hidebutton(this.prevButton);
+        this.__disablebutton(this.prevButton);
+
         // ---------------------------------------------------------------
         
         // запрос
@@ -77,12 +91,20 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         __list :   null,      // формы мастера
         __length :  null,     // длинна мастера
         placeholder : null,
-        
+
+        __showbutton: function(but){
+            but.setVisibility("visible");
+        },
+
         __hidebutton: function(but){
+            but.setVisibility("excluded");
+        },
+
+        __disablebutton: function(but){
             but.setEnabled(false);
         },
-        
-        __showbutton: function(but){
+
+        __enablebutton: function(but){
             but.setEnabled(true);
         },
         
@@ -98,17 +120,17 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
                 this.__hidebutton(this.nextButton);
                 this.__showbutton(this.sendButton);
             }
-            this.__showbutton(this.prevButton);
+            this.__enablebutton(this.prevButton);
         },
         
         __gotoPrev : function(){
             if(0 < this.__step){
                 this.__step -= 1;
                 if(0 == this.__step)
-                    this.__hidebutton(this.prevButton);
+                    this.__disablebutton(this.prevButton);
             }
             else{
-                this.__hidebutton(this.prevButton);
+                this.__disablebutton(this.prevButton);
             }
             this.__hidebutton(this.sendButton);
             this.__showbutton(this.nextButton);
@@ -167,9 +189,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             var hbox = new qx.ui.layout.HBox(5);
             hbox.setAlignX("right");
             buttonRow.setLayout(hbox);
+            buttonRow.add(this.cancelButton);
             buttonRow.add(this.prevButton);
             buttonRow.add(this.nextButton);
-            buttonRow.add(this.cancelButton);
             buttonRow.add(this.sendButton);
             cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
         },
