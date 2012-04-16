@@ -33,6 +33,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         // ---------------------------------------------------------------
         this.cancelButton = new qx.ui.form.Button("Отмена", "icon/32/actions/mail-mark-junk.png");
         this.cancelButton.addListener("execute", this._onCancelClick, this);
+
+        // Дублирование логики с верхней  кнопкой назад [<-].
+        
+        this.__hidebutton(this.cancelButton);
+        
         this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
         this.prevButton.addListener("execute", this._onPrevClick, this);
         this.nextButton =  new qx.ui.form.Button("Далее",  "icon/32/actions/edit-redo.png");

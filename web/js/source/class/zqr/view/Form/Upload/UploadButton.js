@@ -281,7 +281,7 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             var value = e.getData();
             this.setFileName(value);
             this.fireDataEvent('changeFileName',value);
-            //this.reset();
+            //control.blur();
         },this);
 
        return control;
