@@ -92,14 +92,21 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         },
         
         makeBoxGender : function() {
-            this.inp.Gender = new qx.ui.form.SelectBox();
+            this.inp.Gender = new qx.ui.form.SelectBox()
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("Выбор пола пользователя")
+                    //,blockToolTip: true
+                });
             this.__fillSelect(this.inp.Gender, [
                     // {name:"Все",     value: "null"},
                     {name:"Мужской", value: "true"},
                     {name:"Женский", value: "false"}
                 ], "name", "value");
             var vertical_offset = 0;
-            var boxGender = new qx.ui.groupbox.CheckGroupBox("Пол");
+            var boxGender = new qx.ui.groupbox.CheckGroupBox("Пол")
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по полу")
+                });
             var layout2 = new qx.ui.layout.Grid(1, 1)
             boxGender.setLayout(layout2);
             boxGender.setValue(false);
@@ -109,10 +116,19 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         },
         
         makeBoxAge : function() {
-            this.inp.Age_from = new qx.ui.form.Spinner(1, 1, 100);
-            this.inp.Age_to = new qx.ui.form.Spinner(2, 2, 100);
+            this.inp.Age_from = new qx.ui.form.Spinner(1, 1, 100)
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("От")
+                });
+            this.inp.Age_to = new qx.ui.form.Spinner(2, 2, 100)
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("До")
+                });
             var vertical_offset = 0;
-            var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст");
+            var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст")
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по возрасту")
+                });
             var layout = new qx.ui.layout.Grid(1, 5)
             layout.setColumnFlex(1, 1);
             layout.setColumnFlex(2, 1);
@@ -127,10 +143,19 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         },
         
         makeBoxTime : function() {
-            this.inp.Time_from = new qx.ui.form.Spinner(0, 0, 24);
-            this.inp.Time_to = new qx.ui.form.Spinner(0, 24, 24);
+            this.inp.Time_from = new qx.ui.form.Spinner(0, 0, 24)
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("От")
+                });
+            this.inp.Time_to = new qx.ui.form.Spinner(0, 24, 24)
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("До")
+                });
             var vertical_offset = 0;
-            var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа");
+            var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа")
+                .set({
+                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по времени показа")
+                });
             var layout = new qx.ui.layout.Grid(1, 5);
             layout.setColumnFlex(1, 1);
             layout.setColumnFlex(2, 1);

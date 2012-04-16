@@ -35,8 +35,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         this.cancelButton.addListener("execute", this._onCancelClick, this);
 
         // Дублирование логики с верхней  кнопкой назад [<-].
-        
-//        this.__hidebutton(this.cancelButton);
+        // this.__hidebutton(this.cancelButton);
         
         this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
         this.prevButton.addListener("execute", this._onPrevClick, this);
@@ -199,9 +198,13 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             var hbox = new qx.ui.layout.HBox(5);
             hbox.setAlignX("right");
             buttonRow.setLayout(hbox);
-            buttonRow.add(this.cancelButton);
+            /**
+                Такой странный порядок следования обусловлен,
+                что некоторые кнопки пропадают.
+            **/
             buttonRow.add(this.prevButton);
             buttonRow.add(this.nextButton);
+            buttonRow.add(this.cancelButton);
             buttonRow.add(this.sendButton);
             cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
         },

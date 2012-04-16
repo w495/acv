@@ -82,11 +82,17 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                 
             this.boxPlace = this.makeBoxPlace();
             this.boxRerun = this.makeBoxRerun();
-            this.inp.Wish = new qx.ui.form.Spinner(0, 1000, 1152921504606846976);
+            this.inp.Wish = new qx.ui.form.Spinner(0, 1000, 1152921504606846976)
+                .set({
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Желаемое вами количество показов вашей рекламы")
+                });
+
             this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
-                .set({enabled: false});
-                
-                
+                .set({
+                    enabled: false
+                });
+
             var vertical_offset = -1;
             
             this.composite.add(pageName,
@@ -116,16 +122,36 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
         
         
         makeBoxPlace : function() {
-            this.inp.Preroll = new qx.ui.form.CheckBox("Preroll")
-                .set({value: true});
-            this.inp.Midroll = new qx.ui.form.CheckBox("Midroll")
-                .set({value: true});
-            this.inp.Postroll = new qx.ui.form.CheckBox("Postroll")
-                .set({value: true});
-            this.inp.Pauseroll = new qx.ui.form.CheckBox("Pauseroll")
-                .set({value: false});
+            this.inp.Preroll = new qx.ui.form.CheckBox("Preroll — показ ролика перед показом фильма")
+                .set({
+                    value: true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Показ ролика перед показом фильма")
+                });
+            this.inp.Midroll = new qx.ui.form.CheckBox("Midroll — показ ролика в середине показа фильма")
+                .set({
+                    value: true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Показ ролика в середине показа фильма")
+                });
+            this.inp.Postroll = new qx.ui.form.CheckBox("Postroll — показ ролика после показа фильма")
+                .set({
+                    value: true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Показ ролика после показа фильма")
+                });
+            this.inp.Pauseroll = new qx.ui.form.CheckBox("Pauseroll — показ ролика на паузе")
+                .set({
+                    value: false,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Показ ролика на паузе")
+                });
             
-            var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика");
+            var boxPlace = new qx.ui.groupbox.GroupBox("Размещение ролика")
+                .set({
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Размещение ролика внутри фильма")
+                });
             boxPlace.setLayout(new qx.ui.layout.VBox(2));
             boxPlace.add(this.inp.Preroll);
             boxPlace.add(this.inp.Midroll);
@@ -135,10 +161,22 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
         },
         
         makeBoxRerun : function() {
-            this.inp.Rerun_hours = new qx.ui.form.Spinner(0, 1, 24);
-            this.inp.Rerun_minutes = new qx.ui.form.Spinner(0, 1, 60);
+            this.inp.Rerun_hours = new qx.ui.form.Spinner(0, 1, 24)
+                .set({
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Часы")
+                });
+            this.inp.Rerun_minutes = new qx.ui.form.Spinner(0, 1, 60)
+                .set({
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Минуты")
+                });
             var vertical_offset = 0;
-            var boxRerun  = new qx.ui.groupbox.CheckGroupBox("Задержка повторного показа определенному зрителю ");
+            var boxRerun  = new
+                qx.ui.groupbox.CheckGroupBox("Задержка повторного показа определенному зрителю").set({
+                    toolTip: new qx.ui.tooltip.ToolTip("Задержка повторного показа определенному зрителю")
+                    //,blockToolTip: true
+                });
             //var boxRerun = new qx.ui.groupbox.GroupBox("Повтор ролика");
             var layout = new qx.ui.layout.Grid(1, 5)
             layout.setColumnFlex(1, 1);
