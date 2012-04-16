@@ -37,12 +37,25 @@ auth_required(Req) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined -> 
-			error:return_json(Req, "Auth Required");
-			%throw(auth_required);
+			%%% error:return_json(Req, "Auth Required");
+
+            %%% --------------------------------------------------------------
+            %%% 
+            %%% Идея хорошая, только не сильно применимая
+            %%%     потому, что совсем по-хорошему
+            %%%     надо как-то прерывать исполнение,
+            %%%         для этого и вызываем исключение.
+            %%% Если хочешь вернуть специцифичное сообщение для ощибки,
+            %%%        попробуй прокинуть его через обработку ошибок в web_web
+            %%%
+            %%% ~~---- w-495
+            %%% --------------------------------------------------------------
+
+			throw(auth_required);
         A ->    case auth_biz:get_session(A) of
                     [] -> 
-						error:return_json(Req, "Auth Required");
-						%throw(auth_required);
+						%error:return_json(Req, "Auth Required");
+						throw(auth_required);
                     [H|_T] -> H
                 end
     end.

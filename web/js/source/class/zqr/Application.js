@@ -74,13 +74,17 @@ qx.Class.define("zqr.Application",
             document.title = this.title;
             this._createLayout();
         },
-        
+
+        ___close : function() {
+            return "Вы уверены, что хотите покинуть страницу?";
+        },
+                
         /**
          * Выводит сообщение останавливающее пользователя уйти со страницы.
          * @see qx.application.AbstractGui
          */
         close : function() {
-            return "Вы уверены, что хотите покинуть страницу?";
+            return this.___close();
         },
         
         _createLayout : function() {
@@ -144,7 +148,9 @@ qx.Class.define("zqr.Application",
                     this.FilterVal = undefined;
                     
                     if(this.curMenu.isGlobal){
-                        location.href = this.curMenu.model
+                        this.close = function(){return null};
+                        //location.href = this.curMenu.model
+                        this.loadActionModel(this.curMenu.model);
                     }
                     else{
                         this.loadActionModel(this.curMenu.model);

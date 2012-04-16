@@ -11,6 +11,9 @@
  
 
 % Вернуть JSON с текстом ошибки ErrorMessage
+
+
+
 return_json(Request, ErrorMessage) ->
     JsonStruct = {struct, [{<<"ERROR">>, list_to_binary(ErrorMessage)}]},
     DataOut = mochijson2:encode(JsonStruct),
