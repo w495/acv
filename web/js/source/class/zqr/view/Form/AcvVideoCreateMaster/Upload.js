@@ -93,7 +93,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             this.inp.Ref = new qx.ui.form.TextField()
                 .set({
                     placeholder: "файл",
-                    readOnly:false, //true,
+                    readOnly:true,
                     required:true,
                     toolTip: new
                         qx.ui.tooltip.ToolTip("Файл в формате mp4, размер не должен привышать 50Мб")
@@ -148,8 +148,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             this.refButton.addListener('changeFileName',function(e){
                 if('' != e.getData()) {
                     _this.inp.Ref.setValue(_this.refButton.getFileName());
+                    _this.inp.Ref.setValid(true);
                     if(zqr.view.Form.AbstractForm.customFormChkVideoFileName(_this.inp.Ref)){
                         zqr.view.Form.Upload.UploadFakeStatusBar.on();
+                        //_this.setEnabled(false);
+                        //_this.refButton.setEnabled(false);
                         _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
                         _this.refForm.send();
                     }else{
@@ -163,6 +166,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             this.refForm.addListener('completed',function(e) {
                 var response = _this.refForm.getIframeTextContent();
                 zqr.view.Form.Upload.UploadFakeStatusBar.off();
+                //_this.setEnabled(true);
+                //_this.refButton.setEnabled(true);
                 _this.inp.Ref.setValue(response);
             });
         },

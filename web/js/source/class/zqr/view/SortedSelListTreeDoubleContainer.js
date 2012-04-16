@@ -33,10 +33,9 @@ qx.Class.define("zqr.view.SortedSelListTreeDoubleContainer",
         this.ltree = new zqr.view
             .SortedSelListTree(this, url, labelFieldName,
                 descrFieldName, paramdict)
-        
         this.addButton = new qx.ui.form.Button(null, "icon/16/actions/list-add.png");
         this.delButton  = new qx.ui.form.Button(null, "icon/16/actions/list-remove.png");
-        
+
         this.rtree = new zqr.view
             .SortedSelListTree(this, undefined, labelFieldName,
                 descrFieldName, paramdict);
