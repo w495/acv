@@ -1,6 +1,6 @@
 {
     type : "form",
-    controller : "acvVideoCreate"
+    controller : "acvVideoCreate",
     toolbar : [
         {type : "back"}
     ]
