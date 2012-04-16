@@ -117,12 +117,28 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
     __valueInputOnChange : false,
     __mouseUpListenerId: null,
     __inputEl: null,
+    __form: null,
 
     getInputElement : function()
     {
       return this.__inputEl;
     },
 
+    setForm: function(form){
+        this.__form = form;
+        if(this.__form){
+            this.__form.addListener('completed',function(e) {
+                console.log("this.__form -> completed 1");
+                //this.setVisibility("visible");
+                this.setEnabled(true);
+            }, this);
+        }
+    },
+
+    getForm: function(form){
+        return this.__form;
+    },
+                
     // overridden
     capture : qx.core.Environment.select("engine.name",
     {
@@ -211,6 +227,8 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
      */
 
     _createInput: function() {
+
+     
       var control;
         // styling the input[type=file]
         // element is a bit tricky. Some browsers just ignore the normal
@@ -258,15 +276,15 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
         console.log("--> _createInput: function()");
 
         this.addListener("focus", function(e){
-            console.log("--> this.addListener.focus");
             control.focus();
         }, this);
 
         this.addListener("focusout", function(e){
-            console.log("--> this.addListener.focusout");
             this.reset();
         }, this);
 
+        console.log("this.__form = ", this.getForm());
+        
         control.addListener("change", function(e){
             console.log("--> this.addListener.change");
             var controlDom = control.getDomElement();
@@ -281,7 +299,11 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             var value = e.getData();
             this.setFileName(value);
             this.fireDataEvent('changeFileName',value);
-            //control.blur();
+            if(this.getForm()){
+                console.log("this.__form = ", this.getForm());
+                this.setEnabled(false);
+                //this.setVisibility("hidden");
+            }
         },this);
 
        return control;

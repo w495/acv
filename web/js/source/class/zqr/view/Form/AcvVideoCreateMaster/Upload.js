@@ -57,6 +57,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             /* Сопровождающая картинка */
             this.refButton = new zqr.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
             this.refForm = new zqr.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
+            this.refButton.setForm(this.refForm);
                         
             var layout = new qx.ui.layout.Grid(2, 5);
             layout.setColumnFlex(1, 1);
@@ -151,8 +152,6 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
                     _this.inp.Ref.setValid(true);
                     if(zqr.view.Form.AbstractForm.customFormChkVideoFileName(_this.inp.Ref)){
                         zqr.view.Form.Upload.UploadFakeStatusBar.on();
-                        //_this.setEnabled(false);
-                        //_this.refButton.setEnabled(false);
                         _this.refForm.setParameter("prev", _this.inp.Ref.getValue());
                         _this.refForm.send();
                     }else{
@@ -164,8 +163,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
                 return true;
             });
             this.refForm.addListener('completed',function(e) {
-                var response = _this.refForm.getIframeTextContent();
                 zqr.view.Form.Upload.UploadFakeStatusBar.off();
+                var response = _this.refForm.getIframeTextContent();
+                console.log("this.__form -> completed 2");
                 //_this.setEnabled(true);
                 //_this.refButton.setEnabled(true);
                 _this.inp.Ref.setValue(response);
