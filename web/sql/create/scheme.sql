@@ -77,6 +77,7 @@ create sequence seq_customer_group_id;
 create table customer_group (
     id int primary key default nextval('seq_customer_group_id'),
     name varchar(1024),
+    issystem bool default false,
     description varchar(1024),
     deleted bool default false
 );
@@ -87,6 +88,7 @@ create table customer_group (
 create sequence seq_permission_type;
 create table permission_type (
     id int primary key default nextval('seq_permission_type'),
+    issystem bool default false,
     name varchar(1024) unique
 );
 

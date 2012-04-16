@@ -7,6 +7,9 @@
 
 -module(dao_customer).
 
+-include("web_session.hrl").
+-include("common.hrl").
+
 -export([
 % PERMISSIONS
     get_permissions/1,
@@ -239,9 +242,17 @@ update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City
     dao:pgret(PGRet).
 
 delete_customer({Id, _updater_id}) ->
-    Query = "update customer set deleted=true where id = $1;",
-    dao:simple(Query, [convert:to_integer(Id)]).
+    Customer_query = "update customer set deleted=true where id = $1 and issystem = false ;",
+    Acv_video_Query = "update acv_video set deleted = true where customer_id=$1;",
 
+    case dao:simple_ret(Customer_query, [convert:to_integer(Id)]) of
+        {ok, 1} ->
+            dao:simple(Acv_video_Query, [convert:to_integer(Id)]);
+        {ok, 0} ->
+            flog:error("Try to delete admin!!!");
+        Error ->
+            ?E("Error = ", [Error])
+    end.
 
 test()->
 
