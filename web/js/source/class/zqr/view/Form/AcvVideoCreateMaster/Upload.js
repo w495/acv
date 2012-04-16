@@ -45,10 +45,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         },
 
         inp : {
-            Link_title:        null,
-            Alt_title:         null,
             Ref:        null,
             Url:        null,
+
             Duration:          null
         },
         
@@ -68,15 +67,38 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             
             this.inp.Duration =    new qx.ui.form.Spinner(1, 134217728, 134217728*2);
             this.inp.Link_title =   new qx.ui.form.TextField()
-                .set({placeholder: "Текст ссылки", required:true});
+                .set({
+                    placeholder: "Текст ссылки",
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Ваш комментарий к вашей рекламной кaмпании")
+                });
             this.inp.Alt_title =    new qx.ui.form.TextField()
-                .set({placeholder: "Текст подсказки", required:true});
+                .set({
+                    placeholder: "Текст подсказки",
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Ваш комментарий к вашей рекламной кaмпании")
+                });
             
             this.inp.Url = new qx.ui.form.TextField()
-                .set({placeholder: "http://my-company.com/", required:true});
+                .set({
+                    placeholder: "http://my-company.com/",
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Должен быть валидный адрес")
+                    
+                });
                 
             this.inp.Ref = new qx.ui.form.TextField()
-                .set({placeholder: "файл", readOnly:true, required:true});
+                .set({
+                    placeholder: "файл",
+                    readOnly:false, //true,
+                    required:true,
+                    toolTip: new
+                        qx.ui.tooltip.ToolTip("Файл в формате mp4, размер не должен привышать 50Мб")
+                     
+                });
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -215,14 +237,16 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         **/
         validateForm : function() {
             var flag = true;
-            
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(5, 200, this.inp.Ref);
+
+            flag &= zqr.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
             flag &= zqr.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
             flag &= zqr.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);;
-            flag &= zqr.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
-            
+
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(5, 200, this.inp.Ref);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Url);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(3, 50, this.inp.Link_title);
+
+
             return flag;
         },
         
