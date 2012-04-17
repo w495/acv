@@ -52,13 +52,17 @@
         </xsl:when>
         <xsl:otherwise>
             <div class="s-sfm" >
-                <span class="s-sfm-oval m-login" >
-                    <xsl:text>Вы: </xsl:text>
-                    <xsl:value-of select="data/meta/login" />
-                </span>
-                <span class="s-sfm-oval m-logout" >
-                    <a class="e-sfm-oval" href="/logout"><xsl:text>Выйти из кабинета</xsl:text></a>
-                </span>
+                <a class="s-sfm-oval m-login" href="/pers" >
+                    <span class="e-sfm-oval">
+                        <xsl:text>Вы: </xsl:text>
+                        <xsl:value-of select="data/meta/login" />
+                    </span>
+                </a>
+                <a class="s-sfm-oval m-logout" href="/logout" >
+                    <span class="e-sfm-oval">
+                        <xsl:text>Выйти из кабинета</xsl:text>
+                    </span>
+                </a>
                 <span class="s-sfm-but submit" >
                     <xsl:text>&nbsp;</xsl:text>
                 </span>

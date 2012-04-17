@@ -128,6 +128,8 @@ qx.Class.define("zqr.Application",
         },
 
         onMenuChange : function(curMenu) {
+            console.log("curMenu = ", curMenu);
+            
             var cScreen = {
                 history  : this.history,
                 controller : this.cur_controller,

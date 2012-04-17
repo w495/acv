@@ -18,45 +18,18 @@
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/zqr/descr/permissions-tab.json"
             },
-            
+
             {   name : "настройки",
                 icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/zqr/descr/config-form.json"
             }
         ]
     },
-    
-    /*
-        {
-            name : "Главная", // вся основная информация по видам рекламы
-            opened : true,
-            subitems: [
-                {
-                    name : "[-] Реклама на видео",
-                    icon : "icon/16/apps/utilities-keyring.png",
-                    model : "resource/zqr/descr/adv-com-tab.json"
-                },
-                {
-                    name : "[-] Реклама на сайте",
-                    icon : "icon/16/apps/utilities-keyring.png",
-                    model : "resource/zqr/descr/adv-com-vid-tab.json"
-                },
-                {
-                    name : "[-] Интерактивное видео",
-                    icon : "icon/16/apps/utilities-keyring.png",
-                    model : "resource/zqr/descr/adv-com-vid-tab.json"
-                }
-            ]
-        },
-    */
+
     {   name : "Рекламные кампании",
         opened : true,
         subitems: [
-            {
-                name : "[-] Банеры",
-                icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/zqr/descr/acv-banners-tab.json"
-            },
+
             {
                 name : "Видео",
                 icon : "icon/16/apps/utilities-keyring.png",
@@ -69,16 +42,12 @@
             }
         ]
     },
-    
+
     {   name : "Все рекламные кампании",
         opened : true,
         model : "resource/zqr/descr/all-acv-video-stats-tab.json",
         subitems: [
-            {
-                name : "[-] Все банеры",
-                icon : "icon/16/apps/utilities-keyring.png",
-                model : "resource/zqr/descr/all-acv-banners-tab.json"
-            },
+
             {
                 name : "Все видео",
                 icon : "icon/16/apps/utilities-keyring.png",
@@ -90,6 +59,11 @@
                 model : "resource/zqr/descr/all-acv-video-stats-tab.json"
             }
         ]
+    },
+
+    {   name : "Все рекламные кампании 2",
+        opened : false
     }
+
 ]
 

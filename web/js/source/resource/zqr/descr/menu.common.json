@@ -32,6 +32,15 @@
                 isGlobal  : true
             }, 
         ]
+    },
+
+    {
+        name                : "Помощь",
+        icon                : "icon/22/actions/help-contents.png",
+        model               : "/docs",
+        external            : true,
+        afterSpacer         : true,
+        externalType        : "_blank"
     }
 ]
 

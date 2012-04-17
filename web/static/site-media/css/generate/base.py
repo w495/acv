@@ -497,6 +497,7 @@ class Base(generate.gen_css.Gen_css):
                     border-radius: 20px;
                     color:white;
                     overflow: hidden;
+                    text-decoration: none;
                 }
             """
 
