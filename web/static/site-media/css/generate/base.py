@@ -131,6 +131,12 @@ class Base(generate.gen_css.Gen_css):
             border-collapse: collapse;
             border-spacing: 0;
         }
+        ::-webkit-validation-bubble{
+            margin-top:-10px;
+        }
+        ::-webkit-validation-bubble-message{
+            padding:5px; font-size:12px;
+        }
         """
 
     def common_modifiers(self):
@@ -162,28 +168,41 @@ class Base(generate.gen_css.Gen_css):
         }"""
         
         # left
-        res += """.m-logout-link-l {  
-            background-image:url('/i/button/b-0-0.png');
+        res += """.m-logout-link-l {
             height: 28px;
             width: 15px;
         } """
-        
+
+        res += ".m-logout-link-l{%s}"%(
+                "background: url(%s) no-repeat;"%(
+                    generate.util.tobase64("/i/button/b-0-0.png")
+            )
+        )
+            
         # center
-        res += """.m-logout-link-c {  
-            background-image:url('/i/button/b-0-1.png');
+        res += """.m-logout-link-c {
             height: 23px;
             padding-top: 5px;
         } """
-        
+
+        res += ".m-logout-link-l{%s}"%(
+                "background: url(%s) repeat-x;"%(
+                    generate.util.tobase64("/i/button/b-0-1.png")
+            )
+        )
+
         # right
-        res += """.m-logout-link-r {  
-            background-image:url('/i/button/b-0-2.png');
+        res += """.m-logout-link-r {
             height: 28px;
             width: 15px;
         } """
-         
-        res += """::-webkit-validation-bubble{margin-top:-10px;} 
-        ::-webkit-validation-bubble-message{padding:5px; font-size:12px;}  """
+
+        res += ".m-logout-link-r{%s}"%(
+                "background: url(%s) no-repeat;"%(
+                    generate.util.tobase64("/i/button/b-0-2.png")
+            )
+        )
+
         
         #  Хотел сделать ссылочку на логаут с помощью css3. Вспломнил что есть Iгорь Eвгеньевич 
         #res += """.m-logout-link {  
