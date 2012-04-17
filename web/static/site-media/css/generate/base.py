@@ -473,6 +473,7 @@ class Base(generate.gen_css.Gen_css):
             """
             res += """.s-signin{
                     display: block;
+                    text-align: right;
                     /*background-color: red;*/
                     float: right;
                     text-align:right;
@@ -512,7 +513,13 @@ class Base(generate.gen_css.Gen_css):
                     "border:none;width:160px;height:28px;"
                 )
 
+            res += """.s-sfm{
+                    text-align: right;
+                }
+            """
+
             res += """.s-sfm-lc{
+                    text-align: right;
                     padding-top: 5px;
                     margin-right: 13px;
                     font-size: 12px;
