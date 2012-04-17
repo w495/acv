@@ -53,7 +53,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.CategoryTargeting",
                 }); */
 
 
-            this.boxCat = new qx.ui.groupbox.CheckGroupBox("Таргетирование по жанрам");
+            this.boxCat = new qx.ui.groupbox.CheckGroupBox("Таргетирование по жанрам").set({
+                toolTip: new qx.ui.tooltip.ToolTip("Активируйте, если хотите показывать ролик только в фильмах определенного жанра")
+            });
             this.boxCat.setValue(false);
 
             var layout = new qx.ui.layout.Grid(2, 1);

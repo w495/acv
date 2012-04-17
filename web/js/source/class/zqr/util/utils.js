@@ -448,6 +448,27 @@ qx.Class.define("zqr.util.utils",
                 }
             }
             return null;
+        },
+
+        infoWindow : function(text) {
+            var win = new qx.ui.window.Window("Информация").set({
+                allowMaximize: false,
+                allowMinimize: false,
+                showMinimize: false,
+                showStatusbar: false,
+                movable: false,
+                resizable: false,
+                showClose: true,
+                showMaximize: false
+            });
+            win.setLayout(new qx.ui.layout.HBox());
+            win.setWidth(200);
+            win.setHeight(200);
+            win.add(this.cur_controller, {flex: 1});
+            this.right_cont.add(win);
+            win.focus = function(){ }
+            win.open();
+            return win;
         }
         
     }

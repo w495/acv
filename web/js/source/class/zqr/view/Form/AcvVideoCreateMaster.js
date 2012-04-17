@@ -252,6 +252,10 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
                 flag = flag && this.__list[i].validateForm();
             }
             return flag;
+        },
+
+        onFormClose : function() {
+            alert("JOPA!");
         }
     }
 });
