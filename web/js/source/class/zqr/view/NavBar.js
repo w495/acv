@@ -63,13 +63,13 @@ qx.Class.define("zqr.view.NavBar",
                         continue;
                     
                     var itemMenu = null;
-                    console.log("item = ", item);
                     if(item.model){
                         if(item.external){
-                            itemMenu = this.__getExternalButton(item)
+                            itemMenu = this.__getExternalButton(item, true)
                         }
                         else{
-                            itemMenu = this.__getInternalButton(item);
+                            console.log("item = ", item);
+                            itemMenu = this.__getInternalButton(item, true);
                         }
                     }
                     else{
@@ -91,9 +91,14 @@ qx.Class.define("zqr.view.NavBar",
             return menuButton;
         },
                 
-        __getExternalButton : function(item) {
-            var button = new qx.ui.toolbar.Button(item.name, item.icon);
-            //button.ths_ = this;
+        __getExternalButton : function(item, toolbar) {
+            var button = null;
+            if(toolbar){
+                button = new qx.ui.toolbar.Button(item.name, item.icon);
+            }
+            else{
+                button = new qx.ui.menu.Button(item.name, item.icon);
+            }
             button.itemMenuModel = item;
             console.log("button.itemMenuModel = ", button.itemMenuModel);
             button.addListener("execute", function(){
@@ -101,19 +106,24 @@ qx.Class.define("zqr.view.NavBar",
                 console.log("this.itemMenuModel.externalType = ", this.itemMenuModel.externalType);
                 window.open(this.itemMenuModel.model,this.itemMenuModel.externalType, "",false);
             });
-            //this.toolbar.add(button);
             return button;
         },
                 
-        __getInternalButton : function(item) {
-            var button = new qx.ui.menu.Button(item.name, item.icon);
-            //this.menu[item.name] = item;
-            button.ths_ = this;
+        __getInternalButton : function(item, toolbar) {
+            var button = null;
+            if(toolbar){
+                button = new qx.ui.toolbar.Button(item.name, item.icon);
+            }
+            else{
+                button = new qx.ui.menu.Button(item.name, item.icon);
+            }
+            
+            this.menu[item.name] = item;
             button.itemMenuModel = item;
+            button.ths_ = this;
             button.addListener("execute", function(){
                 this.ths_.biz.onMenuChange(this.itemMenuModel);
             });
-            //this.toolbar.add(button);
             return button;
         },
                 
