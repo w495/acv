@@ -17,6 +17,7 @@
 	docs_audience/1,
 	docs_content/1,
     docs_howto/1,
+    docs_offer/1,
     signin/1,
     signin_post/1,
     signup/1,
@@ -135,6 +136,19 @@ docs_content(Req) ->
 %%
 docs_howto(Req) ->
     Xsl_path = "xsl/normal/outside/docs-howto.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Документация c расценками
+%%
+docs_offer(Req) ->
+    Xsl_path = "xsl/normal/outside/docs-offer.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
