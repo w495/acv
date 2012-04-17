@@ -451,7 +451,7 @@ qx.Class.define("zqr.util.utils",
         },
 
         infoWindow : function(text) {
-            infoWin = new qx.ui.window.Window("Информация").set({
+            var infoWin = new qx.ui.window.Window("Информация").set({
                 allowMaximize: false,
                 allowMinimize: false,
                 showMinimize: false,
