@@ -131,6 +131,12 @@ class Base(generate.gen_css.Gen_css):
             border-collapse: collapse;
             border-spacing: 0;
         }
+        ::-webkit-validation-bubble{
+            margin-top:-10px;
+        }
+        ::-webkit-validation-bubble-message{
+            padding:5px; font-size:12px;
+        }
         """
 
     def common_modifiers(self):
@@ -160,43 +166,6 @@ class Base(generate.gen_css.Gen_css):
         res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
             color: #ffffff;
         }"""
-        
-        # left
-        res += """.m-logout-link-l {  
-            background-image:url('/i/button/b-0-0.png');
-            height: 28px;
-            width: 15px;
-        } """
-        
-        # center
-        res += """.m-logout-link-c {  
-            background-image:url('/i/button/b-0-1.png');
-            height: 23px;
-            padding-top: 5px;
-        } """
-        
-        # right
-        res += """.m-logout-link-r {  
-            background-image:url('/i/button/b-0-2.png');
-            height: 28px;
-            width: 15px;
-        } """
-         
-        res += """::-webkit-validation-bubble{margin-top:-10px;} 
-        ::-webkit-validation-bubble-message{padding:5px; font-size:12px;}  """
-        
-        #  Хотел сделать ссылочку на логаут с помощью css3. Вспломнил что есть Iгорь Eвгеньевич 
-        #res += """.m-logout-link {  
-        #    border-color:#156435;
-        #    -moz-border-radius: 20px;
-        #    -webkit-border-radius: 20px;
-        #    border-radius: 20px;
-        #    color: #FFFFFF; 
-        #    background: -webkit-gradient(linear, left top, left bottom, from(#279941), to(#156435));   
-        #    background: -moz-linear-gradient(top, #279941, #156435);   
-        #    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#279941, endColorstr=#156435);  
-        #    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#279941, endColorstr=#156435)";  
-        #} """
         
         return res
         
@@ -473,6 +442,7 @@ class Base(generate.gen_css.Gen_css):
             """
             res += """.s-signin{
                     display: block;
+                    text-align: right;
                     /*background-color: red;*/
                     float: right;
                     text-align:right;
@@ -497,6 +467,7 @@ class Base(generate.gen_css.Gen_css):
                     border-radius: 20px;
                 }
             """
+
             if(Use.css3_corners):
                 res += """.s-sfm-input{
                         width:165px;
@@ -512,7 +483,43 @@ class Base(generate.gen_css.Gen_css):
                     "border:none;width:160px;height:28px;"
                 )
 
+            res += """.s-sfm-oval{
+                    display: inline-block;
+                    text-align: center;
+                    width:165px;
+                    height: 18px;
+                    outline: none;
+                    padding: 5px 0 5px 0;
+                    margin-left: 10px;
+                    -moz-border-radius: 20px;
+                    -webkit-border-radius: 20px;
+                    -khtml-border-radius: 20px;
+                    border-radius: 20px;
+                    color:white;
+                }
+            """
+
+            res += """.e-sfm-oval{
+                color:white;
+                text-decoration: none;
+            }"""
+
+            res += """.s-sfm-oval.m-login{%s}"""%(
+                generate.util.lgt('#264098', '#193669', '#193669')
+            )
+
+            res += """.s-sfm-oval.m-logout{%s}"""%(
+                generate.util.lgt('#269840', '#196936', '#196936')
+            )
+
+            
+            res += """.s-sfm{
+                    text-align: right;
+                }
+            """
+
             res += """.s-sfm-lc{
+                    text-align: right;
                     padding-top: 5px;
                     margin-right: 13px;
                     font-size: 12px;
@@ -1053,6 +1060,31 @@ class Base(generate.gen_css.Gen_css):
             left: 45%;
             position: absolute;
             text-align: center;
+        }
+        
+        #upload_progress_bar{
+            width:              100%;
+            height:             100%;
+            z-index:            65533;
+            background-color:   black;
+            -moz-opacity:       0.7;
+            -khtml-opacity:     0.7;
+            opacity:            0.7;
+            position:           absolute;
+            text-align:         center;
+            vertical-align:     middle;
+            display:            none;
+        }
+        .b-spb,.b-upb{
+            display:                block;
+            color:                  black;
+            background-color:       white;
+            width:                  200px;
+            height:                 20px;
+            padding:                10px;
+            -webkit-border-radius:  10px;   /*Ch*/
+            -moz-border-radius:     10px;   /*FF*/
+            border-radius:          10px;   /*IE*/
         }
         """
         

@@ -159,9 +159,7 @@
 </xsl:template>
 
 <xsl:template name="head-scripts-root">
-    <script src="/j/ria.js" type="text/javascript" >
-        <xsl:text><![CDATA[ ]]></xsl:text>
-    </script>
+    <xsl:text><![CDATA[ ]]></xsl:text>
 </xsl:template>
 
 <xsl:template name="s-body">
@@ -206,15 +204,16 @@
 <xsl:template name="s-signin">
     <xsl:text><![CDATA[ ]]></xsl:text>
 </xsl:template>
+
 -->
 
 <xsl:template name="s-signin">
-    <xsl:call-template name="signin-form-mini">
-        <xsl:with-param name="Action" select="concat('/signin/post', /data/meta/self-retpath)" />
-        <xsl:with-param name="Method" select="'POST'"/>
-        <xsl:with-param name="Has_errors" select="/data/meta/has-errors"/>
-        <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
-    </xsl:call-template>
+        <xsl:call-template name="signin-form-mini">
+            <xsl:with-param name="Action" select="concat('/signin/post', /data/meta/self-retpath)" />
+            <xsl:with-param name="Method" select="'POST'"/>
+            <xsl:with-param name="Has_errors" select="/data/meta/has-errors"/>
+            <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
+        </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="s-logout-link"> 

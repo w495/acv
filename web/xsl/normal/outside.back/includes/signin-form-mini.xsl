@@ -35,7 +35,7 @@
         </div>
     </xsl:if>
 
-    <form action="{$Action}" method="{$Method}" >
+    <form class="s-sfm" action="{$Action}" method="{$Method}" >
         <input class="s-sfm-input m-id" type="hidden" value="null" name="id" maxlength="{$Size}" size="{$Size}" placeholder="Id"/>
         <input class="s-sfm-input m-login" type="text" required="required" name="login" maxlength="{$Size}" size="{$Size}" placeholder="Логин"/>
         <input class="s-sfm-input m-password" type="password" required="required" name="password" maxlength="{$Size}" size="{$Size}" placeholder="Пароль"/>
