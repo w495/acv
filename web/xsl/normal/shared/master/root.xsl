@@ -159,9 +159,7 @@
 </xsl:template>
 
 <xsl:template name="head-scripts-root">
-    <script src="/j/ria.js" type="text/javascript" >
-        <xsl:text><![CDATA[ ]]></xsl:text>
-    </script>
+    <xsl:text><![CDATA[ ]]></xsl:text>
 </xsl:template>
 
 <xsl:template name="s-body">

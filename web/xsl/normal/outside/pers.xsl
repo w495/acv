@@ -14,38 +14,13 @@
     <script src="/j/ria.js" type="text/javascript" >
         <xsl:text><![CDATA[ ]]></xsl:text>
     </script>
-    <style>
-        #upload_progress_bar{
-            width:              100%;
-            height:             100%;
-            z-index:            65533;
-            background-color:   black;
-            -moz-opacity:       0.7;
-            -khtml-opacity:     0.7;
-            opacity:            0.7;
-            position:           absolute;
-            text-align:         center;
-            vertical-align:     middle;
-            display:            none;
-        }
-        .b-spb,.b-upb{
-            display:                block;
-            color:                  black;
-            background-color:       white;
-            width:                  200px;
-            height:                 20px;
-            padding:                10px;
-            -webkit-border-radius:  10px;   /*Ch*/
-            -moz-border-radius:     10px;   /*FF*/
-            border-radius:          10px;   /*IE*/
-        }
-    </style>
 </xsl:template>
- 
 
+<!--
 <xsl:template name="s-header-signin"> 
 	<xsl:call-template name="s-logout-link" />
 </xsl:template>
+-->
 
 <xsl:template name="s-main-pers">
     <section class="s-pers">
