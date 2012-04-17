@@ -496,6 +496,7 @@ class Base(generate.gen_css.Gen_css):
                     -khtml-border-radius: 20px;
                     border-radius: 20px;
                     color:white;
+                    overflow: hidden;
                 }
             """
 
@@ -504,11 +505,15 @@ class Base(generate.gen_css.Gen_css):
                 text-decoration: none;
             }"""
 
-            res += """.s-sfm-oval.m-login{%s}"""%(
-                generate.util.lgt('#264098', '#193669', '#193669')
+            res += """.s-sfm-oval.m-login{%s
+                border: solid 1px #086e94;
+                }"""%(
+                generate.util.lgt('#0895ca', '#086e94', '#086e94')
             )
 
-            res += """.s-sfm-oval.m-logout{%s}"""%(
+            res += """.s-sfm-oval.m-logout{%s
+                border: solid 1px #196936;
+                }"""%(
                 generate.util.lgt('#269840', '#196936', '#196936')
             )
 
