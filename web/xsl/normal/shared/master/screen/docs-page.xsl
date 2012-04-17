@@ -120,7 +120,7 @@
         </li>
         <li class="e-rf-ul">
             <a href="/docs/offer" class="m-white-link">
-                <xsl:text>Цены</xsl:text>
+                <xsl:text>Расценки</xsl:text>
             </a>
         </li>
     </ul>

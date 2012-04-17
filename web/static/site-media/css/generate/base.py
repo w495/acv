@@ -104,7 +104,9 @@ class Base(generate.gen_css.Gen_css):
             margin: 0;
             padding: 0;
             border: 0;
+            text-align: left;
             font-size: 100%;
+            font-weight: normal;
             font-family: cuprum, sans-serif;
             vertical-align: baseline;
             outline: none;
@@ -939,6 +941,7 @@ class Base(generate.gen_css.Gen_css):
         """%(d(Metrics))
 
         res += """.b-ah{
+                text-align: left;
                 font-size: 30px;
                 color: #0191d3;
             }
@@ -1013,6 +1016,21 @@ class Base(generate.gen_css.Gen_css):
         res += """.m-ah-ht2{
                 font-size: 26px;
                 margin: 1em 0 1em 0;
+        }
+        """
+
+        res += """.m-docs-t{
+            width:100%;
+        }
+        """
+        
+        res += """.m-docs-ttrh{
+            height:45px;
+        }
+        """
+        
+        res += """.m-docs-ttrc{
+            height:75px;
         }
         """
         
