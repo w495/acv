@@ -52,11 +52,10 @@
         </xsl:when>
         <xsl:otherwise>
             <div class="s-sfm" >
-                <!--
                 <span class="s-sfm-oval m-login" >
+                    <xsl:text>Вы: </xsl:text>
                     <xsl:value-of select="data/meta/login" />
                 </span>
-                -->
                 <span class="s-sfm-oval m-logout" >
                     <a class="e-sfm-oval" href="/logout"><xsl:text>Выйти из кабинета</xsl:text></a>
                 </span>
