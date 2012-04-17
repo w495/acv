@@ -126,6 +126,7 @@ dmap(Path) ->
         "/docs/audience" ->     {outside, docs_audience};
         "/docs/content" ->     	{outside, docs_content};
         "/docs/howto" ->        {outside, docs_howto};
+        "/docs/offer" ->        {outside, docs_offer};
 
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};
@@ -142,12 +143,7 @@ dmap(Path) ->
         "/signup/post" ->       {outside, signup_post};
         "/captcha.png" ->       {outside, captcha};
 
-    %%
-    %% Тестирование почты
-    %%
 
-        "/mail/signup/" ++ Args    -> {mail, signup,    [Args]};
-        "/mail/signdown/" ++ Args  -> {mail, signdown,  [Args]};
 
     %%
     %% Основа админки

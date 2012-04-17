@@ -118,6 +118,11 @@
                 <xsl:text>Руководство пользователя</xsl:text>
             </a>
         </li>
+        <li class="e-rf-ul">
+            <a href="/docs/offer" class="m-white-link">
+                <xsl:text>Расценки</xsl:text>
+            </a>
+        </li>
     </ul>
 </xsl:template>
 

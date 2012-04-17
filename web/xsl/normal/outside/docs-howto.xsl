@@ -20,15 +20,6 @@
     <xsl:call-template name="local-name"/>
 </xsl:template>
 
-
-<!--
-    Быдлогод.
-    Но для макета сгодится.
-    Всего скорее надо переверстывать.
-
-    <br/> ==>  <p class="m-docs-p">*</p>
--->
-
 <xsl:template name="s-about-docs">
     <nav class="b-a">
         <ul class="b-ac-ul m-docs-p">
