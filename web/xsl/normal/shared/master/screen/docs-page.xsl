@@ -123,32 +123,20 @@
 
 
 
-<xsl:template name="s-news">
-    <header class="b-news-header">
-        <h1 class="e-news-head">
-            <xsl:call-template name="e-news-head" />
-        </h1>
-        <a class="b-news-doc" href="/docs" >
-            <xsl:text>Документация</xsl:text>
-        </a>
-    </header>
-</xsl:template>
-
-<xsl:template name="e-news-head">
-    <xsl:text>Размещение рекламы</xsl:text>
-</xsl:template>
-
-
 <xsl:template name="s-about">
-    <header class="b-news-header">
-        <h1 class="e-news-head">
-            <xsl:call-template name="e-news-head" />
+    <header class="b-docs-header">
+        <h1 class="e-docs-head">
+            <xsl:call-template name="e-docs-head" />
         </h1>
-        <a class="b-news-doc" href="/docs" >
+        <a class="b-docs-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
     </header>
     <xsl:call-template name="s-about-docs" />
+</xsl:template>
+
+<xsl:template name="e-docs-head">
+    <xsl:text>Размещение рекламы</xsl:text>
 </xsl:template>
 
 

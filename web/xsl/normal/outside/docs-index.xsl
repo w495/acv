@@ -21,7 +21,7 @@
     <xsl:call-template name="local-name"/>
 </xsl:template>
 
-<xsl:template name="e-news-head">
+<xsl:template name="e-docs-head">
     <xsl:call-template name="local-name"/>
 </xsl:template>
 

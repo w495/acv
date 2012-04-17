@@ -22,6 +22,7 @@ class Base(generate.gen_css.Gen_css):
         string += self.s_roller()
         string += self.s_news()
         string += self.s_about()
+        string += self.s_about_docs()
         string += self.s_pers()
         string += self.s_footer()
         return string
@@ -750,18 +751,18 @@ class Base(generate.gen_css.Gen_css):
     def s_news(self):
         def _b_news_header():
             res = ""
-            res += """.b-news-header{
+            res += """.b-news-header, .b-docs-header{
                 clear: both;
                 height: 50px;
                 overflow: hidden;
             }
             """
             if(Use.css3_grad):
-                res += ".b-news-header{%s}"%(
+                res += ".b-news-header, .b-docs-header{%s}"%(
                     generate.util.lgt('#0796ea', '#09b8e6', '#0796ea')
                 )
             if(Use.bgi_grad):
-                res += ".b-news-header{%s}"%(
+                res += ".b-news-header, .b-docs-header{%s}"%(
                     "background: #0796ea url(%s);"%(
                         generate.util.tobase64("css-images/b-news-header.png")
                     )
@@ -771,7 +772,7 @@ class Base(generate.gen_css.Gen_css):
         top_offset = "10px";
         
         def _e_news_head():
-            return """.e-news-head{
+            return """.e-news-head, .e-docs-head{
                 display: block;
                 width: 800px;
                 font-size: 30px;
@@ -785,7 +786,7 @@ class Base(generate.gen_css.Gen_css):
             """%(d(Metrics))
 
         def _b_news_doc():
-            res = """.b-news-doc {
+            res = """.b-news-doc, .b-docs-doc{
                 display: block;
                 position: relative;
                 float:right;
@@ -796,8 +797,8 @@ class Base(generate.gen_css.Gen_css):
                 background: url(%s) no-repeat;
             }
             """%(top_offset, generate.util.tobase64("css-images/doc.png"))
-            res += """.b-news-doc:before{content:"— ";}"""
-            res += """.b-news-doc {
+            res += """.b-news-doc:before, .b-docs-doc:before{content:"— ";}"""
+            res += """.b-news-doc, .b-docs-doc{
                 color:white;
                 text-decoration: none;
             }
@@ -942,7 +943,7 @@ class Base(generate.gen_css.Gen_css):
                 color: #0191d3;
             }
         """
-
+        
         res += """.b-ac{
         font-size: 15px;
             line-height: 20px;
@@ -970,6 +971,52 @@ class Base(generate.gen_css.Gen_css):
 
         return res;
 
+    def s_about_docs(self):
+
+        res = ""
+        
+        res += """.e-docs-i{
+            text-align:center;
+            display: block;
+        }
+        """
+        
+        res += """.m-docs-ib{
+            width: 100%;
+        }
+        """
+        
+        res += """.m-docs-iht{
+            display: block;
+            margin: 1em 0 1em 0;
+        }
+        """
+
+        res += """.m-docs-p{
+            display: block;
+            margin: 1em 0 1em 0;
+        }
+        """
+
+        res += """.b-ht-next{
+            display: block;
+            margin: 2em 0 0 0;
+        }
+        """
+
+        res += """.m-ah-ht1{
+                font-size: 30px;
+                margin: 0.5em 0 1em 0;
+        }
+        """
+
+        res += """.m-ah-ht2{
+                font-size: 26px;
+                margin: 1em 0 1em 0;
+        }
+        """
+        
+        return res;
 
     def s_pers(self):
         s_pers = """
