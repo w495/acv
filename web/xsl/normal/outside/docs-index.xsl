@@ -4,9 +4,8 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:import href="../shared/master/screen/title-page.xsl"/>
+<xsl:import href="../shared/master/screen/docs-page.xsl"/>
 
-<xsl:include href="includes/signin-form-mini.xsl" />
 <xsl:include href="../shared/utils/tipograf.xsl" />
 
 <!--
@@ -14,21 +13,20 @@
     документацию надо переверстывать.
 -->
 
-<xsl:template name="s-title-base">
-    <xsl:text>Документация</xsl:text>
+<xsl:template name="local-name">
+    <xsl:text>Размещение рекламы</xsl:text>
 </xsl:template>
 
-<xsl:template name="s-signin">
-    <xsl:call-template name="signin-form-mini">
-        <xsl:with-param name="Action" select="concat('/signin/post', /data/meta/self-retpath)" />
-        <xsl:with-param name="Method" select="'POST'"/>
-        <xsl:with-param name="Has_errors" select="/data/meta/has-errors"/>
-        <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
-    </xsl:call-template>
+<xsl:template name="s-title-docs">
+    <xsl:call-template name="local-name"/>
+</xsl:template>
+
+<xsl:template name="e-docs-head">
+    <xsl:call-template name="local-name"/>
 </xsl:template>
 
 
-<xsl:template name="s-about">
+<xsl:template name="s-about-docs">
     <article class="b-a"> 
         <div class="b-ac">  
         	<img src="/i/macdonald.jpg" style="width:500px;float:right;" /> 
@@ -99,60 +97,10 @@
     </article> 
 </xsl:template>
 
-<xsl:template name="s-roller">
-    <div class="b-roller">
-        <ul class="b-roller-frames">
-            <li class="s-roller-frame">
-                <xsl:call-template name="s-roller-frame">
-                    <xsl:with-param name="Name" select="'pre-roll'"/>
-                    <xsl:with-param name="Head" select="'Документация'"/>
-                    <xsl:with-param name="Subhead" select="'Список документов'"/>
-                    <xsl:with-param name="Pic_url" select="'/i/tv-1.png'"/>
-                    <xsl:with-param name="Content" >
-                        <xsl:call-template name="s-roller-frame-pre-roll" />
-                    </xsl:with-param>
-                </xsl:call-template>
-            </li> 
-        </ul> 
-    </div>
-</xsl:template>
-
-<xsl:template name="s-roller-frame-pre-roll">
-    <ul class="b-rf-ul">
-        <li class="e-rf-ul">
-        	<a href="/docs" class="m-white-link">
-            	<xsl:text>Размещение рекламы</xsl:text>
-        	</a>  
-        </li>
-        <li class="e-rf-ul">
-        	<a href="/docs/audience" class="m-white-link">
-            	<xsl:text>Аудитория</xsl:text>
-        	</a> 
-        </li>  
-        <li class="e-rf-ul">
-        	<a href="/docs/content" class="m-white-link">
-            	<xsl:text>Контент</xsl:text>
-        	</a> 
-        </li>
-        <li class="e-rf-ul">
-            <a href="/docs/howto" class="m-white-link">
-                <xsl:text>Руководство пользователя</xsl:text>
-            </a>
-        </li>  
-    </ul>
-</xsl:template>
 
 
-<xsl:template name="s-news">
-    <header class="b-news-header">
-        <h1 class="e-news-head">
-            <xsl:text>Размещение рекламы</xsl:text>
-        </h1>
-        <a class="b-news-doc" href="/docs" >
-            <xsl:text>Документация</xsl:text>
-        </a>
-    </header> 
-</xsl:template>
+
+
 
 <xsl:template match="/">
     <xsl:apply-imports />

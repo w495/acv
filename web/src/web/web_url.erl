@@ -120,7 +120,7 @@ dmap(Path) ->
         "/" ->                  {outside, index};
         "/index" ->             {outside, index};
         "/about" ->             {outside, about};
-        "/docs" -> 				{outside, docs};
+        "/docs" -> 				{outside, docs_index};
         % Страница не требуется
 		%"/docs/video" -> 		{outside, docs_video};
         "/docs/audience" ->     {outside, docs_audience};

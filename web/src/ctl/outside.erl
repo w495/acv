@@ -11,7 +11,7 @@
     hexstring/1,
     index/1,
     about/1,
-    docs/1,
+    docs_index/1,
     % Страница не требуется
 	%docs_video/1,
 	docs_audience/1,
@@ -80,8 +80,8 @@ about(Req) ->
 %%
 %% Документация
 %%
-docs(Req) ->
-    Xsl_path = "xsl/normal/outside/docs.xsl",
+docs_index(Req) ->
+    Xsl_path = "xsl/normal/outside/docs-index.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
@@ -95,7 +95,7 @@ docs(Req) ->
 %% Документация видео
 %%
 docs_video(Req) ->
-    Xsl_path = "xsl/normal/outside/docs_video.xsl",
+    Xsl_path = "xsl/normal/outside/docs-video.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
@@ -108,7 +108,7 @@ docs_video(Req) ->
 %% Документация видео
 %%
 docs_audience(Req) ->
-    Xsl_path = "xsl/normal/outside/docs_audience.xsl",
+    Xsl_path = "xsl/normal/outside/docs-audience.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
@@ -121,7 +121,7 @@ docs_audience(Req) ->
 %% Документация Контент
 %%
 docs_content(Req) ->
-    Xsl_path = "xsl/normal/outside/docs_content.xsl",
+    Xsl_path = "xsl/normal/outside/docs-content.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
@@ -134,7 +134,7 @@ docs_content(Req) ->
 %% Документация HowTo
 %%
 docs_howto(Req) ->
-    Xsl_path = "xsl/normal/outside/docs_howto.xsl",
+    Xsl_path = "xsl/normal/outside/docs-howto.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса

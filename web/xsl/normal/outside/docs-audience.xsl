@@ -4,40 +4,32 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:import href="docs.xsl"/>
+<xsl:import href="../shared/master/screen/docs-page.xsl"/>
 
-<xsl:include href="includes/signin-form-mini.xsl" />
 <xsl:include href="../shared/utils/tipograf.xsl" />
 
-<xsl:template name="s-title-base">
-    <xsl:text>Документация</xsl:text>
+
+<xsl:template name="local-name">
+    <xsl:text>Aудитория</xsl:text>
 </xsl:template>
 
-<xsl:template name="s-signin">
-    <xsl:call-template name="signin-form-mini">
-        <xsl:with-param name="Action" select="concat('/signin/post', /data/meta/self-retpath)" />
-        <xsl:with-param name="Method" select="'POST'"/>
-        <xsl:with-param name="Has_errors" select="/data/meta/has-errors"/>
-        <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
-    </xsl:call-template>
-</xsl:template>
- 
-
-
-<xsl:template name="s-news">
-    <header class="b-news-header">
-        <h1 class="e-news-head">
-            <xsl:text>Аудитория</xsl:text>
-        </h1>
-        <a class="b-news-doc" href="/docs" >
-            <xsl:text>Документация</xsl:text>
-        </a>
-    </header> 
+<xsl:template name="s-title-docs">
+    <xsl:call-template name="local-name"/>
 </xsl:template>
 
+<xsl:template name="e-docs-head">
+    <xsl:call-template name="local-name"/>
+</xsl:template>
 
+<!--
+    Быдлогод.
+    Но для макета сгодиться.
+    Всего скорее надо переверстывать.
 
-<xsl:template name="s-about">
+    <br/> ==>  <p>*</p>
+-->
+
+<xsl:template name="s-about-docs">
     <article class="b-a"> 
         <div class="b-ac">
             <p class="b-ac-p" >  
