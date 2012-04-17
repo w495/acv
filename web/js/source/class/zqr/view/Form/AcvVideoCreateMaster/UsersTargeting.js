@@ -105,7 +105,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
             var vertical_offset = 0;
             var boxGender = new qx.ui.groupbox.CheckGroupBox("Пол")
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по полу")
+                    toolTip: new qx.ui.tooltip.ToolTip("Активируйте, если хотите показывать ролик только определенным по полу зрителям")
                 });
             var layout2 = new qx.ui.layout.Grid(1, 1)
             boxGender.setLayout(layout2);
@@ -118,16 +118,16 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         makeBoxAge : function() {
             this.inp.Age_from = new qx.ui.form.Spinner(1, 1, 100)
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("От")
+                    toolTip: new qx.ui.tooltip.ToolTip("Показывать зрителям старше этого возраста")
                 });
-            this.inp.Age_to = new qx.ui.form.Spinner(2, 2, 100)
+            this.inp.Age_to = new qx.ui.form.Spinner(2, 100, 200)
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("До")
+                    toolTip: new qx.ui.tooltip.ToolTip("Показывать зрителям младше этого возраста")
                 });
             var vertical_offset = 0;
             var boxAge = new qx.ui.groupbox.CheckGroupBox("Возраст")
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по возрасту")
+                    toolTip: new qx.ui.tooltip.ToolTip("Активируйте, если хотите показывать ролик только зрителям указанного возраста")
                 });
             var layout = new qx.ui.layout.Grid(1, 5)
             layout.setColumnFlex(1, 1);
@@ -145,16 +145,16 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
         makeBoxTime : function() {
             this.inp.Time_from = new qx.ui.form.Spinner(0, 0, 24)
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("От")
+                    toolTip: new qx.ui.tooltip.ToolTip("Показывать ролик начиная с этого часа")
                 });
             this.inp.Time_to = new qx.ui.form.Spinner(0, 24, 24)
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("До")
+                    toolTip: new qx.ui.tooltip.ToolTip("Показывать ролик до этого часа")
                 });
             var vertical_offset = 0;
             var boxTime = new qx.ui.groupbox.CheckGroupBox("Время показа")
                 .set({
-                    toolTip: new qx.ui.tooltip.ToolTip("Таргетирование по времени показа")
+                    toolTip: new qx.ui.tooltip.ToolTip("Активируйте, если хотите показывать ролик только в определнное время суток")
                 });
             var layout = new qx.ui.layout.Grid(1, 5);
             layout.setColumnFlex(1, 1);

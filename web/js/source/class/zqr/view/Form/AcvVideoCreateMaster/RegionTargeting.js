@@ -50,7 +50,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
                     value: "Таргетирование по регионам",  font: "bold",
                     alignX: "left", rich : true
                 });*/
-            this.boxGeo = new qx.ui.groupbox.CheckGroupBox("Таргетирование по регионам");
+            this.boxGeo = new qx.ui.groupbox.CheckGroupBox("Таргетирование по регионам").set({
+                toolTip: new qx.ui.tooltip.ToolTip("Активируйте, если хотите показывать ролик только в указанных странах и городах.")
+            });
             var layout = new qx.ui.layout.Grid(2, 1);
             layout.setColumnFlex(0, 1);
             layout.setColumnAlign(0, "right", "top");

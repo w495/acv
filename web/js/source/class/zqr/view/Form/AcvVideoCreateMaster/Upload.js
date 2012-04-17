@@ -72,14 +72,14 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
                     placeholder: "Текст ссылки",
                     required:true,
                     toolTip: new
-                        qx.ui.tooltip.ToolTip("Ваш комментарий к вашей рекламной кaмпании")
+                        qx.ui.tooltip.ToolTip("Комментарий к вашей рекламной кaмпании")
                 });
             this.inp.Alt_title =    new qx.ui.form.TextField()
                 .set({
                     placeholder: "Текст подсказки",
                     required:true,
                     toolTip: new
-                        qx.ui.tooltip.ToolTip("Ваш комментарий к вашей рекламной кaмпании")
+                        qx.ui.tooltip.ToolTip("Комментарий к вашей рекламной кaмпании")
                 });
             
             this.inp.Url = new qx.ui.form.TextField()
@@ -87,7 +87,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
                     placeholder: "http://my-company.com/",
                     required:true,
                     toolTip: new
-                        qx.ui.tooltip.ToolTip("Должен быть валидный адрес")
+                        qx.ui.tooltip.ToolTip("Должен быть адреc в виде http://mycompany.com")
                     
                 });
                 
