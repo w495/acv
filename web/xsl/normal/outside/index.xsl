@@ -6,7 +6,6 @@
 <xsl:import href="../shared/master/screen/title-page.xsl"/>
 
 
-<xsl:include href="includes/signin-form-mini.xsl" />
 <xsl:include href="../shared/utils/tipograf.xsl" />
 
 <xsl:template name="s-title-1">

@@ -11,7 +11,7 @@
     hexstring/1,
     index/1,
     about/1,
-    docs/1,
+    docs_index/1,
     % Страница не требуется
 	%docs_video/1,
 	docs_audience/1,
@@ -80,8 +80,8 @@ about(Req) ->
 %%
 %% Документация
 %%
-docs(Req) ->
-    Xsl_path = "xsl/normal/outside/docs.xsl",
+docs_index(Req) ->
+    Xsl_path = "xsl/normal/outside/docs_index.xsl",
     Xml  = xml:encode_data(
         [
             {"meta",    meta([Req])}             % описание запроса
