@@ -243,6 +243,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
         validateForm : function() {
             var flag = true;
 
+            var url = this.inp.Url.getValue();
+            if(url.substr(0,7) != "http://") {
+                this.inp.Url.setValue("http://"+url);
+            }
+
             flag &= zqr.view.Form.AbstractForm.customFormChkVideoFileName(this.inp.Ref);
             flag &= zqr.view.Form.AbstractForm.customFormChkSymb(this.inp.Link_title);
             flag &= zqr.view.Form.AbstractForm.customFormChkUrl(this.inp.Url);;

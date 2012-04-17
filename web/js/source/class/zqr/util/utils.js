@@ -451,24 +451,38 @@ qx.Class.define("zqr.util.utils",
         },
 
         infoWindow : function(text) {
-            var win = new qx.ui.window.Window("Информация").set({
+            infoWin = new qx.ui.window.Window("Информация").set({
                 allowMaximize: false,
                 allowMinimize: false,
                 showMinimize: false,
                 showStatusbar: false,
-                movable: false,
+//                movable: false,
                 resizable: false,
                 showClose: true,
-                showMaximize: false
+                showMaximize: false,
+                modal: true
             });
-            win.setLayout(new qx.ui.layout.HBox());
-            win.setWidth(200);
-            win.setHeight(200);
-            win.add(this.cur_controller, {flex: 1});
-            this.right_cont.add(win);
-            win.focus = function(){ }
-            win.open();
-            return win;
+            var btnCancel = new qx.ui.form.Button("Закрыть");
+            var buttonRow = new qx.ui.container.Composite();
+//            buttonRow.setMarginTop(5);
+            var hbox = new qx.ui.layout.VBox(5);
+            hbox.setAlignX("right");
+            buttonRow.setLayout(hbox);
+            buttonRow.add(btnCancel, {flex:0});
+
+            var lb = new qx.ui.basic.Label(text);
+            infoWin.setLayout(new qx.ui.layout.VBox());
+            infoWin.setWidth(lb.getWidth());
+//            infoWin.setHeight(200);
+            infoWin.add(lb, {flex: 1});
+            infoWin.add(buttonRow, {flex:0});
+            infoWin.focus = function(){ }
+            infoWin .open();
+
+            btnCancel.addListener("execute", function() {
+                infoWin.close();
+            }, this);
+            return infoWin;
         }
         
     }

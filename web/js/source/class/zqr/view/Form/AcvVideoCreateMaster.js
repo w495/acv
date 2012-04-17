@@ -191,6 +191,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             this.addbuttonRow(cnt,      ++vertical_offset);
             // -------------------------------------------------------------
             this.controller.placeForm(cnt);
+            this.cnt = cnt;
             return {controller : cnt, offset: vertical_offset};
         },
         
@@ -255,7 +256,17 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
 
         onFormClose : function() {
-            alert("JOPA!");
+            var win = zqr.util.utils.infoWindow("Заявка принята. Решение модератора будет выслано на ваш email.");
+            //this.cnt.add(win);
+            var wx = win.getWidth();
+            var vy = win.getHeight();
+            var l = ((zqr.Config.WINDOW_WIDTH-win.getWidth())/2).toFixed(0);
+            var t = ((zqr.Config.WINDOW_HEIGHT-win.getHeight())/2).toFixed(0);
+
+            this.controller.biz.getRoot().add(win, {
+                left : l*1, 
+                top  : t*1
+            });
         }
     }
 });
