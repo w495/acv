@@ -6,12 +6,10 @@
 
             {
                 name : "Видео",
-                icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/zqr/descr/acv-videos-tab.json"
             },
             {
                 name : "Статистика",
-                icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/zqr/descr/acv-video-stats-tab.json"
             }
         ]
@@ -22,14 +20,12 @@
         subitems: [
             {
                 name : "Профиль",
-                icon : "icon/16/apps/utilities-keyring.png",
                 model : "resource/zqr/descr/customer-profile.json"
             }, 
             {
                 name      : "Выход",
-                icon      : "icon/16/apps/utilities-keyring.png",
                 model     : "/do_logout",
-                isGlobal  : true
+                unclose   : true
             }, 
         ]
     },

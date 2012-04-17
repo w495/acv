@@ -149,9 +149,8 @@ qx.Class.define("zqr.Application",
                     this.ActionRow = undefined;
                     this.FilterVal = undefined;
                     
-                    if(this.curMenu.isGlobal){
+                    if(this.curMenu.unclose){
                         this.close = function(){return null};
-                        //location.href = this.curMenu.model
                         this.loadActionModel(this.curMenu.model);
                     }
                     else{
