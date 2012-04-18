@@ -1,5 +1,4 @@
 [
-    
     {   name : "Рекламные кампании",
         opened : true,
         subitems: [
@@ -14,7 +13,6 @@
             }
         ]
     },
-    
     {   name : "Аккаунт",
         opened : true,
         subitems: [
@@ -26,10 +24,9 @@
                 name      : "Выход",
                 model     : "/do_logout",
                 unclose   : true
-            }, 
+            }
         ]
     },
-
     {
         name                : "Помощь",
         icon                : "icon/22/actions/help-contents.png",
