@@ -154,22 +154,25 @@
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
+        <a class="b-news-doc b-news-mail" href="mailto:contacts@tvzavr.ru" >
+            <xsl:text>Связаться с нами</xsl:text>
+        </a>
     </header>
-    <div class="b-news">
-        <ul class="s-news-list">
-            <xsl:call-template name="s-news-list" />
-        </ul>
-        <div class="s-news-all">
-        <!--
-            <xsl:call-template name="u-button">
-                <xsl:with-param name="Href"  select="'/'"/>
-                <xsl:with-param name="Class" select="'b-na-bat'"/>
-                <xsl:with-param name="Title" select="'посмотреть все новости'"/>
-                <xsl:with-param name="Text"  select="'Посмотреть все'"/>
-            </xsl:call-template>
-        -->
-        </div>
-    </div>
+    <!--
+	    <div class="b-news">
+	        <ul class="s-news-list">
+	            <xsl:call-template name="s-news-list" />
+	        </ul>
+	        <div class="s-news-all"> 
+	            <xsl:call-template name="u-button">
+	                <xsl:with-param name="Href"  select="'/'"/>
+	                <xsl:with-param name="Class" select="'b-na-bat'"/>
+	                <xsl:with-param name="Title" select="'посмотреть все новости'"/>
+	                <xsl:with-param name="Text"  select="'Посмотреть все'"/>
+	            </xsl:call-template> 
+	        </div>
+	    </div>
+    -->
 </xsl:template>
 
 <xsl:template name="s-news-list">
@@ -219,6 +222,30 @@
 
 <xsl:template name="s-about">
     <article class="b-a"> 
+        <div class="b-ac"> 
+	        <h2 class="b-ah  b-aa">
+	            <xsl:text>Видеореклама в Интернете? Это легко!</xsl:text>
+	        </h2>
+			<p class="b-ac-p">
+				Что нужно сделать?
+			</p>
+            <ul class="b-ac-ul">
+                <li class="e-ac-ul">
+                    <xsl:text>Этап 1 - Зарегистрируйтесь</xsl:text>
+                </li>
+                <li class="e-ac-ul">
+                    <xsl:text>Этап 2 - Создайте рекламную компанию</xsl:text>
+                </li>
+                <li class="e-ac-ul">
+                    <xsl:text>Этап 3 - Произведите оплату</xsl:text>
+                </li> 
+            </ul>  
+            <p class="b-ac-p">
+    			Управляйте своей рекламой из личного кабинета 
+            </p>
+		</div>
+    </article>
+    <article class="b-a"> 
         <div class="b-ac">
             <p class="b-ac-p" >
                 <xsl:text>
@@ -244,10 +271,10 @@
                     <xsl:text>Set-top box</xsl:text>
                 </li>
             </ul> 
-            <center>
+            <p class="m-center">
 				<img src="/i/ipad.jpg" />
 				<img src="/i/smarttv.jpg" />
-			</center>
+			</p>
 		</div>
     </article>
 </xsl:template>
@@ -294,4 +321,3 @@
 
 
 </xsl:stylesheet>
-
