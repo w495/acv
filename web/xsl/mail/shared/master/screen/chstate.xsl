@@ -17,6 +17,7 @@
 <xsl:template name="s-main-base">
     <xsl:text>Состояние вашей рекламной кампании было изменено.</xsl:text>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:call-template name="s-main-chstate"/>
 </xsl:template>
 

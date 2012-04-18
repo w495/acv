@@ -480,15 +480,20 @@ pay(Req, Rawid) ->
                         Customer_id = proplists:get_value("customer_id", Acv_video),
                         Sum = proplists:get_value("sum", Acv_video),
                         Pay_status = proplists:get_value("pay_status", Acv_video),
+                        Deleted = proplists:get_value("deleted", Acv_video),
 
-                        case Pay_status of
-                            false ->
-                                Xsl_path = "xsl/normal/outside/pay.xsl";
+                        case Deleted of
                             true ->
-                                Xsl_path = "xsl/normal/outside/surl.xsl";
-                            null ->
-                                Xsl_path = "xsl/normal/outside/pay.xsl",
-                                throw(not_found)
+                                Xsl_path = [], throw(not_found);
+                            false ->
+                                case Pay_status of
+                                    false ->
+                                        Xsl_path = "xsl/normal/outside/pay.xsl";
+                                    true ->
+                                        Xsl_path = "xsl/normal/outside/surl.xsl";
+                                    null ->
+                                        Xsl_path = [], throw(not_found)
+                                end
                         end,
 
                         %shop_f1, shop_f2, shop_f3, shop_f4, shop_f5
