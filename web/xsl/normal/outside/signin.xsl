@@ -15,12 +15,18 @@
 </xsl:template>
 
 <xsl:template name="s-main-common">
-    <!--
-        Основное содержимое страницы
-    -->
-    <hgroup>
-        <h1>Вход</h1>
-    </hgroup>
+    <section class="b-signup">
+        <h3 class="b-signup-h">
+            <xsl:text>Вход</xsl:text>
+        </h3>
+        <div class="s-signup">
+            <xsl:call-template name="l-signin" />
+        </div>
+    </section>
+</xsl:template>
+
+
+<xsl:template name="l-signin">
 
     <div class="signin-form">
         <xsl:call-template name="signin-form">
