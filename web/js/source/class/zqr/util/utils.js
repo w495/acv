@@ -470,14 +470,15 @@ qx.Class.define("zqr.util.utils",
             buttonRow.setLayout(hbox);
             buttonRow.add(btnCancel, {flex:0});
 
-            var lb = new qx.ui.basic.Label(text);
-            infoWin.setLayout(new qx.ui.layout.VBox());
+            var lb = new qx.ui.basic.Label(text).set({
+                rich : true
+            });
+            infoWin.setLayout(new qx.ui.layout.VBox(5));
             infoWin.setWidth(lb.getWidth());
-//            infoWin.setHeight(200);
-            infoWin.add(lb, {flex: 1});
-            infoWin.add(buttonRow, {flex:0});
-            infoWin.focus = function(){ }
-            infoWin .open();
+            infoWin.add(lb);
+            infoWin.add(buttonRow);
+            infoWin.focus = function(){};
+            infoWin.open();
 
             btnCancel.addListener("execute", function() {
                 infoWin.close();
