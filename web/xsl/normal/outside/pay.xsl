@@ -9,21 +9,19 @@
 
 <xsl:include href="../shared/utils/tipograf.xsl" />
 
-<xsl:template name="head-scripts-pers">
-</xsl:template>
 
-<xsl:template name="s-header-signin">
-    <xsl:call-template name="s-logout-link" />
+<xsl:template name="head-scripts-pers">
+
 </xsl:template>
 
 <xsl:template name="s-main-pers">
-    <section class="s-pers">
+    <section class="s-pers m-pers-f">
         <xsl:call-template name="s-pers" />
     </section>
 </xsl:template>
 
 <xsl:template name="s-pers">
-    <form method="POST" action="https://83.229.137.196:8080/api/pay-ua/">
+    <form class="s-pers-pay-f" method="POST" action="https://83.229.137.196:8080/api/pay-ua/">
         <input type="hidden" name="user_id"       value="{/data/pay/user_id}" />
         <input type="hidden" name="product_id"    value="{/data/pay/product_id}"  />
         <input type="hidden" name="amount"        value="{/data/pay/amount}"  />
@@ -38,7 +36,7 @@
         <input type="hidden" name="shop_f5"    value="{/data/pay/shop_f5}"  />
 
         <input type="hidden" name="sign" value="{/data/sign}" />
-        <input type="submit" value="Оплатить"   />
+        <input class="s-pers-pay-but" type="submit" value="Оплатить"   />
     </form>
 </xsl:template>
 

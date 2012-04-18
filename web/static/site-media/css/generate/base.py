@@ -249,14 +249,12 @@ class Base(generate.gen_css.Gen_css):
             overflow: hidden;
             position: relative;
             margin: 10px 0px 10px 0px;
-            
-            
+
             -moz-border-radius: 100px;
             -webkit-border-radius: 100px;
             -khtml-border-radius: 100px;
             border-radius: 20px;
-            
-            
+
         }
         """
 
@@ -1057,6 +1055,20 @@ class Base(generate.gen_css.Gen_css):
             background-color: #cccccc;
         }
 
+        .m-pers-f{
+            background-color: white;
+        }
+
+        .s-pers-pay-f{
+            text-align: center;
+        }
+        
+        .s-pers-pay-but{
+            margin: 20px 20px 20px 20px;
+            width:  200px;
+            height: 200px;
+        }
+        
         .b-fpb{
             display:none;
         }
@@ -1093,6 +1105,11 @@ class Base(generate.gen_css.Gen_css):
             border-radius:          10px;   /*IE*/
         }
         """
+        
+        #res += """.b-a{
+            #padding: 20px 23px 20px %(header_loffset)s;
+        #}
+        #"""%(d(Metrics))
         
         ria_bg = """
         .ria-bg{
