@@ -285,7 +285,7 @@ get_acv_video_show(Acv_video_id) ->
             " acv_video.wish, acv_video.shown, "
             " acv_video.preroll, acv_video.postroll, "
             " acv_video.midroll, acv_video.pauseroll, "
-            " acv_video.rerun_hours, acv_video.rerun_minutes "
+            " acv_video.rerun_hours, acv_video.rerun_minutes, acv_video.ref "
         " from acv_video "
             " where acv_video.id = $1 and deleted = false;",
     dao:simple(Query, [(Acv_video_id)]).

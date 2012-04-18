@@ -290,7 +290,6 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             	    src:"/" + clip.ref
                 }
             });
-
             this.flashBar.add(this.flashPlayer);//, {flex: 1});
             return true;
         }
