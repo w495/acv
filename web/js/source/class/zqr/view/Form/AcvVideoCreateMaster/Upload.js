@@ -244,7 +244,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             var flag = true;
 
             var url = this.inp.Url.getValue();
-            if(url.substr(0,7) != "http://") {
+            if(url && url.substr(0,7) != "http://") {
                 this.inp.Url.setValue("http://"+url);
             }
 
