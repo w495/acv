@@ -134,7 +134,10 @@ dmap(Path) ->
 
         "/pref" ->              {outside, pref};
         "/pers" ->              {outside, pers};
+
+        "/pay/" ++ Id ->        {outside, pay, Id};
         "/pay" ->               {outside, pay};
+
 
         "/surl" ->              {outside, surl};
         "/furl" ->              {outside, furl};

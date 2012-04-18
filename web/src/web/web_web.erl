@@ -132,10 +132,8 @@ processControllerException(throw, auth_required, Req) ->
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
 
 processControllerException(throw, auth_required_front, Req) ->
-    flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
-    %throw({redirect, "/signin" ++ Req:get(path), []});
-    %throw(auth_required);
-    Req:respond({302, [{"Location", "/signin" ++ Req:get(path)}, {"Content-Type", ?OUTPUT_HTML}], ""});
+    processControllerException(throw, {redirect, "/signin" ++ Req:get(raw_path), []}, Req);
+
 
 %%
 %% application/json 

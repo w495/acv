@@ -626,14 +626,13 @@ bill({Acv_video_id, Pay_status}) ->
 %%%
 
 
-chstate_acv_video({Acv_video_id, Active, Pay_state, Sum}) ->
+chstate_acv_video({Acv_video_id, Active, Sum}) ->
     Query =
         " update acv_video set "
         "   active = $2, "
-        "   pay_status = $3, "
-        "   sum = $4 "
+        "   sum = $3 "
         " where id=$1;",
-    dao:simple(Query, [Acv_video_id, Active, Pay_state, Sum]).
+    dao:simple(Query, [Acv_video_id, Active, Sum]).
 
 
 
