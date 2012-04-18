@@ -29,6 +29,7 @@
     <xsl:text>просим связаться со службой поддержки </xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>http://tvzavr.ru/feedback/form</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
 </xsl:template>
     
 
