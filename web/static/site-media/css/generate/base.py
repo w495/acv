@@ -167,6 +167,16 @@ class Base(generate.gen_css.Gen_css):
             color: #ffffff;
         }"""
         
+        res += """.m-f-r{
+            float: right;
+        }
+        """
+        
+        res += """.m-f-l{
+            float: left;
+        }
+        """
+        
         return res
         
     def body(self):
@@ -467,6 +477,14 @@ class Base(generate.gen_css.Gen_css):
                     border-radius: 20px;
                 }
             """
+
+            res += """.email-email:required:invalid, .email-email:focus:invalid {
+                color: red;
+            }"""
+    
+            res += """.email-email:required:valid, .email-email:focus:valid {
+                color: green;
+            }"""
 
             if(Use.css3_corners):
                 res += """.s-sfm-input{
@@ -787,9 +805,9 @@ class Base(generate.gen_css.Gen_css):
         top_offset = "10px";
         
         def _e_news_head():
+            # Удалил width: 800px;
             return """.e-news-head, .e-docs-head{
                 display: block;
-                width: 800px;
                 font-size: 30px;
                 font-variant: normal;
                 font-width: normal;
@@ -1044,6 +1062,19 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.m-docs-ttrc{
             height:75px;
+        }
+        """
+        
+        res += """.m-docs-textarea{
+            width:330px;
+            height:150px;
+            padding: 1px;
+        }
+        """
+        
+        res += """.m-docs-input{
+            width:330px;
+            border:1px solid black;
         }
         """
         

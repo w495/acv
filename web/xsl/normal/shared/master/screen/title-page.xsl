@@ -151,6 +151,9 @@
         <h1 class="e-news-head">
             <xsl:text>О проекте</xsl:text>
         </h1>
+        <a class="b-news-doc" href="mailto:ololo@sdf.sdf" >
+            <xsl:text>Связаться с нами</xsl:text>
+        </a>
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>

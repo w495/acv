@@ -77,7 +77,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             this.inp.Password2    = new qx.ui.form.PasswordField()
                 .set({placeholder: "pass", required:true});
             this.inp.Email        = new qx.ui.form.TextField()
-                .set({placeholder: "abc@def.gh", required:true});
+                .set({placeholder: "email@example.com", required:true});
             this.inp.City         = new qx.ui.form.TextField()
                 .set({placeholder: "Город"});
             this.inp.Organization = new qx.ui.form.TextField()
@@ -92,7 +92,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 .set({placeholder: "Отчество"});
                 
             this.inp.Pic_url      = new qx.ui.form.TextField()
-                .set({placeholder: "файл", readOnly:true});
+                .set({placeholder: "Выберите файл", readOnly:true});
             
             this.groupList = new zqr.view.SelListTree(this,
                 this.groupListOptions.url,
@@ -135,10 +135,6 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             cnt.add(new qx.ui.basic.Label().set({value: "Повторите пароль"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Password2,  {row:vertical_offset , column:1});
-
-            cnt.add(new qx.ui.basic.Label().set({value: "Фотография:" + RFM,  rich : true}),
-                    {row:++vertical_offset, column:0});
-            cnt.add(this._buildPicFormCnt(), {row:vertical_offset , column:1});
             
             cnt.add(new qx.ui.basic.Label().set({value: "E-mail"            + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
@@ -155,6 +151,10 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             cnt.add(new qx.ui.basic.Label().set({value: "Фамилия"           + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Lastname,   {row:vertical_offset , column:1});
+
+            cnt.add(new qx.ui.basic.Label().set({value: "Фотография:",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            cnt.add(this._buildPicFormCnt(), {row:vertical_offset , column:1});
 
             
             cnt.add(new qx.ui.basic.Label().set({value: "Город",                    rich : true}),
@@ -250,10 +250,11 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 flag &= zqr.view.Form.AbstractForm.customFormPassCheck(this.inp.Password1, this.inp.Password2);
             }
 
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Login);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Firstname);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Lastname);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
+            flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Email);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Login);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Firstname);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Lastname);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Patronimic);
 /*
             for(var fieldName in this.inp){
                 if(  ("Password1" == fieldName)

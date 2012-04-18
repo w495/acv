@@ -127,6 +127,8 @@ dmap(Path) ->
         "/docs/content" ->     	{outside, docs_content};
         "/docs/howto" ->        {outside, docs_howto};
         "/docs/offer" ->        {outside, docs_offer};
+        "/docs/contact" ->      {outside, docs_contact};
+        "/docs/contact/message" ->      {outside, docs_contact_send_message};
 
         "/signin" ->            {outside, signin};
         "/signin/post" ->       {outside, signin_post};

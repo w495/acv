@@ -124,7 +124,8 @@
                     <xsl:with-param name="Name" select="'login'"  />
                     <xsl:with-param name="Placeholder" select="'только латинские буквы'"  />
                     <xsl:with-param name="Required" select="'true'"/>
-                    <xsl:with-param name="Size" select="'25'"/>
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Error_message" select="'пользователь с таким логином уже существует'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -135,7 +136,8 @@
                     <xsl:with-param name="Placeholder" select="'не короче 6 символов'"  />
                     <xsl:with-param name="Type" select="'password'"  />
                     <xsl:with-param name="Required" select="'true'"/>
-                    <xsl:with-param name="Size" select="'25'"/>
+                    <xsl:with-param name="Size" select="'128'"/>
+    				<xsl:with-param name="Max_length" select="'128'"/>
                     <xsl:with-param name="Error_message" select="'пароли не совпадают'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -146,7 +148,8 @@
                     <xsl:with-param name="Placeholder" select="'например: mY_PaSsW0rD'"  />
                     <xsl:with-param name="Type" select="'password'"  />
                     <xsl:with-param name="Required" select="'true'"/>
-                    <xsl:with-param name="Size" select="'20'"/>
+                    <xsl:with-param name="Size" select="'128'"/>
+    				<xsl:with-param name="Max_length" select="'128'"/>
                     <xsl:with-param name="Error_message" select="'пароли не совпадают'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -154,9 +157,11 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Электронная почта'" />
                     <xsl:with-param name="Name" select="'email'"  />
-                    <xsl:with-param name="Placeholder" select="'mail@my-company.ru'"  />
+                    <xsl:with-param name="Placeholder" select="'mail@example.com'"  />
                     <xsl:with-param name="Required" select="'true'"/>
-                    <xsl:with-param name="Size" select="'20'"/>
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Type" select="'email'"/> 
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Error_message" select="'пользователь с таким E-mail уже существует'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -165,7 +170,8 @@
                     <xsl:with-param name="Label_name" select="'Город'" />
                     <xsl:with-param name="Name" select="'city'"  />
                     <xsl:with-param name="Placeholder" select="'Введите город'"  />
-                    <xsl:with-param name="Size" select="'25'"/>
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
                 </xsl:call-template>
@@ -174,6 +180,8 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Организация'" />
                     <xsl:with-param name="Name" select="'organization'"  />
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Placeholder" select="'Введите организацию'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -181,6 +189,8 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Должность'" />
                     <xsl:with-param name="Name" select="'position'"  />
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Placeholder" select="'Введите позицию'"  />
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
@@ -188,6 +198,8 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Фамилия'" />
                     <xsl:with-param name="Name" select="'lastname'"  />
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Placeholder" select="'Назовите Фамилию'"  />
                     <xsl:with-param name="Required" select="'true'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
@@ -196,6 +208,8 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Имя'" />
                     <xsl:with-param name="Name" select="'firstname'"  />
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Placeholder" select="'Назовите Имя'"  />
                     <xsl:with-param name="Required" select="'true'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
@@ -204,6 +218,8 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Отчество'" />
                     <xsl:with-param name="Name" select="'patronimic'"  />
+                    <xsl:with-param name="Size" select="'1024'"/>
+    				<xsl:with-param name="Max_length" select="'1024'"/>
                     <xsl:with-param name="Placeholder" select="'Отчество'"  />
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
