@@ -14,6 +14,10 @@
 <xsl:template name="s-signin">
 </xsl:template>
 
+<!--
+    TODO: Поменять имена классов но нормальные
+-->
+
 <xsl:template name="s-main-common">
     <section class="b-signup">
         <h3 class="b-signup-h">
