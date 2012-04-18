@@ -276,12 +276,13 @@
     <!--
         Подол страницы
     -->
-    <p>
-        <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
-    </p>
-    <p>
+    <span>
+		<xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
+    </span>
+    <br />
+    <span>
         <xsl:text>Все права защищены.</xsl:text>
-    </p>
+    </span>
 </xsl:template>
 
 <xsl:template name="foot-scripts">
