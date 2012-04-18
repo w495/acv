@@ -364,7 +364,7 @@ pref(Req) ->
 pers(Req) -> 
 	case authorization:is_auth(Req) of
 		false -> 
-			error:redirect(Req, "/");
+			signin(Req, Req:get(path));
 		Another -> 
 		    Xsl_path = "xsl/normal/outside/pers.xsl",
 		    Xml  = xml:encode_data(
