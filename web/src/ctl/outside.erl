@@ -382,7 +382,7 @@ pers(Req) ->
 surl(Req) ->
     case authorization:is_auth(Req) of
         false ->
-            error:redirect(Req, "/");
+            signin(Req, Req:get(path));
         Another ->
             Xsl_path = "xsl/normal/outside/surl.xsl",
             Xml  = xml:encode_data(
@@ -400,7 +400,7 @@ surl(Req) ->
 furl(Req) ->
     case authorization:is_auth(Req) of
         false ->
-            error:redirect(Req, "/");
+            signin(Req, Req:get(path));
         Another ->
             Xsl_path = "xsl/normal/outside/furl.xsl",
             Xml  = xml:encode_data(
