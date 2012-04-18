@@ -283,7 +283,7 @@ start_datetime(Rerun_hours, Rerun_minutes) ->
 make_acv_xml(List) ->
     {Acc_str, Acc_duration} = make_acv_xml_item(List, {[], 0}),
     ?XML_TOP ++
-    ?FMT("<block duration=\"~p\" loadnext=\"600\">", [Acc_duration]) ++
+    ?FMT("<block duration=\"~p\" loadnext=\"~p\">", [Acc_duration, dao_config:config("acv_video_loadnext")]) ++
         Acc_str ++
     "</block>".
 
