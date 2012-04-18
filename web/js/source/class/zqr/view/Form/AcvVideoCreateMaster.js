@@ -119,7 +119,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
         
         __gotoNext : function(){
-            this.onFormClose();
+        //    this.onFormClose();
             if(this.__step < this.__getLength() - 1){
                 this.__step += 1;
                 if(this.__step == this.__getLength() - 1){
