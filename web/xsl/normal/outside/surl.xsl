@@ -18,9 +18,37 @@
     </section>
 </xsl:template>
 
+<!--
+    w-495:
+        Имхо суда надо какую-то картинку
+-->
+
 <xsl:template name="s-pers">
     <article class="b-a">
-        <xsl:text>Счет успешно оплачен.</xsl:text>
+        <p class="m-docs-p">
+            <xsl:text>Ваш платеж обрабатывается. </xsl:text>
+            <xsl:text>Информация о платеже Вам будет выслана по е-мейлу.</xsl:text>
+        </p>
+        <p class="m-docs-p">
+            <span>
+                <xsl:text>Вы можете просмотреть созданные рекламные кампании </xsl:text>
+                <xsl:text>в личном кабинете (</xsl:text>
+            </span>
+            <a href="/pers" title="переход в ваши личный кабинет" rel="details" >ссылка</a>
+            <span>
+                <xsl:text>).</xsl:text>
+            </span>
+        </p>
+        <p class="m-docs-p">
+            <span>
+                <xsl:text>Для изменения параметров кампании </xsl:text>
+                <xsl:text>просим связаться со службой поддержки  (</xsl:text>
+            </span>
+            <a href="http://www.tvzavr.ru/feedback/form" title="связаться со службой поддержки" rel="contact">ссылка</a>
+            <span>
+                <xsl:text>).</xsl:text>
+            </span>
+        </p>
     </article>
 </xsl:template>
 

@@ -1117,7 +1117,7 @@ class Base(generate.gen_css.Gen_css):
         
         .s-pers-pay-but{
             margin: 20px 20px 20px 20px;
-            width:  200px;
+            width:  300px;
             height: 200px;
         }
         
