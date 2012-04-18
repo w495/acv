@@ -479,6 +479,17 @@ pay(Req, Rawid) ->
                         Acv_video_id = proplists:get_value("id", Acv_video),
                         Customer_id = proplists:get_value("customer_id", Acv_video),
                         Sum = proplists:get_value("sum", Acv_video),
+                        Pay_status = proplists:get_value("pay_status", Acv_video),
+
+                        case Pay_status of
+                            false ->
+                                Xsl_path = "xsl/normal/outside/pay.xsl";
+                            true ->
+                                Xsl_path = "xsl/normal/outside/surl.xsl";
+                            null ->
+                                Xsl_path = "xsl/normal/outside/pay.xsl",
+                                throw(not_found)
+                        end,
 
                         %shop_f1, shop_f2, shop_f3, shop_f4, shop_f5
                         Payfields = [
@@ -500,7 +511,6 @@ pay(Req, Rawid) ->
                         Sign = sha512(Payfields),
                         ?D("Sign = ~p~n", [Sign]),
 
-                        Xsl_path = "xsl/normal/outside/pay.xsl",
                         Xml  = xml:encode_data(
                             [
                                 {"meta",     meta([Req])},             % описание запрос
