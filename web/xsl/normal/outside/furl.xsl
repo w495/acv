@@ -22,7 +22,7 @@
 
 <xsl:template name="s-pers">
     <article class="b-a">
-        <xsl:text>Счет успешно оплачен.</xsl:text>
+        <xsl:text>Счет не оплачен.</xsl:text>
     </article>
 </xsl:template>
 

@@ -63,15 +63,17 @@
                 <xsl:choose>
                     <xsl:when test="$Home = $Currentpath">
                         <span class="s-sfm-oval m-login">
-                            <xsl:text>Вы: </xsl:text>
-                            <xsl:value-of select="$User" />
+                            <xsl:call-template name="l-user">
+                                <xsl:with-param name="user" select="$User" />
+                            </xsl:call-template>
                         </span>
                     </xsl:when>
                     <xsl:otherwise>
                         <a class="s-sfm-oval m-login" href="{$Home}" >
                             <span class="e-sfm-oval">
-                                <xsl:text>Вы: </xsl:text>
-                                <xsl:value-of select="$User" />
+                                <xsl:call-template name="l-user">
+                                    <xsl:with-param name="user" select="$User" />
+                                </xsl:call-template>
                             </span>
                         </a>
                     </xsl:otherwise>
@@ -89,5 +91,12 @@
     </xsl:choose>
 
 </xsl:template>
+
+<xsl:template name="l-user">
+    <xsl:param name="User" select="data/meta/login" />
+    <xsl:text>Вы: </xsl:text>
+    <xsl:value-of select="$User" />
+</xsl:template>
+
 
 </xsl:stylesheet>

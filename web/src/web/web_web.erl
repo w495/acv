@@ -131,6 +131,10 @@ processControllerException(throw, auth_required, Req) ->
     DataOut = mochijson2:encode(V),
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
 
+processControllerException(throw, auth_required_front, Req) ->
+    processControllerException(throw, {redirect, "/signin" ++ Req:get(raw_path), []}, Req);
+
+
 %%
 %% application/json 
 %%
