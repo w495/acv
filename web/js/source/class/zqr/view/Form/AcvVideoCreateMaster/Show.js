@@ -66,7 +66,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Показ видео",  font: "bold",
+                    value: "Настройка показов видео",  font: "bold",
                     alignX: "left", rich : true
                 });
                 

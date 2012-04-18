@@ -14,7 +14,7 @@
 #asset(qx/icon/Tango/32/actions/dialog-ok.png)
 
 #asset(qx/icon/Tango/32/actions/process-stop.png)
-#asset(qx/icon/Tango/32/apps/utilities-help.png)
+#asset(qx/icon/Tango/32/status/dialog-information.png)
 
     
 ************************************************************************ */
@@ -29,7 +29,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         
         if(Row)
             this.createNew = (Row.isNew == true);
-        this.base(arguments, controller, Row);
+        this.base(arguments, controller, Row, "рекламной кампании");
         
         this.counterLabel = new qx.ui.basic.Label();
         // кнопки
@@ -39,15 +39,14 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
 
         // Дублирование логики с верхней  кнопкой назад [<-].
         // this.__hidebutton(this.cancelButton);
-
-        this.helpButton = new qx.ui.form.Button("Помощь",  "icon/32/apps/utilities-help.png");
+        this.helpButton = new qx.ui.form.Button("Информация",  "icon/32/status/dialog-information.png");
         this.helpButton.addListener("execute", this._onHelpClick, this);
         
         this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
         this.prevButton.addListener("execute", this._onPrevClick, this);
         this.nextButton =  new qx.ui.form.Button("Далее",  "icon/32/actions/edit-redo.png");
         this.nextButton.addListener("execute", this._onNextClick, this);
-        this.sendButton = new qx.ui.form.Button("Отправить", "icon/32/actions/dialog-ok.png");
+        this.sendButton = new qx.ui.form.Button("Завершить", "icon/32/actions/dialog-ok.png");
         this.sendButton.addListener("execute", this._onSendClick, this);
 
         this.__hidebutton(this.sendButton);
@@ -285,12 +284,11 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
 
         onFormClose : function() {
-            var win = zqr.util.utils.infoWindow("Заявка принята. Решение модератора будет выслано на ваш email.");
+            var win = zqr.util.utils.infoWindow("Заявка принята.<br/>Инструкции по оплате будут высланы на ваш email.");
             //this.cnt.add(win);
-            var wx = win.getWidth();
-            var vy = win.getHeight();
-            var l = ((zqr.Config.WINDOW_WIDTH-win.getWidth())/2).toFixed(0);
-            var t = ((zqr.Config.WINDOW_HEIGHT-win.getHeight())/2).toFixed(0);
+            var vx = 300;//win.getW();
+            var l = ((zqr.Config.WINDOW_WIDTH-vx)/2).toFixed(0);
+            var t = ((zqr.Config.WINDOW_HEIGHT)/2).toFixed(0);
 
             this.controller.biz.getRoot().add(win, {
                 left : l*1, 

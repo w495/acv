@@ -103,7 +103,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Upload",
             
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Загруска видео",  font: "bold",
+                    value: "Загрузка видео",  font: "bold",
                     alignX: "left", rich : true
                 });
                 
