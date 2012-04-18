@@ -166,6 +166,26 @@ class Base(generate.gen_css.Gen_css):
         res += """.m-white-link, .m-white-link:hover, .m-white-link:visited{
             color: #ffffff;
         }"""
+        res += """.m-black-link, .m-black-link:hover, .m-black-link:visited{
+            color: #000;
+        }"""
+        
+        res += """.m-center{
+            text-align:center;
+        }"""
+        
+        res += """.m-v-center{
+            vertical-align:center;
+        }"""
+        
+        res += """.m-mt-10{
+            margin-top:10px;
+        }"""
+        
+        res += """.m-mt-50{
+            margin-top:50px;
+        }"""
+        
         
         res += """.m-f-r{
             float: right;
@@ -259,14 +279,12 @@ class Base(generate.gen_css.Gen_css):
             overflow: hidden;
             position: relative;
             margin: 10px 0px 10px 0px;
-            
-            
+
             -moz-border-radius: 100px;
             -webkit-border-radius: 100px;
             -khtml-border-radius: 100px;
             border-radius: 20px;
-            
-            
+
         }
         """
 
@@ -808,6 +826,7 @@ class Base(generate.gen_css.Gen_css):
             # Удалил width: 800px;
             return """.e-news-head, .e-docs-head{
                 display: block;
+                display: block; 
                 font-size: 30px;
                 font-variant: normal;
                 font-width: normal;
@@ -841,13 +860,27 @@ class Base(generate.gen_css.Gen_css):
                 text-decoration: none;
             }
             """
+            
+            res += """.b-news-mail{ 
+                background: none;
+            }
+            """
+            
+            res += """.b-news-mail:before, .b-docs-mail:before{content:"";}"""
             return res;
 
         def _b_news():
-            res =  ""
+            res =  "" 
+            
             res += """.b-news{
                 clear: both;
                 height: 368px;
+                overflow: hidden;
+            }
+            """
+            
+            res += """.b-news-alternate{
+                clear: both; 
                 overflow: hidden;
             }
             """
@@ -856,8 +889,16 @@ class Base(generate.gen_css.Gen_css):
                 res += ".b-news{%s}"%(
                     generate.util.lgt('#a7a7a7', '#ececec', '#a7a7a7')
                 )
+                res += ".b-news-alternate{%s}"%(
+                    generate.util.lgt('#a7a7a7', '#ececec', '#a7a7a7')
+                )
             if(Use.bgi_grad):
                 res += ".b-news{%s}"%(
+                    "background: #a7a7a7 url(%s);"%(
+                        generate.util.tobase64("css-images/b-news.png")
+                    )
+                )
+                res += ".b-news-alternate{%s}"%(
                     "background: #a7a7a7 url(%s);"%(
                         generate.util.tobase64("css-images/b-news.png")
                     )
@@ -978,6 +1019,12 @@ class Base(generate.gen_css.Gen_css):
             }
         """
         
+        res += """.b-aa{
+                text-align: center; 
+                margin-top:10px;
+            }
+        """
+        
         res += """.b-ac{
         font-size: 15px;
             line-height: 20px;
@@ -986,6 +1033,11 @@ class Base(generate.gen_css.Gen_css):
 
         res += """.b-ac-p{
             margin-top: 20px;
+        }
+        """
+        
+        res += """.b-bc-p{
+           margin-left: 15px;
         }
         """
 
@@ -1088,6 +1140,20 @@ class Base(generate.gen_css.Gen_css):
             background-color: #cccccc;
         }
 
+        .m-pers-f{
+            background-color: white;
+        }
+
+        .s-pers-pay-f{
+            text-align: center;
+        }
+        
+        .s-pers-pay-but{
+            margin: 20px 20px 20px 20px;
+            width:  200px;
+            height: 200px;
+        }
+        
         .b-fpb{
             display:none;
         }
@@ -1124,6 +1190,11 @@ class Base(generate.gen_css.Gen_css):
             border-radius:          10px;   /*IE*/
         }
         """
+        
+        #res += """.b-a{
+            #padding: 20px 23px 20px %(header_loffset)s;
+        #}
+        #"""%(d(Metrics))
         
         ria_bg = """
         .ria-bg{

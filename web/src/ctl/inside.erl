@@ -544,9 +544,13 @@ chstate_acv_video(Req) ->
     State = norm:extr(Data, [
         {"id",           [nullable, integer]},
         {"active",       [nullable, boolean]},
-        {"pay_status",   [nullable, boolean]},
         {"sum",          [nullable, integer]}
     ]),
+
+
+    % Здесь мы не меняем pay_status
+    %   pay_status меняем ниже через
+    %       dao_acv_video:mkbill
 
     Res = dao:dao_call(dao_acv_video, chstate_acv_video, State, values),
 

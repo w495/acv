@@ -184,7 +184,9 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h2 class="b-thehead-caption"><xsl:text>портал для рекламодателей</xsl:text></h2>
+        <h2 class="b-thehead-caption">
+            <xsl:text>портал для рекламодателей</xsl:text>
+        </h2>
         <h1 class="b-thehead">
         	<a href="/">
             	<img class="b-thehead-logo" src="/i/logo.png" alt="tvzavr" title="tvzavr" />
@@ -274,12 +276,13 @@
     <!--
         Подол страницы
     -->
-    <p>
-        <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
-    </p>
-    <p>
+    <span>
+		<xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
+    </span>
+    <br />
+    <span>
         <xsl:text>Все права защищены.</xsl:text>
-    </p>
+    </span>
 </xsl:template>
 
 <xsl:template name="foot-scripts">

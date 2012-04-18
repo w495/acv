@@ -130,19 +130,23 @@ dmap(Path) ->
         "/docs/contact" ->      {outside, docs_contact};
         "/docs/contact/message" ->      {outside, docs_contact_send_message};
 
-        "/signin" ->            {outside, signin};
-        "/signin/post" ->       {outside, signin_post};
+        "/signin/post"  ++ Prev_path -> {outside, signin_post, Prev_path};
+        "/signin"       ++ Prev_path -> {outside, signin,      Prev_path};
+
 
         "/pref" ->              {outside, pref};
         "/pers" ->              {outside, pers};
+
+        "/pay/" ++ Id ->        {outside, pay, Id};
         "/pay" ->               {outside, pay};
+
 
         "/surl" ->              {outside, surl};
         "/furl" ->              {outside, furl};
         "/curl" ->              {outside, curl};
 
-        "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
+        "/signup" ->            {outside, signup};
         "/captcha.png" ->       {outside, captcha};
 
 

@@ -2,6 +2,7 @@
     https://gist.github.com/1639960
     
 #asset(qx/icon/Tango/16/actions/document-save.png)
+#asset(qx/icon/Tango/16/apps/utilities-help.png)
 ************************************************************************ */
 
 qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
@@ -15,6 +16,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
     },
 
     members : {
+
+        helpUrl : "/docs/offer",
         
         /* Upload request берется из конструктора */
         uReq : null,
@@ -63,7 +66,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             
             var pageName = new qx.ui.basic.Label()
                 .set({
-                    value: "Показ видео",  font: "bold",
+                    value: "Настройка показов видео",  font: "bold",
                     alignX: "left", rich : true
                 });
                 
@@ -95,9 +98,17 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
 
             var vertical_offset = -1;
             
-            this.composite.add(pageName,
-                {row:++vertical_offset, column:0, colSpan:2});
-            
+            this.composite.add(pageName, {row:++vertical_offset, column:0});
+
+/*
+            var cntLout = new qx.ui.layout.HBox();
+            cntLout.setAlignX("right");
+            var cntHelp = new qx.ui.container.Composite(cntLout);
+            this.composite.add(cntHelp, {row:vertical_offset, column:1});
+            //var btnHelp = new qx.ui.form.Button("",  "icon/16/apps/utilities-help.png");
+            var btnHelp = new qx.ui.basic.Image("icon/16/apps/utilities-help.png");
+            cntHelp.add(btnHelp, {flex:0});
+*/            
              
             this.composite.add(new qx.ui.basic.Label().set({value: "Количество показов ",  rich : true}),
                     {row:++vertical_offset, column:0});

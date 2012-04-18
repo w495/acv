@@ -33,33 +33,6 @@ is_auth(Request) ->
     end.
 
 
-auth_required(Req) ->
-    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
-    case Cookie of
-        undefined -> 
-			%%% error:return_json(Req, "Auth Required");
-
-            %%% --------------------------------------------------------------
-            %%% 
-            %%% Идея хорошая, только не сильно применимая
-            %%%     потому, что совсем по-хорошему
-            %%%     надо как-то прерывать исполнение,
-            %%%         для этого и вызываем исключение.
-            %%% Если хочешь вернуть специцифичное сообщение для ощибки,
-            %%%        попробуй прокинуть его через обработку ошибок в web_web
-            %%%
-            %%% ~~---- w-495
-            %%% --------------------------------------------------------------
-
-			throw(auth_required);
-        A ->    case auth_biz:get_session(A) of
-                    [] -> 
-						%error:return_json(Req, "Auth Required");
-						throw(auth_required);
-                    [H|_T] -> H
-                end
-    end.
-
 %%%
 %%%
 %%%
@@ -87,6 +60,46 @@ auth_getlogin(Req) ->
                 end
     end, Login.
 
+
+auth_required_front(Req) ->
+    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined ->
+            throw(auth_required_front);
+        A ->    case auth_biz:get_session(A) of
+                    [] ->
+                        throw(auth_required_front);
+                    [H|_T] -> H
+                end
+    end.
+
+auth_required(Req) ->
+    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined ->
+            %%% error:return_json(Req, "Auth Required");
+
+            %%% --------------------------------------------------------------
+            %%%
+            %%% Идея хорошая, только не сильно применимая
+            %%%     потому, что совсем по-хорошему
+            %%%     надо как-то прерывать исполнение,
+            %%%         для этого и вызываем исключение.
+            %%% Если хочешь вернуть специцифичное сообщение для ощибки,
+            %%%        попробуй прокинуть его через обработку ошибок в web_web
+            %%%
+            %%% ~~---- w-495
+            %%% --------------------------------------------------------------
+
+            throw(auth_required);
+        A ->    case auth_biz:get_session(A) of
+                    [] ->
+                        %error:return_json(Req, "Auth Required");
+                        throw(auth_required);
+                    [H|_T] -> H
+                end
+    end.
+
 %%%
 %%% Возвращает сессию,
 %%%     если текущий запрос удовлетворяет правам.
@@ -103,13 +116,13 @@ auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined ->
-			error:return_json(Req, "Auth Required");
-            %throw(auth_required);
+			%error:return_json(Req, "Auth Required");
+            throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
                 [] -> 
-					error:return_json(Req, "Auth Required");
-					%throw(auth_required);
+					%error:return_json(Req, "Auth Required");
+					throw(auth_required);
                 [H = #web_session{customer_id = Customer_id, permissions=PList}|_T] ->
                     case Is_owner_fun(Customer_id, Obj) of
                         true -> H;
@@ -118,8 +131,8 @@ auth_required(Req, {Is_owner_fun, Obj, Perm}) ->
                                 true -> H;
                                 false ->
                                     ?INFO(?FMT("Permission required: ~p~n",[Perm])),
-									error:return_json(Req, "Permission Required")
-                                    %throw({permission_required, Perm})
+									%error:return_json(Req, "Permission Required")
+                                    throw({permission_required, Perm})
                             end
                     end
             end
@@ -134,20 +147,21 @@ auth_required(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined -> 
-			error:return_json(Req, "Auth Required");
-			%throw(auth_required);
+			%error:return_json(Req, "Auth Required");
+			throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
                 [] -> 
-					error:return_json(Req, "Auth Required");
+					%error:return_json(Req, "Auth Required");
+                    throw(auth_required);
                 [H=#web_session{permissions=PList}|_T] -> 
                     case lists:member(Perm, PList) of
                         true -> 
                             H;
                         false -> 
                             ?INFO(?FMT("Permission required: ~p~n",[Perm])), 
-							error:return_json(Req, "Permission Required")
-                            %throw({permission_required, Perm})
+							%error:return_json(Req, "Permission Required")
+                            throw({permission_required, Perm})
                     end
             end
     end.
@@ -156,17 +170,19 @@ auth_required(Req, Perm) ->
 %%% Возвращает true,
 %%%     если текущий запрос удовлетворяет правам.
 %%%
+%%%
+%%%
 auth_if(Req, Perm) ->
     Cookie = Req:get_cookie_value(?AUTHCOOKIE),
     case Cookie of
         undefined -> 
-			error:return_json(Req, "Auth Required");
-			%throw(auth_required);
+			%error:return_json(Req, "Auth Required");
+			throw(auth_required);
         A ->
             case auth_biz:get_session(A) of
                 [] -> 
-					error:return_json(Req, "Auth Required");
-					%throw(auth_required);
+					%error:return_json(Req, "Auth Required");
+					throw(auth_required);
                 [#web_session{permissions=PList}|_T] ->
                     lists:member(Perm, PList)
             end

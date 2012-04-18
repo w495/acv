@@ -7,7 +7,15 @@
 <xsl:include href="../../shared/utils/u-ift.xsl" />
     
 <xsl:template name="signin-form-mini">
-    <xsl:param name="Action" select="'/Users/Registration/'" />
+    <xsl:param name="Action" select="'/signin/post'" />
+
+    <xsl:param name="Signup" select="'/signup'" />
+    <xsl:param name="Signout" select="'/logout'" />
+    <xsl:param name="Home" select="'/pers'" />
+    <xsl:param name="User" select="data/meta/login" />
+    <xsl:param name="Currentpath" select="data/meta/current-path" />
+
+
     <xsl:param name="Size" select="15" />
     <xsl:param name="Method" select="'POST'"/>
     <xsl:param name="Has_errors" select="/data/meta/has-errors"/>
@@ -43,7 +51,7 @@
                 <input class="s-sfm-but submit" type="submit" value="↵"/>
             </form>
             <div class="s-sfm-lc" >
-                <a class="s-sfm-l m-signup" href="/signup" ><xsl:text>Зарегистрироваться</xsl:text></a>
+                <a class="s-sfm-l m-signup" href="{$Signup}" ><xsl:text>Зарегистрироваться</xsl:text></a>
                 <!--
                     <xsl:text> / </xsl:text>
                     <a class="s-sfm-l m-rempass" href="/rempass"><xsl:text>Вспомнить пароль</xsl:text></a>
@@ -52,13 +60,25 @@
         </xsl:when>
         <xsl:otherwise>
             <div class="s-sfm" >
-                <a class="s-sfm-oval m-login" href="/pers" >
-                    <span class="e-sfm-oval">
-                        <xsl:text>Вы: </xsl:text>
-                        <xsl:value-of select="data/meta/login" />
-                    </span>
-                </a>
-                <a class="s-sfm-oval m-logout" href="/logout" >
+                <xsl:choose>
+                    <xsl:when test="$Home = $Currentpath">
+                        <span class="s-sfm-oval m-login">
+                            <xsl:call-template name="l-user">
+                                <xsl:with-param name="user" select="$User" />
+                            </xsl:call-template>
+                        </span>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <a class="s-sfm-oval m-login" href="{$Home}" >
+                            <span class="e-sfm-oval">
+                                <xsl:call-template name="l-user">
+                                    <xsl:with-param name="user" select="$User" />
+                                </xsl:call-template>
+                            </span>
+                        </a>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <a class="s-sfm-oval m-logout" href="{$Signout}" >
                     <span class="e-sfm-oval">
                         <xsl:text>Выйти из кабинета</xsl:text>
                     </span>
@@ -71,5 +91,12 @@
     </xsl:choose>
 
 </xsl:template>
+
+<xsl:template name="l-user">
+    <xsl:param name="User" select="data/meta/login" />
+    <xsl:text>Вы: </xsl:text>
+    <xsl:value-of select="$User" />
+</xsl:template>
+
 
 </xsl:stylesheet>

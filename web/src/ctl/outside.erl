@@ -21,11 +21,14 @@
     docs_contact/1,
 	docs_contact_send_message/1,
     signin/1,
+    signin/2,
     signin_post/1,
+    signin_post/2,
     signup/1,
     signup_post/1,
     captcha/1,
     pay/1,
+    pay/2,
     pers/1,
     surl/1,
     furl/1,
@@ -45,6 +48,14 @@
 %%
 %% Возврщает список вспомогательной информации для страницы
 %%
+
+meta([Req, {'self-retpath', Retpath}|_]) ->
+    [
+            {"customer_id",         authorization:get_customer_id(Req)},
+            {"login",               authorization:auth_getlogin(Req)},
+            {"self-retpath",        Retpath},
+            {"current-path",        Req:get(path)}
+    ];
 
 meta([Req|_]) ->
     [
@@ -184,42 +195,66 @@ docs_contact_send_message(Req) ->
 	error:return_html(Req, "Письмо отправлено").
 
 
+signin(Req) ->
+    signin(Req, []).
+
 %% @doc
 %% Возврaщает страницу регистрации
 %%
-signin(Req) ->
-    signin(Req, {normal}).
+signin(Req, Retpath) ->
+    ?D("~n~nRetpath = ~p~n~n", [Retpath]),
+    signin(Req, Retpath, {normal}).
 
-signin(Req, State) ->
+signin(Req, Retpath, State) ->
     Xsl_path = "xsl/normal/outside/signin.xsl",
     Xml  = xml:encode_data(
         [
-            {"meta",    meta([Req])}             % описание запроса
+            {"meta",    meta([Req, {'self-retpath', Retpath}])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
 
+signin_post(Req) ->
+    ?D("signin_post(Req)", []),
+    signin_post(Req, []).
+
 %% @doc
 %% Выполняет авторизацию
 %%
-signin_post(Req) ->
-    signin_post(Req, {normal}).
+signin_post(Req, Retpath) ->
+    ?D("signin_post(Req, Retpath)", []),
+    signin_post(Req, Retpath, {normal}).
 
-signin_post(Req, State) ->
+signin_post(Req, Retpath, State) ->
+
+
+    ?D("signin_post(Req, Retpath, State)", []),
+
+
     Data = Req:parse_post(),
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
-    signin_post(Login, Password, State, Req).
+    signin_post(Login, Password, State, Req, Retpath).
 
-signin_post(Login, Password, State, Req) ->
+signin_post(Login, Password, State, Req, Retpath) ->
+    ?D("signin_post(Login, Password, State, Req, Retpath)", []),
     ?D("Login  = ~p~n", [Login]),
     ?D("Password = ~p~n", [Password]),
     try
         Val = auth_biz:login(Login, Password),
-        throw({ok, {redirect, "/pers",
-            [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
+        ?D("~n~nRetpath = ~p~n~n", [Retpath]),
+        case Retpath of
+            [] ->
+                throw({ok, {redirect, "/pers",
+                    [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}}),
+                ok;
+            Retpath ->
+                throw({ok, {redirect, Retpath,
+                    [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}}),
+                ok
+        end
     catch
         throw:{ok, Ret} -> throw(Ret);
         throw:Error ->
@@ -319,7 +354,7 @@ signup_post(Req, State) ->
                             % Кидаем событие о создании пользователя
                             % gen_event:notify(?SIGNUP_EVENT, Data),
 
-                            signin_post(Login, Pass, {normal}, Req);
+                            signin_post(Login, Pass, {normal}, Req, []);
                         {error, Error} ->
                             signup(Req, {error, Error, Data})
                     end;
@@ -356,7 +391,7 @@ pref(Req) ->
 pers(Req) -> 
 	case authorization:is_auth(Req) of
 		false -> 
-			error:redirect(Req, "/");
+			signin(Req, Req:get(raw_path));
 		Another -> 
 		    Xsl_path = "xsl/normal/outside/pers.xsl",
 		    Xml  = xml:encode_data(
@@ -374,7 +409,7 @@ pers(Req) ->
 surl(Req) ->
     case authorization:is_auth(Req) of
         false ->
-            error:redirect(Req, "/");
+            signin(Req, Req:get(raw_path));
         Another ->
             Xsl_path = "xsl/normal/outside/surl.xsl",
             Xml  = xml:encode_data(
@@ -392,7 +427,7 @@ surl(Req) ->
 furl(Req) ->
     case authorization:is_auth(Req) of
         false ->
-            error:redirect(Req, "/");
+            signin(Req, Req:get(raw_path));
         Another ->
             Xsl_path = "xsl/normal/outside/furl.xsl",
             Xml  = xml:encode_data(
@@ -445,63 +480,83 @@ curl(Req) ->
 %% Возврщает страницу пользователя
 %%
 pay(Req) ->
+    Data = Req:parse_qs(),
+    ?D("Data = ~p~n", [Data]),
+    case proplists:get_value("id", Data) of
+        undefined ->
+            throw(not_found);
+        Rawid ->
+            pay(Req, Rawid)
+    end.
+
+pay(Req, Rawid) ->
+
     case authorization:is_auth(Req) of
         false ->
-            error:redirect(Req, "/");
+            ?D("Req:get(raw_path) = ~p", [Req:get(raw_path)]),
+            signin(Req, Req:get(raw_path));
         Another ->
-            Data = Req:parse_qs(),
-            ?D("Data = ~p", [Data]),
-            Id = convert:to_integer(proplists:get_value("id", Data)),
+            try
+                Id = convert:to_integer(Rawid),
+                authorization:auth_required(Req, % доступ для владельца и admin
+                    {fun dao_acv_video:is_owner/2, Id, "admin"}),
+                case dao_acv_video:get_acv_video(Id) of
+                    {ok, [Acv_video], _, _} ->
+                        Acv_video_id = proplists:get_value("id", Acv_video),
+                        Customer_id = proplists:get_value("customer_id", Acv_video),
+                        Sum = proplists:get_value("sum", Acv_video),
+                        Pay_status = proplists:get_value("pay_status", Acv_video),
 
-            authorization:auth_required(Req, % доступ для владельца и admin
-                {fun dao_acv_video:is_owner/2, Id, "admin"}),
+                        case Pay_status of
+                            false ->
+                                Xsl_path = "xsl/normal/outside/pay.xsl";
+                            true ->
+                                Xsl_path = "xsl/normal/outside/surl.xsl";
+                            null ->
+                                Xsl_path = "xsl/normal/outside/pay.xsl",
+                                throw(not_found)
+                        end,
 
+                        %shop_f1, shop_f2, shop_f3, shop_f4, shop_f5
+                        Payfields = [
+                            {"user_id",         Customer_id},
+                            {"product_id",      ?SYS_BILL_PRODUCT_ID},
+                            {"amount",          Sum},
+                            {"shop_id",         ?SYS_BILL_SHOP_ID},
+                            {"ps_id",           ?SYS_BILL_PS_ID},
+                            {"success_url",     ?SYS_BILL_SURL},
+                            {"failure_url",     ?SYS_BILL_FURL},
+                            {"shop_f1",         Acv_video_id},
+                            {"shop_f2",         "2"},
+                            {"shop_f3",         "3"},
+                            {"shop_f4",         "4"},
+                            {"shop_f5",         "5"},
+                            {"secret",          ?SYS_BILL_SECRET}
+                        ],
 
-            case dao_acv_video:get_acv_video(Id) of
-                {ok, [Acv_video], _, _} ->
-                    Acv_video_id = proplists:get_value("id", Acv_video),
-                    Customer_id = proplists:get_value("customer_id", Acv_video),
-                    Sum = proplists:get_value("sum", Acv_video),
+                        Sign = sha512(Payfields),
+                        ?D("Sign = ~p~n", [Sign]),
 
-                    %shop_f1, shop_f2, shop_f3, shop_f4, shop_f5
-                    Payfields = [
-                        {"user_id",         Customer_id},
-                        {"product_id",      ?SYS_BILL_PRODUCT_ID},
-                        {"amount",          Sum},
-                        {"shop_id",         ?SYS_BILL_SHOP_ID},
-                        {"ps_id",           ?SYS_BILL_PS_ID},
-                        {"success_url",     ?SYS_BILL_SURL},
-                        {"failure_url",     ?SYS_BILL_FURL},
-                        {"shop_f1",         Acv_video_id},
-                        {"shop_f2",         "2"},
-                        {"shop_f3",         "3"},
-                        {"shop_f4",         "4"},
-                        {"shop_f5",         "5"},
-                        {"secret",          ?SYS_BILL_SECRET}
-                    ],
-
-                    Sign = sha512(Payfields),
-                    ?D("Sign = ~p~n", [Sign]),
-
-                    Xsl_path = "xsl/normal/outside/pay.xsl",
-                    Xml  = xml:encode_data(
-                        [
-                            {"meta",     meta([Req])},             % описание запрос
-                            {"pay",      Payfields},             % описание запроса
-                            {"sign",     Sign}             % описание запроса
-                        ]
-                    ),
-                    Outty = xslt:apply(Xsl_path, Xml),
-                    {?OUTPUT_HTML, [], [Outty]};
-                _ ->
-                    Xsl_path = "xsl/normal/outside/pay.xsl",
-                    Xml  = xml:encode_data(
-                        [
-                            {"meta",     meta([Req])}             % описание запрос
-                        ]
-                    ),
-                    Outty = xslt:apply(Xsl_path, Xml),
-                    {?OUTPUT_HTML, [], [Outty]}
+                        Xml  = xml:encode_data(
+                            [
+                                {"meta",     meta([Req])},             % описание запрос
+                                {"pay",      Payfields},             % описание запроса
+                                {"sign",     Sign}             % описание запроса
+                            ]
+                        ),
+                        Outty = xslt:apply(Xsl_path, Xml),
+                        {?OUTPUT_HTML, [], [Outty]};
+                    _ ->
+                        throw(not_found)
+                end
+            catch
+                throw:{error,{to_integer,bad_arg,Rowid}} ->
+                    throw(not_found);
+                throw:not_found ->
+                    throw(not_found);
+                throw:Error ->
+                    ?D("Error  = ~p~n", [Error]),
+                    throw(not_found)
             end
     end.
 

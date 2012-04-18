@@ -11,7 +11,7 @@
     <xsl:text>Для облаты счет вам необходимо перейти по ссылке:</xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:value-of select="/data/meta/sys-dns" />
-    <xsl:text>/pay?id=</xsl:text>
+    <xsl:text>/pay/</xsl:text>
     <xsl:value-of select="/data/video/id" />
 
     <xsl:text>&#xa;</xsl:text>

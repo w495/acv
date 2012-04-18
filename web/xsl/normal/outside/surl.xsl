@@ -8,25 +8,20 @@
 <xsl:import href="../shared/master/screen/pers-page.xsl"/>
 
 <xsl:include href="../shared/utils/tipograf.xsl" />
-<xsl:include href="includes/signup-form.xsl" />
 
 <xsl:template name="head-scripts-pers">
-
-</xsl:template>
-
-
-<xsl:template name="s-header-signin">
-    <xsl:call-template name="s-logout-link" />
 </xsl:template>
 
 <xsl:template name="s-main-pers">
-    <section class="s-pers">
+    <section class="s-pers m-pers-f">
         <xsl:call-template name="s-pers" />
     </section>
 </xsl:template>
 
 <xsl:template name="s-pers">
-    Счет успешно оплачен.
+    <article class="b-a">
+        <xsl:text>Счет успешно оплачен.</xsl:text>
+    </article>
 </xsl:template>
 
 <xsl:template match="/">

@@ -7,17 +7,30 @@
 
 <xsl:include href="includes/signin-form.xsl" />
 
-<xsl:template name="s-title-1">
+<xsl:template name="s-title-common">
     <xsl:text>вход</xsl:text>
 </xsl:template>
 
-<xsl:template name="s-main-2">
-    <!--
-        Основное содержимое страницы
-    -->
-    <hgroup>
-        <h1>Вход</h1>
-    </hgroup>
+<xsl:template name="s-signin">
+</xsl:template>
+
+<!--
+    TODO: Поменять имена классов но нормальные
+-->
+
+<xsl:template name="s-main-common">
+    <section class="b-signup">
+        <h3 class="b-signup-h">
+            <xsl:text>Вход</xsl:text>
+        </h3>
+        <div class="s-signup">
+            <xsl:call-template name="l-signin" />
+        </div>
+    </section>
+</xsl:template>
+
+
+<xsl:template name="l-signin">
 
     <div class="signin-form">
         <xsl:call-template name="signin-form">
@@ -27,6 +40,10 @@
             <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
         </xsl:call-template>
     </div>
+
+</xsl:template>
+
+<xsl:template name="foot-scripts-common">
 
 </xsl:template>
 

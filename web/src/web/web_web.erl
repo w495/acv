@@ -127,9 +127,13 @@ processControllerException(throw, not_found, Req) ->
 
 processControllerException(throw, auth_required, Req) ->
     flog:debug(?FMT("~p:~p 200 ~p REQUEST (~p) AUTH REQUIRED~n", [?MODULE, ?LINE, Req:get(method), Req:get(path)])),
-    V = {struct, [{<<"REDIRECT">>, <<"/">>}]},
+    V = {struct, [{<<"REDIRECT">>, <<"/signin">>}]},
     DataOut = mochijson2:encode(V),
     Req:ok({?OUTPUT_JSON, [], [DataOut]});
+
+processControllerException(throw, auth_required_front, Req) ->
+    processControllerException(throw, {redirect, "/signin" ++ Req:get(raw_path), []}, Req);
+
 
 %%
 %% application/json 
