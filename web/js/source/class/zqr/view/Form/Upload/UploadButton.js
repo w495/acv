@@ -303,7 +303,7 @@ qx.Class.define("zqr.view.Form.Upload.UploadButton",
             this.fireDataEvent('changeFileName',value);
             if(this.getForm()){
                 console.log("this.__form = ", this.getForm());
-                control.hide();
+//                control.hide();  CFF: убрал эту строку, так как не дает выбрать повторно файл в случае ошибки при первом выборе.
                 //this.setVisibility("hidden");
             }
         },this);
