@@ -12,7 +12,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.UsersTargeting",
     },
 
     members : {
-        
+        helpUrl : "/docs/offer",
+
         /* Upload request берется из конструктора */
         uReq : null,
         
