@@ -119,7 +119,6 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
         
         __gotoNext : function(){
-        //    this.onFormClose();
             if(this.__step < this.__getLength() - 1){
                 this.__step += 1;
                 if(this.__step == this.__getLength() - 1){
@@ -287,10 +286,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         onFormClose : function() {
             var win = zqr.util.utils.infoWindow("Заявка принята.<br/>Инструкции по оплате будут высланы на ваш email.");
             //this.cnt.add(win);
-            var wx = win.getWidth();
-            var vy = win.getHeight();
-            var l = ((zqr.Config.WINDOW_WIDTH-win.getWidth())/2).toFixed(0);
-            var t = ((zqr.Config.WINDOW_HEIGHT-win.getHeight())/2).toFixed(0);
+            var vx = 300;//win.getW();
+            var l = ((zqr.Config.WINDOW_WIDTH-vx)/2).toFixed(0);
+            var t = ((zqr.Config.WINDOW_HEIGHT)/2).toFixed(0);
 
             this.controller.biz.getRoot().add(win, {
                 left : l*1, 

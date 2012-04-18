@@ -462,10 +462,11 @@ qx.Class.define("zqr.util.utils",
                 showMaximize: false,
                 modal: true
             });
+
             var btnCancel = new qx.ui.form.Button("Закрыть");
             var buttonRow = new qx.ui.container.Composite();
-//            buttonRow.setMarginTop(5);
-            var hbox = new qx.ui.layout.VBox(5);
+            buttonRow.setMarginTop(5);
+            var hbox = new qx.ui.layout.HBox(5);
             hbox.setAlignX("right");
             buttonRow.setLayout(hbox);
             buttonRow.add(btnCancel, {flex:0});
@@ -474,7 +475,8 @@ qx.Class.define("zqr.util.utils",
                 rich : true
             });
             infoWin.setLayout(new qx.ui.layout.VBox(5));
-            infoWin.setWidth(lb.getWidth());
+//            infoWin.setWidth(lb.getWidth());
+//            infoWin.setHeight(200);
             infoWin.add(lb);
             infoWin.add(buttonRow);
             infoWin.focus = function(){};
@@ -483,6 +485,10 @@ qx.Class.define("zqr.util.utils",
             btnCancel.addListener("execute", function() {
                 infoWin.close();
             }, this);
+            infoWin.getW = function() {
+                return lb.getWidth()
+            }
+
             return infoWin;
         }
         
