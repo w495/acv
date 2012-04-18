@@ -184,7 +184,9 @@
         Основной заголовок сайта.
     -->
     <hgroup class="b-header-group">
-        <h2 class="b-thehead-caption"><xsl:text>портал для рекламодателей</xsl:text></h2>
+        <h2 class="b-thehead-caption">
+            <xsl:text>портал для рекламодателей</xsl:text>
+        </h2>
         <h1 class="b-thehead">
         	<a href="/">
             	<img class="b-thehead-logo" src="/i/logo.png" alt="tvzavr" title="tvzavr" />

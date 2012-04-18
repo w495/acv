@@ -19,7 +19,9 @@
     docs_howto/1,
     docs_offer/1,
     signin/1,
+    signin/2,
     signin_post/1,
+    signin_post/2,
     signup/1,
     signup_post/1,
     captcha/1,
@@ -43,6 +45,14 @@
 %%
 %% Возврщает список вспомогательной информации для страницы
 %%
+
+meta([Req, {'self-retpath', Retpath}|_]) ->
+    [
+            {"customer_id",         authorization:get_customer_id(Req)},
+            {"login",               authorization:auth_getlogin(Req)},
+            {"self-retpath",        Retpath},
+            {"current-path",        Req:get(path)}
+    ];
 
 meta([Req|_]) ->
     [
@@ -158,42 +168,66 @@ docs_offer(Req) ->
     {?OUTPUT_HTML, [], [Outty]}.
 
 
+signin(Req) ->
+    signin(Req, []).
+
 %% @doc
 %% Возврaщает страницу регистрации
 %%
-signin(Req) ->
-    signin(Req, {normal}).
+signin(Req, Retpath) ->
+    ?D("~n~nRetpath = ~p~n~n", [Retpath]),
+    signin(Req, Retpath, {normal}).
 
-signin(Req, State) ->
+signin(Req, Retpath, State) ->
     Xsl_path = "xsl/normal/outside/signin.xsl",
     Xml  = xml:encode_data(
         [
-            {"meta",    meta([Req])}             % описание запроса
+            {"meta",    meta([Req, {'self-retpath', Retpath}])}             % описание запроса
         ]
     ),
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
 
+signin_post(Req) ->
+    ?D("signin_post(Req)", []),
+    signin_post(Req, []).
+
 %% @doc
 %% Выполняет авторизацию
 %%
-signin_post(Req) ->
-    signin_post(Req, {normal}).
+signin_post(Req, Retpath) ->
+    ?D("signin_post(Req, Retpath)", []),
+    signin_post(Req, Retpath, {normal}).
 
-signin_post(Req, State) ->
+signin_post(Req, Retpath, State) ->
+
+
+    ?D("signin_post(Req, Retpath, State)", []),
+
+
     Data = Req:parse_post(),
     Login = proplists:get_value("login", Data),
     Password = proplists:get_value("password", Data),
-    signin_post(Login, Password, State, Req).
+    signin_post(Login, Password, State, Req, Retpath).
 
-signin_post(Login, Password, State, Req) ->
+signin_post(Login, Password, State, Req, Retpath) ->
+    ?D("signin_post(Login, Password, State, Req, Retpath)", []),
     ?D("Login  = ~p~n", [Login]),
     ?D("Password = ~p~n", [Password]),
     try
         Val = auth_biz:login(Login, Password),
-        throw({ok, {redirect, "/pers",
-            [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
+        ?D("~n~nRetpath = ~p~n~n", [Retpath]),
+        case Retpath of
+            [] ->
+                throw({ok, {redirect, "/pers",
+                    [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}}),
+                ok;
+            Retpath ->
+                throw({ok, {redirect, Retpath,
+                    [mochiweb_cookies:cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}}),
+                ok
+        end
     catch
         throw:{ok, Ret} -> throw(Ret);
         throw:Error ->
@@ -293,7 +327,7 @@ signup_post(Req, State) ->
                             % Кидаем событие о создании пользователя
                             % gen_event:notify(?SIGNUP_EVENT, Data),
 
-                            signin_post(Login, Pass, {normal}, Req);
+                            signin_post(Login, Pass, {normal}, Req, []);
                         {error, Error} ->
                             signup(Req, {error, Error, Data})
                     end;

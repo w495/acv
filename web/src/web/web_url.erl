@@ -128,8 +128,9 @@ dmap(Path) ->
         "/docs/howto" ->        {outside, docs_howto};
         "/docs/offer" ->        {outside, docs_offer};
 
-        "/signin" ->            {outside, signin};
-        "/signin/post" ->       {outside, signin_post};
+        "/signin/post"  ++ Prev_path -> {outside, signin_post, Prev_path};
+        "/signin"       ++ Prev_path -> {outside, signin,      Prev_path};
+
 
         "/pref" ->              {outside, pref};
         "/pers" ->              {outside, pers};
@@ -139,8 +140,8 @@ dmap(Path) ->
         "/furl" ->              {outside, furl};
         "/curl" ->              {outside, curl};
 
-        "/signup" ->            {outside, signup};
         "/signup/post" ->       {outside, signup_post};
+        "/signup" ->            {outside, signup};
         "/captcha.png" ->       {outside, captcha};
 
 

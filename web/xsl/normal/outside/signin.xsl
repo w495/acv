@@ -7,11 +7,14 @@
 
 <xsl:include href="includes/signin-form.xsl" />
 
-<xsl:template name="s-title-1">
+<xsl:template name="s-title-common">
     <xsl:text>вход</xsl:text>
 </xsl:template>
 
-<xsl:template name="s-main-2">
+<xsl:template name="s-signin">
+</xsl:template>
+
+<xsl:template name="s-main-common">
     <!--
         Основное содержимое страницы
     -->
@@ -27,6 +30,10 @@
             <xsl:with-param name="Error_message" select="/data/meta/error-mess"/>
         </xsl:call-template>
     </div>
+
+</xsl:template>
+
+<xsl:template name="foot-scripts-common">
 
 </xsl:template>
 
