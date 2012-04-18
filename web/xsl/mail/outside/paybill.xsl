@@ -24,6 +24,7 @@
     </xsl:call-template>
     <xsl:text>. </xsl:text>
     <xsl:text>&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>Для изменения параметров кампании </xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>просим связаться со службой поддержки </xsl:text>
