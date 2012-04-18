@@ -14,6 +14,7 @@
 #asset(qx/icon/Tango/32/actions/dialog-ok.png)
 
 #asset(qx/icon/Tango/32/actions/process-stop.png)
+#asset(qx/icon/Tango/32/apps/utilities-help.png)
 
     
 ************************************************************************ */
@@ -38,6 +39,9 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
 
         // Дублирование логики с верхней  кнопкой назад [<-].
         // this.__hidebutton(this.cancelButton);
+
+        this.helpButton = new qx.ui.form.Button("Помощь",  "icon/32/apps/utilities-help.png");
+        this.helpButton.addListener("execute", this._onHelpClick, this);
         
         this.prevButton =  new qx.ui.form.Button("Назад",  "icon/32/actions/edit-undo.png");
         this.prevButton.addListener("execute", this._onPrevClick, this);
@@ -82,6 +86,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         this.buildForm();
         this.addListeners();
         this.showCurrentPage();
+        this.__updateHelpBtn();
     },
     
     members : {
@@ -129,6 +134,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             //this.__enablebutton(this.prevButton);
             this.__showbutton(this.prevButton);
             this.__hidebutton(this.cancelButton);
+
+            this.__updateHelpBtn();
         },
         
         __gotoPrev : function(){
@@ -145,6 +152,15 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             }
             this.__hidebutton(this.sendButton);
             this.__showbutton(this.nextButton);
+
+            this.__updateHelpBtn();
+        },
+
+        __updateHelpBtn : function() {
+            if(!this.__getCur().helpUrl)
+                this.__disablebutton(this.helpButton);
+            else
+                this.__enablebutton(this.helpButton);
         },
         
         __getCur : function(){
@@ -196,8 +212,14 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
         
         addbuttonRow: function(cnt, vertical_offset) {
+            var br = new qx.ui.container.Composite(new qx.ui.layout.Dock);
+            br.setMarginTop(5);
+
             var buttonRow = new qx.ui.container.Composite();
-            buttonRow.setMarginTop(5);
+            br.add(buttonRow, {edge:"east"});
+
+            br.add(this.helpButton, {edge:"west"});
+//            buttonRow.setMarginTop(5);
             var hbox = new qx.ui.layout.HBox(5);
             hbox.setAlignX("right");
             buttonRow.setLayout(hbox);
@@ -209,7 +231,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
             buttonRow.add(this.nextButton);
             buttonRow.add(this.cancelButton);
             buttonRow.add(this.sendButton);
-            cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
+            //cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
+            cnt.add(br, {row:vertical_offset , column:0, colSpan:3});
         },
         
         addListeners: function() {
@@ -234,6 +257,12 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
          
         _onCancelClick : function(e) {
             this.controller.onCancelClick();
+        },
+
+        _onHelpClick : function(e) {
+            var C = this.__getCur();
+            if(C.helpUrl)
+                window.open(C.helpUrl, "_blank", "",false);
         },
         
         _onSendClick: function() {
