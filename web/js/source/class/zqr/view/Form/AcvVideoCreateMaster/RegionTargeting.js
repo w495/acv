@@ -12,6 +12,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.RegionTargeting",
     },
 
     members : {
+        helpUrl : "/docs/offer",
         
         /* Upload request берется из конструктора */
         uReq : null,
