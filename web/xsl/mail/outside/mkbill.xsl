@@ -6,14 +6,15 @@
 <xsl:import href="../shared/master/screen/chstate.xsl"/>
 
 <xsl:template name="s-main-chstate">
-    <xsl:text>Вам выстален счет.</xsl:text>
+    <xsl:text>Вам выстален счет. </xsl:text>
     <xsl:text>&#xa;</xsl:text>
-    <xsl:text>Для облаты счет вам необходимо перейти по ссылке:</xsl:text>
+    <xsl:text>Для оплаты просим Вас перейти по ссылке: </xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:value-of select="/data/meta/sys-dns" />
     <xsl:text>/pay/</xsl:text>
     <xsl:value-of select="/data/video/id" />
-
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>Благодарим за своевременную оплату!</xsl:text>
     <xsl:text>&#xa;</xsl:text>
 </xsl:template>
     
@@ -22,3 +23,5 @@
     <xsl:apply-imports />
 </xsl:template>
 </xsl:stylesheet>
+
+

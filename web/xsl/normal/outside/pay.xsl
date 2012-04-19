@@ -21,6 +21,18 @@
 </xsl:template>
 
 <xsl:template name="s-pers">
+    <article class="b-a">
+        <p class="m-docs-p">
+            <xsl:text>Оплату можно произвести одним из следующих способов: </xsl:text>
+            <xsl:text>поставить иконки всех способов </xsl:text>
+            <xsl:text>(Виза и Мастеркард, Киви, Яндекс-деньги, Веб-мани)</xsl:text>
+        </p>
+        <p class="m-docs-p">
+            <xsl:text>Обращаем Ваше внимание, </xsl:text>
+            <xsl:text>что для оплаты Вы будете перенаправлены </xsl:text>
+            <xsl:text>на защищенный сайт нашего партнера ЗАО «Хронопей».</xsl:text>
+        </p>
+    </article>
     <form class="s-pers-pay-f" method="POST" action="https://83.229.137.196:8080/api/pay-ua/">
         <input type="hidden" name="user_id"       value="{/data/pay/user_id}" />
         <input type="hidden" name="product_id"    value="{/data/pay/product_id}"  />
@@ -36,7 +48,7 @@
         <input type="hidden" name="shop_f5"    value="{/data/pay/shop_f5}"  />
 
         <input type="hidden" name="sign" value="{/data/sign}" />
-        <input class="s-pers-pay-but" type="submit" value="Оплатить"   />
+        <input class="s-pers-pay-but" type="submit" value="Перейти к странице оплаты"   />
     </form>
 </xsl:template>
 

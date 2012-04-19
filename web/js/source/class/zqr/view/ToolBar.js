@@ -25,6 +25,8 @@
 #asset(qx/icon/Tango/32/actions/dialog-apply.png)
 #asset(qx/icon/Tango/32/actions/dialog-close.png)
 
+
+#asset(qx/icon/Tango/22/mimetypes/office-spreadsheet.png)
 #asset(qx/icon/Tango/22/actions/go-next.png)
 #asset(qx/icon/Tango/22/actions/go-previous.png)
 #asset(qx/icon/Tango/22/actions/system-log-out.png)

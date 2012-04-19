@@ -1,5 +1,4 @@
 [
-    
     {   name : "Рекламные кампании",
         opened : true,
         subitems: [
@@ -14,7 +13,6 @@
             }
         ]
     },
-    
     {   name : "Аккаунт",
         opened : true,
         subitems: [
@@ -26,14 +24,21 @@
                 name      : "Выход",
                 model     : "/do_logout",
                 unclose   : true
-            }, 
+            }
         ]
     },
-
     {
         name                : "Помощь",
         icon                : "icon/22/actions/help-contents.png",
-        model               : "/docs",
+        model               : "/docs/howto",
+        external            : true,
+        afterSpacer         : true,
+        externalType        : "_blank"
+    },
+    {
+        name                : "Расценки",
+        icon                : "icon/22/mimetypes/office-spreadsheet.png",
+        model               : "/docs/offer",
         external            : true,
         afterSpacer         : true,
         externalType        : "_blank"
