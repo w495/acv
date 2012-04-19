@@ -67,7 +67,8 @@ create table customer(
     deleted bool default false,
     issystem bool default false,
     birthday date,
-    password_hash char(32) not null
+    password_hash char(32) not null,
+    telephone_number character varying(30);
 );
 
 /**

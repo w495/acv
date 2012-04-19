@@ -192,11 +192,25 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             txt += "Комментарий: " + clip.comment + "\n";
             
             txt += "-------------------\n";
-            txt += "Состояние счета: ";
-            switch(clip.pay_status) {
-                case "":        txt += "счет не выставлен"; break;
-                case "false":   txt += "счет выставлен, но не оплачен"; break;
-                case "true":    txt += "счет выставлен и оплачен"; break;
+            if(clip.sum){
+            	txt += "Состояние счета: "; 
+	            switch(clip.pay_status) { 
+	                case "":   
+	                	txt += "Не оплачен"; 
+	                	txt += "\n"; 
+	                	txt += "Сумма: " + clip.sum + " р.";
+	                	break;
+	                case "false":   
+	                	txt += "Не оплачен"; 
+	                	txt += "\n"; 
+	                	txt += "Сумма: " + clip.sum + " р.";
+	                	break;
+	                case "true":    
+	                	txt += "Оплачен";  
+	                	txt += "\n"; 
+	                	txt += "Сумма: " + clip.sum + " р.";
+	                	break;
+	            }
             }
             txt += "\n";
             txt += "Статус: ";
