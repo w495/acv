@@ -17,7 +17,13 @@ qx.Class.define("zqr.util.errors",
                 return false;
             }
             if(resp.ERROR != undefined) {
-                own.show_error(resp.ERROR.type, resp.ERROR.info);
+                if(own.show_error)
+                    own.show_error(resp.ERROR.type, resp.ERROR.info);
+                return false;
+            }
+            if(resp.WARN != undefined) {
+                if(own.show_warn)
+                    own.show_warn(resp.WARN.type, resp.WARN.info);
                 return false;
             }
             return true;

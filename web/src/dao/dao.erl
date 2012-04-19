@@ -22,19 +22,42 @@
 -spec simple_ret(Query::string(), Params::list()) -> tuple().
 
 
-make_error_json({unexpected, E}) ->
+make_error_warn(E) ->
+    make_error_json(<<"WARN">>, E).
+
+make_error_json(E) ->
+    make_error_json(<<"Error">>, E).
+
+make_error_json(Type, {unexpected, E}) ->
     ?I("Unexpected error: ~p~n", [E]),
-    {struct, [{<<"ERROR">>,
+    {struct, [{Type,
         {struct,
             [{<<"type">>, <<"unexpected">>},
             {<<"info">>, <<"unexpected">>}]}}]};
 
-make_error_json({Etype, Einfo}) ->
+make_error_json(Type, {Etype, Einfo})
+        when erlang:is_list(Etype) and erlang:is_list(Einfo) ->
     io:format("Queue error: ~p~n", [Einfo]),
     {struct,
-        [{<<"ERROR">>,
+        [{Type,
+            {struct, [{<<"type">>, erlang:list_to_binary(Etype)},
+            {<<"info">>, erlang:list_to_binary(Einfo)}]}}]};
+
+make_error_json(Type, {Etype, Einfo})
+        when erlang:is_binary(Etype) and erlang:is_list(Einfo) ->
+    io:format("Queue error: ~p~n", [Einfo]),
+    {struct,
+        [{Type,
             {struct, [{<<"type">>, Etype},
-            {<<"info">>, list_to_binary(Einfo)}]}}]}.
+            {<<"info">>, erlang:list_to_binary(Einfo)}]}}]};
+
+make_error_json(Type, {Etype, Einfo})
+        when erlang:is_atom(Etype) and erlang:is_list(Einfo) ->
+    io:format("Queue error: ~p~n", [Einfo]),
+    {struct,
+        [{Type,
+            {struct, [{<<"type">>, erlang:list_to_binary(erlang:atom_to_list(Etype))},
+            {<<"info">>, erlang:list_to_binary(Einfo)}]}}]}.
 
 dao_call(Module, Function, undefined, JsonRetName) ->
     case Module:Function() of
@@ -85,8 +108,9 @@ dao_call(Module, Function, Param) ->
         {retVal, ok} ->
             Res = {struct, [{<<"result">>, ok}]};
         {error, E} ->
-            io:format("$~p~n", [E]),
-            Res = make_error_json(E)
+            Res = make_error_json(E);
+        {warn, E} ->
+            Res = make_error_warn(E)
     end,
     Res.
 
