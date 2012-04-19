@@ -12,7 +12,11 @@ qx.Class.define("zqr.view.Form.ConfigForm",
     construct : function(controller, Row) {
         this.base(arguments, controller, Row);
         this.submitButton.addListener("execute", function(){
-            alert("Конфигурация изменена");
+            var win = zqr.util.utils.infoWindow("Конфигурация изменена");
+            this.controller.biz.getRoot().add(win, {
+                left : win.l*1,
+                top  : win.t*1
+            });
         }, this);
     },
 

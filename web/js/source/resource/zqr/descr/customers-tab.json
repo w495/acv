@@ -1,5 +1,10 @@
 {
     "type" : "table",
+
+    "warns":  {
+        "delete system user or self" : "Нельзя удалять себя или системного пользователя!",
+    },
+
     "toolbar" : [
         {"type" : "button",
             "name" : "Обновить",
@@ -26,6 +31,17 @@
     "columns" : [
         {"name" : "id", "alias" : "#", "type" : "float", "sortable" : true, "width" :"5%"},
         {"name" : "login", "alias" : "Логин", "type" : "string", "sortable" : true},
+
+        {"name" : "active",
+            "alias" : "Статус",
+            "type" : "enum",
+            "dict"  : {
+                "true":    "Разрешен",
+                "false":   "Запрещен",
+                "":        "Непросмотрен",
+                "default": "Неопределено"},
+            "sortable" : true},
+
         {"name" : "firstname", "alias" : "Имя", "type" : "string", "sortable" : true},
         {"name" : "patronimic", "alias" : "Отчество", "type" : "string", "sortable" : true},
         {"name" : "lastname", "alias" : "Фамилия", "type" : "string", "sortable" : true}

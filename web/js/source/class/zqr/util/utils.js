@@ -41,6 +41,16 @@ qx.Class.define("zqr.util.utils",
         postStaticJson: function(url, callback) {
             
         },
+
+        /**
+         *
+         * @param result --- строка возврата
+         * @param return --- object
+         */
+        parseJsonRsp: function(response) {
+            var result = response.getContent();
+            return eval("(" + result + ")");
+        },
         
         /**
          *
@@ -450,8 +460,20 @@ qx.Class.define("zqr.util.utils",
             return null;
         },
 
+        errorWindow : function(text) {
+            return zqr.util.utils.utilWindow("Ошибка", text);
+        },
+
+        warnWindow : function(text) {
+            return zqr.util.utils.utilWindow("Предупреждение", text);
+        },
+
         infoWindow : function(text) {
-            var infoWin = new qx.ui.window.Window("Информация").set({
+            return zqr.util.utils.utilWindow("Информация", text);
+        },
+        
+        utilWindow : function(name, text) {
+            var infoWin = new qx.ui.window.Window(name).set({
                 allowMaximize: false,
                 allowMinimize: false,
                 showMinimize: false,
@@ -489,6 +511,10 @@ qx.Class.define("zqr.util.utils",
                 return lb.getWidth()
             }
 
+            infoWin.vx = 300;//win.getW();
+            infoWin.l = ((zqr.Config.WINDOW_WIDTH-infoWin.vx)/2).toFixed(0);
+            infoWin.t = ((zqr.Config.WINDOW_HEIGHT)/2).toFixed(0);
+            
             return infoWin;
         }
         
