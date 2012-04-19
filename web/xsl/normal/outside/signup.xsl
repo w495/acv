@@ -33,6 +33,8 @@
     <xsl:param name="Placeholder" select="'Введите текст'"/>
     <xsl:param name="Required" select="''"/>
     <xsl:param name="Size" select="'25'"/>
+    <xsl:param name="Auto_complete" select="'off'"/>
+    <xsl:param name="Pattern" select="''"/>
     <xsl:param name="Max_length" select="'41'"/>
     <xsl:param name="Is_error" select="''"/>
     <xsl:param name="Error_type" select="''"/>
@@ -53,7 +55,7 @@
             </xsl:if>
         </label>
         <input type="{$Type}" placeholder="{$Placeholder}"
-            size="{$Size}" maxlength="{$Max_length}"
+            size="{$Size}" maxlength="{$Max_length}" pattern="{$Pattern}" autocomplete="{$Auto_complete}" 
             name="{$Name}" class="e-csif-fi {$Type}-{$Name}"
         >
             <xsl:if test="$Required != ''">
@@ -122,6 +124,7 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Логин'"  />
                     <xsl:with-param name="Name" select="'login'"  />
+    				<xsl:with-param name="Pattern" select="'[A-Za-z]{1,}'"/>
                     <xsl:with-param name="Placeholder" select="'только латинские буквы'"  />
                     <xsl:with-param name="Required" select="'true'"/>
                     <xsl:with-param name="Size" select="'1024'"/>
@@ -137,6 +140,7 @@
                     <xsl:with-param name="Type" select="'password'"  />
                     <xsl:with-param name="Required" select="'true'"/>
                     <xsl:with-param name="Size" select="'128'"/>
+    				<xsl:with-param name="Pattern" select="'[^а-яА-Я]{6,}'"/>
     				<xsl:with-param name="Max_length" select="'128'"/>
                     <xsl:with-param name="Error_message" select="'пароли не совпадают'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
@@ -145,10 +149,11 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Повторите пароль'" />
                     <xsl:with-param name="Name" select="'password-c'"  />
-                    <xsl:with-param name="Placeholder" select="'например: mY_PaSsW0rD'"  />
+                    <xsl:with-param name="Placeholder" select="'не короче 6 символов'"  />
                     <xsl:with-param name="Type" select="'password'"  />
                     <xsl:with-param name="Required" select="'true'"/>
                     <xsl:with-param name="Size" select="'128'"/>
+    				<xsl:with-param name="Pattern" select="'[^а-яА-Я]{6,}'"/>
     				<xsl:with-param name="Max_length" select="'128'"/>
                     <xsl:with-param name="Error_message" select="'пароли не совпадают'"/>
                     <xsl:with-param name="Error_type" select="$Error_type"/>
@@ -169,9 +174,18 @@
                 <xsl:call-template name="u-csif">
                     <xsl:with-param name="Label_name" select="'Город'" />
                     <xsl:with-param name="Name" select="'city'"  />
-                    <xsl:with-param name="Placeholder" select="'Введите город'"  />
+                    <xsl:with-param name="Placeholder" select="'название города'"  />
                     <xsl:with-param name="Size" select="'1024'"/>
     				<xsl:with-param name="Max_length" select="'1024'"/>
+                    <xsl:with-param name="Error_type" select="$Error_type"/>
+                    <xsl:with-param name="Val" select="$Val"/>
+                </xsl:call-template>
+                <xsl:call-template name="u-csif">
+                    <xsl:with-param name="Label_name" select="'Телефон'" />
+                    <xsl:with-param name="Name" select="'telephone'" />
+                    <xsl:with-param name="Required" select="'true'"/>
+    				<xsl:with-param name="Pattern" select="'\+[0-9]{5,}'"/>
+                    <xsl:with-param name="Placeholder" select="'+01234567890'" />
                     <xsl:with-param name="Error_type" select="$Error_type"/>
                     <xsl:with-param name="Val" select="$Val"/>
                 </xsl:call-template>

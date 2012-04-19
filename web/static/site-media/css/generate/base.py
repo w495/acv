@@ -131,12 +131,15 @@ class Base(generate.gen_css.Gen_css):
             border-collapse: collapse;
             border-spacing: 0;
         }
-        ::-webkit-validation-bubble{
-            margin-top:-10px;
+        input:focus:invalid {
+            background-color: #FFC9C9;
         }
-        ::-webkit-validation-bubble-message{
-            padding:5px; font-size:12px;
+        input:focus:valid {
+            color: green; 
         }
+        ::-webkit-validation-bubble, ::-webkit-validation-bubble-message{
+            z-index:-100;
+        } 
         """
 
     def common_modifiers(self):
@@ -496,13 +499,13 @@ class Base(generate.gen_css.Gen_css):
                 }
             """
 
-            res += """.email-email:required:invalid, .email-email:focus:invalid {
-                color: red;
-            }"""
+            #res += """.email-email:required:invalid, .email-email:focus:invalid {
+            #    color: red;
+            #}"""
     
-            res += """.email-email:required:valid, .email-email:focus:valid {
-                color: green;
-            }"""
+            #res += """.email-email:required:valid, .email-email:focus:valid {
+            #    color: green;
+            #}"""
 
             if(Use.css3_corners):
                 res += """.s-sfm-input{

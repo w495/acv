@@ -340,6 +340,7 @@ signup_post(Req, State) ->
                                         {"lastname",       [string]},
                                         {"patronimic",     [string]},
                                         {"login",          [string]},
+                                        {"telephone",      [string]},
                                         {"email",          [nullable, string]},
                                         {"city",           [nullable, string]},
                                         {"organization",   [nullable, string]},
