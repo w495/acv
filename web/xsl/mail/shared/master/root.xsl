@@ -38,17 +38,11 @@
     <!--
         Описание страницы
     -->
-    <xsl:call-template name="s-head" />
-    <xsl:text>&#xa;<!-- \n, чтобы файл не был в 1 строку --></xsl:text>
-    <xsl:text>&#xa;</xsl:text>
     <xsl:call-template name="s-body" />
     <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
 <xsl:template name="s-head">
-    <xsl:text>Здравствуйте,</xsl:text>
-    <xsl:value-of select="/data/meta/username" />
-    <xsl:text>!</xsl:text>
 </xsl:template>
 
 <xsl:template name="s-body">
@@ -63,9 +57,10 @@
 </xsl:template>
 
 <xsl:template name="s-header">
-    <!--
-        Основной заголовок сайта.
-    -->
+    <xsl:text>Здравствуйте,</xsl:text>
+    <xsl:value-of select="/data/meta/username" />
+    <xsl:text>!</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
 </xsl:template>
 
 
@@ -99,6 +94,10 @@
     <!--
         Подол страницы
     -->
+    <xsl:text>С уважением,</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:text>администрация Tvzavr.</xsl:text>
+    <xsl:text>&#xa;&#xa;</xsl:text>
     <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>Все права защищены.</xsl:text>

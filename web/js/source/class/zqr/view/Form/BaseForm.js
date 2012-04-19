@@ -96,8 +96,12 @@ qx.Class.define("zqr.view.Form.BaseForm",
             var hbox = new qx.ui.layout.HBox(5);
             hbox.setAlignX("right");
             buttonRow.setLayout(hbox);
-            buttonRow.add(this.submitButton);
-            buttonRow.add(this.cancelButton);
+            if(this.submitButton){
+                buttonRow.add(this.submitButton);
+            }
+            if(this.cancelButton){
+                buttonRow.add(this.cancelButton);
+            }
             cnt.add(buttonRow, {row:vertical_offset , column:0, colSpan:3});
         },
         _dropInvalid : function() {

@@ -11,6 +11,9 @@ qx.Class.define("zqr.view.Form.ConfigForm",
 
     construct : function(controller, Row) {
         this.base(arguments, controller, Row);
+        this.submitButton.addListener("execute", function(){
+            alert("Конфигурация изменена");
+        }, this);
     },
 
     members : {
@@ -61,16 +64,19 @@ qx.Class.define("zqr.view.Form.ConfigForm",
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Acv_video_loadnext,
                     {row:vertical_offset , column:1});
-            
+
+            this.cancelButton = null;
             this.addbuttonRow(cnt, ++vertical_offset);
             this.controller.placeForm(cnt);
         },
 
         fillForm : function(data) {
-            for(var fieldName in this.inp){
-                var item = fieldName.toLowerCase();
-                this.inp[fieldName].setValue(data.values[item])
-            }
+
+
+            var dholder = data.values[0];
+
+            this.inp.Id.setValue(dholder.id);
+            this.inp.Acv_video_loadnext.setValue(parseInt(dholder.acv_video_loadnext));
         }
 
     }
