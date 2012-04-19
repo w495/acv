@@ -285,14 +285,10 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
 
         onFormClose : function() {
             var win = zqr.util.utils.infoWindow("Заявка принята.<br/>Инструкции по оплате будут высланы на ваш email.");
-            //this.cnt.add(win);
-            var vx = 300;//win.getW();
-            var l = ((zqr.Config.WINDOW_WIDTH-vx)/2).toFixed(0);
-            var t = ((zqr.Config.WINDOW_HEIGHT)/2).toFixed(0);
 
             this.controller.biz.getRoot().add(win, {
-                left : l*1, 
-                top  : t*1
+                left : win.l*1, 
+                top  : win.t*1
             });
         }
     }

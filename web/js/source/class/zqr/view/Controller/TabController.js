@@ -54,6 +54,8 @@ qx.Class.define("zqr.view.Controller.TabController",
                 req.setParameter(key, val, true);
             }
             req.addListener("completed", this._onIncomeActionTabRowAction, this);
+            console.log(" _tabRowAction ");
+            console.log(" this._onIncomeActionTabRowAction ", this._onIncomeActionTabRowAction); 
             req.send();
             return true;
         },
@@ -106,8 +108,7 @@ qx.Class.define("zqr.view.Controller.TabController",
         },
 
         _onIncomeActionTabRowAction : function(response) {
-            //var result = response.getContent();
-            var result = eval(response.getContent());
+            var result = zqr.util.utils.parseJsonRsp(response);
             console.log("result = ", result);
             if (false == zqr.util.errors.process(this, result))
                 return false;
@@ -195,6 +196,16 @@ qx.Class.define("zqr.view.Controller.TabController",
                 this.pager.updatePager(result);
             this.biz.hide_global_pb();
             return true;
+        },
+
+        show_warn: function(etype, emsg) {
+            //alert("=>" + this.tabModel.warns[etype]);
+            var win = zqr.util.utils.warnWindow(this.tabModel.warns[etype]);
+            this.biz.getRoot().add(win, {
+                left : win.l*1,
+                top  : win.t*1
+            });
+            //alert("Ошибка (" + etype + ") загрузки данных таблицы: " + emsg);
         },
 
         show_error : function(etype, emsg) {

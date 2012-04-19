@@ -30,16 +30,26 @@
 ]).
 
 get_permissions(_) ->
-    Q = "select p.id, p.name, p.description, p.type, p.perm_type_id, p.entity_id from permission as p;",
-    dao:simple(Q).
+    Query =
+        "select "
+            " p.id, p.name, p.description, "
+            " p.type, p.perm_type_id, p.entity_id "
+        " from permission as p;",
+    dao:simple(Query).
 
 % ============================================================================
 % % CUSTOMER_GROUPS
 % ============================================================================
 
 get_customer_groups(_) ->
-    Q = "select id, name, description from customer_group WHERE customer_group.deleted = false;",
-    dao:simple(Q).
+    Query =
+        "select "
+            "id, name, description "
+        "from "
+            "customer_group "
+        "where "
+            "customer_group.deleted = false;",
+    dao:simple(Query).
 
 get_customer_group(Id) ->
     Q1 = "select id, name, description from customer_group where customer_group.id = $1;",
@@ -55,12 +65,54 @@ get_customer_group(Id) ->
         E1 -> E1
     end.
 
-delete_customer_group({Id, _updater_id}) ->
-    Q = "update customer_group set deleted=true "
-        "where "
-            " issystem = false " % нельзя удалять системные группы.
+
+%%%
+%%% @doc
+%%%     Удаляет группу пользователей если
+%%%         она не является системной (c правом undel_group),
+%%%         и если он сам не входит в эту группу.
+%%%
+delete_customer_group({Id, Updater_id}) ->
+    Query =
+        " update "
+            " customer_group "
+        " set "
+            " deleted = true "
+        " where "
+            " id not in "
+                " ( "
+                    " ( "
+                        % нельзя удалять группы c правом undel_group
+                        "select "
+                            " group_id "
+                        " from "
+                            " permission2group "
+                        " join permission on "
+                            " permission.id = permission2group.perm_id "
+                            " and permission.name='undel_group' "
+                    " ) "
+                " union "
+                    " ( "
+                        % нельзя удалять группы в которые входишь сам
+                        " select "
+                            " group_id "
+                        " from "
+                            " customer2group "
+                        " where "
+                            " customer2group.customer_id = $2 "
+                    " ) "
+                " ) "
             " and id = $1; ",
-    dao:simple(Q, [Id]).
+    case dao:simple_ret(Query, [Id, Updater_id]) of
+        {ok, 0} ->
+            flog:error("Try to delete system or self customer_group !!!"),
+            {warn, {"delete system or self group", []}};
+        {ok, 1} ->
+            ok;
+        Error ->
+            ?E("Error = ~p", [Error])
+    end.
+
 
 update_customer_group({{null, Name, Descr}, PermissionList, _updater_id}) ->
     Q1 = "insert into customer_group (name, description) values ($1, $2) returning customer_group.id;",
@@ -101,9 +153,15 @@ update_customer_group({{Id, Name, Descr}, PermissionList, _updater_id}) ->
 
 %+
 get_customers(_) ->
-    Q = "select customer.id, customer.firstname, customer.lastname, customer.patronimic, customer.login, customer.pic_url, "
-                "customer.password_hash "
-         "from customer WHERE customer.deleted = false;",
+    Q = "select "
+            "customer.id, customer.firstname, customer.lastname, "
+            "customer.patronimic, customer.login, customer.pic_url, "
+            "customer.active, "
+            "customer.password_hash "
+         "from "
+            "customer "
+         "where "
+            "customer.deleted = false;",
     dao:simple(Q).
 
 %-
@@ -241,17 +299,44 @@ update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City
     ),
     dao:pgret(PGRet).
 
-delete_customer({Id, _updater_id}) ->
-    Customer_query = "update customer set deleted=true where id = $1 and issystem = false ;",
-    Acv_video_Query = "update acv_video set deleted = true where customer_id=$1;",
+%%%
+%%% @doc
+%%%     Удаляет пользователя если
+%%%         он не является системным,
+%%%         и если он не пытается удалить сам себя
+%%%     + Удаляет все рекламные кампании пользователя
+%%%
+delete_customer({Id, Updater_id}) ->
+    Customer_query =
+        "update customer set deleted=true "
+            " where id = $1 "
+                " and id not in ( "
+                    " select "
+                        " customer2group.customer_id "
+                    " from "
+                        " customer2group "
+                    " join permission2group on "
+                        " customer2group.group_id = permission2group.group_id "
+                    " join permission on "
+                            " permission.id = permission2group.perm_id "
+                        " and "
+                            " permission.name='undel_customer' "
+                    " union "
+                        " select $2 "
+                "); ",
 
-    case dao:simple_ret(Customer_query, [convert:to_integer(Id)]) of
+    Acv_video_Query =
+        "update acv_video set deleted = true "
+            "where customer_id=$1;",
+
+    case dao:simple_ret(Customer_query, [convert:to_integer(Id), convert:to_integer(Updater_id)]) of
         {ok, 1} ->
             dao:simple(Acv_video_Query, [convert:to_integer(Id)]);
         {ok, 0} ->
-            flog:error("Try to delete admin!!!");
+            flog:error("Try to delete system user or self!!!"),
+            {warn, {"delete system user or self", []}};
         Error ->
-            ?E("Error = ", [Error])
+            ?E("Error = ~p", [Error])
     end.
 
 test()->
