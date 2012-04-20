@@ -1,51 +1,115 @@
 -module(evman_customer).
+-behaviour(evman_gen_notifier).
 
+-include("common.hrl").
 -define(EVENTNAME, ?MODULE).
 
-%% API
+
+%%% 
+%%% evman_gen_notifier API
+%%% 
 -export([
     start_link/0,
     start_link/1,
     add_handler/2,
     add_guarded_handler/2,
+    rem_handler/1,
+    rem_guarded_handler/1,
     get_handlers/0,
     info/1
 ]).
 
+
 -export([
-    signup/1,
-    signdown/1
+    change/1,
+    change_perm/1,
+    add_perm/1,
+    del_perm/1,
+    insider/2
 ]).
 
-start_link() ->
-    gen_event:start_link({local, ?EVENTNAME}).
 
-start_link(Handler_Args) ->
-    %%% Handler_Args = [{Handler, Args}, {Handler, Args}]
-    Link = gen_event:start_link({local, ?EVENTNAME}),
-    lists:foreach(fun({Handler, Args})->
-        ?EVENTNAME:add_handler(Handler, [])
-    end,Handler_Args),
-    Link.
+%%% -----------------------------------------------------------------------
+%%% evman_gen_notifier API
+%%% -----------------------------------------------------------------------
+
+start_link() ->
+    evman_gen_notifier:start_link(?EVENTNAME).
+
+start_link(Args) ->
+    evman_gen_notifier:start_link(?EVENTNAME, Args).
 
 add_handler(ModuleName, Args) ->
-    ok = gen_event:add_handler(?EVENTNAME, ModuleName, []).
+    evman_gen_notifier:add_handler(?EVENTNAME, ModuleName, []).
 
 add_guarded_handler(ModuleName, Args) ->
-    {ok, Pid} = simple_hnd_guard:start(?EVENTNAME, ModuleName, Args),
-    simple_hnd_guard:add(Pid).
+    evman_gen_notifier:add_guarded_handler(?EVENTNAME, ModuleName, Args).
+
+rem_handler(ModuleName) ->
+    evman_gen_notifier:rem_handler(?EVENTNAME, ModuleName).
+
+rem_guarded_handler(ModuleName) ->
+    evman_gen_notifier:rem_guarded_handler(?EVENTNAME, ModuleName).
 
 get_handlers() ->
-    gen_event:which_handlers(?EVENTNAME).
-
-signup(Msg) ->
-    % Пользователь зарегестрировался
-    gen_event:notify(?EVENTNAME, {signup, Msg}).
-
-signdown(Msg) ->
-    % Пользователя удалили
-    gen_event:notify(?EVENTNAME, {signdown, Msg}).
+    evman_gen_notifier:get_handlers(?EVENTNAME).
 
 info(Msg) ->
-    gen_event:notify(?EVENTNAME, Msg).
+    evman_gen_notifier:info(?EVENTNAME, {?EVENTNAME, Msg}).
+
+%%% -----------------------------------------------------------------------
+%%% API
+%%% -----------------------------------------------------------------------
+
+
+%%%
+%%% @doc
+%%%     Сообщает об изменении состояния
+%%%
+change(Msg) ->
+    info({change, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает об изменении прав
+%%%
+change_perm(Msg) ->
+    change({perm, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает о добавлении прав
+%%%
+add_perm(Msg) ->
+    change_perm({add, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает о удалени прав
+%%%
+del_perm(Msg) ->
+    change_perm({del, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает о том что пользователь стал авторизованным
+%%%
+insider(true, Msg) ->
+    add_perm({insider, Msg});
+
+%%%
+%%% @doc
+%%%     Сообщает о том что пользователь перестал быть авторизованным
+%%%
+insider(false, Msg) ->
+    del_perm({insider, Msg});
+
+
+insider(Type, Msg) ->
+    ?E("Error in ~p Type = ~p: Msg = ~p", [?EVENTNAME, Type, Msg]).
+
+
+
+
+
 

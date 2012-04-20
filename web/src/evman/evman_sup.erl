@@ -39,7 +39,8 @@ init([]) ->
         evman_acv_video,
         {evman_acv_video, start_link,
             [
-                [{mail_customer, []}, {mail_admin, []}]
+                %[{mail_customer, []}, {mail_sysmsg, []}]
+                [{mail_customer, []}]
             ]
         },
         permanent, 5000, worker, [evman_acv_video]},
@@ -48,7 +49,8 @@ init([]) ->
         evman_customer,
         {evman_customer, start_link,
             [
-                [{mail_customer, []}, {mail_admin, []}]
+                %[{mail_customer, []}, {mail_sysmsg, []}]
+                [{mail_customer, []}]
             ]
         },
         permanent, 5000, worker, [evman_customer]},

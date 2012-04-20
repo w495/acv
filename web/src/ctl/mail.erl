@@ -1,69 +1,39 @@
 %%% @file mail.erl
 %%%
-%%%     Контроллеры, если пользователи пока не заходили
+%%%     Контроллеры, отправки почты
 %%%
 
 -module(mail).
 
--define(UPDATER_ID, 1).
-
 -export([
+    add_insider_customer/1,
+    del_insider_customer/1,
+    mkbill_customer/1,
+    paybill_customer/1,
+
+    % -----------------------
+    add_insider/1,
+    del_insider/1,
     mkbill/1,
-    mail/4,
-    test_mail/0,
+    paybill/1,
+    % -----------------------
+
     test/0,
-    test/1,
-    paybill/1
+    test/1
 ]).
 
 
--import(mochiweb_cookies, [cookie/2]).
-
--include("web_session.hrl").
 -include("common.hrl").
--include("web.hrl").
 
-mmh_utf8(In)->
-    "=?UTF-8?B?"++ base64:encode_to_string(In) ++ "?=".
+add_insider({Rmail, Rname, {data, Customer}}) ->
+    add_insider_customer({Rmail, Rname, {data, Customer}}).
 
-mmh_person(null, null)->
-    mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME);
+del_insider({Rmail, Rname, {data, Customer}}) ->
+    del_insider_customer({Rmail, Rname, {data, Customer}}).
 
-mmh_person(Name, null)->
-    mmh_person(Name, ?SYS_MAIL_USERNAME);
-
-mmh_person(Name, Mail)->
-    ?D("Name = ~p, Mail = ~p~n", [Name, Mail]),
-    erlang:list_to_binary(
-        mmh_utf8(Name) ++ "<" ++ Mail ++ ">"
-    ).
-
-
-mail(null, Rname, Rsubject, Rbody) ->
-    mail(?SYS_MAIL_USERNAME, Rname, Rsubject, Rbody);
-
-mail(Rmail, Rname, Rsubject, Rbody) ->
-    ?D("Rmail = ~p, Rname = ~p, Rsubject = ~p, ~n", [Rmail, Rname, Rsubject]),
-    Email = {<<"text">>, <<"plain">>,
-            [
-                {<<"From">>, mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME)},
-                {<<"To">>,   mmh_person(Rname, Rmail)},
-                {<<"Subject">>,
-                    erlang:list_to_binary(mmh_utf8(Rsubject))
-                }
-            ], [], Rbody},
-    gen_smtp_client:send(
-        {
-            ?SYS_MAIL_USERNAME,
-            [Rmail],
-            mimemail:encode(Email)
-        },  ?SYS_MAIL_OPTIONS
-    ).
-
-
-paybill({Rmail, Rname, {data, Acv_video}}) ->
-    Rsubject = "Ваш счет оплачен",
-    Xslb_path = "xsl/mail/outside/paybill.xsl",
+add_insider_customer({Rmail, Rname, {data, Customer}}) ->
+    Rsubject = "Ваш аккаунт одобрен модератором",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",
@@ -73,15 +43,41 @@ paybill({Rmail, Rname, {data, Acv_video}}) ->
                     {"username",    Rname}
                 ]
             },
-            {"video", Acv_video}
+            {"сustomer", Customer}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail(Rmail, Rname, Rsubject, Rbody).
+    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
+
+del_insider_customer({Rmail, Rname, {data, Customer}}) ->
+    Rsubject = "Ваш аккаунт удален модератором",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",
+                [
+                    {"sys-dns",     ?SYS_DNS},
+                    {"usermail",    Rmail},
+                    {"username",    Rname}
+                ]
+            },
+            {"сustomer", Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
+
 
 mkbill({Rmail, Rname, {data, Acv_video}}) ->
+    mkbill_customer({Rmail, Rname, {data, Acv_video}}).
+
+%%%
+%%% @doc
+%%%    Отправляет почту пользователю, если счет выставлен
+%%%
+mkbill_customer({Rmail, Rname, {data, Acv_video}}) ->
     Rsubject = "Выставлен счет",
-    Xslb_path = "xsl/mail/outside/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",
@@ -95,18 +91,18 @@ mkbill({Rmail, Rname, {data, Acv_video}}) ->
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail(Rmail, Rname, Rsubject, Rbody).
+    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
 
+paybill({Rmail, Rname, {data, Acv_video}}) ->
+    paybill_customer({Rmail, Rname, {data, Acv_video}}).
 
-test_mail() ->
-
-    Rmail = "countff@gmail.com",
-    Rname = "Получатель",
-    Rsubject = "Тема письма",
-%    Xslb_path = "xsl/mail/outside/test_mailb.xsl",
-    Xslb_path = "xsl/mail/outside/mkbill.xsl",
-
-%    Xmlb  = xml:encode_data([{"meta",[{"current-path","sd"}]}]),
+%%%
+%%% @doc
+%%%    Отправляет почту пользователю, если счет оплачен
+%%%
+paybill_customer({Rmail, Rname, {data, Acv_video}}) ->
+    Rsubject = "Ваш счет оплачен",
+    Xslb_path = "xsl/mail/customer/paybill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",
@@ -116,23 +112,17 @@ test_mail() ->
                     {"username",    Rname}
                 ]
             },
-            {"video", "JJJJJJJ"}
+            {"video", Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
 
-    mail(Rmail, Rname, Rsubject, Rbody).
+
 
 
 test()->
-    % erlang 13 ->
-    %   http:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
-    % erlang 15 ->
-    %   httpc:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []).
-    %?HTTPC:request(get, {"http://127.0.0.1:8000", [{"connection", "close"}]}, [], []),
-
     ok.
 
 test(speed) ->
-
     ok.

@@ -139,10 +139,69 @@ update_customer(Req) ->
                          {"organization", [nullable, string]},
                          {"position", [nullable, string]}]),
 
+    Id = convert:to_integer(proplists:get_value("id", Data, null)),
+
     io:format("~p~n", [E]),
     Group_list = [utils:to_integer(X) || X <- proplists:get_all_values("groups", Data)],
+
+    {ok, _, Oldperms} = dao_customer:get_customer_perm({id, Id}),
     Res = dao:dao_call(dao_customer, update_customer, {E, Pashash, Group_list, UID}),
-        {"application/json", [], [mochijson2:encode(Res)]}.
+    {ok, [Custdata], Newperms} = dao_customer:get_customer_perm({id, Id}),
+
+    lists:foreach(fun (Oldperm) ->
+        case lists:member(Oldperm, Newperms) of
+            false  ->
+                evman_customer:del_perm({
+                    convert:to_atom(Oldperm),
+                    {data, Custdata}
+                }),
+                ok;
+            _ ->
+                ok
+        end
+    end, Oldperms),
+
+    lists:foreach(fun (Newperm) ->
+        case lists:member(Newperm, Oldperms) of
+            false ->
+                evman_customer:add_perm({
+                    convert:to_atom(Newperm),
+                    {data, Custdata}
+                }),
+                ok;
+            _ ->
+                ok
+        end
+    end, Newperms),
+
+
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+%%%
+%%% @doc
+%%%     Вызывает событие о том,
+%%%         что пользователь стал авторизованным
+%%% 
+% customer_newperm(Cust, "insider") ->
+%     ?I("Customer ~p is insider ~n", [proplists:get_value("id", Cust)]),
+%     evman_customer:insider(true, Cust),
+%     ok;
+% 
+% customer_newperm(Cust, Perm) ->
+%     Id = proplists:get_value("id", Cust),
+%     ?I("Customer ~p has permission ~p ~n", [Id, Perm]),
+%     ok.
+% 
+% customer_oldperm(Cust, "insider") ->
+%     ?I("Customer ~p is NOT insider ~n", [proplists:get_value("id", Cust)]),
+%     evman_customer:insider(false, Cust),
+%     ok;
+% 
+% customer_oldperm(Cust, Perm) ->
+%     Id = proplists:get_value("id", Cust),
+%     ?I("Customer ~p looses permission ~p ~n", [Id, Perm]),
+%     ok.
+
 
 delete_customer(Req) ->
 	authorization:auth_required(Req, "admin"),
@@ -568,10 +627,12 @@ chstate_acv_video(Req) ->
     %%
 
     {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
+    dao_acv_video:mkbill(Acv_video_id),
+
     Rmail = proplists:get_value("email", Acv_video),
     Rname = proplists:get_value("login", Acv_video),
     mail:mkbill({Rmail, Rname, {data, Acv_video}}),
-    dao_acv_video:mkbill(Acv_video_id),
+
 
     {"application/json", [], [mochijson2:encode(Res)]}.
 

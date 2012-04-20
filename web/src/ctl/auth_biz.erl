@@ -2,8 +2,8 @@
 -compile(export_all).
 -export([login/2, get_session/1, logout/1]).
 
--include("../../common/include/customer.hrl").
--include("../../common/include/permission.hrl").
+-include("customer.hrl").
+-include("permission.hrl").
 
 get_session(UID) ->
     web_session_DAO:get(UID).
@@ -22,7 +22,7 @@ create_session(Id, Login, Permissions, PasswordHash) ->
     UID.
 
 get_customer(Login) ->
-    case dao_customer:get_customer_by_login(Login) of
+    case dao_customer:get_customer_perm({login, Login}) of
         {ok, [Customer], Permissions} ->
             io:format("Customer, Permissions"),
             {Customer, Permissions}; %[binary_to_list(X) || X <-Permissions]};

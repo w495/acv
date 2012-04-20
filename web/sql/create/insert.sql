@@ -19,23 +19,23 @@ insert into permission (name, description, perm_type_id, entity_type_id)
 	values
 		('admin', 'полный доступ',
 			(select id from permission_type where name='static'),
-            (select id from permission_type where name='customer')
+            (select id from permission_entity_type where name='customer')
         ),
         ('undel_group', 'не удаляемые группы',
             (select id from permission_type where name='static'),
-            (select id from permission_type where name='customer')
+            (select id from permission_entity_type where name='customer')
         ),
         ('undel_customer', 'не удаляемые пользователи',
             (select id from permission_type where name='static'),
-            (select id from permission_type where name='customer')
+            (select id from permission_entity_type where name='customer')
         ),
         ('insider', 'доступ к личному кабинету',
             (select id from permission_type where name='static'),
-            (select id from permission_type where name='customer')
+            (select id from permission_entity_type where name='customer')
         ),
         ('sysmsg', 'право получать системные сообщения',
             (select id from permission_type where name='static'),
-            (select id from permission_type where name='customer')
+            (select id from permission_entity_type where name='customer')
         );
 
 insert into customer_group (name, description)

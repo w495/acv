@@ -21,7 +21,8 @@
 % CUSTOMERS
     get_customers/1,
     get_customer/1,
-    get_customer_by_login/1,
+    get_customer_perm/1,
+    has_perm/2,
 	update_customer_profile/1,
     update_customer/1,
     delete_customer/1,
@@ -181,24 +182,136 @@ get_customer(Id) ->
         E1 -> E1
     end.
 
+%%% @doc 
+%%%     Возвращает данные о пользователе по его логину,
+%%%     И список с именами прав .
+%%%
+get_customer_perm({login, Login}) ->
+    Qcustomer =
+        " select "
+            " customer.id, "
+            " customer.firstname, "
+            " customer.lastname, "
+            " customer.patronimic, "
+            " customer.login, "
+            " customer.password_hash "
+        " from "
+            " customer "
+        " where "
+            " customer.login=$1 "
+            " and customer.deleted=false;",
 
-%+
-get_customer_by_login(Login) ->
-    Q1 = "select customer.id, customer.firstname, customer.lastname, customer.patronimic, "
-            "customer.login, customer.password_hash "
-         "from customer where customer.login=$1 and customer.deleted=false;",
-    case dao:simple(Q1, [Login]) of
+    Qpermission =
+        " select "
+            " distinct(permission.name) "
+        " from "
+            " customer   "
+        " join "
+            " customer2group "
+        " on "
+            " customer.id = customer2group.customer_id "
+        " join "
+            " permission2group "
+        " on "
+            " permission2group.group_id = customer2group.group_id "
+        " join "
+            " permission "
+        " on "
+            " permission.id = permission2group.perm_id "
+        " where "
+            " customer.login=$1; ",
+
+    case dao:simple(Qcustomer, [Login]) of
         {ok, R1Val} ->
-            Q2 =    "select permission.name "
-                    "from customer   join customer2group on customer.id=customer2group.customer_id "
-                                    "join permission2group on permission2group.group_id=customer2group.group_id "
-                                    "join permission on permission.id=permission2group.perm_id "
-                    "where customer.login=$1;",
-            case dao:simple(Q2, [Login]) of
+            case dao:simple(Qpermission, [Login]) of
                 {ok, R2Val} -> {ok, R1Val, [X || [{"name", X}] <- R2Val]};
                 E2 -> E2
             end;
         E1 -> E1
+    end;
+
+get_customer_perm({id, Id}) ->
+    Qcustomer =
+        " select "
+            " customer.id, "
+            " customer.firstname, "
+            " customer.lastname, "
+            " customer.patronimic, "
+            " customer.login, "
+            " customer.password_hash "
+        " from "
+            " customer "
+        " where "
+            " customer.id=$1 "
+            " and customer.deleted=false;",
+
+    Qpermission =
+        " select "
+            " distinct(permission.name) "
+        " from "
+            " customer   "
+        " join "
+            " customer2group "
+        " on "
+            " customer.id = customer2group.customer_id "
+        " join "
+            " permission2group "
+        " on "
+            " permission2group.group_id = customer2group.group_id "
+        " join "
+            " permission "
+        " on "
+            " permission.id = permission2group.perm_id "
+        " where "
+            " customer.id=$1; ",
+
+    case dao:simple(Qcustomer, [Id]) of
+        {ok, R1Val} ->
+            case dao:simple(Qpermission, [Id]) of
+                {ok, R2Val} -> {ok, R1Val, [X || [{"name", X}] <- R2Val]};
+                E2 -> E2
+            end;
+        E1 -> E1
+    end.
+%%% @doc
+%%%     Проверяет, обаладает ли пользователь
+%%%     с указанным Id указанным правом
+%%%     (указывается именем)
+%%%
+has_perm(null, _) ->
+    false;
+
+has_perm(Id, Permname)
+    when erlang:is_integer(Id)
+        and erlang:is_atom(Permname) ->
+
+    has_perm(Id, erlang:atom_to_list(Permname));
+
+has_perm(Id, Permname)
+    when erlang:is_integer(Id)
+        and erlang:is_list(Permname) ->
+
+    Qinsider =
+        " select customer2group.group_id "
+        " from "
+            " customer2group "
+        " join "
+            " permission2group "
+        " on "
+            " customer2group.customer_id = $1"
+            " and permission2group.group_id = customer2group.group_id "
+        " join "
+            " permission "
+        " on "
+            " permission.id = permission2group.perm_id "
+            " and permission.name = $2 "
+        ";",
+    case dao:simple(Qinsider, [Id, Permname]) of
+        {ok,[]} ->
+            false;
+        {ok,List} ->
+            true;
+        Error -> Error
     end.
 
 %%
@@ -262,12 +375,18 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
             " id=$10; ",
 
     Qucpass =
+        " update "
+            " customer "
+        " set "
+            " password_hash=$1 "
+        " where "
+            " id = $2;",
 
     Qdcustomer2group =
         " delete from "
             " customer2group "
         " where "
-            " customer_id = $1;",
+            " customer2group.customer_id = $1;",
 
     Qicustomer2group =
         "insert into "
@@ -281,8 +400,7 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
                     [Firstname, Lastname, Patronimic, Login, Pic_url,
                         Email, City, Organization, Position, Id]),
              if Password_hash =/= null ->
-                    {ok, 1} = pgsql:equery(Con, "update customer set password_hash=$1 "
-                        "where id = $2;", [Password_hash, Id]);
+                    {ok, 1} = pgsql:equery(Con, Qucpass, [Password_hash, Id]);
                 true ->
                     ok
              end,
@@ -357,6 +475,8 @@ delete_customer({Id, Updater_id}) ->
         Error ->
             ?E("Error = ~p", [Error])
     end.
+
+
 
 %%% -----------------------------------------------------------------------
 %%% ВНУТРЕННИЕ ФУНКЦИИ

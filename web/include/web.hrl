@@ -1,3 +1,5 @@
+-ifndef(__WEB_ACV__).
+-define(__WEB_ACV__, true).
 
 %%% ---------------------------------------------------------------------
 %%% Предопределенные статичные пути
@@ -55,3 +57,6 @@
 -define(OUTPUT_JSON,        "application/json").
 -define(OUTPUT_HTML,        "text/html;charset=UTF-8").
 -define(OUTPUT_TEXT,        "text/plain;charset=UTF-8").
+
+-endif. %%% __WEB_ACV__
+

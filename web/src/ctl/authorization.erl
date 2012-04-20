@@ -1,11 +1,8 @@
 -module(authorization).
--export([do_login/1, auth_required/1, do_logout/1, do_change_pass/1, login/1]).
 -import(mochiweb_cookies, [cookie/2, cookie/3]).
 
--include("../include/web_session.hrl").
-
--include("../../common/include/customer.hrl").
-
+-include("web_session.hrl").
+-include("customer.hrl").
 
 -include("web.hrl").
 -include("common.hrl").
@@ -188,48 +185,6 @@ auth_if(Req, Perm) ->
             end
     end.
 
-
-login(Req) ->
-    innerLogin(Req, []).
-
-innerLogin(_Req, Params) ->
-    io:format("P: ~p~n", [Params]),
-    Outty = loginTMPL:render(Params ++ [{owner, config:get(site_owner, "threeline")}]), 
-%    io:format(""
-    {"text/html", [], [Outty]}.
-
-sanit([H|T], Ret) ->
-    R = if
-        H >= $0, H =< $9 -> Ret ++ [H];
-        true -> Ret
-    end,
-    sanit(T, R);
-sanit([], Ret) ->
-    Ret.
-
-do_login(Req) ->
-    ?DEBUG(?FMT("do_login", [])),
-    Data = Req:parse_post(),
-    Login = proplists:get_value("login", Data),
-    Password = proplists:get_value("password", Data),
-    ?DEBUG(?FMT("do_login  login = ~p", [Login])),
-    ?DEBUG(?FMT("do_login  password = ~p", [Password])), 
-    try 
-        Val = auth_biz:login(Login, Password),
-        throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
-            [cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
-    catch
-        throw:{ok, Ret} -> throw(Ret);
-        throw:Error ->  
-            %csrv:reg_rpc(customerActivityDAO, create, {Login, web, login, Error}),
-            innerLogin(Req, [{login, Login}, {error, Error}]),
-			io:format("asfasdfsdfsdfsdfsdfsdf");
-        T:E -> 
-            ?DEBUG(?FMT("do_login unknown exception ~p:~p", [T, E])),
-            innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
-    end.
-
-
 do_logout(Req) ->
     auth_biz:logout(Req:get_cookie_value(?AUTHCOOKIE)),
     throw({js_redirect, ?LOGOUT, []}).
@@ -238,35 +193,80 @@ do_logout_with_redirect(Req) ->
     auth_biz:logout(Req:get_cookie_value(?AUTHCOOKIE)),
     throw({redirect, ?LOGOUT, []}).
 
-checkNumb([H|_T]) when H < 48; H > 57 ->
-    throw(bad_consist);
-checkNumb([_H|T]) ->
-    checkNumb(T);
-checkNumb([])->
-    ok.
 
-do_change_pass(Req) ->
-	auth_required(Req),
-    Data = Req:parse_qs(),
-    OldPassword =  proplists:get_value("oldpassword", Data),
-    Password1 = proplists:get_value("password1", Data),
-    Password2 = proplists:get_value("password2", Data),
-    Res = if 
-        length(Password1) -> {struct, [{<<"result">>, <<"bad_length">>}]};
-        Password1 =:= Password2 -> 
-            try checkNumb(Password1) of
-                ok ->
-                    #web_session{login=Login} = authorization:auth_required(Req),
-                    try auth_biz:login(Login, OldPassword) of
-                        _Val -> 
-                            auth_biz:change_pass(Login, Password1),
-                            {struct, [{<<"result">>, <<"change_done">>}]}
-                    catch
-                        throw:_ -> {struct, [{<<"result">>, <<"bad_oldpass">>}]}
-                    end
-            catch throw:bad_consist -> {struct, [{<<"result">>, <<"bad_consist">>}]}
-            end;
-        true -> {struct, [{<<"result">>, <<"bad_passwords">>}]}
-    end,
-    {"application/json", [], [mochijson2:encode(Res)]}.
+%%%
+%%% @Depricated
+%%%
+
+% login(Req) ->
+%     innerLogin(Req, []).
+% 
+% innerLogin(_Req, Params) ->
+%     io:format("P: ~p~n", [Params]),
+%     Outty = loginTMPL:render(Params ++ [{owner, config:get(site_owner, "threeline")}]), 
+% %    io:format(""
+%     {"text/html", [], [Outty]}.
+% 
+% sanit([H|T], Ret) ->
+%     R = if
+%         H >= $0, H =< $9 -> Ret ++ [H];
+%         true -> Ret
+%     end,
+%     sanit(T, R);
+% sanit([], Ret) ->
+%     Ret.
+% 
+% do_login(Req) ->
+%     ?DEBUG(?FMT("do_login", [])),
+%     Data = Req:parse_post(),
+%     Login = proplists:get_value("login", Data),
+%     Password = proplists:get_value("password", Data),
+%     ?DEBUG(?FMT("do_login  login = ~p", [Login])),
+%     ?DEBUG(?FMT("do_login  password = ~p", [Password])), 
+%     try 
+%         Val = auth_biz:login(Login, Password),
+%         throw({ok, {redirect, "/" ++ ?QOOXDOO_BUILD ++ "/index.html",
+%             [cookie(?AUTHCOOKIE, Val, ?F_COOKIEOPTIONS)]}})
+%     catch
+%         throw:{ok, Ret} -> throw(Ret);
+%         throw:Error ->  
+%             %csrv:reg_rpc(customerActivityDAO, create, {Login, web, login, Error}),
+%             innerLogin(Req, [{login, Login}, {error, Error}]),
+% 			io:format("asfasdfsdfsdfsdfsdfsdf");
+%         T:E -> 
+%             ?DEBUG(?FMT("do_login unknown exception ~p:~p", [T, E])),
+%             innerLogin(Req, [{login, Login}, {error, "bad_customer"}])
+%     end.
+%
+% checkNumb([H|_T]) when H < 48; H > 57 ->
+%     throw(bad_consist);
+% checkNumb([_H|T]) ->
+%     checkNumb(T);
+% checkNumb([])->
+%     ok.
+% 
+% do_change_pass(Req) ->
+% 	auth_required(Req),
+%     Data = Req:parse_qs(),
+%     OldPassword =  proplists:get_value("oldpassword", Data),
+%     Password1 = proplists:get_value("password1", Data),
+%     Password2 = proplists:get_value("password2", Data),
+%     Res = if 
+%         length(Password1) -> {struct, [{<<"result">>, <<"bad_length">>}]};
+%         Password1 =:= Password2 -> 
+%             try checkNumb(Password1) of
+%                 ok ->
+%                     #web_session{login=Login} = authorization:auth_required(Req),
+%                     try auth_biz:login(Login, OldPassword) of
+%                         _Val -> 
+%                             auth_biz:change_pass(Login, Password1),
+%                             {struct, [{<<"result">>, <<"change_done">>}]}
+%                     catch
+%                         throw:_ -> {struct, [{<<"result">>, <<"bad_oldpass">>}]}
+%                     end
+%             catch throw:bad_consist -> {struct, [{<<"result">>, <<"bad_consist">>}]}
+%             end;
+%         true -> {struct, [{<<"result">>, <<"bad_passwords">>}]}
+%     end,
+%     {"application/json", [], [mochijson2:encode(Res)]}.
 
