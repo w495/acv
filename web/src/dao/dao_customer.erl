@@ -231,8 +231,7 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
                     ok;
                 L ->
                     Q2 = "insert into customer2group (customer_id, group_id) values " ++
-                        string:join([lists:flatten(io_lib:format("(~p, ~p)",
-                            [Id, X])) || X <- GroupList], ", "),
+                        make_brackets_string(Id, GroupList),
                     {ok, L} = pgsql:equery(Con, Q2, [])
             end,
             {return, Id}
@@ -240,9 +239,9 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
     ),
     dao:pgret(PGRet);
 
-%%
-%% Изменяет существующего пользователя
-%%
+%%% @doc
+%%% Изменяет существующего пользователя
+%%%
 update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, _updater_id}) ->
 
@@ -252,9 +251,10 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
          "where id=$10;",
 
     Q2 = "delete from customer2group where customer_id = $1;",
-    Q3 = "insert into customer2group (customer_id, group_id) values " ++ 
-            string:join([lists:flatten(io_lib:format("(~p, ~p)",
-                [Id, X])) || X <- GroupList], ", "),
+    Q3 = "insert into customer2group (customer_id, group_id) values " ++
+                make_brackets_string(Id, GroupList),
+
+
 
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
@@ -338,6 +338,27 @@ delete_customer({Id, Updater_id}) ->
         Error ->
             ?E("Error = ~p", [Error])
     end.
+
+%%% -----------------------------------------------------------------------
+%%% ВНУТРЕННИЕ ФУНКЦИИ
+%%% -----------------------------------------------------------------------
+
+
+%%%
+%%% @doc
+%%% Возвращает строку вида
+%%%     (Id, Id_list[1]), ..., (Id, Id_list[n])
+%%% Эфективня реализация
+%%%
+make_brackets_string(Id, Id_list)->
+    string:join([string:join(["(", convert:to_list(Id), ",",
+        convert:to_list(X),")"], []) || X <- Id_list], ",").
+
+
+check_insider(Id, Id_list)->
+    string:join([string:join(["(", convert:to_list(Id), ",",
+        convert:to_list(X),")"], []) || X <- Id_list], ",").
+
 
 test()->
 
