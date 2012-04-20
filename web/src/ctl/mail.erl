@@ -26,14 +26,24 @@
 mmh_utf8(In)->
     "=?UTF-8?B?"++ base64:encode_to_string(In) ++ "?=".
 
+mmh_person(null, null)->
+    mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME);
+
+mmh_person(Name, null)->
+    mmh_person(Name, ?SYS_MAIL_USERNAME);
+
 mmh_person(Name, Mail)->
+    ?D("Name = ~p, Mail = ~p~n", [Name, Mail]),
     erlang:list_to_binary(
         mmh_utf8(Name) ++ "<" ++ Mail ++ ">"
     ).
 
 
+mail(null, Rname, Rsubject, Rbody) ->
+    mail(?SYS_MAIL_USERNAME, Rname, Rsubject, Rbody);
 
 mail(Rmail, Rname, Rsubject, Rbody) ->
+    ?D("Rmail = ~p, Rname = ~p, Rsubject = ~p, ~n", [Rmail, Rname, Rsubject]),
     Email = {<<"text">>, <<"plain">>,
             [
                 {<<"From">>, mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME)},

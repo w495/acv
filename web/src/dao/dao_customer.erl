@@ -245,20 +245,39 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
 update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, _updater_id}) ->
 
-    Q1 = "update customer set firstname = $1, lastname = $2, patronimic = $3, "
-            "login = $4, pic_url = $5, email = $6,"
-            "city = $7, organization = $8, position = $9 "
-         "where id=$10;",
+    Qucustomer =
+        " update "
+            " customer "
+        " set "
+            " firstname = $1, "
+            " lastname = $2, "
+            " patronimic = $3, "
+            " login = $4, "
+            " pic_url = $5, "
+            " email = $6,"
+            " city = $7, "
+            " organization = $8, "
+            " position = $9 "
+         " where "
+            " id=$10; ",
 
-    Q2 = "delete from customer2group where customer_id = $1;",
-    Q3 = "insert into customer2group (customer_id, group_id) values " ++
-                make_brackets_string(Id, GroupList),
+    Qucpass =
 
+    Qdcustomer2group =
+        " delete from "
+            " customer2group "
+        " where "
+            " customer_id = $1;",
 
+    Qicustomer2group =
+        "insert into "
+            " customer2group "
+                " (customer_id, group_id) "
+        " values " ++ make_brackets_string(Id, GroupList),
 
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
-             {ok, 1} = pgsql:equery(Con, Q1,
+             {ok, 1} = pgsql:equery(Con, Qucustomer,
                     [Firstname, Lastname, Patronimic, Login, Pic_url,
                         Email, City, Organization, Position, Id]),
              if Password_hash =/= null ->
@@ -267,10 +286,10 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
                 true ->
                     ok
              end,
-             {ok, _} = pgsql:equery(Con, Q2, [Id]),
+             {ok, _} = pgsql:equery(Con, Qdcustomer2group, [Id]),
              case length(GroupList) of
                 0 -> ok;
-                L -> {ok, L} = pgsql:equery(Con, Q3, [])
+                L -> {ok, L} = pgsql:equery(Con, Qicustomer2group, [])
             end
             %,{return, Id}
         end
