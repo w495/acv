@@ -20,6 +20,10 @@
     create/1,
     delete/1,
     change/1,
+    stop/1,
+    start/1,
+    activate/1,
+    disactivate/1,
     change_bill/1,
     mkbill/1,
     paybill/1

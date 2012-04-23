@@ -673,36 +673,38 @@ chstate_acv_video(Req) ->
     %       dao_acv_video:mkbill
 
     Acv_video_id = convert:to_integer(proplists:get_value("id", Plfields)),
+    {ok, [Acv_video_prev], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
     Res = dao:dao_call(
         dao_acv_video,
         chstate_acv_video,
         State,
         values,
         fun(_) ->
-            fsmbill_acv_video(Acv_video_id)
+            {ok, [Acv_video_post], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
+            fsmbill_acv_video(Acv_video_prev, Acv_video_post)
         end
     ),
-
-
     {"application/json", [], [mochijson2:encode(Res)]}.
 
-fsmbill_acv_video(Acv_video_id) ->
-    {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
-    Active      = proplists:get_value("active", Acv_video),
-    Pay_status  = proplists:get_value("pay_status", Acv_video),
-    case {Active, Pay_status} of
-        {true, null} ->
-            dao_acv_video:mkbill(Acv_video_id),
-            %%
-            %% evman_acv_video:chstate(Acv_video_id),
-            %% Тут должны быть евенты, пока временно убраны отсюда.
-            %%
-            %% Пока не доделал, сделаю завтра
+fsmbill_acv_video(Acv_video_prev, Acv_video_post) ->
+    Active_prev      =  proplists:get_value("active", Acv_video_prev),
+    Pay_status_prev  =  proplists:get_value("pay_status", Acv_video_prev),
 
-            Rmail = proplists:get_value("email", Acv_video),
-            Rname = proplists:get_value("login", Acv_video),
-            mail:mkbill({customer, {Rmail, Rname}}, {data, Acv_video}),
-            ok;
+    Id_post          =  proplists:get_value("id", Acv_video_post),
+    Active_post      =  proplists:get_value("active", Acv_video_post),
+    Pay_status_post  =  proplists:get_value("pay_status", Acv_video_post),
+
+    case {Active_prev, Active_post, Pay_status_post} of
+        {null, true, null} ->
+            dao_acv_video:mkbill(Id_post),
+            evman_acv_video:mkbill({data, Acv_video_post});
+        {null, false, _} ->
+            % Возможно нужно иное событие, еще одно.
+            evman_acv_video:disactivate({data, Acv_video_post});
+        {true, false, _} ->
+            evman_acv_video:disactivate({data, Acv_video_post});
+        {false, true, _} ->
+            evman_acv_video:activate({data, Acv_video_post});
         _ ->
             ok
     end.

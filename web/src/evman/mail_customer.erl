@@ -159,7 +159,7 @@ handle_event(
 %%% ---------------------------------------------------------------------
 
 handle_event(
-    {evman_customer,
+    {evman_acv_video,
         {change,
             {bill,
                 {make,
@@ -169,14 +169,14 @@ handle_event(
         }
     }, State ) ->
     %%% when proplists:is_defined("id", Data)
-    ?I("Acv_video ~p was deleted ~n",
+    ?I("Acv_video ~p made bill ~n",
         [proplists:get_value("id", Data)]),
     acv_video_facade(mail, mkbill, Data),
     {ok, State};
 
 
 handle_event(
-    {evman_customer,
+    {evman_acv_video,
         {change,
             {bill,
                 {pay,
@@ -185,7 +185,7 @@ handle_event(
             }
         }
     }, State ) ->
-    ?I("Acv_video ~p was deleted ~n",
+    ?I("Acv_video ~p paid bill ~n",
         [proplists:get_value("id", Data)]),
     acv_video_facade(mail, paybill, Data),
     {ok, State};

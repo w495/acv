@@ -424,22 +424,17 @@ curl(Req) ->
     ?D("Data = ~p", [Data]),
     Acv_video_id = convert:to_integer(proplists:get_value("shop_f1", Data)),
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    %%% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    %%% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    %% 
-    %% evman_acv_video:chstate(Acv_video_id),
-    %% Тут должны быть евенты, пока временно убраны отсюда.
-    %%
-
     {ok, [Acv_video], _, _} = dao_acv_video:get_acv_video(Acv_video_id),
-    Rmail = proplists:get_value("email", Acv_video),
-    Rname = proplists:get_value("login", Acv_video),
-    mail:paybill({Rmail, Rname, {data, Acv_video}}),
-    dao_acv_video:paybill(Acv_video_id),
+    Active = proplists:get_value("active", Acv_video),
+    Pay_status = proplists:get_value("pay_status", Acv_video),
+
+    case {Active, Pay_status} of
+        {true, false} ->
+            dao_acv_video:paybill(Acv_video_id),
+            evman_acv_video:paybill({data, Acv_video});
+        _ ->
+            ok
+    end,
 
     Xml  = xml:encode_data(
         [
