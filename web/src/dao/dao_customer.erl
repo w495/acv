@@ -118,14 +118,14 @@ delete_customer_group({Id, Updater_id}) ->
 update_customer_group({{null, Name, Descr}, PermissionList, _updater_id}) ->
     Q1 = "insert into customer_group (name, description) values ($1, $2) returning customer_group.id;",
     Ret = dao:with_transaction_fk(fun(Con) ->
-        {ok, 1, _, [{Id}]} = pgsql:equery(Con, Q1, [Name, Descr]) ,
+        {ok, 1, _, [{Id}]} = dao:equery(Con, Q1, [Name, Descr]) ,
         io:format("New _customer_groupID: ~p~n", [Id]) ,
         case length(PermissionList) of
             0 -> ok;
             L ->
                 Q2 = lists:append(["insert into permission2group (group_id, perm_id) values ",
                                     string:join([lists:flatten(io_lib:format("(~p, ~p)", [Id, X])) || X <- PermissionList], ", ")]),
-                {ok, L} = pgsql:equery(Con, Q2, []),
+                {ok, L} = dao:equery(Con, Q2, []),
                 ok
         end
     end),
@@ -138,11 +138,11 @@ update_customer_group({{Id, Name, Descr}, PermissionList, _updater_id}) ->
             string:join([lists:flatten(io_lib:format("(~p, ~p)", [Id, X])) || X <- PermissionList], ", "),
     Ret = dao:with_transaction_fk(
         fun(Con) ->
-             {ok, 1} = pgsql:equery(Con, Q1, [Name, Descr, Id]),
-             {ok, _} = pgsql:equery(Con, Q2, [Id]),
+             {ok, 1} = dao:equery(Con, Q1, [Name, Descr, Id]),
+             {ok, _} = dao:equery(Con, Q2, [Id]),
              case length(PermissionList) of
                 0 -> ok;
-                L -> {ok, L} = pgsql:equery(Con, Q3, []), ok
+                L -> {ok, L} = dao:equery(Con, Q3, []), ok
             end
         end
     ),
@@ -357,7 +357,7 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
          
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
-            {ok, 1, _, [{Id}]} = pgsql:equery(Con, Q1,
+            {ok, 1, _, [{Id}]} = dao:equery(Con, Q1,
                 [Firstname, Lastname, Patronimic, Login, Pic_url, Email,
                     City, Organization, Position, Password_hash]),
             case length(GroupList) of
@@ -366,7 +366,7 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
                 L ->
                     Q2 = "insert into customer2group (customer_id, group_id) values " ++
                         make_brackets_string(Id, GroupList),
-                    {ok, L} = pgsql:equery(Con, Q2, [])
+                    {ok, L} = dao:equery(Con, Q2, [])
             end,
             {return, Id}
         end
@@ -417,18 +417,18 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
 
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
-             {ok, 1} = pgsql:equery(Con, Qucustomer,
+             {ok, 1} = dao:equery(Con, Qucustomer,
                     [Firstname, Lastname, Patronimic, Login, Pic_url,
                         Email, City, Organization, Position, Id]),
              if Password_hash =/= null ->
-                    {ok, 1} = pgsql:equery(Con, Qucpass, [Password_hash, Id]);
+                    {ok, 1} = dao:equery(Con, Qucpass, [Password_hash, Id]);
                 true ->
                     ok
              end,
-             {ok, _} = pgsql:equery(Con, Qdcustomer2group, [Id]),
+             {ok, _} = dao:equery(Con, Qdcustomer2group, [Id]),
              case length(GroupList) of
                 0 -> ok;
-                L -> {ok, L} = pgsql:equery(Con, Qicustomer2group, [])
+                L -> {ok, L} = dao:equery(Con, Qicustomer2group, [])
             end
             %,{return, Id}
         end
@@ -444,11 +444,11 @@ update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City
 
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
-             {ok, 1} = pgsql:equery(Con, Q1,
+             {ok, 1} = dao:equery(Con, Q1,
                     [Firstname, Lastname, Patronimic, Pic_url,
                         Email, City, Organization, Position, _updater_id]),
              if Password_hash =/= null ->
-                    {ok, 1} = pgsql:equery(Con, "update customer set password_hash=$1 "
+                    {ok, 1} = dao:equery(Con, "update customer set password_hash=$1 "
                         "where id = $2;", [Password_hash, _updater_id]);
                 true ->
                     ok

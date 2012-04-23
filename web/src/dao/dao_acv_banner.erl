@@ -78,10 +78,10 @@ update_acv_banner({null, Name, Datestart, Datestop, Url, Ref,
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
-            case dao:pgret(pgsql:equery(Con, Query_select,
+            case dao:pgret(dao:equery(Con, Query_select,
                     [Banner_place_name])) of
                 {ok,[[{"id",Banner_place_id}]]} ->
-                    pgsql:equery(Con, Query_insert ,
+                    dao:equery(Con, Query_insert ,
                         [Name, Datestart, Datestop, Url, Ref, Banner_place_id,
                             convert:to_integer(Customer_id)]);
                 Error -> Error
@@ -110,10 +110,10 @@ update_acv_banner({Id, Name, Datestart, Datestop, Url, Ref,
     dao:pgret(
         dao:with_transaction_fk(
             fun(Con) ->
-                case dao:pgret(pgsql:equery(Con, Query_select,
+                case dao:pgret(dao:equery(Con, Query_select,
                         [Banner_place_name])) of
                     {ok,[[{"id",Banner_place_id}]]} ->
-                        pgsql:equery(Con, Query_update ,
+                        dao:equery(Con, Query_update ,
                             [convert:to_integer(Id), Name, Datestart,
                                 Datestop, Url, Ref, Banner_place_id,
                                     convert:to_integer(Customer_id)]);

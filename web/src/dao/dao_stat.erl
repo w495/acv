@@ -89,11 +89,11 @@ create(Con, Acv_video_id) ->
         "on acv_video_stat_~p(datestop);", [Acv_video_id, Acv_video_id]),
     Q5 = ?FMT("create index acv_video_stat_~p_video_uid_idx "
         "on acv_video_stat_~p(video_url);", [Acv_video_id, Acv_video_id]),
-    pgsql:equery(Con, Q1),
-    pgsql:equery(Con, Q2),
-    pgsql:equery(Con, Q3),
-    pgsql:equery(Con, Q4),
-    pgsql:equery(Con, Q5).
+    dao:equery(Con, Q1),
+    dao:equery(Con, Q2),
+    dao:equery(Con, Q3),
+    dao:equery(Con, Q4),
+    dao:equery(Con, Q5).
 
 %delete_vstat_tbl(Acv_video_id) ->
 delete(Acv_video_id) ->
@@ -192,11 +192,11 @@ compute_stat_max_id() ->
 
 put_max_id(Con, Max_id) ->
     Query = "update var set av_stats_max_id = $1;",
-    pgsql:equery(Con, Query, [Max_id]).
+    dao:equery(Con, Query, [Max_id]).
 
 get_max_id(Con) ->
     Query = "select av_stats_max_id from var;",
-    S = dao:pgret(pgsql:equery(Con, Query)),
+    S = dao:pgret(dao:equery(Con, Query)),
     {ok,[[{"av_stats_max_id",Max_id}]]}  = S,
     case convert:to_integer(Max_id) of
         0 ->
@@ -364,8 +364,8 @@ to_db_acv_video_url([Adv|T], To_db) ->
     ?D("ClickCounter: ~p~n", [ClickCounter]),
 
     _RQ = dao:with_connection_fk(fun(Con) ->
-        R1 = pgsql:equery(Con, QUp, [Shown + length(Values), Clicks + ClickCounter, Id]),
-        R2 = pgsql:equery(Con, Q),
+        R1 = dao:equery(Con, QUp, [Shown + length(Values), Clicks + ClickCounter, Id]),
+        R2 = dao:equery(Con, Q),
         {R1, R2}
     end),
     ?D("RQ: ~p~n", [_RQ]),

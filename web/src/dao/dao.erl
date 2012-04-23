@@ -22,6 +22,7 @@
 -spec simple_ret(Query::string(), Params::list()) -> tuple().
 
 
+
 make_error_warn(E) ->
     make_error_json(<<"WARN">>, E).
 
@@ -264,7 +265,7 @@ with_transaction_fk(Function) ->
 simple(Query) ->
 %    ?DEBUG_INFO("~p:simple/1~nQuery:  ~s~n", [?MODULE, Query]),
     Result = dao:pgret(dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query)
+            fun(Con) -> equery(Con, Query)
         end)),
 %    ?DEBUG_INFO("~p:simple/1~n-> ~p~n", [?MODULE, Result]),
     Result.
@@ -276,7 +277,7 @@ simple(Query, Params) ->
 %    ?DEBUG_INFO("~p:simple/2~nQuery: ~s~nParams: ~p~n",
 %        [?MODULE, Query, Params]),
     Result = dao:pgret(dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query, Params)
+            fun(Con) -> equery(Con, Query, Params)
         end)),
 %    ?DEBUG_INFO("~p:simple/2~n-> ~p~n",
 %        [?MODULE, Result]),
@@ -289,7 +290,7 @@ simple_ret(Query, Params) ->
 %    ?DEBUG_INFO("~p:simple_ret/2~nQuery: ~s~nParams: ~p~n",
 %        [?MODULE, Query, Params]),
     Pre_result = dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query, Params)
+            fun(Con) -> equery(Con, Query, Params)
         end),
     case dao:pgret(Pre_result) of
         ok ->
@@ -300,3 +301,82 @@ simple_ret(Query, Params) ->
         Error -> Result = {error, Error}
     end,
     Result.
+
+%%% @doc
+%%%     Обертка для стандвартной функции pgsql
+%%%     Выполныет заданный запрос
+%%%     Если параметры функции являются proplist
+%%%     то происходит их распарсивание и подстановка согласно
+%%%     с буквенными именами в теле запроса
+%%%     Сделано это для того, чтобы в случае, если мы будем менять,
+%%%     наши запросы, не приходилось высчитывать порядок следования.
+%%%     Последнее очень не удобно для запросов с более чем 5 параметров.
+%%%
+equery(Con, Query, [{_,_}|_] = Params) ->
+    {NewQuery, Values} = equery_pl(Query, Params),
+    pgsql:equery(Con, NewQuery, Values);
+
+equery(Con, Query, Params) ->
+    pgsql:equery(Con, Query, Params).
+
+equery(Con, Query) ->
+    pgsql:equery(Con, Query).
+
+%%% @doc
+%%%     Функция преобразования запроса
+%%%     с буквенными именами к числовым.
+%%%     Запрос:
+%%%         dao:equery_pl(
+%%%            "select id from customer where id = $id and uid = $uid",
+%%%            [{"id", 10}, {"uid", 15}]
+%%%         ).
+%%%    Вернет:
+%%%         "select id from customer where id = $1 and uid = $2"
+%%%
+equery_pl(Query, Proplist) ->
+    equery_pl(Query, Proplist, 0, []).
+
+%%% @doc
+%%%     Функция преобразования запроса, основная рабочая часть.
+%%%     Параметры разбиваем на {k, v}
+%%%         Преобразованное имя ключа $k заменится
+%%%             на его порядковый номер в списке.
+%%%         Значение (v) отправится в список значений,
+%%%             который далее будет использован для стандартного запроса
+%%%             тут важно соблюсти порядок следования значений
+%%%                 (Values ++[Value]) a не [Value|Values] !!!
+%%%     Чтобы не перекомпилевать одинаковые ключи
+%%%         для поиска по регекспу они храняться в ets
+%%%             dao_regexp создается в assist_srv
+%%%
+equery_pl(Query, [], _, Values) -> {Query, Values};
+
+equery_pl(Query, [{Name, Value}|Rest], Cnt, Values) ->
+    Newcnt = Cnt + 1,
+    Re = "[$]" ++ convert:to_list(Name),
+    case ets:lookup(dao_regexp, Re) of
+        [{_, {Re, Cre}}]  ->
+            true;
+        _ ->
+            {ok, Cre} = re:compile(Re),
+            true = ets:insert(dao_regexp, {Re, Cre}),
+            false
+    end,
+    Newquery =
+        re:replace(
+            Query,
+            Cre,
+            "$" ++ convert:to_list(Newcnt),
+            [{return,list}]
+        ),
+    equery_pl(Newquery, Rest, Newcnt, lists:append(Values, [Value]));
+
+equery_pl(Query, List, _, _) when erlang:is_list(List) ->
+    {Query, List}.
+
+
+
+
+
+
+

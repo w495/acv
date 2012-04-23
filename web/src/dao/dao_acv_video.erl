@@ -113,7 +113,7 @@ get_acv_video(Id) ->
     Q2 = "select cat_id from acv_video2cat where acv_video_id = $1;",
     {ok, R1} = dao:simple(Q1, [Id]),
     R2 = dao:with_connection_fk(fun(Con) ->
-        {ok, _, Vals} = pgsql:equery(Con, Q2, [Id]),
+        {ok, _, Vals} = dao:equery(Con, Q2, [Id]),
         [utils:to_list(X) || {X} <- Vals]
     end),
     case R2 of
@@ -442,7 +442,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
 
     Pre_result = dao:with_transaction_fk(
         fun(Con) ->
-            case pgsql:equery(Con, Query_insert,
+            case dao:equery(Con, Query_insert,
                 [Name, Datestart, Datestop, Url, Ref,
                     (Wish), Postroll, Preroll, Midroll,
                         Pauseroll, User_male,
@@ -465,7 +465,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                                 "insert into acv_video2geo_region "
                                  "(acv_video_id, geo_region_id) values " ++
                                   make_brackets_string(Id, Geo_region_list),
-                            {ok, _} = pgsql:equery(Con,
+                            {ok, _} = dao:equery(Con,
                                 Query_acv_video2geo_region, [])
                     end,
                     case length(Cat_id_list) of
@@ -475,7 +475,7 @@ update_acv_video({{null, Name, Datestart, Datestop, Url, Ref, Wish,
                                 "insert into acv_video2cat "
                                     "(acv_video_id, cat_id) values " ++
                                         make_brackets_string(Id, Cat_id_list),
-                            {ok, _} = pgsql:equery(Con,
+                            {ok, _} = dao:equery(Con,
                                 Query_acv_video2cat, [])
                     end,
                     dao_stat:create(Con, Id),
@@ -509,7 +509,7 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
             " customer_id = $23 where id=$1;",
     dao:with_transaction_fk(
         fun(Con) ->
-            case pgsql:equery(Con, Query_update,
+            case dao:equery(Con, Query_update,
                 [Id, Name, Datestart, Datestop, Url, Ref,
                 (Wish), Postroll, Preroll, Midroll,
                     Pauseroll, User_male,
@@ -533,8 +533,8 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
                                 "insert into acv_video2geo_region "
                                  " (acv_video_id, geo_region_id) values " ++
                                   make_brackets_string(Id, Geo_region_list),
-                            pgsql:equery(Con, Query_video2region_d, [Id]),
-                            {ok, _} = pgsql:equery(Con,
+                            dao:equery(Con, Query_video2region_d, [Id]),
+                            {ok, _} = dao:equery(Con,
                                 Query_acv_video2geo_region, [])
                     end,
                     case length(Cat_id_list) of
@@ -547,8 +547,8 @@ update_acv_video({{Id, Name, Datestart, Datestop, Url, Ref, Wish,
                                 "insert into acv_video2cat "
                                     " (acv_video_id, cat_id) values " ++
                                         make_brackets_string(Id, Cat_id_list),
-                            pgsql:equery(Con, Query_video2cat_d, [Id]),
-                            {ok, _} = pgsql:equery(Con,
+                            dao:equery(Con, Query_video2cat_d, [Id]),
+                            {ok, _} = dao:equery(Con,
                                 Query_acv_video2cat, [])
                     end,
                     {ok, Id};
@@ -664,10 +664,10 @@ full_delete_acv_video(Id) ->
         "drop table acv_video_stat_" ++ erlang:integer_to_list(Id) ++ ";",
     dao:with_transaction_fk(
         fun(Con) ->
-            pgsql:equery(Con, Query_stat, []),
-            pgsql:equery(Con, Query_video2geo_region, [(Id)]),
-            pgsql:equery(Con, Query_video2cat, [(Id)]),
-            pgsql:equery(Con, Query_video, [(Id)])
+            dao:equery(Con, Query_stat, []),
+            dao:equery(Con, Query_video2geo_region, [(Id)]),
+            dao:equery(Con, Query_video2cat, [(Id)]),
+            dao:equery(Con, Query_video, [(Id)])
         end
     ).
 

@@ -167,8 +167,8 @@ delete_geo_region(Id) ->
 
     dao:with_transaction_fk(
         fun(Con) ->
-            pgsql:equery(Con, Query_acv_video2geo_region, [convert:to_integer(Id)]),
-            pgsql:equery(Con, Query_geo_region, [convert:to_integer(Id)])
+            dao:equery(Con, Query_acv_video2geo_region, [convert:to_integer(Id)]),
+            dao:equery(Con, Query_geo_region, [convert:to_integer(Id)])
         end
     ).
 

@@ -51,7 +51,7 @@ handle_event(
     %%% when proplists:is_defined("id", Data)
     ?I("Customer ~p is insider ~n", [proplists:get_value("id", Data)]),
     Id = proplists:get_value("id", Data),
-    Customer = dao_customer:get_customer(Id),
+    {ok, Customer, _} = dao_customer:get_customer(Id),
     Rmail = proplists:get_value("email", Customer),
     Rname = proplists:get_value("login", Customer),
     mail:add_insider_customer({Rmail, Rname, {data, Customer}}),
@@ -93,7 +93,7 @@ handle_event(
     ?I("Customer ~p is NOT insider ~n",
         [proplists:get_value("id", Data)]),
     Id = proplists:get_value("id", Data),
-    Customer = dao_customer:get_customer(Id),
+    {ok, Customer, _} = dao_customer:get_customer(Id),
     Rmail = proplists:get_value("email", Customer),
     Rname = proplists:get_value("login", Customer),
 
