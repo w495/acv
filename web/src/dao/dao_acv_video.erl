@@ -203,6 +203,7 @@ get_acv_video_stats({Customer_id, {Fromdate, Todate}}) ->
                     "((datestart <= $1 and datestop >= $1)  "
                     " or (datestart <= $2  and datestop >= $2)  "
                     " or (datestart >= $1 and datestop <= $2));",
+    ?D("dao:simple(~p, [~p, ~p, ~p])", [Query, Fromdate, Todate, Customer_id]),
     {ok, R1} = dao:simple(Query, [Fromdate, Todate, Customer_id]),
     {ok, collect_stats_by_acv(R1, Fromdate, Todate)}.
 

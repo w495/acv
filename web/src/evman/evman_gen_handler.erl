@@ -1,8 +1,10 @@
 %%%
-%%% @file
-%%%     Обработчик событий, который отправляет
-%%%     почту пользователю (любому)
-%%%     при возникновении различных событий
+%%% @file evman_gen_handler.erl
+%%%     Абстрактный обработчик событий.
+%%%     Можно переобределить его методы с помощью.
+%%%
+%%%         -behaviour(gen_event).
+%%%         -extends(evman_gen_handler).
 %%%
 
 -module(evman_gen_handler).
@@ -70,9 +72,6 @@ handle_event(_event, State) ->
     {ok, State}.
 
 
-
-
-
 handle_call(_request, State) ->
     %     ?D("~p ~p has unknown call `~p' and state `~p' ~n",
     %         [?HANDLERNAME, self(), _request, State]),
@@ -91,3 +90,13 @@ terminate(_reason, _state) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+
+
+
+
+customer_facade(Mod, Fun, Data) ->
+    ok.
+
+
+acv_video_facade(Mod, Fun, Data) ->
+    ok.

@@ -12,13 +12,12 @@
 %%% Используем наследование модулей,
 %%% чтобы не тянуть кучу одинаковых методов.
 %%% Если надо, мы всегда сможем из переопределить.
-%%% 
+%%%
 -extends(evman_gen_handler).
 -export([handle_event/2]).
 
 -include("common.hrl").
 -define(MAILTYPE, customer).
-
 
 %%% ---------------------------------------------------------------------
 %%%
@@ -33,7 +32,7 @@ handle_event(
         }
     }, State ) ->
     %%% when proplists:is_defined("id", Data)
-    ?I("Customer ~p is insider ~n",
+    ?I("Customer ~p was created ~n",
         [proplists:get_value("id", Data)]),
     customer_facade(mail, create_customer, Data),
     {ok, State};
@@ -52,7 +51,7 @@ handle_event(
         }
     }, State ) ->
     %%% when proplists:is_defined("id", Data)
-    ?I("Customer ~p is insider ~n",
+    ?I("Customer ~p was deleted ~n",
         [proplists:get_value("id", Data)]),
     customer_facade(mail, delete_customer, Data),
     {ok, State};
@@ -91,18 +90,6 @@ handle_event(
     customer_facade(mail, add_insider, Data),
     {ok, State};
 
-
-
-%%%
-%%% Мы тут используем {insider, {data, Data}}
-%%%     вместо  {insider, {data, Data}}
-%%%     для ослабления связанности методов. по сути в Data
-%%%     может юыть передано что угодно, и не обязательно,
-%%%     что там будут все необходимые данные для обработки события.
-%%%     Нам нужно, что бы там был точно "id"
-%%%     Все остальные данные мы получим на основе этого id.
-%%%
-
 handle_event(
     {evman_customer,
         {change,
@@ -119,6 +106,81 @@ handle_event(
     ?I("Customer ~p is NOT insider ~n",
         [proplists:get_value("id", Data)]),
     customer_facade(mail, del_insider, Data),
+    {ok, State};
+
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Обработка событий создания рекламной кампании 
+%%%
+%%% ---------------------------------------------------------------------
+
+handle_event(
+    {evman_acv_video,
+        {create,
+            {data, Data}
+        }
+    }, State ) ->
+    %%% when proplists:is_defined("id", Data)
+    ?I("Acv_video ~p was created ~n",
+        [proplists:get_value("id", Data)]),
+    acv_video_facade(mail, create_acv_video, Data),
+    {ok, State};
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Обработка событий удаления рекламной кампании 
+%%%
+%%% ---------------------------------------------------------------------
+
+handle_event(
+    {evman_acv_video,
+        {delete,
+            {data, Data}
+        }
+    }, State ) ->
+    %%% when proplists:is_defined("id", Data)
+    ?I("Acv_video ~p was deleted ~n",
+        [proplists:get_value("id", Data)]),
+    acv_video_facade(mail, delete_acv_video, Data),
+    {ok, State};
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Обработка событий изменения рекламной кампании
+%%%
+%%% ---------------------------------------------------------------------
+
+handle_event(
+    {evman_customer,
+        {change,
+            {bill,
+                {make,
+                    {data, Data}
+                }
+            }
+        }
+    }, State ) ->
+    %%% when proplists:is_defined("id", Data)
+    ?I("Acv_video ~p was deleted ~n",
+        [proplists:get_value("id", Data)]),
+    acv_video_facade(mail, mkbill, Data),
+    {ok, State};
+
+
+handle_event(
+    {evman_customer,
+        {change,
+            {bill,
+                {pay,
+                    {data, Data}
+                }
+            }
+        }
+    }, State ) ->
+    ?I("Acv_video ~p was deleted ~n",
+        [proplists:get_value("id", Data)]),
+    acv_video_facade(mail, paybill, Data),
     {ok, State};
 
 %%% ---------------------------------------------------------------------
@@ -140,6 +202,9 @@ handle_event(Some, State) ->
 %%% ---------------------------------------------------------------------
 
 
+%%%
+%%% Фасад, для отправки почты при изменении кастомера
+%%% 
 customer_facade(Mod, Fun, Data) ->
     Id = proplists:get_value("id", Data),
     {ok, [Customer], _} = dao_customer:get_customer(Id),
@@ -149,3 +214,8 @@ customer_facade(Mod, Fun, Data) ->
     Mod:Fun({?MAILTYPE, {Rmail, Rname}}, {data, Customer}).
 
 
+%%%
+%%% Фасад, для отправки почты при изменении кампании
+%%% 
+acv_video_facade(Mod, Fun, Data) ->
+    ok.

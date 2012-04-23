@@ -19,7 +19,9 @@
          unixtime_to_localDate/1,
         random_nth/1,
          hex_to_binary/1, to_hex/1, hex_to_list/1, setPlistVal/2, to_string/1, sformat/2,
-         getTargetId/2, moveFile/2]).
+         getTargetId/2, moveFile/2,
+    is_proplist/1
+]).
 
 -define( FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
 
@@ -726,6 +728,10 @@ moveFile(Src, Dst) ->
             end
     end.
 
+
+is_proplist([]) -> true;
+is_proplist([{K,_}|R]) when is_atom(K) -> is_proplist(R);
+is_proplist(_) -> false.
 
 iterTest(0, _) ->
     ok;

@@ -141,39 +141,56 @@ update_customer(Req) ->
 
     Id = convert:to_integer(proplists:get_value("id", Data, null)),
 
-    io:format("~p~n", [E]),
-    Group_list = [utils:to_integer(X) || X <- proplists:get_all_values("groups", Data)],
+    Group_list =
+        [
+            utils:to_integer(X)
+            || X <- proplists:get_all_values("groups", Data)
+        ],
 
     {ok, _, Oldperms} = dao_customer:get_customer_perm({id, Id}),
-    Res = dao:dao_call(dao_customer, update_customer, {E, Pashash, Group_list, UID}),
-    {ok, [Custdata], Newperms} = dao_customer:get_customer_perm({id, Id}),
 
-    lists:foreach(fun (Oldperm) ->
-        case lists:member(Oldperm, Newperms) of
-            false  ->
-                evman_customer:del_perm({
-                    convert:to_atom(Oldperm),
-                    {data, Custdata}
-                }),
-                ok;
-            _ ->
-                ok
+    %%%
+    %%% Вызываем dao_call
+    %%%     с вызовом
+    %%%     dao_customer:update_customer({E, Pashash, Group_list, UID})
+    %%%     и callback определенным через fun(_)->
+    %%%
+    Res = dao:dao_call(
+        dao_customer,
+        update_customer,
+        {E, Pashash, Group_list, UID},
+        undefined,
+        fun(Fr) ->
+            {ok, [Custdata], Newperms} = dao_customer:get_customer_perm({id, Id}),
+            ?D("----------------------------~n", []),
+            ?D("Res = ~p~n", [Fr]),
+            ?D("----------------------------~n", []),
+            lists:foreach(fun (Oldperm) ->
+                case lists:member(Oldperm, Newperms) of
+                    false  ->
+                        evman_customer:del_perm({
+                            convert:to_atom(Oldperm),
+                            {data, Custdata}
+                        }),
+                        ok;
+                    _ ->
+                        ok
+                end
+            end, Oldperms),
+            lists:foreach(fun (Newperm) ->
+                case lists:member(Newperm, Oldperms) of
+                    false ->
+                        evman_customer:add_perm({
+                            convert:to_atom(Newperm),
+                            {data, Custdata}
+                        }),
+                        ok;
+                    _ ->
+                        ok
+                end
+            end, Newperms)
         end
-    end, Oldperms),
-
-    lists:foreach(fun (Newperm) ->
-        case lists:member(Newperm, Oldperms) of
-            false ->
-                evman_customer:add_perm({
-                    convert:to_atom(Newperm),
-                    {data, Custdata}
-                }),
-                ok;
-            _ ->
-                ok
-        end
-    end, Newperms),
-
+    ),
 
     {"application/json", [], [mochijson2:encode(Res)]}.
 
@@ -382,7 +399,13 @@ get_acv_video_stats(Req) ->
         {"fromdate", [datetimeUnixtime]},
         {"todate",   [datetimeUnixtime]}
     ]),
-    Res = dao:dao_call(dao_acv_video, get_acv_video_stats, {Customer_id, Info}, values),
+    Res = dao:dao_call(
+        dao_acv_video,
+        get_acv_video_stats,
+        {Customer_id, Info},
+        values,
+        undefined
+    ),
     {"application/json", [], [mochijson2:encode(Res)]}.
 
 
@@ -560,6 +583,8 @@ update_acv_video(Req) ->
     Res = dao:dao_call(dao_acv_video, update_acv_video,
         {Info_1, Geo_region_list, Cat_list}, values),
 
+    
+    evman_acv_video:create([{data, Data}, {geo_region_list, Cat_list}, {cat_list, Cat_list}]),
     % Кидаем событие о создании кампании
     % gen_event:notify(?ACVVID_EVENT, Data),
 
