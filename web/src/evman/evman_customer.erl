@@ -21,6 +21,8 @@
 
 
 -export([
+    create/1,
+    delete/1,
     change/1,
     change_perm/1,
     add_perm/1,
@@ -55,12 +57,26 @@ get_handlers() ->
     evman_gen_notifier:get_handlers(?EVENTNAME).
 
 info(Msg) ->
-    evman_gen_notifier:info(?EVENTNAME, {?EVENTNAME, Msg}).
+    evman_gen_notifier:info(?EVENTNAME, Msg).
 
 %%% -----------------------------------------------------------------------
 %%% API
 %%% -----------------------------------------------------------------------
 
+
+%%%
+%%% @doc
+%%%     Сообщает о создании состояния
+%%%
+create(Msg) ->
+    info({create, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает об удалении аккаунта
+%%%
+delete(Msg) ->
+    info({delete, Msg}).
 
 %%%
 %%% @doc

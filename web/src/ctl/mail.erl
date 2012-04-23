@@ -6,16 +6,11 @@
 -module(mail).
 
 -export([
-    add_insider_customer/1,
-    del_insider_customer/1,
-    mkbill_customer/1,
-    paybill_customer/1,
-
     % -----------------------
-    add_insider/1,
-    del_insider/1,
-    mkbill/1,
-    paybill/1,
+    add_insider/2,
+    del_insider/2,
+    mkbill/2,
+    paybill/2,
     % -----------------------
 
     test/0,
@@ -25,100 +20,213 @@
 
 -include("common.hrl").
 
-add_insider({Rmail, Rname, {data, Customer}}) ->
-    add_insider_customer({Rmail, Rname, {data, Customer}}).
 
-del_insider({Rmail, Rname, {data, Customer}}) ->
-    del_insider_customer({Rmail, Rname, {data, Customer}}).
+meta([{Rmail, Rname} = Rmn|_]) ->
+    [
+        {"sys-dns",     ?SYS_DNS},
+        {"usermail",    Rmail},
+        {"username",    Rname}
+    ];
 
-add_insider_customer({Rmail, Rname, {data, Customer}}) ->
+meta([Rmn]) ->
+    [
+        {"sys-dns",     ?SYS_DNS}
+    ].
+
+%%% -----------------------------------------------------------------------
+%%%
+%%%     dosome(Req, Param)
+%%%
+%%%         Req  ::=
+%%%                     {Type, Rmn}
+%%%         Type ::=
+%%%                     customer    ;
+%%%                     sysmsg
+%%%         Rmn  :: =
+%%%                     [{Mail, Name}|_] ;
+%%%                     {Mail, Name}
+%%%         Param :: =
+%%%                     {data, Data}
+%%% -----------------------------------------------------------------------
+
+
+create_customer({sysmsg, Rmn}, {data, Customer}) ->
+    Rsubject = "Появился новый пользователь",
+    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody);
+
+create_customer({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Спасибо за регистрацию",
+    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
+delete_customer({sysmsg, Rmn}, {data, Customer}) ->
+    Rsubject = "Ваш аккаунт был удален",
+    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody);
+
+delete_customer({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Ваш аккаунт был удален",
+    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
+add_insider({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт одобрен модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/add-insider.xsl",
     Xmlb  = xml:encode_data(
         [
-            {"meta",
-                [
-                    {"sys-dns",     ?SYS_DNS},
-                    {"usermail",    Rmail},
-                    {"username",    Rname}
-                ]
-            },
-            {"сustomer", Customer}
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
+    mail_utils:mail(Rmn, Rsubject, Rbody);
 
-del_insider_customer({Rmail, Rname, {data, Customer}}) ->
+add_insider({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Ваш аккаунт одобрен модератором",
+    Xslb_path = "xsl/mail/customer/add-insider.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
+del_insider({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт удален модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/del-insider.xsl",
     Xmlb  = xml:encode_data(
         [
-            {"meta",
-                [
-                    {"sys-dns",     ?SYS_DNS},
-                    {"usermail",    Rmail},
-                    {"username",    Rname}
-                ]
-            },
-            {"сustomer", Customer}
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
+    mail_utils:mail(Rmn, Rsubject, Rbody);
 
+del_insider({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Ваш аккаунт удален модератором",
+    Xslb_path = "xsl/mail/customer/del-insider.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
 
-mkbill({Rmail, Rname, {data, Acv_video}}) ->
-    mkbill_customer({Rmail, Rname, {data, Acv_video}}).
+%%% --------------------------------------------------------------------------
 
 %%%
 %%% @doc
-%%%    Отправляет почту пользователю, если счет выставлен
+%%%    Отправляет почту
+%%%    получателям системных сообщений,
+%%%    если счет выставлен
 %%%
-mkbill_customer({Rmail, Rname, {data, Acv_video}}) ->
+mkbill({sysmsg, Rmn}, {data, Acv_video}) ->
     Rsubject = "Выставлен счет",
     Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
-            {"meta",
-                [
-                    {"sys-dns",     ?SYS_DNS},
-                    {"usermail",    Rmail},
-                    {"username",    Rname}
-                ]
-            },
-            {"video", Acv_video}
+            {"meta",    meta([Rmn])},
+            {"video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
-
-paybill({Rmail, Rname, {data, Acv_video}}) ->
-    paybill_customer({Rmail, Rname, {data, Acv_video}}).
+    mail_utils:mail(Rmn, Rsubject, Rbody);
 
 %%%
 %%% @doc
-%%%    Отправляет почту пользователю, если счет оплачен
+%%%    Отправляет почту пользователю,
+%%%    если счет выставлен
 %%%
-paybill_customer({Rmail, Rname, {data, Acv_video}}) ->
+mkbill({customer, Rmn}, {data, Acv_video}) ->
+    Rsubject = "Выставлен счет",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",    meta([Rmn])},
+            {"video",   Acv_video}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
+%%%
+%%% @doc
+%%%    Отправляет почту
+%%%    получателям системных сообщений,
+%%%    если счет оплачен
+%%%
+paybill({sysmsg, Rmn}, {data, Acv_video}) ->
+    Rsubject = "Оплачен счет на видео ",
+    Xslb_path = "xsl/mail/customer/paybill.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",    meta([Rmn])},
+            {"video",   Acv_video}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody);
+
+%%%
+%%% @doc
+%%%    Отправляет почту пользователю,
+%%%    если счет оплачен
+%%%
+paybill({customer, Rmn}, {data, Acv_video}) ->
     Rsubject = "Ваш счет оплачен",
     Xslb_path = "xsl/mail/customer/paybill.xsl",
     Xmlb  = xml:encode_data(
         [
-            {"meta",
-                [
-                    {"sys-dns",     ?SYS_DNS},
-                    {"usermail",    Rmail},
-                    {"username",    Rname}
-                ]
-            },
-            {"video", Acv_video}
+            {"meta",    meta([Rmn])},
+            {"video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
-    mail_utils:mail(Rmail, Rname, Rsubject, Rbody).
+    mail_utils:mail(Rmn, Rsubject, Rbody).
 
-
+%%% --------------------------------------------------------------------------
 
 
 test()->

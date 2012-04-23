@@ -3,7 +3,7 @@
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:import href="../shared/master/screen/chstate.xsl"/>
+<xsl:import href="../shared/master/customer/acv-video-chstate.xsl"/>
 
 <xsl:import href="../shared/utils/erlangFormatDate.xsl"/>
 

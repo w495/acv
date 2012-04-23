@@ -32,8 +32,6 @@
     encoding="utf-8"
 />
 
-
-
 <xsl:template match="/" name="s-html">
     <!--
         Описание страницы

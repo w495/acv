@@ -8,25 +8,62 @@
 -module(mail_customer).
 -behaviour(gen_event).
 
+%%%
+%%% Используем наследование модулей,
+%%% чтобы не тянуть кучу одинаковых методов.
+%%% Если надо, мы всегда сможем из переопределить.
+%%% 
+-extends(evman_gen_handler).
+-export([handle_event/2]).
+
 -include("common.hrl").
--define(HANDLERNAME, ?MODULE).
+-define(MAILTYPE, customer).
 
--export([
-    init/1,
-    handle_event/2,
-    handle_call/2,
-    handle_info/2,
-    terminate/2,
-    code_change/3
-]).
 
--record(state, {}).
-
-init([]) ->
-    {ok, #state{}}.
-
+%%% ---------------------------------------------------------------------
 %%%
+%%% Обработка событий создания кастомера
 %%%
+%%% ---------------------------------------------------------------------
+
+handle_event(
+    {evman_customer,
+        {create,
+            {data, Data}
+        }
+    }, State ) ->
+    %%% when proplists:is_defined("id", Data)
+    ?I("Customer ~p is insider ~n",
+        [proplists:get_value("id", Data)]),
+    customer_facade(mail, create_customer, Data),
+    {ok, State};
+
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Обработка событий удаления кастомера
+%%%
+%%% ---------------------------------------------------------------------
+
+handle_event(
+    {evman_customer,
+        {delete,
+            {data, Data}
+        }
+    }, State ) ->
+    %%% when proplists:is_defined("id", Data)
+    ?I("Customer ~p is insider ~n",
+        [proplists:get_value("id", Data)]),
+    customer_facade(mail, delete_customer, Data),
+    {ok, State};
+
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Обработка событий изменения кастомера
+%%%
+%%% ---------------------------------------------------------------------
+
 %%%
 %%% Мы тут используем {insider, {data, Data}}
 %%%     вместо  {insider, {data, Data}}
@@ -49,24 +86,13 @@ handle_event(
         }
     }, State ) ->
     %%% when proplists:is_defined("id", Data)
-    ?I("Customer ~p is insider ~n", [proplists:get_value("id", Data)]),
-    Id = proplists:get_value("id", Data),
-    {ok, Customer, _} = dao_customer:get_customer(Id),
-    Rmail = proplists:get_value("email", Customer),
-    Rname = proplists:get_value("login", Customer),
-    mail:add_insider_customer({Rmail, Rname, {data, Customer}}),
+    ?I("Customer ~p is insider ~n",
+        [proplists:get_value("id", Data)]),
+    customer_facade(mail, add_insider, Data),
     {ok, State};
 
-handle_event({evman_customer, {change, {perm, {add, {insider, Insider}}}}}, State) ->
-    {ok, State};
 
-handle_event({evman_customer, {change, {perm, {add, Perm}}}}, State) ->
-    %     ?D("~p ~p add perm from evman_customer~n",
-    %         [?HANDLERNAME, self()]),
-    {ok, State};
 
-%%%
-%%%
 %%%
 %%% Мы тут используем {insider, {data, Data}}
 %%%     вместо  {insider, {data, Data}}
@@ -92,68 +118,34 @@ handle_event(
     %%% when proplists:is_defined("id", Data)
     ?I("Customer ~p is NOT insider ~n",
         [proplists:get_value("id", Data)]),
+    customer_facade(mail, del_insider, Data),
+    {ok, State};
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Отнаследованные методы
+%%%
+%%% ---------------------------------------------------------------------
+
+%%%
+%%% Для всего остального вызываем функции надмодуля.
+%%% 
+handle_event(Some, State) ->
+    ?BASE_MODULE:handle_event(Some, State).
+
+%%% ---------------------------------------------------------------------
+%%%
+%%% Внутренние методы
+%%%
+%%% ---------------------------------------------------------------------
+
+
+customer_facade(Mod, Fun, Data) ->
     Id = proplists:get_value("id", Data),
-    {ok, Customer, _} = dao_customer:get_customer(Id),
+    {ok, [Customer], _} = dao_customer:get_customer(Id),
+    ?D("Customer = ~p~n", [Customer]),
     Rmail = proplists:get_value("email", Customer),
     Rname = proplists:get_value("login", Customer),
+    Mod:Fun({?MAILTYPE, {Rmail, Rname}}, {data, Customer}).
 
-    mail:del_insider_customer({Rmail, Rname, {data, Customer}}),
-
-    {ok, State};
-
-handle_event({evman_customer, {change, {perm, {del, {insider, Insider}}}}}, State) ->
-
-    {ok, State};
-
-handle_event({evman_customer, {change, {perm, {del, Perm}} }}, State) ->
-    %     ?D("~p ~p del perm from evman_customer~n",
-    %         [?HANDLERNAME, self()]),
-    {ok, State};
-
-handle_event({evman_customer, {change, {perm, Perm} }}, State) ->
-    %     ?D("~p ~p has changes in perms from evman_customer~n",
-    %         [?HANDLERNAME, self()]),
-    {ok, State};
-
-handle_event({evman_customer, {change, Changes }}, State) ->
-%     ?D("~p ~p has changes from evman_customer~n",
-%         [?HANDLERNAME, self()]),
-    {ok, State};
-
-handle_event({evman_customer, _event}, State) ->
-    %     ?D("~p ~p has unknown event from evman_customer~n",
-    %         [?HANDLERNAME, self()]),
-    {ok, State};
-
-handle_event({_sender, _event}, State) ->
-    %     ?D("~p ~p has unknown event from ~p, `~p' and state `~p' ~n",
-    %         [?HANDLERNAME, self(), _sender, _event, State]),
-    {ok, State};
-
-handle_event(_event, State) ->
-    %     ?D("~p ~p has unknown event `~p' and state `~p' ~n",
-    %         [?HANDLERNAME, self(), _event, State]),
-    {ok, State}.
-
-
-
-
-
-handle_call(_request, State) ->
-    %     ?D("~p ~p has unknown call `~p' and state `~p' ~n",
-    %         [?HANDLERNAME, self(), _request, State]),
-    {ok, ok, State}.
-
-handle_info(_info, State) ->
-    %     ?D("~p ~p has unknown info `~p' and state `~p' ~n",
-    %         [?HANDLERNAME, self(), _info, State]),
-    {ok, State}.
-
-terminate(_reason, _state) ->
-    %     ?D("~p ~p was terminate with reason `~p' and state `~p' ~n",
-    %         [?HANDLERNAME, self(), _reason, _state]),
-    ok.
-
-code_change(_OldVsn, State, _Extra) ->
-    {ok, State}.
 

@@ -35,6 +35,9 @@ mmh_utf8(In)->
 mmh_person(null, null)->
     mmh_person(?SYS_MAIL_NAME, ?SYS_MAIL_USERNAME);
 
+mmh_person(null, Mail)->
+    mmh_person(?SYS_MAIL_NAME, Mail);
+
 mmh_person(Name, null)->
     mmh_person(Name, ?SYS_MAIL_USERNAME);
 
@@ -46,13 +49,19 @@ mmh_person(Name, Mail)->
 
 %%%
 %%% @doc
+%%%    Обертка mail/4
+%%%
+mail({Rmail, Rname}, Rsubject, Rbody) ->
+    mail(Rmail, Rname, Rsubject, Rbody);
+
+%%%
+%%% @doc
 %%%    Отправляет почту нескольким получателям
 %%%
 mail([], Rsubject, Rbody) -> ok;
 mail([{Rmail, Rname} | Rest ], Rsubject, Rbody) ->
     mail(Rmail, Rname, Rsubject, Rbody),
     mail(Rest, Rsubject, Rbody).
-
 
 %%%
 %%% @doc

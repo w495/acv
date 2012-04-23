@@ -58,4 +58,4 @@ get_handlers(Eventname) ->
 
 
 info(Eventname, Msg) ->
-    gen_event:notify(Eventname, Msg).
+    gen_event:notify(Eventname, {Eventname, Msg}).
