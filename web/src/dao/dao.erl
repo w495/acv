@@ -103,7 +103,6 @@ dao_call(Module, Function, undefined, Json_oname, Callback) ->
     dao_call_worker(Module:Function(), Json_oname, Callback);
 
 dao_call(Module, Function, Param, Json_oname, Callback) ->
-    ?D("~n Module:Function(Param) = ~p:~p(~p)~n", [Module, Function, Param]),
     dao_call_worker(Module:Function(Param), Json_oname, Callback).
 
 %%% ------------------------------------------------------------------------

@@ -16,6 +16,16 @@
 ]).
 
 
+-export([
+    create/1,
+    delete/1,
+    change/1,
+    change_bill/1,
+    mkbill/1,
+    paybill/1
+]).
+
+
 %%% -----------------------------------------------------------------------
 %%% evman_gen_notifier API
 %%% -----------------------------------------------------------------------
@@ -90,4 +100,18 @@ mkbill(Msg) ->
 %%%
 paybill(Msg) ->
     change_bill({pay, Msg}).
+
+
+activate(Msg) ->
+    change({activate, Msg}).
+
+
+disactivate(Msg) ->
+    change({disactivate, Msg}).
+
+start(Msg) ->
+    change({start, Msg}).
+
+stop(Msg) ->
+    change({stop, Msg}).
 

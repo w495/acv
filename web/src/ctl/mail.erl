@@ -152,7 +152,64 @@ del_insider({customer, Rmn}, {data, Customer}) ->
     Rbody = xslt:apply(Xslb_path, Xmlb),
     mail_utils:mail(Rmn, Rsubject, Rbody).
 
+
 %%% --------------------------------------------------------------------------
+%%% --------------------------------------------------------------------------
+%%% --------------------------------------------------------------------------
+
+
+create_acv_video({sysmsg, Rmn}, {data, Customer}) ->
+    Rsubject = "Была создана новая кампания",
+    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody);
+
+create_acv_video({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Вы создали кампанию",
+    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
+delete_acv_video({sysmsg, Rmn}, {data, Customer}) ->
+    Rsubject = "Кампания была удалена",
+    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody);
+
+delete_acv_video({customer, Rmn}, {data, Customer}) ->
+    Rsubject = "Ваша кампания была удалена",
+    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xmlb  = xml:encode_data(
+        [
+            {"meta",        meta([Rmn])},
+            {"сustomer",    Customer}
+        ]
+    ),
+    Rbody = xslt:apply(Xslb_path, Xmlb),
+    mail_utils:mail(Rmn, Rsubject, Rbody).
+
+%%% --------------------------------------------------------------------------
+
 
 %%%
 %%% @doc

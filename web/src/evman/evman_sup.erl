@@ -35,6 +35,7 @@ upgrade() ->
 %% @doc supervisor callback.
 init([]) ->
 
+
     Evman_acv_video = {
         evman_acv_video,
         {evman_acv_video, start_link,
@@ -43,21 +44,31 @@ init([]) ->
                 [{mail_customer, []}]
             ]
         },
-        permanent, 5000, worker, [evman_acv_video]},
+        permanent,
+        5000,
+        worker,
+        [evman_acv_video]
+    },
 
     Evman_customer = {
         evman_customer,
-        {evman_customer, start_link,
+        {
+            evman_customer,
+            start_link,
             [
                 %[{mail_customer, []}, {mail_sysmsg, []}]
                 [{mail_customer, []}]
             ]
         },
-        permanent, 5000, worker, [evman_customer]},
+        permanent,
+        5000,
+        worker,
+        [evman_customer]
+    },
 
     Processes = [
-        Evman_customer,     % События заказчика
-        Evman_acv_video   % События видео
+        Evman_customer,         % События заказчика
+        Evman_acv_video         % События видео
     ],
     {ok, {{one_for_one, 10, 10}, Processes}}.
 

@@ -14,10 +14,16 @@
 %%% Если надо, мы всегда сможем из переопределить.
 %%%
 -extends(evman_gen_handler).
--export([handle_event/2]).
+-export([
+    start_link/0,
+    handle_event/2
+]).
 
 -include("common.hrl").
+-define(HANDLERNAME, ?MODULE).
 -define(MAILTYPE, customer).
+
+
 
 %%% ---------------------------------------------------------------------
 %%%
@@ -127,6 +133,7 @@ handle_event(
     acv_video_facade(mail, create_acv_video, Data),
     {ok, State};
 
+
 %%% ---------------------------------------------------------------------
 %%%
 %%% Обработка событий удаления рекламной кампании 
@@ -195,6 +202,10 @@ handle_event(
 handle_event(Some, State) ->
     ?BASE_MODULE:handle_event(Some, State).
 
+start_link() ->
+    ?BASE_MODULE:start_link(?HANDLERNAME).
+
+
 %%% ---------------------------------------------------------------------
 %%%
 %%% Внутренние методы
@@ -218,4 +229,8 @@ customer_facade(Mod, Fun, Data) ->
 %%% Фасад, для отправки почты при изменении кампании
 %%% 
 acv_video_facade(Mod, Fun, Data) ->
-    ok.
+    Id = proplists:get_value("id", Data),
+    {ok, [Acv_video], Geo_list, Cat_list} = dao_acv_video:get_acv_video(Id),
+    Rmail = proplists:get_value("email", Acv_video),
+    Rname = proplists:get_value("login", Acv_video),
+    Mod:Fun({?MAILTYPE, {Rmail, Rname}}, {data, Acv_video}).
