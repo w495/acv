@@ -154,15 +154,36 @@ update_customer_group({{Id, Name, Descr}, PermissionList, _updater_id}) ->
 
 %+
 get_customers(_) ->
-    Q = "select "
-            "customer.id, customer.firstname, customer.lastname, "
-            "customer.patronimic, customer.login, customer.pic_url, "
-            "customer.active, "
-            "customer.password_hash "
-         "from "
-            "customer "
-         "where "
-            "customer.deleted = false;",
+    Q = 
+        " select "
+            " customer.id, "
+            " customer.firstname, "
+            " customer.lastname, "
+            " customer.patronimic, "
+            " customer.login, "
+            " customer.pic_url, "
+            " customer.password_hash,"
+            "'insider' in "
+               " ( "
+                   " select "
+                       " permission.name "
+                    " from "
+                       " permission "
+                    " join "
+                       " permission2group "
+                    " on "
+                       " permission.id = permission2group.perm_id "
+                    " join "
+                        " customer2group "
+                    " on "
+                        " permission2group.group_id = customer2group.group_id "
+                        " and customer2group.customer_id = customer.id "
+                " ) "
+                " as active "
+         " from "
+            " customer "
+         " where "
+            " customer.deleted = false; ",
     dao:simple(Q).
 
 %-
