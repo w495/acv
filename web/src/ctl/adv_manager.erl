@@ -12,13 +12,22 @@
 ]).
 
 
--include("../include/common.hrl").
--include("../include/web.hrl").
+-include("common.hrl").
+-include("web.hrl").
 
 get_adv(Req) ->
-    DefResXlm = "<block duration=\"600\" loadnext=\"300\">"
-                    "<creative category_id=\"16\" skip=\"no\" duration=\"600\" type=\"video\" start=\"0\" partner=\"videonow|doubleclick3\"/>"
-                    "</block>", 
+    DefResXlm =
+        "<block duration=\"600\" loadnext=\"300\">"
+            "<creative "
+                " category_id=\"16\" "
+                " skip=\"no\" "
+                " duration=\"600\" "
+                " type=\"video\" "
+                " start=\"0\" "
+                " partner=\"videonow|doubleclick3\" "
+            "/>"
+        "</block>",
+
     Result = try
         Data = Req:parse_qs(),
         Tuple = norm:extr(Data, [
@@ -31,7 +40,6 @@ get_adv(Req) ->
         XCountryCode = Req:get_header_value("X-Country-Code"),
         XCity = Req:get_header_value("X-City"),
         Peer = Req:get(peer),
-%        io:format("get_adv ::::::::::::::~p, ~p~n", [XCountryCode, XCity]),
         case biz_adv_manager:get_acv_ext(In, {XCountryCode, XCity}) of
             [] -> ResTry = DefResXlm;
             Val -> ResTry = biz_adv_manager:make_acv_xml(Val)
@@ -48,7 +56,7 @@ get_adv(Req) ->
     end,
     ?D("~n!!!------------------------------~n!!! Result = ~p ~n!!!------------------------------~n ", [Result]),
 
-    {"application/xml", [], [Result]}.
+    {?OUTPUT_XML, [], [Result]}.
 
 test()->
     ok.

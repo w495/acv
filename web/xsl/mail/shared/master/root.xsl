@@ -102,5 +102,96 @@
 </xsl:template>
 
 
+<xsl:template name="text-table-line">
+    <xsl:param name="Name" />
+    <xsl:param name="Value" />
+    <xsl:text>    </xsl:text>
+    <xsl:value-of select="$Name" />
+    <xsl:text>:&#xa;    </xsl:text>
+    <xsl:text>          </xsl:text>
+    <xsl:text>          </xsl:text>
+    <xsl:value-of select="$Value" />
+    <xsl:text>;&#xa;</xsl:text>
+</xsl:template>
+
+
+<xsl:template name="customer-text-table">
+    <xsl:param name="Title" select="'Данные о пользователе'" />
+    <xsl:param name="Customer" select="/data/сustomer" />
+    <xsl:value-of select="$Title" />
+    <xsl:text>&#xa;&#xa;</xsl:text>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'номер'" />
+        <xsl:with-param name="Value" select="$Customer/id" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'логин'" />
+        <xsl:with-param name="Value" select="$Customer/login" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'email'" />
+        <xsl:with-param name="Value" select="$Customer/email" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'имя'" />
+        <xsl:with-param name="Value" select="$Customer/firstname" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'фамилия'" />
+        <xsl:with-param name="Value" select="$Customer/lastname" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'отчество'" />
+        <xsl:with-param name="Value" select="$Customer/patronimic" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'организация'" />
+        <xsl:with-param name="Value" select="$Customer/organization" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'должность'" />
+        <xsl:with-param name="Value" select="$Customer/position" />
+    </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="acv-video-fields-text-table">
+    <xsl:param name="Title" select="'Данные о видео-кампании '" />
+    <xsl:param name="Acv-video" select="/data/acv-video" />
+    <xsl:value-of select="$Title" />
+    <xsl:text>&#xa;&#xa;</xsl:text>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'номер'" />
+        <xsl:with-param name="Value" select="$Acv-video/id" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'имя'" />
+        <xsl:with-param name="Value" select="$Acv-video/name" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'ссылка'" />
+        <xsl:with-param name="Value" select="$Acv-video/url" />
+    </xsl:call-template>
+    <xsl:call-template name="text-table-line">
+        <xsl:with-param name="Name" select="'файл'" />
+        <xsl:with-param name="Value" select="concat(concat(/data/meta/sys-dns, '/'), $Acv-video/ref)" />
+    </xsl:call-template>
+</xsl:template>
+
+<xsl:template name="acv-video-text-table">
+    <xsl:param name="Title" select="'Данные о видео-кампании'" />
+    <xsl:param name="Acv-video" select="/data/acv-video" />
+
+    <xsl:call-template name="acv-video-fields-text-table">
+        <xsl:with-param name="Title" select="$Title" />
+        <xsl:with-param name="Acv-video" select="$Acv-video" />
+    </xsl:call-template>
+    <xsl:text>&#xa;</xsl:text>
+    <xsl:call-template name="customer-text-table">
+        <xsl:with-param name="Title" select="'Данные о создателе кампании'" />
+        <xsl:with-param name="Customer" select="$Acv-video/customer" />
+    </xsl:call-template>
+
+</xsl:template>
+
 
 </xsl:stylesheet>

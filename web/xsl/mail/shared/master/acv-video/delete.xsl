@@ -15,7 +15,7 @@
 </xsl:template>
 
 <xsl:template name="s-main-base">
-    <xsl:call-template name="s-main-chstate"/>
+    <xsl:call-template name="s-main-delete"/>
 </xsl:template>
 
 

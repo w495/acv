@@ -53,20 +53,22 @@ meta([Rmn]) ->
 
 
 create_customer({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Появился новый пользователь",
-    Xslb_path = "xsl/mail/sysmsg/create-customer.xsl",
+    Rsubject = "Появился новый пользователь №" ++
+        convert:to_list(proplists:get_value("id", Customer)),
+    Xslb_path = "xsl/mail/sysmsg/customer/create.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
             {"сustomer",    Customer}
         ]
     ),
+    ?D("Customer = ~p", [Customer]),
     Rbody = xslt:apply(Xslb_path, Xmlb),
     mail_utils:mail(Rmn, Rsubject, Rbody);
 
 create_customer({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Спасибо за регистрацию",
-    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xslb_path = "xsl/mail/customer/customer/create.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -79,8 +81,9 @@ create_customer({customer, Rmn}, {data, Customer}) ->
 %%% --------------------------------------------------------------------------
 
 delete_customer({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Ваш аккаунт был удален",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Rsubject = "Был удален пользователь №" ++ 
+        convert:to_list(proplists:get_value("id", Customer)),
+    Xslb_path = "xsl/mail/sysmsg/customer/delete.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -92,7 +95,7 @@ delete_customer({sysmsg, Rmn}, {data, Customer}) ->
 
 delete_customer({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт был удален",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/customer/delete.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -105,8 +108,9 @@ delete_customer({customer, Rmn}, {data, Customer}) ->
 %%% --------------------------------------------------------------------------
 
 add_insider({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Ваш аккаунт одобрен модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Rsubject = "Был одобрен пользователь №" ++
+        convert:to_list(proplists:get_value("id", Customer)),
+    Xslb_path = "xsl/mail/sysmsg/customer/add-insider.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -118,7 +122,7 @@ add_insider({sysmsg, Rmn}, {data, Customer}) ->
 
 add_insider({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт одобрен модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/customer/add-insider.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -131,8 +135,9 @@ add_insider({customer, Rmn}, {data, Customer}) ->
 %%% --------------------------------------------------------------------------
 
 del_insider({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Ваш аккаунт удален модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Rsubject = "Был отклонен пользователь №" ++ 
+        convert:to_list(proplists:get_value("id", Customer)),
+    Xslb_path = "xsl/mail/sysmsg/customer/del-insider.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -143,8 +148,8 @@ del_insider({sysmsg, Rmn}, {data, Customer}) ->
     mail_utils:mail(Rmn, Rsubject, Rbody);
 
 del_insider({customer, Rmn}, {data, Customer}) ->
-    Rsubject = "Ваш аккаунт удален модератором",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Rsubject = "Ваш аккаунт отклонен модератором",
+    Xslb_path = "xsl/mail/customer/customer/del-insider.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -159,26 +164,29 @@ del_insider({customer, Rmn}, {data, Customer}) ->
 %%% --------------------------------------------------------------------------
 %%% --------------------------------------------------------------------------
 
+create_acv_video({sysmsg, Rmn}, {data, Acv_video}) ->
+    Rsubject = "Была создана новая кампания №" ++
+        convert:to_list(proplists:get_value("id", Acv_video)),
 
-create_acv_video({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Была создана новая кампания",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    ?D("~nAcv_video = ~p~n", [Acv_video]),
+
+    Xslb_path = "xsl/mail/sysmsg/acv-video/create.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
-            {"сustomer",    Customer}
+            {"acv-video",       Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
     mail_utils:mail(Rmn, Rsubject, Rbody);
 
-create_acv_video({customer, Rmn}, {data, Customer}) ->
-    Rsubject = "Вы создали кампанию",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+create_acv_video({customer, Rmn}, {data, Acv_video}) ->
+    Rsubject = "Вы создали кампанию", 
+    Xslb_path = "xsl/mail/customer/acv-video/create.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
-            {"сustomer",    Customer}
+            {"acv-video",       Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
@@ -186,25 +194,26 @@ create_acv_video({customer, Rmn}, {data, Customer}) ->
 
 %%% --------------------------------------------------------------------------
 
-delete_acv_video({sysmsg, Rmn}, {data, Customer}) ->
-    Rsubject = "Кампания была удалена",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+delete_acv_video({sysmsg, Rmn}, {data, Acv_video}) ->
+    Rsubject = "Была удалена кампания №" ++
+        convert:to_list(proplists:get_value("id", Acv_video)),
+    Xslb_path = "xsl/mail/sysmsg/acv-video/delete.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
-            {"сustomer",    Customer}
+            {"acv-video",       Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
     mail_utils:mail(Rmn, Rsubject, Rbody);
 
-delete_acv_video({customer, Rmn}, {data, Customer}) ->
+delete_acv_video({customer, Rmn}, {data, Acv_video}) ->
     Rsubject = "Ваша кампания была удалена",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/acv-video/delete.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
-            {"сustomer",    Customer}
+            {"acv-video",       Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
@@ -220,12 +229,13 @@ delete_acv_video({customer, Rmn}, {data, Customer}) ->
 %%%    если счет выставлен
 %%%
 mkbill({sysmsg, Rmn}, {data, Acv_video}) ->
-    Rsubject = "Выставлен счет",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Rsubject = "Выставлен счет для кампании №" ++
+        convert:to_list(proplists:get_value("id", Acv_video)),
+    Xslb_path = "xsl/mail/sysmsg/acv-video/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",    meta([Rmn])},
-            {"video",   Acv_video}
+            {"acv-video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
@@ -238,11 +248,11 @@ mkbill({sysmsg, Rmn}, {data, Acv_video}) ->
 %%%
 mkbill({customer, Rmn}, {data, Acv_video}) ->
     Rsubject = "Выставлен счет",
-    Xslb_path = "xsl/mail/customer/mkbill.xsl",
+    Xslb_path = "xsl/mail/customer/acv-video/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",    meta([Rmn])},
-            {"video",   Acv_video}
+            {"acv-video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
@@ -258,11 +268,11 @@ mkbill({customer, Rmn}, {data, Acv_video}) ->
 %%%
 paybill({sysmsg, Rmn}, {data, Acv_video}) ->
     Rsubject = "Оплачен счет на видео ",
-    Xslb_path = "xsl/mail/customer/paybill.xsl",
+    Xslb_path = "xsl/mail/sysmsg/acv-video/paybill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",    meta([Rmn])},
-            {"video",   Acv_video}
+            {"acv-video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),
@@ -275,11 +285,11 @@ paybill({sysmsg, Rmn}, {data, Acv_video}) ->
 %%%
 paybill({customer, Rmn}, {data, Acv_video}) ->
     Rsubject = "Ваш счет оплачен",
-    Xslb_path = "xsl/mail/customer/paybill.xsl",
+    Xslb_path = "xsl/mail/customer/acv-video/paybill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",    meta([Rmn])},
-            {"video",   Acv_video}
+            {"acv-video",   Acv_video}
         ]
     ),
     Rbody = xslt:apply(Xslb_path, Xmlb),

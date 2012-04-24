@@ -12,6 +12,8 @@
 </xsl:template>
 
 
+
+
 <xsl:template name="s-main-root">
     <!--
         Основное содержимое документа.
