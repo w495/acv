@@ -55,7 +55,7 @@
 </xsl:template>
 
 <xsl:template name="s-header">
-    <xsl:text>Здравствуйте,</xsl:text>
+    <xsl:text>Здравствуйте, </xsl:text>
     <xsl:value-of select="/data/meta/username" />
     <xsl:text>!</xsl:text>
     <xsl:text>&#xa;</xsl:text>

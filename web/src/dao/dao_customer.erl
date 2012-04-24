@@ -153,6 +153,38 @@ update_customer_group({{Id, Name, Descr}, PermissionList, _updater_id}) ->
 % ============================================================================
 
 %+
+get_customers({perm, Perm}) ->
+    Q =
+        " select "
+            " distinct(customer.id), "
+            " customer.firstname, "
+            " customer.lastname, "
+            " customer.patronimic, "
+            " customer.login, "
+            " customer.email, "
+            " customer.pic_url, "
+            " customer.password_hash"
+        " from "
+            " customer "
+        " join "
+            " customer2group "
+        " on "
+            " customer.id = customer2group.customer_id "
+        " join "
+            " permission2group "
+        " on "
+            " permission2group.group_id = customer2group.group_id "
+        " join "
+            " permission "
+        " on "
+                " permission.id = permission2group.perm_id "
+            " and "
+                " permission.name = $permname "
+        " where "
+            " customer.deleted = false; ",
+    dao:simple(Q, [{permname, convert:to_list(Perm)}]);
+
+
 get_customers(_) ->
     Q = 
         " select "

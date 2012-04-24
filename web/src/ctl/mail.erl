@@ -7,6 +7,8 @@
 
 -export([
     % -----------------------
+    create_customer/2,
+    create_acv_video/2,
     add_insider/2,
     del_insider/2,
     mkbill/2,
@@ -52,7 +54,7 @@ meta([Rmn]) ->
 
 create_customer({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Появился новый пользователь",
-    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xslb_path = "xsl/mail/sysmsg/create-customer.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -78,7 +80,7 @@ create_customer({customer, Rmn}, {data, Customer}) ->
 
 delete_customer({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт был удален",
-    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -90,7 +92,7 @@ delete_customer({sysmsg, Rmn}, {data, Customer}) ->
 
 delete_customer({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт был удален",
-    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -104,7 +106,7 @@ delete_customer({customer, Rmn}, {data, Customer}) ->
 
 add_insider({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт одобрен модератором",
-    Xslb_path = "xsl/mail/customer/add-insider.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -116,7 +118,7 @@ add_insider({sysmsg, Rmn}, {data, Customer}) ->
 
 add_insider({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт одобрен модератором",
-    Xslb_path = "xsl/mail/customer/add-insider.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -130,7 +132,7 @@ add_insider({customer, Rmn}, {data, Customer}) ->
 
 del_insider({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт удален модератором",
-    Xslb_path = "xsl/mail/customer/del-insider.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -142,7 +144,7 @@ del_insider({sysmsg, Rmn}, {data, Customer}) ->
 
 del_insider({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваш аккаунт удален модератором",
-    Xslb_path = "xsl/mail/customer/del-insider.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -160,7 +162,7 @@ del_insider({customer, Rmn}, {data, Customer}) ->
 
 create_acv_video({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Была создана новая кампания",
-    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -172,7 +174,7 @@ create_acv_video({sysmsg, Rmn}, {data, Customer}) ->
 
 create_acv_video({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Вы создали кампанию",
-    Xslb_path = "xsl/mail/customer/create-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -186,7 +188,7 @@ create_acv_video({customer, Rmn}, {data, Customer}) ->
 
 delete_acv_video({sysmsg, Rmn}, {data, Customer}) ->
     Rsubject = "Кампания была удалена",
-    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
@@ -198,7 +200,7 @@ delete_acv_video({sysmsg, Rmn}, {data, Customer}) ->
 
 delete_acv_video({customer, Rmn}, {data, Customer}) ->
     Rsubject = "Ваша кампания была удалена",
-    Xslb_path = "xsl/mail/customer/delete-customer.xsl",
+    Xslb_path = "xsl/mail/customer/mkbill.xsl",
     Xmlb  = xml:encode_data(
         [
             {"meta",        meta([Rmn])},
