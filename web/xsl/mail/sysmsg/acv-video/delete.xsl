@@ -6,11 +6,9 @@
 <xsl:import href="../../shared/master/acv-video/delete.xsl"/>
 
 <xsl:template name="s-main-delete">
-    <xsl:text>Ваша рекламная кампания была удалена модератором! &#xa;</xsl:text>
+    <xsl:text>Рекламная кампания была удалена модератором! &#xa;</xsl:text>
     <xsl:text>&#xa;</xsl:text>
-    <xsl:text>Для выяснения причин </xsl:text>
-    <xsl:text>просим связаться со службой поддержки &#xa;</xsl:text>
-    <xsl:text>http://tvzavr.ru/feedback/form &#xa;</xsl:text>
+    <xsl:call-template name="acv-video-text-table" />
     <xsl:text>&#xa;</xsl:text>
 </xsl:template>
     

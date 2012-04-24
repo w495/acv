@@ -8,13 +8,15 @@
 -export([
     % -----------------------
     create_customer/2,
-    create_acv_video/2,
     add_insider/2,
     del_insider/2,
+    delete_customer/2,
+    % -----------------------
+    create_acv_video/2,
     mkbill/2,
     paybill/2,
+    delete_acv_video/2,
     % -----------------------
-
     test/0,
     test/1
 ]).
