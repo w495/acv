@@ -11,13 +11,23 @@
     test/1
 ]).
 
+%%% TODO:
+%%%     Разнести часть логики в biz и dao
+%%%
+
 
 -include("common.hrl").
 -include("web.hrl").
 
 get_adv(Req) ->
+    %%% TODO:
+    %%%     Есть мысль от Саши Рыкова, чтобы не возвращался loadnext
+    %%%     в случае postroll, или был равен -1
+    %%%
     DefResXlm =
-        "<block duration=\"600\" loadnext=\"300\">"
+        "<block duration=\"600\" loadnext=\"" ++
+                dao_config:config("acv_video_loadnext")
+            ++ "\">"
             "<creative "
                 " category_id=\"16\" "
                 " skip=\"no\" "

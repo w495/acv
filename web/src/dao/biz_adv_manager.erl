@@ -14,10 +14,13 @@
 %     get_acv_ext/3,
 %     get_acv/3,
 %     test/0,
-%     test_dirty/0,
+%     test_dirty/0,maiqu6Ce6aht
 %     test/1
 % ]).
 
+%%% TODO:
+%%%     Разнести часть логики в biz и dao
+%%%
 
 -define(XML_TOP, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>").
 -define(DELIM, []).
