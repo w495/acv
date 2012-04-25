@@ -177,10 +177,8 @@ processControllerException(Type, Exc, Req) ->
 serve_request(menu, Req) ->
     case authorization:auth_if(Req, "admin") of
         false ->
-    	    ?D("COMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM~n", []),
             serve_static(?RIA_HOME, ?RIA_MENU_COMMON_PATH, Req);
         R ->
-    	    ?D("ADMIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIN, ~p~n",[R]),
             serve_static(?RIA_HOME, ?RIA_MENU_ADMIN_PATH, Req)
     end;
 

@@ -1,3 +1,6 @@
+-ifndef(__DB_ACV__).
+-define(__DB_ACV__, true).
+
 -include("web_session.hrl").
 
 -define(GLOBAL_TABLES,[]).
@@ -11,3 +14,4 @@
         ]
 ).
 
+-endif. %% __DB_ACV__

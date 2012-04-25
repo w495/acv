@@ -22,6 +22,7 @@
 -spec simple_ret(Query::string(), Params::list()) -> tuple().
 
 
+
 make_error_warn(E) ->
     make_error_json(<<"WARN">>, E).
 
@@ -59,60 +60,91 @@ make_error_json(Type, {Etype, Einfo})
             {struct, [{<<"type">>, erlang:list_to_binary(erlang:atom_to_list(Etype))},
             {<<"info">>, erlang:list_to_binary(Einfo)}]}}]}.
 
-dao_call(Module, Function, undefined, JsonRetName) ->
-    case Module:Function() of
-        {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
-        ok -> Res = {struct, [{<<"result">>, ok}]};
-        {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-        {error, E} -> Res = make_error_json(E)
-    end,
-    Res;
+%%% ------------------------------------------------------------------------
 
-dao_call(Module, Function, Param, JsonRetName) ->
-    case Module:Function(Param) of
-        {ok, Vals} -> Res = db2json:encode(Vals, JsonRetName);
-        ok -> Res = {struct, [{<<"result">>, ok}]};
-        {retVal, ok} -> Res = {struct, [{<<"result">>, ok}]};
-        {error, E} -> Res = make_error_json(E)
-    end,
-    Res.
+% dao_value(Module, Function, Param) ->
+%     case Module:Function(Param) of
+%         {ok, Vals} ->
+%             Pre_res = db2json:encode(Vals),
+%             Res = mochijson2:encode({struct, [{<<"value">>, Pre_res }]});
+%         _ ->
+%             Res = dao_call(Module, Function, Param, value)
+%     end,
+%     Res.
 
 %%%
 %%% Возвращает единственный вариант
 %%%
 dao_value(Module, Function, Param) ->
-    case Module:Function(Param) of
-        {ok, Vals} ->
-            Pre_res = db2json:encode(Vals),
-            Res = mochijson2:encode({struct, [{<<"value">>, Pre_res }]});
-        _ ->
-            Res = dao_call(Module, Function, Param, value)
-    end,
-    Res.
+    mochijson2:encode(
+        dao:dao_call(Module, Function, Param, value)
+    ).
 
 %%%
 %%% Возвращает несколько результатов
 %%%
 dao_values(Module, Function, Param) ->
     mochijson2:encode(
-        dao:dao_call(Module, Function,Param, values)
+        dao:dao_call(Module, Function, Param, values)
     ).
 
+%%% ------------------------------------------------------------------------
+
 dao_call(Module, Function, Param) ->
-    case Module:Function(Param) of
-        {ok, Vals} ->
-            io:format("Vals = ~p~n", [Vals]),
-            Res = db2json:encode(Vals);
-        ok ->
-            Res = {struct, [{<<"result">>, ok}]};
-        {retVal, ok} ->
-            Res = {struct, [{<<"result">>, ok}]};
-        {error, E} ->
-            Res = make_error_json(E);
-        {warn, E} ->
-            Res = make_error_warn(E)
-    end,
-    Res.
+   dao_call_worker(Module:Function(Param), undefined, undefined).
+
+dao_call(Module, Function, undefined, Json_oname) ->
+    dao_call_worker(Module:Function(), Json_oname, undefined);
+
+dao_call(Module, Function, Param, Json_oname) ->
+    dao_call_worker(Module:Function(Param), Json_oname, undefined).
+
+dao_call(Module, Function, undefined, Json_oname, Callback) ->
+    dao_call_worker(Module:Function(), Json_oname, Callback);
+
+dao_call(Module, Function, Param, Json_oname, Callback) ->
+    dao_call_worker(Module:Function(Param), Json_oname, Callback).
+
+%%% ------------------------------------------------------------------------
+
+dao_call_worker(Function_result, Json_oname) ->
+    dao_call_worker(Function_result, Json_oname, undefined).
+
+%%%
+%%% Функция с пустым Callback 
+%%%
+dao_call_worker(Function_result, Json_oname, undefined) ->
+    dao_call_worker(Function_result, Json_oname, fun(X) -> ok end);
+
+%%%
+%%% Функция с Callback
+%%%
+dao_call_worker(Function_result, Json_oname, Callback)  when erlang:is_function(Callback, 1) ->
+    case
+        case Function_result of
+            {ok, Vals} ->
+                {ok, db2json:encode(Vals, Json_oname)};
+            ok ->
+                {ok, {struct, [{<<"result">>, ok}]}};
+            {retVal, ok} ->
+                {ok, {struct, [{<<"result">>, ok}]}};
+            {error, E} ->
+                {error, make_error_json(E)};
+            {warn, E} ->
+                {warn, make_error_warn(E)}
+        end
+    of
+        {ok, Encoded} ->
+            Callback(Function_result),
+            Encoded;
+        {_, Encoded} ->
+            Encoded
+    end.
+
+%%% ------------------------------------------------------------------------
+
+
+
 
 pg2rs({ok, _, Vals}, Record_name) ->
     [list_to_tuple([Record_name | tuple_to_list(X)]) || X <- Vals];
@@ -264,7 +296,7 @@ with_transaction_fk(Function) ->
 simple(Query) ->
 %    ?DEBUG_INFO("~p:simple/1~nQuery:  ~s~n", [?MODULE, Query]),
     Result = dao:pgret(dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query)
+            fun(Con) -> equery(Con, Query)
         end)),
 %    ?DEBUG_INFO("~p:simple/1~n-> ~p~n", [?MODULE, Result]),
     Result.
@@ -276,7 +308,7 @@ simple(Query, Params) ->
 %    ?DEBUG_INFO("~p:simple/2~nQuery: ~s~nParams: ~p~n",
 %        [?MODULE, Query, Params]),
     Result = dao:pgret(dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query, Params)
+            fun(Con) -> equery(Con, Query, Params)
         end)),
 %    ?DEBUG_INFO("~p:simple/2~n-> ~p~n",
 %        [?MODULE, Result]),
@@ -289,7 +321,7 @@ simple_ret(Query, Params) ->
 %    ?DEBUG_INFO("~p:simple_ret/2~nQuery: ~s~nParams: ~p~n",
 %        [?MODULE, Query, Params]),
     Pre_result = dao:with_connection_fk(
-            fun(Con) -> pgsql:equery(Con, Query, Params)
+            fun(Con) -> equery(Con, Query, Params)
         end),
     case dao:pgret(Pre_result) of
         ok ->
@@ -300,3 +332,85 @@ simple_ret(Query, Params) ->
         Error -> Result = {error, Error}
     end,
     Result.
+
+%%% @doc
+%%%     Обертка для стандвартной функции pgsql
+%%%     Выполныет заданный запрос
+%%%     Если параметры функции являются proplist
+%%%     то происходит их распарсивание и подстановка согласно
+%%%     с буквенными именами в теле запроса
+%%%     Сделано это для того, чтобы в случае, если мы будем менять,
+%%%     наши запросы, не приходилось высчитывать порядок следования.
+%%%     Последнее очень не удобно для запросов с более чем 5 параметров.
+%%%
+
+equery(Con, Query, Params) ->
+    case utils:is_proplist(Params) of
+        true ->
+            {NewQuery, Values} = equery_pl(Query, Params),
+            pgsql:equery(Con, NewQuery, Values);
+        _ ->
+            pgsql:equery(Con, Query, Params)
+    end.
+
+equery(Con, Query) ->
+    pgsql:equery(Con, Query).
+
+%%% @doc
+%%%     Функция преобразования запроса
+%%%     с буквенными именами к числовым.
+%%%     Запрос:
+%%%         dao:equery_pl(
+%%%            "select id from customer where id = $id and uid = $uid",
+%%%            [{"id", 10}, {"uid", 15}]
+%%%         ).
+%%%    Вернет:
+%%%         "select id from customer where id = $1 and uid = $2"
+%%%
+equery_pl(Query, Proplist) ->
+    equery_pl(Query, Proplist, 0, []).
+
+%%% @doc
+%%%     Функция преобразования запроса, основная рабочая часть.
+%%%     Параметры разбиваем на {k, v}
+%%%         Преобразованное имя ключа $k заменится
+%%%             на его порядковый номер в списке.
+%%%         Значение (v) отправится в список значений,
+%%%             который далее будет использован для стандартного запроса
+%%%             тут важно соблюсти порядок следования значений
+%%%                 (Values ++[Value]) a не [Value|Values] !!!
+%%%     Чтобы не перекомпилевать одинаковые ключи
+%%%         для поиска по регекспу они храняться в ets
+%%%             dao_regexp создается в assist_srv
+%%%
+equery_pl(Query, [], _, Values) -> {Query, Values};
+
+equery_pl(Query, [{Name, Value}|Rest], Cnt, Values) ->
+    Newcnt = Cnt + 1,
+    Re = "[$]" ++ convert:to_list(Name),
+    case ets:lookup(dao_regexp, Re) of
+        [{_, {Re, Cre}}]  ->
+            true;
+        _ ->
+            {ok, Cre} = re:compile(Re),
+            true = ets:insert(dao_regexp, {Re, Cre}),
+            false
+    end,
+    Newquery =
+        re:replace(
+            Query,
+            Cre,
+            "$" ++ convert:to_list(Newcnt),
+            [{return,list}]
+        ),
+    equery_pl(Newquery, Rest, Newcnt, lists:append(Values, [Value]));
+
+equery_pl(Query, List, _, _) when erlang:is_list(List) ->
+    {Query, List}.
+
+
+
+
+
+
+

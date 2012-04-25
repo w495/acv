@@ -1,63 +1,121 @@
 -module(evman_acv_video).
-
--define(EVENTNAME, ?MODULE).
+-behaviour(evman_gen_notifier).
 
 -include("common.hrl").
+-define(EVENTNAME, ?MODULE).
 
-%% API
--export([start_link/0, start_link/1, add_handler/2, add_guarded_handler/2,
-         get_handlers/0, info/1]).
+-export([
+    start_link/0,
+    start_link/1,
+    add_handler/2,
+    add_guarded_handler/2,
+    rem_handler/1,
+    rem_guarded_handler/1,
+    get_handlers/0,
+    info/1
+]).
 
--export([chstate/1]).
+
+-export([
+    create/1,
+    delete/1,
+    change/1,
+    stop/1,
+    start/1,
+    activate/1,
+    disactivate/1,
+    change_bill/1,
+    mkbill/1,
+    paybill/1
+]).
+
+
+%%% -----------------------------------------------------------------------
+%%% evman_gen_notifier API
+%%% -----------------------------------------------------------------------
 
 start_link() ->
-    gen_event:start_link({local, ?EVENTNAME}).
+    evman_gen_notifier:start_link(?EVENTNAME).
 
-start_link(Handler_Args) ->
-    %%% Handler_Args = [{Handler, Args}, {Handler, Args}]
-    ?D("~n~nHandler_Args = ~p", [Handler_Args]),
-    Link = gen_event:start_link({local, ?EVENTNAME}),
-    lists:foreach(fun({Handler, Args})->
-        ?EVENTNAME:add_handler(Handler, [])
-    end,Handler_Args),
-    Link.
+start_link(Args) ->
+    evman_gen_notifier:start_link(?EVENTNAME, Args).
 
 add_handler(ModuleName, Args) ->
-    ?D("~n~nHandler, Args = ~p, ~p", [ModuleName, Args]),
-    ok = gen_event:add_handler(?EVENTNAME, ModuleName, []).
+    evman_gen_notifier:add_handler(?EVENTNAME, ModuleName, []).
 
 add_guarded_handler(ModuleName, Args) ->
-    {ok, Pid} = simple_hnd_guard:start(?EVENTNAME, ModuleName, Args),
-    simple_hnd_guard:add(Pid).
+    evman_gen_notifier:add_guarded_handler(?EVENTNAME, ModuleName, Args).
+
+rem_handler(ModuleName) ->
+    evman_gen_notifier:rem_handler(?EVENTNAME, ModuleName).
+
+rem_guarded_handler(ModuleName) ->
+    evman_gen_notifier:rem_guarded_handler(?EVENTNAME, ModuleName).
 
 get_handlers() ->
-    gen_event:which_handlers(?EVENTNAME).
-
-create(Msg) ->
-    gen_event:notify(?EVENTNAME, {create, Msg}).
-
-update(Msg) ->
-    gen_event:notify(?EVENTNAME, {update, Msg}).
-
-activate(Msg) ->
-    gen_event:notify(?EVENTNAME, {activate, Msg}).
-
-chstate(Msg) ->
-    gen_event:notify(?EVENTNAME, {chstate, Msg}).
-
-start(Msg) ->
-    gen_event:notify(?EVENTNAME, {start, Msg}).
-
-stop(Msg) ->
-    gen_event:notify(?EVENTNAME, {stop, Msg}).
-
-disactivate(Msg) ->
-    gen_event:notify(?EVENTNAME, {disactivate, Msg}).
-
-delete(Msg) ->
-    gen_event:notify(?EVENTNAME, {delete, Msg}).
-
+    evman_gen_notifier:get_handlers(?EVENTNAME).
 
 info(Msg) ->
-    gen_event:notify(?EVENTNAME, Msg).
+    evman_gen_notifier:info(?EVENTNAME, Msg).
+
+%%% -----------------------------------------------------------------------
+%%% API
+%%% -----------------------------------------------------------------------
+
+
+%%%
+%%% @doc
+%%%     Сообщает о создании состояния
+%%%
+create(Msg) ->
+    info({create, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает об удалении аккаунта
+%%%
+delete(Msg) ->
+    info({delete, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает об изменении состояния
+%%%
+change(Msg) ->
+    info({change, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает об изменении состояния счета
+%%%
+change_bill(Msg) ->
+    change({bill, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает о том, что счет выставлен 
+%%%
+mkbill(Msg) ->
+    change_bill({make, Msg}).
+
+%%%
+%%% @doc
+%%%     Сообщает о том, что счет оплачен
+%%%
+paybill(Msg) ->
+    change_bill({pay, Msg}).
+
+
+activate(Msg) ->
+    change({activate, Msg}).
+
+
+disactivate(Msg) ->
+    change({disactivate, Msg}).
+
+start(Msg) ->
+    change({start, Msg}).
+
+stop(Msg) ->
+    change({stop, Msg}).
 

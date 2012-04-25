@@ -1,3 +1,10 @@
+-ifndef(__WEB_SESSION_ACV__).
+-define(__WEB_SESSION_ACV__, true).
+
+%%% ---------------------------------------------------------------------------
+%%% НАСТРОЙКИ СЕСИИ
+%%% ---------------------------------------------------------------------------
+
 -define(SESSION_TABLE_NAME, list_to_atom(atom_to_list(node()) ++ "_session")).
 
 -record(web_session, {
@@ -17,3 +24,6 @@
 -define(F_COOKIEOPTIONS, [{max_age, ?EXPCOOKIE}, {path, "/"}]).
 
 -define(CATCHA_COOKIE, "captcha_codehex").
+
+
+-endif. %%% __WEB_SESSION_ACV__

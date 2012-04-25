@@ -27,12 +27,15 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
+
 <xsl:output
     method="text"
     encoding="utf-8"
 />
 
+<xsl:include href="../widgets/text-table.xsl" />
 
+<xsl:include href="../utils/erlangFormatDate.xsl" />
 
 <xsl:template match="/" name="s-html">
     <!--
@@ -57,7 +60,7 @@
 </xsl:template>
 
 <xsl:template name="s-header">
-    <xsl:text>Здравствуйте,</xsl:text>
+    <xsl:text>Здравствуйте, </xsl:text>
     <xsl:value-of select="/data/meta/username" />
     <xsl:text>!</xsl:text>
     <xsl:text>&#xa;</xsl:text>
@@ -97,12 +100,11 @@
     <xsl:text>С уважением,</xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>администрация Tvzavr.</xsl:text>
-    <xsl:text>&#xa;&#xa;</xsl:text>
+    <xsl:text>&#xa;</xsl:text>
     <xsl:text>© 2011 OOO «ТиВиЗавр»</xsl:text>
     <xsl:text>&#xa;</xsl:text>
     <xsl:text>Все права защищены.</xsl:text>
 </xsl:template>
-
 
 
 </xsl:stylesheet>

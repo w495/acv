@@ -61,6 +61,8 @@ init([]) ->
 
     captcha = utils:make_ets(captcha, [{write_concurrency,true}]),
     captcha_time = utils:make_ets(captcha_time, [{write_concurrency,true}]),
+    dao_regexp  = utils:make_ets(dao_regexp, [{write_concurrency,true}]),
+
     {ok, [], ?ASSIST_SRV_TIMEOUT}.
 
 
