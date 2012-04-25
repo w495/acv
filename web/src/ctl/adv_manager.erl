@@ -29,7 +29,7 @@ get_adv(Req) ->
                 dao_config:config("acv_video_loadnext")
             ++ "\">"
             "<creative "
-                " category_id=\"16\" "
+                " category_id=\"16\" " % 161 для 694 - id жанра
                 " skip=\"no\" "
                 " duration=\"600\" "
                 " type=\"video\" "

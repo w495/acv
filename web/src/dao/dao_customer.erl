@@ -409,7 +409,6 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, Pic_u
     ),
     dao:pgret(PGRet);
 
-<<<<<<< HEAD
 %%
 %% Изменяет существующего пользователя
 %%
@@ -417,16 +416,16 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Telephone, Pic_url
                     Organization, Position}, Password_hash, GroupList, _updater_id}) ->
 
     Q1 = "update customer set "
-			"firstname = $1, "
-			"lastname = $2, "
-			"patronimic = $3, "
+            "firstname = $1, "
+            "lastname = $2, "
+            "patronimic = $3, "
             "login = $4, "
-			"telephone_number = $5, "
-			"pic_url = $6, "
-			"email = $7, "
+            "telephone_number = $5, "
+            "pic_url = $6, "
+            "email = $7, "
             "city = $8, "
-			"organization = $9, "
-			"position = $10 "
+            "organization = $9, "
+            "position = $10 "
          "where id=$11;", 
 
     Qucpass =
