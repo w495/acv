@@ -45,7 +45,8 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             Lastname        : null,
             Patronimic      : null,
             Description     : null,
-            Pic_url         : null
+            Pic_url         : null,
+            Telephone_number: null
         },
         
         /* Cписок групп справа */
@@ -77,7 +78,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             this.inp.Password2    = new qx.ui.form.PasswordField()
                 .set({placeholder: "pass", required:true});
             this.inp.Email        = new qx.ui.form.TextField()
-                .set({placeholder: "abc@def.gh", required:true});
+                .set({placeholder: "email@example.com", required:true});
             this.inp.City         = new qx.ui.form.TextField()
                 .set({placeholder: "Город"});
             this.inp.Organization = new qx.ui.form.TextField()
@@ -92,7 +93,10 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 .set({placeholder: "Отчество"});
                 
             this.inp.Pic_url      = new qx.ui.form.TextField()
-                .set({placeholder: "файл", readOnly:true});
+                .set({placeholder: "Выберите файл", readOnly:true});
+                
+            this.inp.Telephone_number      = new qx.ui.form.TextField()
+                .set({placeholder: "Номер телефона", readOnly:true});
             
             this.groupList = new zqr.view.SelListTree(this,
                 this.groupListOptions.url,
@@ -104,7 +108,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             this.picButton = new zqr.view.Form.Upload.UploadButton("uploadfile", null, "icon/16/actions/document-save.png"),
             this.picForm = new zqr.view.Form.Upload.UploadForm('uploadFrm', this.urc.imgurl);
 
-            var layout = new qx.ui.layout.Grid(12, 6);
+            var layout = new qx.ui.layout.Grid(13, 6);
             var cnt = new qx.ui.container.Composite(layout);
 
             this.inp.Id.setEnabled(false);
@@ -135,10 +139,6 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             cnt.add(new qx.ui.basic.Label().set({value: "Повторите пароль"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Password2,  {row:vertical_offset , column:1});
-
-            cnt.add(new qx.ui.basic.Label().set({value: "Фотография:" + RFM,  rich : true}),
-                    {row:++vertical_offset, column:0});
-            cnt.add(this._buildPicFormCnt(), {row:vertical_offset , column:1});
             
             cnt.add(new qx.ui.basic.Label().set({value: "E-mail"            + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
@@ -156,6 +156,10 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Lastname,   {row:vertical_offset , column:1});
 
+            cnt.add(new qx.ui.basic.Label().set({value: "Фотография:",  rich : true}),
+                    {row:++vertical_offset, column:0});
+            cnt.add(this._buildPicFormCnt(), {row:vertical_offset , column:1});
+
             
             cnt.add(new qx.ui.basic.Label().set({value: "Город",                    rich : true}),
                     {row:++vertical_offset, column:0});
@@ -168,6 +172,10 @@ qx.Class.define("zqr.view.Form.CustomerForm",
             cnt.add(new qx.ui.basic.Label().set({value: "Должность",                rich : true}),
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Position,       {row:vertical_offset , column:1});
+            
+            cnt.add(new qx.ui.basic.Label().set({value: "Номер телефона",                rich : true}),
+                    {row:++vertical_offset, column:0});
+            cnt.add(this.inp.Telephone_number,       {row:vertical_offset , column:1});
 
             
             var l2 = new qx.ui.basic.Label("Группы");
@@ -250,10 +258,17 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 flag &= zqr.view.Form.AbstractForm.customFormPassCheck(this.inp.Password1, this.inp.Password2);
             }
 
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Login);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Firstname);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Lastname);
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Patronimic);
+            flag &= zqr.view.Form.AbstractForm.customFormCheckRequired(this.inp.Email);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Login);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Firstname);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Lastname);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Patronimic);
+            ////////////////////////////
+            //проверка номера телефона//
+            ////////////////////////////
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 1024, this.inp.Telephone_number);
+			////////////////////////////
+			////////////////////////////
 /*
             for(var fieldName in this.inp){
                 if(  ("Password1" == fieldName)

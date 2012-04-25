@@ -131,12 +131,15 @@ class Base(generate.gen_css.Gen_css):
             border-collapse: collapse;
             border-spacing: 0;
         }
-        ::-webkit-validation-bubble{
-            margin-top:-10px;
+        input:focus:invalid {
+            background-color: #FFC9C9;
         }
-        ::-webkit-validation-bubble-message{
-            padding:5px; font-size:12px;
+        input:focus:valid {
+            color: green; 
         }
+        ::-webkit-validation-bubble, ::-webkit-validation-bubble-message{
+            z-index:-100;
+        } 
         """
 
     def common_modifiers(self):
@@ -186,6 +189,16 @@ class Base(generate.gen_css.Gen_css):
             margin-top:50px;
         }"""
         
+        
+        res += """.m-f-r{
+            float: right;
+        }
+        """
+        
+        res += """.m-f-l{
+            float: left;
+        }
+        """
         
         return res
         
@@ -485,6 +498,14 @@ class Base(generate.gen_css.Gen_css):
                     border-radius: 20px;
                 }
             """
+
+            #res += """.email-email:required:invalid, .email-email:focus:invalid {
+            #    color: red;
+            #}"""
+    
+            #res += """.email-email:required:valid, .email-email:focus:valid {
+            #    color: green;
+            #}"""
 
             if(Use.css3_corners):
                 res += """.s-sfm-input{
@@ -805,7 +826,9 @@ class Base(generate.gen_css.Gen_css):
         top_offset = "10px";
         
         def _e_news_head():
+            # Удалил width: 800px;
             return """.e-news-head, .e-docs-head{
+                display: block;
                 display: block; 
                 font-size: 30px;
                 font-variant: normal;
@@ -1094,6 +1117,19 @@ class Base(generate.gen_css.Gen_css):
         
         res += """.m-docs-ttrc{
             height:75px;
+        }
+        """
+        
+        res += """.m-docs-textarea{
+            width:330px;
+            height:150px;
+            padding: 1px;
+        }
+        """
+        
+        res += """.m-docs-input{
+            width:330px;
+            border:1px solid black;
         }
         """
         

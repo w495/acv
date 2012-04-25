@@ -198,11 +198,17 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             switch(clip.pay_status) {
                 case "":        txt += "счет не выставлен"; break;
                 case "false":   
-                    txt += "счет выставлен, но не оплачен"; 
+                    txt += "счет выставлен, но не оплачен";
+                    txt += "\n";
+                    txt += "Сумма: " + clip.sum + " р.";
                     var btnPay = new qx.ui.form.Button("Оплатить счет");
                     this.lholder.add(btnPay);
                     break;
-                case "true":    txt += "счет выставлен и оплачен"; break;
+                case "true":
+                    txt += "оплачен"; 
+                    txt += "\n";
+                    txt += "Сумма: " + clip.sum + " р.";
+                    break;
             }
             txt += "\n";
             txt += "Статус: ";
@@ -296,7 +302,6 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             	    src:"/" + clip.ref
                 }
             });
-
             this.flashBar.add(this.flashPlayer);//, {flex: 1});
             return true;
         }

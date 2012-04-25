@@ -123,6 +123,11 @@
                 <xsl:text>Расценки</xsl:text>
             </a>
         </li>
+        <li class="e-rf-ul">
+            <a href="/docs/contact" class="m-white-link">
+                <xsl:text>Контакты</xsl:text>
+            </a>
+        </li>
     </ul>
 </xsl:template>
 

@@ -18,6 +18,8 @@
 	docs_content/1,
     docs_howto/1,
     docs_offer/1,
+    docs_contact/1,
+	docs_contact_send_message/1,
     signin/1,
     signin/2,
     signin_post/1,
@@ -168,6 +170,30 @@ docs_offer(Req) ->
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
+%%
+%% Документация контакты
+%%
+docs_contact(Req) ->
+    Xsl_path = "xsl/normal/outside/docs-contact.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Отправить сообщение
+%%
+docs_contact_send_message(Req) -> 
+    Request_data = Req:parse_post(),
+    Message_subject = proplists:get_value("email", Request_data),
+    Message_text = proplists:get_value("login", Request_data),
+    mail:mail("contacts@tvzavr.ru", "Contact Center", Message_subject, Message_text), 
+	
+	error:return_html(Req, "Письмо отправлено").
+
 
 signin(Req) ->
     signin(Req, []).
@@ -314,6 +340,7 @@ signup_post(Req, State) ->
                                         {"lastname",       [string]},
                                         {"patronimic",     [string]},
                                         {"login",          [string]},
+                                        {"telephone",      [string]},
                                         {"email",          [nullable, string]},
                                         {"city",           [nullable, string]},
                                         {"organization",   [nullable, string]},

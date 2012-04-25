@@ -98,7 +98,8 @@ create table customer(
     */
     active bool default null,
     birthday date,
-    password_hash char(32) not null
+    password_hash char(32) not null,
+    telephone_number character varying(30);
 );
 
 /**

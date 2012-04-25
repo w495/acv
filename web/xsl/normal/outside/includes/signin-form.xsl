@@ -45,12 +45,16 @@
             <xsl:call-template name="u-ift">
                 <xsl:with-param name="Label_name" select="'Логин'"  />
                 <xsl:with-param name="Name" select="'login'"  />
+			    <xsl:with-param name="Size" select="'1024'"/>
+			    <xsl:with-param name="Max_length" select="'1024'"/>
                 <xsl:with-param name="Placeholder" select="'Введите логин'"  />
                 <xsl:with-param name="Required" select="'true'"/>
             </xsl:call-template>
             <xsl:call-template name="u-ift">
                 <xsl:with-param name="Label_name" select="'Пароль'" />
-                <xsl:with-param name="Name" select="'password'"  />
+                <xsl:with-param name="Name" select="'password'"  /> 
+			    <xsl:with-param name="Size" select="'128'"/>
+			    <xsl:with-param name="Max_length" select="'128'"/>
                 <xsl:with-param name="Placeholder" select="'Введите пароль'"  />
                 <xsl:with-param name="Type" select="'password'"  />
                 <xsl:with-param name="Required" select="'true'"/>
