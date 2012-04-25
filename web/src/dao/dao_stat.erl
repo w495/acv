@@ -662,46 +662,6 @@ gen_vstat() ->
     mk_year(2011, [integer_to_list(X) || X <- lists:seq(0, 3000)]).
 
 
-test1() ->
-    D1 = {{2011, 1,1},{0,0,0}}, 
-    D2 = {{2011, 5,31},{0,0,0}},
-    Q = "select * from acv_video_stat where video_uid = '1748' "
-        "and datestart > $1 and datestop < $2;",
-    dao:simple(Q, [D1, D2]),
-    done.
-
-test(speed)->
-    Times_1 = 1000,
-    %%%
-    %%% Лучше использовать mysql:get_prepared, с ним в 2 раза быстрее
-    %%%     1349527 против 2840849
-    %%%
-    tests:print_speed("+",
-        fun() -> % лучше
-            case mysql:get_prepared(mysqlStat, 'get_stat_max_id_get_prepared') of
-                {error, _ } ->
-                    Q = <<"select max(id) as max_id from AVStats;">>,
-                    mysql:prepare(mysqlStat, 'get_stat_max_id_get_prepared', Q);
-                _ -> ok
-            end,
-            {data,{mysql_result, Cols, Vals, _X31, _X32}}
-                = mysql:execute(mysqlStat, 'get_stat_max_id_get_prepared', []),
-            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
-        end, Times_1 ),
-
-    tests:print_speed("-",
-        fun() ->
-            Q = <<"select max(id) as max_id from AVStats;">>,
-            mysql:prepare(mysqlStat, 'get_stat_max_id_prepare', Q),
-            {data,{mysql_result, Cols, Vals, _X31, _X32}}
-                = mysql:execute(mysqlStat, 'get_stat_max_id_prepare', []),
-            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
-        end, Times_1 ),
-
-    ok.
-
-
-%create table geo_region(
 %    id int primary key,
 %    country_id int default null,
 %    name_ru varchar(100),
@@ -756,3 +716,44 @@ upiter([H|T]) ->
     end,
     upiter(T).
 
+
+test1() ->
+    D1 = {{2011, 1,1},{0,0,0}},
+    D2 = {{2011, 5,31},{0,0,0}},
+    Q = "select * from acv_video_stat where video_uid = '1748' "
+        "and datestart > $1 and datestop < $2;",
+    dao:simple(Q, [D1, D2]),
+    done.
+
+test(speed)->
+    Times_1 = 1000,
+    %%%
+    %%% Лучше использовать mysql:get_prepared, с ним в 2 раза быстрее
+    %%%     1349527 против 2840849
+    %%%
+    tests:print_speed("+",
+        fun() -> % лучше
+            case mysql:get_prepared(mysqlStat, 'get_stat_max_id_get_prepared') of
+                {error, _ } ->
+                    Q = <<"select max(id) as max_id from AVStats;">>,
+                    mysql:prepare(mysqlStat, 'get_stat_max_id_get_prepared', Q);
+                _ -> ok
+            end,
+            {data,{mysql_result, Cols, Vals, _X31, _X32}}
+                = mysql:execute(mysqlStat, 'get_stat_max_id_get_prepared', []),
+            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
+        end, Times_1 ),
+
+    tests:print_speed("-",
+        fun() ->
+            Q = <<"select max(id) as max_id from AVStats;">>,
+            mysql:prepare(mysqlStat, 'get_stat_max_id_prepare', Q),
+            {data,{mysql_result, Cols, Vals, _X31, _X32}}
+                = mysql:execute(mysqlStat, 'get_stat_max_id_prepare', []),
+            [[{"max_id", Max_id}]] = mysql_dao:make_proplist(Cols, Vals)
+        end, Times_1 ),
+
+    ok.
+
+
+%create table geo_region(
