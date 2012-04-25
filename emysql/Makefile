@@ -1,9 +1,10 @@
 # default
 
-release:
+all:
 	$(call make_ebin);
 
-
+release:
+	$(call make_ebin);
 debug:
 	(cd src && $(MAKE) debug) || exit 1;
 
