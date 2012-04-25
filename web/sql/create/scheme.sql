@@ -102,6 +102,20 @@ create table customer(
     telephone_number character varying(30);
 );
 
+
+
+create sequence seq_purse_id;
+create table purse(
+    id int primary key default nextval('seq_purse_id'),
+
+);
+
+create sequence seq_bill_id;
+create table bill(
+    id int primary key default nextval('seq_bill_id'),
+
+);
+
 /**
  * Группа рекламодателей
 **/
