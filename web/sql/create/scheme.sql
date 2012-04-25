@@ -35,24 +35,6 @@ create table customer(
     */
     deleted bool default false,
 
-    /*
-        условие исключтельности
-            false   --- обычный пользователь 
-            true    --- системный пользователь
-                должен оставаться как минимум один системный пользователь,
-                которого нельзя удалить ни при каком условии
-        На данный момнет поле не используется,
-        но может оказаться полезным.
-    */
-    issystem bool default false,
-
-    /*
-        условие предмодерации
-            null    --- пользователь не просмотрен
-            false   --- пользователь забанен
-            true    --- пользователь одобрен
-    */
-    active bool default null,
     birthday date,
     telephone_number varchar(30),
     password_hash char(32) not null
