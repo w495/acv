@@ -13,6 +13,10 @@ dmap(Path) ->
         "/get-config" -> {inside, get_config};
         "/update-config" -> {inside, update_config};
 
+        "/get-sysvars"      ->  {inside,    get_sysvars};
+        "/get-sysvar-info"  ->  {inside,    get_sysvar_info};
+        "/update-sysvar"    ->  {inside,    update_sysvar};
+
     % advertising company video
 
         "/get-acv-video" -> {inside, get_acv_video};

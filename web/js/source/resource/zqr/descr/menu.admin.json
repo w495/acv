@@ -14,9 +14,9 @@
             {   name : "права",
                 model : "resource/zqr/descr/permissions-tab.json"
             },
-            
+
             {   name : "настройки",
-                model : "resource/zqr/descr/config-form.json"
+                model : "resource/zqr/descr/sysvar-tab.json"
             }
         ]
     },
