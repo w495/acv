@@ -43,6 +43,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+-define(AV_STATS_MAX_ID, "av_stats_max_id").
+
 -define(STAT_SKIP_SECOND, 3600).
 
 -record(stat, {
@@ -137,7 +139,7 @@ fetch_stat_by_time(From_id) ->
 %     dao:with_transaction_fk(fun(Con) ->
 %         Cid = compute_stat_max_id(),
 %         Gid = get_max_id(Con),
-%         case Cid > Gid of
+%         case Cid > Gid offetch_stat_by_id
 %             true ->
 %                 fetch_stat_by_id(Gid);
 %                 put_max_id(Con, Cid),
@@ -178,6 +180,8 @@ fetch_stat_by_id(From_id) ->
 %    ?D("Stats to DB:~p~n", [To_db]),
     to_db(To_db).
 
+
+
 compute_stat_max_id() ->
     case mysql:get_prepared(mysqlStat, get_stat_max_id) of
         {error, _ } ->
@@ -191,21 +195,33 @@ compute_stat_max_id() ->
     Max_id.
 
 put_max_id(Con, Max_id) ->
-    Query = "update var set av_stats_max_id = $1;",
-    dao:equery(Con, Query, [Max_id]).
+    Query =
+        " update "
+            " sysvar "
+        " set "
+            " value = $2 "
+        " where "
+            " name = $1;",
+    dao:equery(Con, Query, [?AV_STATS_MAX_ID, Max_id]).
 
 get_max_id(Con) ->
-    Query = "select av_stats_max_id from var;",
-    S = dao:pgret(dao:equery(Con, Query)),
-    {ok,[[{"av_stats_max_id",Max_id}]]}  = S,
+    Query =
+        " select "
+            " sysvar.value "
+        " from "
+            " sysvar "
+        " where "
+            " sysvar.name = $1; ",
+    {ok,[[{"value",Max_id}]]}
+        = dao:pgret(dao:equery(Con, Query, [?AV_STATS_MAX_ID])),
     case convert:to_integer(Max_id) of
         0 ->
             flog:error(
                 "\n"
                 "================================================\n"
-                "ERROR REQUIRED\n"
-                "------------------------------------------------\n"
-                "var.av_stats_max_id == 0 \n"
+                " ERROR REQUIRED\n"
+                " -----------------------------------------------\n"
+                " sysvar.av_stats_max_id == 0 \n"
                 "================================================\n"
             ),
             ok;
