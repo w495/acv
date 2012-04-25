@@ -408,8 +408,7 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, Pic_u
         end
     ),
     dao:pgret(PGRet);
-
-<<<<<<< HEAD
+ 
 %%
 %% Изменяет существующего пользователя
 %%

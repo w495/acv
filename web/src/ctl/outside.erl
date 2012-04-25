@@ -187,12 +187,22 @@ docs_contact(Req) ->
 %% Отправить сообщение
 %%
 docs_contact_send_message(Req) -> 
-    Request_data = Req:parse_post(),
-    Message_subject = proplists:get_value("email", Request_data),
-    Message_text = proplists:get_value("login", Request_data),
-    mail:mail("contacts@tvzavr.ru", "Contact Center", Message_subject, Message_text), 
-	
-	error:return_html(Req, "Письмо отправлено").
+    Request_data = Req:parse_post(), 
+    Message_text = proplists:get_value("text", Request_data),
+    mail_utils:mail("kirill.a.zhuravlev@gmail.com", "Contact Center", "Contact Us Form", Message_text), 
+    
+	%% Не обращаем внимание на имя шаблона error ))
+    XslPath = "xsl/normal/outside/error.xsl",
+    Xml  = xml:encode_data(
+        [
+            {
+				"meta",  [ 	{"errormessage","All is OK"} ]
+			}            
+        ]
+    ), 
+    ResultHtml = xslt:apply(XslPath, Xml), 
+    Req:ok({?OUTPUT_HTML, [], [ResultHtml]}).
+	 
 
 
 signin(Req) ->

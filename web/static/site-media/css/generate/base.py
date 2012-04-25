@@ -25,6 +25,7 @@ class Base(generate.gen_css.Gen_css):
         string += self.s_about_docs()
         string += self.s_pers()
         string += self.s_footer()
+        string += self.b_tooltip()
         return string
 
     def font_face(self):
@@ -1258,7 +1259,43 @@ class Base(generate.gen_css.Gen_css):
                     generate.util.tobase64("css-images/s-footer.png")
                 )
             )
-
-
-
+            
+        return res;
+ 
+    def b_tooltip(self): 
+        res = """
+        .s-overlay-full{
+            width: 100%;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .b-tooltip{
+            background-color: white;
+            border: 6px solid #9C9C9C; 
+        }
+        .b-toolptip-head{
+           border-bottom: 1px solid #BCBCBC;
+           padding: 10px;
+        }
+        .b-toolptip-text{
+            width: 400px;
+            height: 70px;
+            margin: 10px;
+            display: block;
+        }
+        .b-toolptip-send{
+            display: block;
+            float: right;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .b-toolptip-cancel{
+            display: block;
+            float: left;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        """ 
         return res;
