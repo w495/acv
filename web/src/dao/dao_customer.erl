@@ -223,7 +223,7 @@ get_customer(Id) ->
     Q1 = "select customer.id, "
                 "customer.firstname, customer.lastname, customer.patronimic, "
                 "customer.city, customer.organization, customer.position, "
-                "customer.email, customer.login, customer.pic_url, customer.password_hash, customer.telepnone_number "
+                "customer.email, customer.login, customer.pic_url, customer.password_hash, customer.telephone_number "
             "from customer where customer.id=$1;",
     case dao:simple(Q1, [convert:to_integer(Id)]) of
         {ok, R1Val} ->

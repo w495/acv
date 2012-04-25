@@ -188,15 +188,15 @@ docs_contact(Req) ->
 %%
 docs_contact_send_message(Req) -> 
     Request_data = Req:parse_post(), 
-    Message_text = proplists:get_value("text", Request_data),
-    mail_utils:mail("kirill.a.zhuravlev@gmail.com", "Contact Center", "Contact Us Form", Message_text), 
-    
+    Message_text = proplists:get_value("text", Request_data), 
+	%evman_customer:delete(({data, [{"id", YOUR_ID}]}),
+    mail_utils:mail({"kirill.a.zhuravlev@gmail.com", "Contact Center"}, "Contact Us Form",  erlang:list_to_binary(Message_text)),
 	%% Не обращаем внимание на имя шаблона error ))
     XslPath = "xsl/normal/outside/error.xsl",
     Xml  = xml:encode_data(
         [
             {
-				"meta",  [ 	{"errormessage","All is OK"} ]
+				"meta",  [ 	{"errormessage",Message_text} ]
 			}            
         ]
     ), 
