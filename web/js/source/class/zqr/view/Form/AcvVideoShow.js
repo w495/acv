@@ -106,7 +106,9 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
                 lholder.add(lhtable);
                 lholder.add(this.mailtoLink);
 
+
             }
+            this.lholder = lholder;
             mholder.add(lholder, {flex : 1});
             this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox())
                 .set({width:448, height:336});
@@ -195,7 +197,11 @@ qx.Class.define("zqr.view.Form.AcvVideoShow",
             txt += "Состояние счета: ";
             switch(clip.pay_status) {
                 case "":        txt += "счет не выставлен"; break;
-                case "false":   txt += "счет выставлен, но не оплачен"; break;
+                case "false":   
+                    txt += "счет выставлен, но не оплачен"; 
+                    var btnPay = new qx.ui.form.Button("Оплатить счет");
+                    this.lholder.add(btnPay);
+                    break;
                 case "true":    txt += "счет выставлен и оплачен"; break;
             }
             txt += "\n";
