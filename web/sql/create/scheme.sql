@@ -4,50 +4,6 @@
  *
 ***********************************************************************/
 
-/**
- * Таблица конфигурации с одной сущностью.
- * Мы не дедаем table -> (name, value);
- *  Т.к. value не понятно какого типа.
-**/
-
-create table config(
-    id int primary key default 0,
-
-    /*
-        load next
-    */
-    acv_video_loadnext int 
-);
-
-
-/* **************************************************************************
-
-    Изначально была идея хранить все в одной таблице,
-    настроек и config и var, но проще иметь 2 разных таблицы
-
-    create sequence seq_config_id;
-    create table config(
-        id int primary key default nextval('seq_config_id'),
-        isvar bool primary key default true,
-        -- type varchar(32) not null,
-        --     -- int, float, char, varchar, и пр
-        name varchar(128) not null unique,
-        value varchar(1024) not null
-    );
-
-************************************************************************** */
-
-/**
- * Таблица переменных значений с одной сущностью.
- * Мы не дедаем table -> (name, value);
- *  Т.к. value не понятно какого типа
-**/
-
-create table var(
-    id bool primary key default true,
-    av_stats_max_id numeric(20)
-);
-
 
 -------------------------------------------------------------------------------
 -- ЛЮДИ 
@@ -98,8 +54,8 @@ create table customer(
     */
     active bool default null,
     birthday date,
-    password_hash char(32) not null,
-    telephone_number character varying(30);
+    telephone_number varchar(30),
+    password_hash char(32) not null
 );
 
 
@@ -108,7 +64,7 @@ create table customer(
 */
 create sequence seq_purse_id;
 create table purse(
-    id int primary key default nextval('seq_purse_id'),
+    id int primary key default nextval('seq_purse_id')
 
 );
 
@@ -117,7 +73,7 @@ create table purse(
 */
 create sequence seq_bill_id;
 create table bill(
-    id int primary key default nextval('seq_bill_id'),
+    id int primary key default nextval('seq_bill_id')
 
 );
 
@@ -178,6 +134,31 @@ create table permission (
 );
 
 -------------------------------------------------------------------------------
+-- НАСТРОЙКИ
+-------------------------------------------------------------------------------
+
+create sequence seq_sysvar_type_id;
+create table sysvar_type(
+    id int primary key default nextval('seq_sysvar_type_id'),
+    name varchar(128) not null unique
+);
+
+
+/**
+ * Таблица системных переменных
+**/
+create sequence seq_sysvar_id;
+create table sysvar(
+    id int primary key default nextval('seq_sysvar_id'),
+    name varchar(128) not null unique,
+    value varchar(1024) not null,
+    description varchar(1024) default null,
+    perm_id int references permission(id) default null,
+    type_id int references sysvar_type(id) default null
+);
+
+
+-------------------------------------------------------------------------------
 -- РЕКЛАМА
 -------------------------------------------------------------------------------
 
@@ -201,7 +182,7 @@ create table acv_banner (
     datestart timestamp without time zone,
     datestop timestamp without time zone,
     url varchar(200),
-    ref varchar(1000),
+    ref varchar(1024),
     banner_place_id int references banner_place(id),
     customer_id int references customer(id)
 
@@ -219,7 +200,7 @@ create table acv_video (
     datestart   timestamp without time zone,
     datestop    timestamp without time zone,
     url         varchar(200),
-    ref         varchar(1000),
+    ref         varchar(1024),
     /*
         желаемое колическтво показов
     */
