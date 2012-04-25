@@ -24,10 +24,12 @@ get_adv(Req) ->
     %%%     Есть мысль от Саши Рыкова, чтобы не возвращался loadnext
     %%%     в случае postroll, или был равен -1
     %%%
+    Loadnext = dao_sysvar:acv_video_loadnext(),
     DefResXlm =
-        "<block duration=\"600\" loadnext=\"" ++
-                dao_config:config("acv_video_loadnext")
-            ++ "\">"
+        "<block "
+            "duration=\"600\" "
+            "loadnext=\"" ++ convert:to_list(Loadnext) ++
+        "\">"
             "<creative "
                 " category_id=\"16\" "
                 " skip=\"no\" "

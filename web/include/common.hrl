@@ -14,6 +14,10 @@
 -define(WEB_APP_HTTP,   web_web_http_80).
 -define(WEB_APP_HTTPS,  web_web_https_8443).
 
+%%% ---------------------------------------------------------------------------
+%%% САМООПРЕДЕЛЕНИЕ НА ОСНОВАНИИ CONFIG
+%%% ---------------------------------------------------------------------------
+
 -define(DEFAULT_HTTP_IP,        "0.0.0.0").
 -define(DEFAULT_HTTPS_IP,       "0.0.0.0").
 -define(DEFAULT_HTTP_PORT,      8000).
@@ -28,15 +32,15 @@
 -define(HTTPS_CERTFILE, config:get(https_certfile,  ?DEFAULT_HTTPS_CERTFILE)).
 -define(HTTPS_KEYFILE,  config:get(https_keytfile,  ?DEFAULT_HTTPS_KEYFILE)).
 
--define(SYS_MAIL_NAME_DEFAULT,      "Система рекламы tvzavr.ru").
--define(SYS_MAIL_USERNAME_DEFAULT,  "nikitin.i@tvzavr.ru").
--define(SYS_MAIL_RELAY_DEFAULT,     "active-video.ru").
--define(SYS_MAIL_PASSWORD_DEFAULT,  "maiqu6Ce6aht").
+-define(DEFAULT_SYS_MAIL_NAME,      "Система рекламы tvzavr.ru").
+-define(DEFAULT_SYS_MAIL_USERNAME,  "nikitin.i@tvzavr.ru").
+-define(DEFAULT_SYS_MAIL_RELAY,     "active-video.ru").
+-define(DEFAULT_SYS_MAIL_PASSWORD,  "maiqu6Ce6aht").
 
--define(SYS_MAIL_NAME,      config:get(sys_mail_name,       ?SYS_MAIL_NAME_DEFAULT)).
--define(SYS_MAIL_USERNAME,  config:get(sys_mail_username,   ?SYS_MAIL_USERNAME_DEFAULT)).
--define(SYS_MAIL_RELAY,     config:get(sys_mail_relay,      ?SYS_MAIL_RELAY_DEFAULT)).
--define(SYS_MAIL_PASSWORD,  config:get(sys_mail_password,   ?SYS_MAIL_PASSWORD_DEFAULT)).
+-define(SYS_MAIL_NAME,      config:get(sys_mail_name,       ?DEFAULT_SYS_MAIL_NAME)).
+-define(SYS_MAIL_USERNAME,  config:get(sys_mail_username,   ?DEFAULT_SYS_MAIL_USERNAME)).
+-define(SYS_MAIL_RELAY,     config:get(sys_mail_relay,      ?DEFAULT_SYS_MAIL_RELAY)).
+-define(SYS_MAIL_PASSWORD,  config:get(sys_mail_password,   ?DEFAULT_SYS_MAIL_PASSWORD)).
 
 -define(SYS_MAIL_OPTIONS,
     [
@@ -67,12 +71,22 @@
 -define(SYS_BILL_SURL,      ?SYS_DNS ++ "/surl").
 -define(SYS_BILL_FURL,      ?SYS_DNS ++ "/furl").
 
+
 -define(VK_STREAMER_DEFAULT, "http://192.168.2.156:7000").
 
 
 -define( CFG_PROCS, [{gen_server, m_pinger},
                      {gen_event, error_logger}]
        ).
+
+
+%%% ---------------------------------------------------------------------------
+%%% САМООПРЕДЕЛЕНИЕ НА ОСНОВАНИИ БАЗЫДАННЫХ
+%%% ---------------------------------------------------------------------------
+
+-define(DEFAULT_ACV_VIDEO_LOADNEXT, 600).
+%%% -define(ACV_VIDEO_LOADNEXT, dao_sysvar:get(acv_video_loadnext, ?DEFAULT_ACV_VIDEO_LOADNEXT)).
+
 
 
 %%% ---------------------------------------------------------------------------
