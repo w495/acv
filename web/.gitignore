@@ -35,3 +35,8 @@ static/data/*
 ./static/site-media/css/base.css
 ./static/site-media/css/base.bgi.css
 ./static/site-media/css/base.css3.css
+
+.pydevproject
+.project
+.settings
+

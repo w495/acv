@@ -96,7 +96,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                 .set({placeholder: "Выберите файл", readOnly:true});
                 
             this.inp.Telephone_number      = new qx.ui.form.TextField()
-                .set({placeholder: "Номер телефона", readOnly:true});
+                .set({placeholder: "Номер телефона", readOnly:false});
             
             this.groupList = new zqr.view.SelListTree(this,
                 this.groupListOptions.url,
@@ -173,7 +173,7 @@ qx.Class.define("zqr.view.Form.CustomerForm",
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Position,       {row:vertical_offset , column:1});
             
-            cnt.add(new qx.ui.basic.Label().set({value: "Номер телефона",                rich : true}),
+            cnt.add(new qx.ui.basic.Label().set({value: "Номер телефона"+ RFM,                rich : true}),
                     {row:++vertical_offset, column:0});
             cnt.add(this.inp.Telephone_number,       {row:vertical_offset , column:1});
 
