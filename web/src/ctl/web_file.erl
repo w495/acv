@@ -256,6 +256,7 @@ upload_acv_video(Req) ->
                 _ ->
                     file:delete(Prev)
             end,
+			io:format("~n~n~n~n~n~n~n~p~n~n~n~n~n~n", [Destination]),
             {"text/html", [], [Destination]};
         {error, Reason} ->
             file:delete(TempFilename),

@@ -117,19 +117,19 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Common",
             var vertical_offset = -1;
             this.composite.add(pageName, {row:++vertical_offset, column:0, colSpan:2})
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Название",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Название"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Name,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Комментарий",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Комментарий"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.Comment,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Дата начала",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Дата начала"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStart,   {row:vertical_offset, column:1});
             
-            this.composite.add(new qx.ui.basic.Label().set({value: "Дата конца",  rich : true}),
+            this.composite.add(new qx.ui.basic.Label().set({value: "Дата конца"  + RFM,  rich : true}),
                     {row:++vertical_offset, column:0});
             this.composite.add(this.inp.DateStop,   {row:vertical_offset, column:1});
             
@@ -165,7 +165,8 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Common",
             if(null == this.inp.Comment.getValue()) {
                 this.inp.Comment.setValue("");
             }
-            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 50, this.inp.Name);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 100, this.inp.Name);
+            flag &= zqr.view.Form.AbstractForm.customFormChkLength(1, 200, this.inp.Comment);
             flag &= zqr.view.Form.AbstractForm.customFormcheckDateNow(this.inp.DateStart,
                 zqr.view.Form.AcvVideoCreateMaster.Common.DATE_PAST_OFFSET
                 + zqr.view.Form.AcvVideoCreateMaster.Common.DATE_DELTA);

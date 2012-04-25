@@ -18,6 +18,8 @@
 	docs_content/1,
     docs_howto/1,
     docs_offer/1,
+    docs_contact/1,
+	docs_contact_send_message/1,
     signin/1,
     signin/2,
     signin_post/1,
@@ -168,6 +170,40 @@ docs_offer(Req) ->
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
+%%
+%% Документация контакты
+%%
+docs_contact(Req) ->
+    Xsl_path = "xsl/normal/outside/docs-contact.xsl",
+    Xml  = xml:encode_data(
+        [
+            {"meta",    meta([Req])}             % описание запроса
+        ]
+    ),
+    Outty = xslt:apply(Xsl_path, Xml),
+    {?OUTPUT_HTML, [], [Outty]}.
+
+%%
+%% Отправить сообщение
+%%
+docs_contact_send_message(Req) -> 
+    Request_data = Req:parse_post(), 
+    Message_text = proplists:get_value("text", Request_data),
+    mail_utils:mail("kirill.a.zhuravlev@gmail.com", "Contact Center", "Contact Us Form", Message_text), 
+    
+	%% Не обращаем внимание на имя шаблона error ))
+    XslPath = "xsl/normal/outside/error.xsl",
+    Xml  = xml:encode_data(
+        [
+            {
+				"meta",  [ 	{"errormessage","All is OK"} ]
+			}            
+        ]
+    ), 
+    ResultHtml = xslt:apply(XslPath, Xml), 
+    Req:ok({?OUTPUT_HTML, [], [ResultHtml]}).
+	 
+
 
 signin(Req) ->
     signin(Req, []).
@@ -314,6 +350,7 @@ signup_post(Req, State) ->
                                         {"lastname",       [string]},
                                         {"patronimic",     [string]},
                                         {"login",          [string]},
+                                        {"telephone",      [string]},
                                         {"email",          [nullable, string]},
                                         {"city",           [nullable, string]},
                                         {"organization",   [nullable, string]},

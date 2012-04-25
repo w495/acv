@@ -9,14 +9,14 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
 {
     extend : zqr.view.Form.AcvVideoCreateMaster.BasePage,
     
-    construct : function(uReq, Row, Options) {
-        this.base(arguments, uReq, Row, Options);
-        this.isNew = false;
-        console.log(this.isNew);
+    construct : function(uReq, Row, Options) { 
+        this.base(arguments, uReq, Row, Options); 
+        this.isNew = false; 
+        console.log(this.isNew); 
     },
 
     members : {
-
+ 
         helpUrl : "/docs/offer",
         
         /* Upload request берется из конструктора */
@@ -58,10 +58,12 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             Rerun_minutes: null
         },
         
+        flashBar    : null, /* поле флеш */
+        flashPlayer : null, /* объект плеера */
         boxPlace: null,
         boxRe: null,
         
-        buildForm : function(){
+        buildForm : function(){  
             var RFM = zqr.view.Form.AbstractForm.REQUIRED_FIELD_MARKER;
             
             var pageName = new qx.ui.basic.Label()
@@ -70,12 +72,12 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                     alignX: "left", rich : true
                 });
                 
-            var layout = new qx.ui.layout.Grid(2, 5);
-            layout.setColumnFlex(1, 1);
+            var layout = new qx.ui.layout.Grid(3, 10);
+            layout.setColumnFlex(1, 1, 1);
             layout.setColumnAlign(0, "right", "top");
             
-            this.composite  = new qx.ui.container.Composite (layout);
-            this.composite.setWidth(zqr.Config.MASTER_FORM_WIDTH);
+            this.composite  = new qx.ui.container.Composite (layout) ;
+            this.composite.setWidth(900);
             
             var pageName = new qx.ui.basic.Label()
                 .set({
@@ -90,6 +92,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                     toolTip: new
                         qx.ui.tooltip.ToolTip("Желаемое вами количество показов вашей рекламы")
                 });
+            this.inp.Wish.setHeight(10);
 
             this.inp.Shown = new qx.ui.form.Spinner(0, 0, 1152921504606846976)
                 .set({
@@ -128,11 +131,24 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             this.composite.add(this.boxRerun,
                 {row:++vertical_offset, column:0,colSpan:2});
             
+            this.flashBar = new qx.ui.container.Composite(new qx.ui.layout.HBox()).set({width:448, height:336});
+            this.composite.add(this.flashBar, {row:0, column:2,rowSpan:10}); 
+            
+            this.flashPlayer = new qx.ui.embed.Flash("resource/zqr/flash/tvzavrplayer2.swf").set({
+                width: 448,
+                height: 336,
+                variables : {
+            	    autoplay:0,
+            	    src:"/" + this.uReq.getParameter('ref', true)
+                }
+            }); 
+            this.flashBar.add(this.flashPlayer);
+            
             return this.composite;
         },
         
         
-        makeBoxPlace : function() {
+        makeBoxPlace : function() { 
             this.inp.Preroll = new qx.ui.form.CheckBox("Preroll — показ ролика перед фильмом")
                 .set({
                     value: true,
@@ -171,7 +187,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             return boxPlace;
         },
         
-        makeBoxRerun : function() {
+        makeBoxRerun : function() { 
             this.inp.Rerun_hours = new qx.ui.form.Spinner(0, 0, 24)
                 .set({
                     toolTip: new
@@ -205,7 +221,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
         /**
             Создает область загрузки картинки.
         **/
-        _buildPicFormCnt: function() {
+        _buildPicFormCnt: function() { 
             var pic_layout = new qx.ui.layout.Grid(12, 6);
             var picFormCnt = new qx.ui.container.Composite(pic_layout).set({
                 allowGrowX: true
@@ -223,7 +239,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             return picFormCnt;
         },
         
-        _onLoadFormDataCompl : function(response) {
+        _onLoadFormDataCompl : function(response) { 
             var result = response.getContent();
             if (false == zqr.util.errors.process(this, result))
                 return false;
@@ -237,16 +253,16 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                 которые не относятся
                 к this.inp, и там их нельзя обработать.
         **/
-        onChangeEnabled: function(enabled) {
+        onChangeEnabled: function(enabled) { 
             this.boxRerun.setEnabled(enabled);  
         },
         
         /**
             Заполняет форму полученными данными.
         **/
-        fillForm : function(data) {
+        fillForm : function(data) { 
             this.inp.Wish.setValue(parseInt(data.value.wish));
-            
+             
             this.inp.Preroll.setValue(zqr.util.utils.parseBoolean(data.value.preroll));
             this.inp.Midroll.setValue(zqr.util.utils.parseBoolean(data.value.midroll));
             this.inp.Postroll.setValue(zqr.util.utils.parseBoolean(data.value.postroll));
@@ -254,8 +270,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
             
             this.boxRerun.setValue((("null" != data.value.rerun_hours) && ("null" != data.value.rerun_minutes)))
             this.inp.Rerun_hours.setValue(parseInt(data.value.rerun_hours));
-            this.inp.Rerun_minutes.setValue(parseInt(data.value.rerun_minutes));
-
+            this.inp.Rerun_minutes.setValue(parseInt(data.value.rerun_minutes)); 
         },
         
         /**
@@ -289,7 +304,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster.Show",
                     item = fieldName.toLowerCase()
                     res[item] = this.inp[fieldName].getValue();
                 }
-                
+                 
                 for(var item in res){
                     this.uReq.setParameter(item, res[item], true);
                 }

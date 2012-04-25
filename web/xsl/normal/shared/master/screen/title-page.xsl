@@ -150,11 +150,11 @@
     <header class="b-news-header">
         <h1 class="e-news-head">
             <xsl:text>О проекте</xsl:text>
-        </h1>
+        </h1> 
         <a class="b-news-doc" href="/docs" >
             <xsl:text>Документация</xsl:text>
         </a>
-        <a class="b-news-doc b-news-mail" href="mailto:contacts@tvzavr.ru" >
+        <a onclick="ContactUs()" class="b-news-doc b-news-mail" href="#">
             <xsl:text>Связаться с нами</xsl:text>
         </a>
     </header>

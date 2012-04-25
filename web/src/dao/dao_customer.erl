@@ -223,7 +223,7 @@ get_customer(Id) ->
     Q1 = "select customer.id, "
                 "customer.firstname, customer.lastname, customer.patronimic, "
                 "customer.city, customer.organization, customer.position, "
-                "customer.email, customer.login, customer.pic_url, customer.password_hash "
+                "customer.email, customer.login, customer.pic_url, customer.password_hash, customer.telepnone_number "
             "from customer where customer.id=$1;",
     case dao:simple(Q1, [convert:to_integer(Id)]) of
         {ok, R1Val} ->
@@ -371,27 +371,31 @@ has_perm(Id, Permname)
 %% Создает нового пользователя
 %%
 
-update_customer({{Firstname, Lastname, Patronimic, Login, Email, City,
-                    Organization, Position}, Password_hash, GroupList, _updater_id}) ->
-    update_customer({{null, Firstname, Lastname, Patronimic, Login, Email, City,
-                    Organization, Position}, Password_hash, GroupList, _updater_id});
+update_customer({{Firstname, Lastname, Patronimic, Login, Telephone, Email, City, Organization, Position}, Password_hash, GroupList, _updater_id}) ->
+    update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, Email, City, Organization, Position}, Password_hash, GroupList, _updater_id});
 
-update_customer({{null, Firstname, Lastname, Patronimic, Login, Email, City,
-                    Organization, Position}, Password_hash, GroupList, _updater_id}) ->
-    update_customer({{null, Firstname, Lastname, Patronimic, Login, [], Email, City,
-                    Organization, Position}, Password_hash, GroupList, _updater_id});
+update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, Email, City, Organization, Position}, Password_hash, GroupList, _updater_id}) ->
+    update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, [], Email, City, Organization, Position}, Password_hash, GroupList, _updater_id});
 
-update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
-                    Organization, Position}, Password_hash, GroupList, _updater_id}) ->
-    Q1 = "insert into customer (firstname, lastname, patronimic, "
-            "login, pic_url, email, city, organization, position, password_hash) "
-         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning customer.id;",
+update_customer({{null, Firstname, Lastname, Patronimic, Login, Telephone, Pic_url, Email, City, Organization, Position}, Password_hash, GroupList, _updater_id}) ->
+    Q1 = "insert into customer ("
+			"firstname, "
+			"lastname, " 
+			"patronimic, "
+            "login, "
+			"telephone_number, "
+			"pic_url, "
+			"email, "
+			"city, "
+			"organization, "
+			"position, "
+			"password_hash) "
+         "values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning customer.id;",
          
     PGRet = dao:with_transaction_fk(
-        fun(Con) ->
-            {ok, 1, _, [{Id}]} = dao:equery(Con, Q1,
-                [Firstname, Lastname, Patronimic, Login, Pic_url, Email,
-                    City, Organization, Position, Password_hash]),
+        fun(Con) -> 
+            {ok, 1, _, [{Id}]} = pgsql:equery(Con, Q1,
+                [Firstname, Lastname, Patronimic, Login, Telephone, Pic_url, Email, City, Organization, Position, Password_hash]),
             case length(GroupList) of
                 0 ->
                     ok;
@@ -404,28 +408,25 @@ update_customer({{null, Firstname, Lastname, Patronimic, Login, Pic_url, Email, 
         end
     ),
     dao:pgret(PGRet);
-
-%%% @doc
-%%% Изменяет существующего пользователя
-%%%
-update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, City,
+ 
+%%
+%% Изменяет существующего пользователя
+%%
+update_customer({{Id, Firstname, Lastname, Patronimic, Login, Telephone, Pic_url, Email, City,
                     Organization, Position}, Password_hash, GroupList, _updater_id}) ->
 
-    Qucustomer =
-        " update "
-            " customer "
-        " set "
-            " firstname = $1, "
-            " lastname = $2, "
-            " patronimic = $3, "
-            " login = $4, "
-            " pic_url = $5, "
-            " email = $6,"
-            " city = $7, "
-            " organization = $8, "
-            " position = $9 "
-         " where "
-            " id=$10; ",
+    Q1 = "update customer set "
+			"firstname = $1, "
+			"lastname = $2, "
+			"patronimic = $3, "
+            "login = $4, "
+			"telephone_number = $5, "
+			"pic_url = $6, "
+			"email = $7, "
+            "city = $8, "
+			"organization = $9, "
+			"position = $10 "
+         "where id=$11;", 
 
     Qucpass =
         " update "
@@ -439,7 +440,7 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
         " delete from "
             " customer2group "
         " where "
-            " customer2group.customer_id = $1;",
+            " customer2group.customer_id = $1;", 
 
     Qicustomer2group =
         "insert into "
@@ -448,9 +449,9 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
         " values " ++ make_brackets_string(Id, GroupList),
 
     PGRet = dao:with_transaction_fk(
-        fun(Con) ->
-             {ok, 1} = dao:equery(Con, Qucustomer,
-                    [Firstname, Lastname, Patronimic, Login, Pic_url,
+        fun(Con) -> 
+             {ok, 1} = pgsql:equery(Con, Q1,
+                    [Firstname, Lastname, Patronimic, Login, Telephone, Pic_url, 
                         Email, City, Organization, Position, Id]),
              if Password_hash =/= null ->
                     {ok, 1} = dao:equery(Con, Qucpass, [Password_hash, Id]);
@@ -467,18 +468,18 @@ update_customer({{Id, Firstname, Lastname, Patronimic, Login, Pic_url, Email, Ci
     ),
     dao:pgret(PGRet).
 
-update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City, Organization, Position}, Password_hash, _updater_id}) ->
+update_customer_profile({{ Firstname, Lastname, Patronimic, Pic_url, Email, City, Organization, Position, Telephone}, Password_hash, _updater_id}) ->
 
     Q1 = "update customer set firstname = $1, lastname = $2, patronimic = $3, "
             "pic_url = $4, email = $5,"
-            "city = $6, organization = $7, position = $8 "
-         "where id=$9;",
+            "city = $6, organization = $7, position = $8, telephone_number = $9 "
+         "where id=$10;",
 
     PGRet = dao:with_transaction_fk(
         fun(Con) ->
              {ok, 1} = dao:equery(Con, Q1,
                     [Firstname, Lastname, Patronimic, Pic_url,
-                        Email, City, Organization, Position, _updater_id]),
+                        Email, City, Organization, Position, Telephone, _updater_id]),
              if Password_hash =/= null ->
                     {ok, 1} = dao:equery(Con, "update customer set password_hash=$1 "
                         "where id = $2;", [Password_hash, _updater_id]);

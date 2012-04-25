@@ -26,10 +26,10 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
     extend : zqr.view.Form.AbstractForm,
 
     construct : function(controller, Row) {
-        
-        if(Row)
-            this.createNew = (Row.isNew == true);
-        this.base(arguments, controller, Row, "рекламной кампании");
+        this.__Row = Row;
+        if(this.__Row)
+            this.createNew = (this.__Row.isNew == true);
+        this.base(arguments, controller, this.__Row, "рекламной кампании");
         
         this.counterLabel = new qx.ui.basic.Label();
         // кнопки
@@ -62,20 +62,20 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         
         // список окон
         // ---------------------------------------------------------------
-        this.__list = [];
+        this.__list = []; 
         
         console.log("!");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Common(this.uReq, Row, true));
+        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Common(this.uReq, this.__Row, true)); 
         console.log("Common");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Upload(this.uReq, Row));
+        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Upload(this.uReq, this.__Row)); 
         console.log("Upload");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Show(this.uReq, Row));
+        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.Show(this.uReq, this.__Row)); 
         console.log("Show");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq, Row));
+        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.UsersTargeting(this.uReq, this.__Row)); 
         console.log("UsersTargeting");
-        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, Row));
+        this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.RegionTargeting(this.uReq, this.__Row)); 
         console.log("RegionTargeting");
-	this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, Row));
+		this.__list.push(new zqr.view.Form.AcvVideoCreateMaster.CategoryTargeting(this.uReq, this.__Row)); 
         console.log("CategoryTargeting");
         
         this.__step = 0;
@@ -98,7 +98,7 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
         },
         
         __step:     null,     // шаг мастера
-        __list :   null,      // формы мастера
+        __list :   null,      // формы мастера 
         __length :  null,     // длинна мастера
         placeholder : null,
 
@@ -162,7 +162,10 @@ qx.Class.define("zqr.view.Form.AcvVideoCreateMaster",
                 this.__enablebutton(this.helpButton);
         },
         
-        __getCur : function(){
+        __getCur : function(){ 
+        	if(this.__list[this.__step].classname == 'zqr.view.Form.AcvVideoCreateMaster.Show'){
+        		this.__list[this.__step] = new zqr.view.Form.AcvVideoCreateMaster.Show(this.uReq, this.__Row); 
+        	}
             return this.__list[this.__step];
         },
 
