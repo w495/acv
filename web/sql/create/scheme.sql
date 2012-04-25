@@ -23,12 +23,12 @@ create table customer(
         Возможно в последствии, нужно будет загружать сан паспотр
     */
     pic_url text,
-    city varchar(1024),
-    organization varchar(1024),
-    position varchar(1024),
-    firstname varchar(1024) not null,
-    lastname varchar(1024) not null,
-    patronimic varchar(1024) not null,
+    city            varchar(1024),
+    organization    varchar(1024),
+    position        varchar(1024),
+    firstname       varchar(1024) not null,
+    lastname        varchar(1024) not null,
+    patronimic      varchar(1024) not null,
 
     /*
         условие удаления
