@@ -29,6 +29,20 @@ is_auth(Request) ->
             end
     end.
 
+has_perm(Req, Perm) ->
+    Cookie = Req:get_cookie_value(?AUTHCOOKIE),
+    case Cookie of
+        undefined ->
+            false;
+        A ->    case auth_biz:get_session(A) of
+                    [] ->
+                        false;
+                    [H|_T] ->
+                        #web_session{customer_id=Customer_id} = H,
+                        dao_customer:has_perm(Customer_id, Perm)
+                end
+    end.
+
 
 %%%
 %%%
@@ -181,6 +195,8 @@ auth_if(Req, Perm) ->
 					%error:return_json(Req, "Auth Required");
 					throw(auth_required);
                 [#web_session{permissions=PList}|_T] ->
+                    ?D("~nPerm = ~p ~n", [Perm]),
+                    ?D("~nPList = ~p ~n", [PList]),
                     lists:member(Perm, PList)
             end
     end.

@@ -138,15 +138,15 @@ dmap(Path) ->
         "/signin"       ++ Prev_path -> {outside, signin,      Prev_path};
 
 
-        "/pref" ->              {outside, pref};
-        "/pers" ->              {outside, pers};
+        "/pref" ->              {inside_html, pref};
+        "/pers" ->              {inside_html, pers};
 
-        "/pay/" ++ Id ->        {outside, pay, Id};
-        "/pay" ->               {outside, pay};
+        "/pay/" ++ Id ->        {inside_html, pay, Id};
+        "/pay" ->               {inside_html, pay};
 
 
-        "/surl" ->              {outside, surl};
-        "/furl" ->              {outside, furl};
+        "/surl" ->              {inside_html, surl};
+        "/furl" ->              {inside_html, furl};
         "/curl" ->              {outside, curl};
 
         "/signup/post" ->       {outside, signup_post};
