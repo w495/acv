@@ -396,22 +396,37 @@ pref(Req) ->
     Outty = xslt:apply(Xsl_path, Xml),
     {?OUTPUT_HTML, [], [Outty]}.
 
-%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
+%%% Yb
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% @doc
 %% Возврщает страницу пользователя
 %%
 pers(Req) -> 
 	case authorization:is_auth(Req) of
 		false -> 
 			signin(Req, Req:get(raw_path));
-		Another -> 
-		    Xsl_path = "xsl/normal/outside/pers.xsl",
-		    Xml  = xml:encode_data(
-		        [
-		            {"meta",    meta([Req])}             % описание запроса
-		        ]
-		    ),
-		    Outty = xslt:apply(Xsl_path, Xml),
-		    {?OUTPUT_HTML, [], [Outty]}
+		_ ->
+            case authorization:auth_if(Req, "insider") of
+                false ->
+                    signin(Req, Req:get(raw_path));
+                _ ->
+                    Xsl_path = "xsl/normal/outside/pers.xsl",
+                    Xml  = xml:encode_data(
+                        [
+                            {"meta",    meta([Req])}             % описание запроса
+                        ]
+                    ),
+                    Outty = xslt:apply(Xsl_path, Xml),
+                    {?OUTPUT_HTML, [], [Outty]}
+            end
 	end.
 
 %%

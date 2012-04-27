@@ -779,6 +779,29 @@ get_acv_video(Req) ->
 %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+get_sysvars(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Res = dao:dao_call(dao_sysvar, get_sysvars, {perm, "admin"}, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
+get_sysvar_info(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Plfields = Req:parse_qs(),
+    Id = convert:to_integer(proplists:get_value("id", Plfields)),
+    Res = dao:dao_value(dao_sysvar, get_sysvar, Id),
+    {"application/json", [], [Res]}.
+
+update_sysvar(Req) ->
+    authorization:auth_required(Req, "admin"),
+    Plfields = Req:parse_post(),
+    Info = norm:extr(Plfields, [
+        {"id",      [nullable, integer]},
+        {"value",   [integer]}%,
+    ]),
+
+    Res = dao:dao_call(dao_sysvar, update_sysvar, Info, values),
+    {"application/json", [], [mochijson2:encode(Res)]}.
+
 %%%
 %%% Возвращает конфигурацию системы,
 %%%

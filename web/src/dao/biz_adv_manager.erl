@@ -29,6 +29,7 @@
 -define(DEFAULT_PEER,   0).
 -define(DEFAULT_USERID, null).
 
+
 -define(DAYS_IN_YEAR, 365.242199 ).
     %%% $ DAYS_IN_YEAR \ne 365.0 $
     %%% $ DAYS_IN_YEAR \approx 365.242199 $
@@ -285,8 +286,12 @@ start_datetime(Rerun_hours, Rerun_minutes) ->
 %%%
 make_acv_xml(List) ->
     {Acc_str, Acc_duration} = make_acv_xml_item(List, {[], 0}),
+    Loadnext = dao_sysvar:acv_video_loadnext(),
     ?XML_TOP ++
-    ?FMT("<block duration=\"~p\" loadnext=\"~p\">", [Acc_duration, dao_config:config("acv_video_loadnext")]) ++
+    "<block " ++
+        "duration=\"" ++ convert:to_list(Acc_duration) ++ "\" "
+        "loadnext=\"" ++ convert:to_list(Loadnext) ++ "\" "
+    ">" ++
         Acc_str ++
     "</block>".
 

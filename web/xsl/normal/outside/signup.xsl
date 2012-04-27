@@ -54,9 +54,14 @@
                 </xsl:if>
             </xsl:if>
         </label>
-        <input type="{$Type}" placeholder="{$Placeholder}"
-            size="{$Size}" maxlength="{$Max_length}" pattern="{$Pattern}" autocomplete="{$Auto_complete}" 
-            name="{$Name}" class="e-csif-fi {$Type}-{$Name}"
+        <input
+            type="{$Type}"
+            placeholder="{$Placeholder}"
+            size="{$Size}"
+            maxlength="{$Max_length}"
+            autocomplete="{$Auto_complete}" 
+            name="{$Name}"
+            class="e-csif-fi {$Type}-{$Name}"
         >
             <xsl:if test="$Required != ''">
                 <xsl:attribute name="required">required</xsl:attribute>
@@ -69,6 +74,11 @@
             <xsl:if test="$Value != ''">
                 <xsl:attribute name="value">
                     <xsl:value-of select="$Value" />
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="$Pattern != ''">
+                <xsl:attribute name="pattern">
+                    <xsl:value-of select="$Pattern" />
                 </xsl:attribute>
             </xsl:if>
         </input>

@@ -762,9 +762,17 @@ moveFile(Src, Dst) ->
     end.
 
 
-is_proplist([]) -> true;
-is_proplist([{K,_}|R]) when is_atom(K) -> is_proplist(R);
-is_proplist(_) -> false.
+is_proplist([]) ->
+    true;
+is_proplist([{K,_}|R]) when is_atom(K) ->
+    %%% {key, _}
+    is_proplist(R);
+is_proplist([{K,_}|R]) when is_list(K) ->
+    %%% {"key", _}
+    is_proplist(R);
+
+is_proplist(_) ->
+    false.
 
 iterTest(0, _) ->
     ok;

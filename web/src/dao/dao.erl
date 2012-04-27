@@ -76,9 +76,8 @@ make_error_json(Type, {Etype, Einfo})
 %%% Возвращает единственный вариант
 %%%
 dao_value(Module, Function, Param) ->
-    mochijson2:encode(
-        dao:dao_call(Module, Function, Param, value)
-    ).
+    Value = dao:dao_call(Module, Function, Param, undefined),
+    mochijson2:encode({struct, [{<<"value">>, Value}]}).
 
 %%%
 %%% Возвращает несколько результатов

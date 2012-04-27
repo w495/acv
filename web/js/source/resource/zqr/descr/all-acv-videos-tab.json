@@ -6,16 +6,6 @@
             "action" : "/get-all-acv-video-stats",
             "icon" : "icon/32/actions/view-refresh.png",
             "specParam": "tab-change-state-action"},
-        {"type" : "button", "name" : "Создать",
-            "action" : "resource/zqr/descr/acv-video-create.json",
-            "icon" : "icon/32/actions/document-new.png"},
-
-        /*
-        {"type" : "button", "name" : "Копировать",
-            "action" : "resource/zqr/descr/acv-video-copy.json",
-            "icon" : "icon/32/actions/edit-copy.png",
-            "specParam": "tab-row"},
-        */
 
         {"type" : "button",
             "name" : "Разрешить",

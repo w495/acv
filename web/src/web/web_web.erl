@@ -50,8 +50,11 @@ start_controller(Module, Action, Req) ->
     Exports = Module:module_info(exports),
     % % CALL BEFORE
     _NReq = bacRunner(Exports, call_before, Module, Req),
+
     % % CALL CONTROLLER
-    Result = Module:Action(Req),
+    Result = bacRunner(Exports, call_inside, Module, {Module, Action, Req}),
+    % % CALL CONTROLLER
+    % %  Result = Module:Action(Req),
     % % CALL AFTER
     {_, NResult} = bacRunner(Exports, call_after, Module, {Req, Result}),
     Req:ok(NResult).
@@ -62,17 +65,24 @@ start_controller(Module, Action, Req, Param) ->
     % % CALL BEFORE
     _NReq = bacRunner(Exports, call_before, Module, Req),
     % % CALL CONTROLLER
-    Result = Module:Action(Req, Param),
+    Result = bacRunner(Exports, call_inside, Module, {Module, Action, Req, Param}),
+    % % Result = Module:Action(Req, Param),
     % % CALL AFTER
     {_, NResult} = bacRunner(Exports, call_after, Module, {Req, Result}),
     Req:ok(NResult).
-
 
 bacRunner([{M, _}|T], Method, Module, Param) ->
     case M =:= Method of
         true -> Module:Method(Param);
         false -> bacRunner(T, Method, Module, Param)
     end;
+
+bacRunner([], call_inside, _Module, {Module, Action, Req}) ->
+    Module:Action(Req);
+
+bacRunner([], call_inside, _Module, {Module, Action, Req, Param}) ->
+    Module:Action(Req, Param);
+
 bacRunner([], _Method, _Module, Param) ->
     Param.
 

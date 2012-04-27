@@ -13,6 +13,10 @@ dmap(Path) ->
         "/get-config" -> {inside, get_config};
         "/update-config" -> {inside, update_config};
 
+        "/get-sysvars"      ->  {inside,    get_sysvars};
+        "/get-sysvar-info"  ->  {inside,    get_sysvar_info};
+        "/update-sysvar"    ->  {inside,    update_sysvar};
+
     % advertising company video
 
         "/get-acv-video" -> {inside, get_acv_video};
@@ -134,15 +138,15 @@ dmap(Path) ->
         "/signin"       ++ Prev_path -> {outside, signin,      Prev_path};
 
 
-        "/pref" ->              {outside, pref};
-        "/pers" ->              {outside, pers};
+        "/pref" ->              {inside_html, pref};
+        "/pers" ->              {inside_html, pers};
 
-        "/pay/" ++ Id ->        {outside, pay, Id};
-        "/pay" ->               {outside, pay};
+        "/pay/" ++ Id ->        {inside_html, pay, Id};
+        "/pay" ->               {inside_html, pay};
 
 
-        "/surl" ->              {outside, surl};
-        "/furl" ->              {outside, furl};
+        "/surl" ->              {inside_html, surl};
+        "/furl" ->              {inside_html, furl};
         "/curl" ->              {outside, curl};
 
         "/signup/post" ->       {outside, signup_post};
