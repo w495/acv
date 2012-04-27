@@ -134,6 +134,7 @@ update_customer(Req) ->
         {"lastname", [string]},
         {"patronimic", [string]},
         {"login", [string]},
+        {"telephone_number", [string]},
         {"pic_url", [string]},
         {"email", [nullable, string]},
         {"city", [nullable, string]},

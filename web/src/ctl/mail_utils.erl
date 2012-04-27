@@ -70,7 +70,12 @@ mail([{Rmail, Rname} | Rest ], Rsubject, Rbody) ->
 mail(null, Rname, Rsubject, Rbody) ->
     mail(?SYS_MAIL_USERNAME, Rname, Rsubject, Rbody);
 
-mail(Rmail, Rname, Rsubject, Rbody) ->
+mail(Rmail, Rname, Rsubject, Rbody)
+        when erlang:is_list(Rbody) ->
+    mail(Rmail, Rname, Rsubject, erlang:list_to_binary(Rbody));
+
+mail(Rmail, Rname, Rsubject, Rbody)
+        when erlang:is_binary(Rbody) ->
     ?D("~n mail goes to send (mail = ~p, name = ~p, subject = ~p)~n",
         [Rmail, Rname, base64:encode_to_string(Rsubject)]),
     Email = {<<"text">>, <<"plain">>,
@@ -90,8 +95,10 @@ mail(Rmail, Rname, Rsubject, Rbody) ->
     ),
     ?I("~n mail was send (mail = ~p, name = ~p, subject = ~p)~n",
         [Rmail, Rname, base64:encode_to_string(Rsubject)]),
-    Ans.
+    Ans;
 
+mail(Rmail, Rname, Rsubject, Rbody) ->
+    mail(Rmail, Rname, Rsubject, convert:to_binary(Rbody)).
 
 test_mail() ->
 

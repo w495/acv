@@ -291,6 +291,31 @@
         Рекомендовано это использовать, если сами скрипты не меняют
         начальный вид страницы или ее DOM (до загрузки)
     -->
+    <script type="text/javascript"> 
+    	function ContactUs() { 
+		  var container = document.createElement('div')
+		    
+		  container.innerHTML = '<div class="s-overlay-full"><div class="b-tooltip"> \
+			    <div class="b-toolptip-head">Написать нам</div> \
+			    <form action="/docs/contact/message" method="POST">\
+					<textarea class="b-toolptip-text" name="text" placeholder="Напишите сообщение"><xsl:text><![CDATA[]]></xsl:text></textarea>\
+					<input class="b-toolptip-cancel" type="button" value="Отменить" onclick="ContactUsClose()" /> \
+					<input class="b-toolptip-send" type="submit" value="Отправить"/> \
+				</form> \
+		  	</div>\
+		  </div>' 
+		  var tooltip = container.firstChild.firstChild
+		  tooltip.style.position = 'fixed'  
+		  tooltip.style.top = 200 + 'px' 
+		  tooltip.style.left = Math.floor(document.body.clientWidth/2) - 219 + 'px'
+				  
+		  document.body.appendChild(container.firstChild) 
+		} 
+		function ContactUsClose(){
+			var tooltip = document.getElementsByClassName('s-overlay-full')[0]
+			tooltip.parentNode.removeChild(tooltip)
+		}
+    </script>
     <xsl:call-template name="foot-scripts-root" />
 </xsl:template>
 

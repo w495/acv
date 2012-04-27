@@ -1,0 +1,7 @@
+# [submodule "mochiweb"]
+# 	path = mochiweb
+# 	url = git://github.com/mochi/mochiweb.git
+
+[submodule "gen_smtp"]
+    path = gen_smtp
+    url = git://github.com/Vagabond/gen_smtp.git

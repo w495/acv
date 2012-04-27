@@ -38,6 +38,9 @@
 				<p> 
 					Сайт: <a href="http://www.tvzavr.ru">www.TVzavr.ru</a>
 				</p> 
+				<p> 
+					<a href="#" onclick="ContactUs()">Отправить нам сообщение</a>
+				</p> 
 			</p>  
         </div>
     </article> 
@@ -61,31 +64,9 @@
 				</p> 
         	</p>    
         </div>
-    </article>  
-    <article class="b-a">   
-        <div class="b-ac"> 
-	        <h3 class="b-ah">
-				<xsl:text>Связаться с нами</xsl:text>
-	        </h3>
-        	<p class="b-ac-p"> 
-				<form method="POST" action="/docs/contact/message"> 
-					<p>
-						<input class="m-docs-input" type="text" name="subject" required="required" placeholder="Тема сообщения" />
-					</p>
-					<p>
-						<textarea class="m-docs-textarea" name="message" required="required" placeholder="Текст сообщения"><xsl:text><![CDATA[]]></xsl:text></textarea>
-					</p> 
-						<button type="submit">Отправить</button>
-				</form>
-        	</p>    
-        </div>
-    </article>  
+    </article>   
 </xsl:template>
-
-
-
-
-
+ 
 
 <xsl:template match="/">
     <xsl:apply-imports />

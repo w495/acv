@@ -4,9 +4,6 @@
  *
 ***********************************************************************/
 
-insert into var (av_stats_max_id) values (0);
-
-
 insert into permission_type (name)
 	values
 		('static');
@@ -17,6 +14,10 @@ insert into permission_entity_type (name)
 
 insert into permission (name, description, perm_type_id, entity_type_id)
 	values
+        ('system', 'права разрещенные только для самой системы',
+            (select id from permission_type where name='static'),
+            (select id from permission_entity_type where name='customer')
+        ),
 		('admin', 'полный доступ',
 			(select id from permission_type where name='static'),
             (select id from permission_entity_type where name='customer')
@@ -36,7 +37,12 @@ insert into permission (name, description, perm_type_id, entity_type_id)
         ('sysmsg', 'право получать системные сообщения',
             (select id from permission_type where name='static'),
             (select id from permission_entity_type where name='customer')
+        ),
+        ('sysconfiger', 'право изменять системные настройки',
+            (select id from permission_type where name='static'),
+            (select id from permission_entity_type where name='customer')
         );
+
 
 insert into customer_group (name, description)
 	values
@@ -97,7 +103,51 @@ insert into customer2group (customer_id, group_id)
         ((select id from customer where login='admin'),
             (select id from customer_group where name='insider'));
 
+
+-----------------------------------------------------------------------
+
+insert into sysvar_type (name)
+    values
+        ('string'),
+        ('integer'),
+        ('boolean'),
+        ('float'),
+
+        ('erlang:atom'),
+        ('erlang:binary'),
+        ('erlang:boolean'),
+        ('erlang:builtin'),
+        ('erlang:float'),
+        ('erlang:integer'),
+        ('erlang:list'),
+        ('erlang:number'),
+        ('erlang:pid'),
+        ('erlang:port'),
+        ('erlang:record'),
+        ('erlang:reference'),
+        ('erlang:tuple'),
+
+        ('void');
+
+
+insert into sysvar (type_id, perm_id, name, value, description)
+    values
+    (
+        (select id from sysvar_type where name='integer'),
+        (select id from permission where name='system'),
+        'av_stats_max_id',
+        '0',
+        'максимальный id для сбора статистики'
+    ),
+    (
+        (select id from sysvar_type where name='integer'),
+        (select id from permission where name='admin'),
+        'acv_video_loadnext',
+        '10',
+        'время загрузки следующего ролика'
+    );
+
 insert into geo_area (name_ru, name_en) values ('СНГ', 'SNG');
 
-insert into config (acv_video_loadnext) values (10);
+
 
